@@ -1,8 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { EnvConfiguration } from 'config/app.config';
 
 async function bootstrap() {
+
+  const env = EnvConfiguration();
 
   const app = await NestFactory.create(AppModule);
 
@@ -17,6 +20,6 @@ async function bootstrap() {
     })
   );
   
-  await app.listen(process.env.PORT ?? 8001);
+  await app.listen(env.port ?? 8003);
 }
 bootstrap();

@@ -3,11 +3,14 @@ import { Socket } from 'node:net';
 import { josLogger } from 'src/utils/logger';
 import { FrameDto, PresentacionDto } from 'src/dto/frame.dto';
 import { crc16IBM } from 'src/utils/crc';
+import { EnvConfiguration } from 'config/app.config';
 
 //! CAPA 0
 
+const env = EnvConfiguration();
+
 const HOST = '127.0.0.1';
-const PORT = 8010;
+const PORT = env.destinyPort ?? 8010; // 8020 o 8010;
 
 // Constantes protocolo
 const START_ARR = [0xCC, 0xAA, 0xAA, 0xAA] as const;
@@ -127,13 +130,13 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   crearDataPresentacion(p: PresentacionDto) {
     const data = Buffer.alloc(4 * (1 + p.nVariables)); // 7 uint32
     let offset = 0;
-    data.writeUInt32LE(p.nVariables, offset);           offset += 4;                          // N_variables (6)
-    data.writeUInt32LE(p.versionPresentacion, offset);  offset += 4;         // version_presentacion
-    data.writeUInt32LE(p.mac, offset);                  offset += 4;        // MAC  
-    data.writeUInt32LE(p.versionEquipo, offset);        offset += 4;        // VERSION_EQUIPO
-    data.writeUInt32LE(p.tipoEquipo, offset);           offset += 4;        // tipo_equipo
-    data.writeUInt32LE(p.claveEquipo, offset);          offset += 4;        // clave_equipo
-    data.writeUInt32LE(p.versionHw, offset);            offset += 4;        // VERSION_HW
+    data.writeUInt32LE(p.nVariables, offset); offset += 4;                          // N_variables (6)
+    data.writeUInt32LE(p.versionPresentacion, offset); offset += 4;         // version_presentacion
+    data.writeUInt32LE(p.mac, offset); offset += 4;        // MAC  
+    data.writeUInt32LE(p.versionEquipo, offset); offset += 4;        // VERSION_EQUIPO
+    data.writeUInt32LE(p.tipoEquipo, offset); offset += 4;        // tipo_equipo
+    data.writeUInt32LE(p.claveEquipo, offset); offset += 4;        // clave_equipo
+    data.writeUInt32LE(p.versionHw, offset); offset += 4;        // VERSION_HW
     return data;
   }
 
