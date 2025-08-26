@@ -8,9 +8,8 @@ export const josLogger = pino({
       levelFirst: true,
       translateTime:'SYS:mm/dd/yyyy  HH:MM:ss.l',
       // messageKey: 'msg',
-      include:'level,time', //,hostname,pid,
+      include:'level, time', //,hostname,pid,
       singleLine: false,
-
     }    
   },
   level: 'debug',

@@ -1,7 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { TcpClientService } from './tcp-client.service';
-import { CreateTcpClientDto } from './dto/create-tcp-client.dto';
-import { UpdateTcpClientDto } from './dto/update-tcp-client.dto';
 
 @Controller('tcp-client')
 export class TcpClientController {

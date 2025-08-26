@@ -1,13 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTramaDto } from './dto/create-trama.dto';
-import { UpdateTramaDto } from './dto/update-trama.dto';
 
 @Injectable()
 export class TramaService {
-
-
-
-
 
   // create(createTramaDto: CreateTramaDto) {
   //   return 'This action adds a new trama';
