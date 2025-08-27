@@ -3,10 +3,11 @@ import { FrameDto, PresentacionDto } from 'src/dto/frame.dto';
 import { josLogger } from 'src/utils/logger';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
 import { readPresentacion, readNodoOrigen, readNodoDestino, readTempC } from 'src/utils/helpersTipado';
+import { defaultPresentacion } from 'src/dto/defaultTrama';
 
 @Controller('trama')
 export class TramaController {
-  constructor(private readonly tcp: TcpClientService) {}
+  constructor(private readonly tcp: TcpClientService) { }
 
   // ------------------------------------------- PRESENTACION -------------------------------------------
   /** POST /api/trama/presentacion
@@ -16,28 +17,23 @@ export class TramaController {
   async presentacion(@Body() body: unknown) {
     josLogger.info('Enviamos PRESENTACION');
 
-    const defaultPres: PresentacionDto = {
-      nVariables: 6,
-      versionPresentacion: 1,
-      mac: 0x12345678,
-      versionEquipo: 100,
-      tipoEquipo: 140,   // OMEGA
-      claveEquipo: 0,
-      versionHw: 1,
-    };
+    const defaultPres: PresentacionDto = defaultPresentacion;
 
     const pres: PresentacionDto = readPresentacion(body, defaultPres);
     const data = this.tcp.crearDataPresentacion(pres); //done Aquí insertamos la data en la presentación.
 
     const frame: FrameDto = this.tcp.crearFrame({
-      nodoOrigen:  readNodoOrigen(body, 1),
+      nodoOrigen: readNodoOrigen(body, 1),
       nodoDestino: readNodoDestino(body, 0),
-      tipoTrama:   25, // TT_SISTEMA
+      tipoTrama: 25, // TT_SISTEMA
       tipoMensaje: 1,  // TM_SISTEMA_TX_PRESENTACION
       data,
     });
 
-    return this.tcp.enviarFrame(frame);
+    const enviarFrame = this.tcp.enviarFrame(frame);
+    if (!enviarFrame) return false;
+    else return enviarFrame;
+    // return this.tcp.enviarFrame(frame);
   }
 
   // ------------------------------------------- PRESENCIA -------------------------------------------
@@ -45,19 +41,22 @@ export class TramaController {
    * body (opcional): { nodoOrigen?, nodoDestino? }
    */
   @Post('presencia')
-  async presencia(@Body() body: unknown) {
+  async presencia(@Body() body?: unknown) {
     josLogger.info('Enviamos PRESENCIA');
 
     const data = this.tcp.crearDataPresencia(); // vacío
     const frame = this.tcp.crearFrame({
-      nodoOrigen:  readNodoOrigen(body, 1),
+      nodoOrigen: readNodoOrigen(body, 1),
       nodoDestino: readNodoDestino(body, 0),
-      tipoTrama:   25, // TT_SISTEMA
+      tipoTrama: 25, // TT_SISTEMA
       tipoMensaje: 4,  // TM_SISTEMA_TX_PRESENCIA
       data,
     });
 
-    return this.tcp.enviarFrame(frame);
+    const enviarFrame = this.tcp.enviarFrame(frame);
+    if (!enviarFrame) return false;
+    else return enviarFrame;
+    // return this.tcp.enviarFrame(frame);
   }
 
   // ------------------------------------------- TEMPS1 -------------------------------------------
@@ -73,15 +72,41 @@ export class TramaController {
     const data = this.tcp.crearDataTempS1(tempC);
 
     const frame = this.tcp.crearFrame({
-      nodoOrigen:  readNodoOrigen(body, 1),
+      nodoOrigen: readNodoOrigen(body, 1),
       nodoDestino: readNodoDestino(body, 0),
-      tipoTrama:   25, // TT_SISTEMA
+      tipoTrama: 25, // TT_SISTEMA
       tipoMensaje: 0,  // Demo / reservado
       data,
     });
 
-    return this.tcp.enviarFrame(frame);
+    const enviarFrame = this.tcp.enviarFrame(frame);
+    if (!enviarFrame) return false;
+    else return enviarFrame;
+    // return this.tcp.enviarFrame(frame);
   }
+
+ // trama.controller.ts
+@Post('metricas')
+async metricas(@Body() body: any) {
+  josLogger.info('Enviamos METRICAS');
+
+  const seq      = Number(body?.seq ?? 0);       // opcional en body
+  const nodoOrg  = readNodoOrigen(body, 1);
+  const nodoDest = readNodoDestino(body, 0);
+
+  const data  = this.tcp.crearDataMetricas(seq);
+  const frame = this.tcp.crearFrame({
+    nodoOrigen:  nodoOrg,
+    nodoDestino: nodoDest,
+    tipoTrama:   25,        // TT_SISTEMA
+    tipoMensaje: 0x40,      // TM_SISTEMA_TX_METRICAS (elige un código libre)
+    data,
+  });
+
+  const enviarFrame = this.tcp.enviarFrame(frame);
+  return enviarFrame || false;
+}
+
 
 }
 

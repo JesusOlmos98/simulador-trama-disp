@@ -10,7 +10,7 @@ import { EnvConfiguration } from 'config/app.config';
 const env = EnvConfiguration();
 
 const HOST = '127.0.0.1';
-const PORT = env.destinyPort ?? 8010; // 8020 o 8010;
+const DESTINY_PORT = env.destinyPort ?? 8010; // 8020 o 8010;
 
 // Constantes protocolo
 const START_ARR = [0xCC, 0xAA, 0xAA, 0xAA] as const;
@@ -18,7 +18,6 @@ const END_ARR = [0xCC, 0xBB, 0xBB, 0xBB] as const;
 
 const START = Buffer.from(START_ARR);
 const END = Buffer.from(END_ARR);
-
 
 const PROTO_VERSION = 2; // según doc
 const TT_SISTEMA = 25;   // Tipo de trama SISTEMA
@@ -45,8 +44,8 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   private connect() {
 
     this.socket = new Socket();
-    this.socket.connect(PORT, HOST, () => {
-      josLogger.info(`🔌 Cliente TCP conectado a ${HOST}:${PORT}`);
+    this.socket.connect(DESTINY_PORT, HOST, () => {
+      josLogger.info(`🔌 Cliente TCP conectado a ${HOST}:${DESTINY_PORT}`);
     });
     this.socket.on('data', d => {
       josLogger.debug('📨 RX raw: ' + d.toString());
@@ -66,7 +65,8 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   /** Enviar un FrameDto (se serializa internamente a Buffer) */
   enviarFrame(frame: FrameDto) {
     if (!this.socket || !this.socket.writable) {
-      throw new Error('Socket no conectado');
+      josLogger.fatal('XXX Socket no conectado XXX');
+      return false;
     }
     const buf = this.serializarFrame(frame);
     this.socket.write(buf);
@@ -106,14 +106,14 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     const end = f.finTrama;
 
     const header = Buffer.alloc(1 + 1 + 2 + 2 + 1 + 1 + 2);
-    let o = 0;
-    header.writeUInt8(f.versionProtocolo, o); o += 1;
-    header.writeUInt8(f.reserva ?? 0, o); o += 1;
-    header.writeUInt16LE(f.nodoOrigen, o); o += 2;
-    header.writeUInt16LE(f.nodoDestino, o); o += 2;
-    header.writeUInt8(f.tipoTrama, o); o += 1;
-    header.writeUInt8(f.tipoMensaje, o); o += 1;
-    header.writeUInt16LE(f.longitud, o); o += 2;
+    let offset = 0;
+    header.writeUInt8(f.versionProtocolo, offset); offset += 1;
+    header.writeUInt8(f.reserva ?? 0, offset); offset += 1;
+    header.writeUInt16LE(f.nodoOrigen, offset); offset += 2;
+    header.writeUInt16LE(f.nodoDestino, offset); offset += 2;
+    header.writeUInt8(f.tipoTrama, offset); offset += 1;
+    header.writeUInt8(f.tipoMensaje, offset); offset += 1;
+    header.writeUInt16LE(f.longitud, offset); offset += 2;
 
     const datosBuf = Buffer.isBuffer(f.datos) ? f.datos : Buffer.alloc(0); // ! si alguien dejó un DTO aquí por error, mandamos vacío
 
@@ -152,6 +152,18 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     data.writeUInt32LE(raw, 0);
     return data;
   }
+
+  /** Cuerpo TM_SISTEMA_TX_METRICAS:
+ *  offset 0..7  : sentNs  (u64 LE) -> process.hrtime.bigint()
+ *  offset 8..11 : seq     (u32 LE)
+ */
+crearDataMetricas(seq = 0) {
+  const data = Buffer.alloc(12);
+  const sentNs = process.hrtime.bigint();   // reloj monotónico (ns)
+  data.writeBigUInt64LE(sentNs, 0);         // u64 LE
+  data.writeUInt32LE(seq >>> 0, 8);         // u32 LE
+  return data;
+}
 
   //jos Ver nuevo src/utils/crc.ts
   // ------------------------------------------- CRC -------------------------------------------

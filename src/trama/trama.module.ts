@@ -6,7 +6,7 @@ import { TcpClientModule } from 'src/tcp-client/tcp-client.module';
 @Module({
   imports: [TcpClientModule],
   controllers: [TramaController],
-  providers: [TramaService],
-  exports: [TramaService],
+  providers: [TramaService, TramaController],
+  exports: [TramaService, TramaController],
 })
 export class TramaModule { }

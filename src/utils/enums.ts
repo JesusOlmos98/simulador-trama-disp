@@ -161,6 +161,22 @@ export enum EnTipoDato {
   pFecha = 206,
 }
 
+// --------------------------------------- EnTipoTrama ---------------------------------------
+export enum EnTipoTrama {
+  omegaPantallaPlaca = 13,     // TT_OMEGA_PANTALLA_PLACA (Pintado de pantallas)
+  depuracion = 14,             // TT_DEPURACION (Tramas depuración)
+  serviciosClaveValor = 23,    // TT_SERVICIOS_CLAVE_VALOR
+  actualizacionServer = 24,    // TT_ACTUALIZACION_SERVER (Actualización remota)
+  sistema = 25,                // TT_SISTEMA (Funciones de sistema)
+  estadisticos = 26,           // TT_ESTADISTICOS (Envío de estadísticos)
+  comuniRadar = 27,            // TT_COMUNI_RADAR (Comunicación radar)
+  comuniBle = 28,              // TT_COMUNI_BLE (Comunicación BLE)
+  descargaFicherosFlash = 29,  // TT_DESCARGA_FICHEROS_FLASH
+  importacionExportacion = 30, // TT_IMPORTACION_EXPORTACION
+  descargaSubidaFicheros = 31, // TT_DESCARGA_SUBIDA_FICHEROS
+  actualizacionV2 = 32,        // TT_ACTUALIZACION_V2
+}
+
 // --------------------------------------- EnTipoMensaje ---------------------------------------
 export enum EnTipoMensaje {
   noMensaje = 0,                       // TM_SISTEMA_NO_MENSAJE
@@ -179,18 +195,100 @@ export enum EnTipoMensaje {
   rtConfigFinal = 13,                  // TM_SISTEMA_RT_CONFIG_FINAL
 }
 
-// --------------------------------------- EnTipoTrama ---------------------------------------
-export enum EnTipoTrama {
-  omegaPantallaPlaca = 13,     // TT_OMEGA_PANTALLA_PLACA (Pintado de pantallas)
-  depuracion = 14,             // TT_DEPURACION (Tramas depuración)
-  serviciosClaveValor = 23,    // TT_SERVICIOS_CLAVE_VALOR
-  actualizacionServer = 24,    // TT_ACTUALIZACION_SERVER (Actualización remota)
-  sistema = 25,                // TT_SISTEMA (Funciones de sistema)
-  estadisticos = 26,           // TT_ESTADISTICOS (Envío de estadísticos)
-  comuniRadar = 27,            // TT_COMUNI_RADAR (Comunicación radar)
-  comuniBle = 28,              // TT_COMUNI_BLE (Comunicación BLE)
-  descargaFicherosFlash = 29,  // TT_DESCARGA_FICHEROS_FLASH
-  importacionExportacion = 30, // TT_IMPORTACION_EXPORTACION
-  descargaSubidaFicheros = 31, // TT_DESCARGA_SUBIDA_FICHEROS
-  actualizacionV2 = 32,        // TT_ACTUALIZACION_V2
+//jos Otros tipos de mensajes:
+
+// --------------------------------------- TT_OMEGA_PANTALLA_PLACA ---------------------------------------
+export enum EnTmOmegaPantallaPlaca {
+  pidePantalla = 1,                        // TM_pide_pantalla
+  rtPantalla = 2,                          // TM_rt_pantalla
+  enviaEstadistico = 3,                    // TM_envia_estadistico
+  rtEstadistico = 4,                       // TM_rt_estadistico
+  pidePantallaPrincipal = 5,               // TM_pide_pantalla_principal
+  cambiaParametro = 6,                     // TM_cambia_parametro
+  pideEstadisticoPantallaLocal = 7,        // TM_OMEGA_PANTALLA_PLACA_pide_estadistico_pantalla_local
+}
+
+// --------------------------------------- TT_DEPURACION ---------------------------------------
+export enum EnTmDepuracion {
+  noMensaje = 0,                           // TM_DEPURACION_NO_mensaje
+  peticionConsola = 1,                     // TM_DEPURACION_peticion_consola
+  rtPeticionConsola = 2,                   // TM_DEPURACION_rt_peticion_consola
+}
+
+// --------------------------------------- TT_SERVICIOS_CLAVE_VALOR (SCV) ---------------------------------------
+export enum EnTmServiciosClaveValor {
+  peticionServidorFinal = 0,               // TM_SCV_PETICION_SERVIDOR_FINAL
+  rtPeticionServidorFinal = 1,             // TM_SCV_RT_PETICION_SERVIDOR_FINAL
+  peticionFinalServidor = 2,               // TM_SCV_PETICION_FINAL_SERVIDOR
+  rtPeticionFinalServidor = 3,             // TM_SCV_RT_PETICION_FINAL_SERVIDOR
+}
+
+// --------------------------------------- TT_ESTADISTICOS ---------------------------------------
+export enum EnTmEstadisticos {
+  enviaEstadistico = 1,                    // TM_ESTADISTICOS_envia_estadistico
+  rtEstadistico = 2,                       // TM_ESTADISTICOS_rt_estadistico
+}
+
+// --------------------------------------- TT_COMUNI_BLE ---------------------------------------
+export enum EnTmComuniBle {
+  peticionEnviarDatos = 1,                 // TM_COMUNI_BLE_PETICION_ENVIAR_DATOS
+  envioDatos = 2,                          // TM_COMUNI_BLE_ENVIO_DATOS_
+  envioDatosAck = 3,                       // TM_COMUNI_BLE_ENVIO_DATOS_ACK
+}
+
+// --------------------------------------- TT_IMPORTACION_EXPORTACION (v1) ---------------------------------------
+export enum EnTmImportExport {
+  noMensaje = 0,                           // TM_IMPORT_EXPORT_NO_MENSAJE
+  iniciaImportacion = 1,                   // TM_IMPORT_EXPORT_INICIA_IMPORTACION
+  rtIniciaImportacion = 2,                 // TM_IMPORT_EXPORT_RT_INICIA_IMPORTACION
+  datosImport = 3,                         // TM_IMPORT_EXPORT_DATOS_IMPORT
+  rtDatosImport = 4,                       // TM_IMPORT_EXPORT_RT_DATOS_IMPORT
+  inicioExport = 5,                        // TM_IMPORT_EXPORT_INICIO_EXPORT
+  rtInicioExport = 6,                      // TM_IMPORT_EXPORT_RT_INICIO_EXPORT
+  datosExport = 7,                         // TM_IMPORT_EXPORT_DATOS_EXPORT
+  rtDatosExport = 8,                       // TM_IMPORT_EXPORT_RT_DATOS_EXPORT
+  crcFichero = 9,                          // TM_IMPORT_EXPORT_CRC_FICHERO
+  rtCrcFichero = 10,                       // TM_IMPORT_EXPORT_RT_CRC_FICHERO
+  estadoImportacion = 11,                  // TM_IMPORT_EXPORT_ESTADO_IMPORTACION
+  rtEstadoImportacion = 12,                // TM_IMPORT_EXPORT_RT_ESTADO_IMPORTACION
+}
+
+// --------------------------------------- TT_DESCARGA_SUBIDA_FICHEROS (D/S) ---------------------------------------
+export enum EnTmDescargaSubidaFicheros {
+  noMensaje = 0,                           // TM_DESCARGA_FICHEROS_NO_MENSAJE
+  descargaInicia = 1,                      // TM_DESCARGA_FICHEROS_INICIA
+  descargaRtInicia = 2,                    // TM_DESCARGA_FICHEROS_RT_INICIA
+  descargaDatos = 3,                       // TM_DESCARGA_FICHEROS_DATOS
+  descargaRtDatos = 4,                     // TM_DESCARGA_FICHEROS_RT_DATOS
+  subirInicia = 5,                         // TM_SUBIR_FICHEROS_INICIA
+  subirRtInicia = 6,                       // TM_SUBIR_FICHEROS_RT_INICIA
+}
+
+// --------------------------------------- TT_DESCARGA_FICHEROS_FLASH (DFF) ---------------------------------------
+export enum EnTmDff {
+  noMensaje = 0,                           // TM_DFF_NO_MENSAJE
+  // (1) no aparece en el listado
+  borraFlash = 2,                          // TM_DFF_BORRA_FLASH
+  rtBorraFlash = 3,                        // TM_DFF_RT_BORRA_FLASH
+  writeFlash = 4,                          // TM_DFF_WRITE_FLASH
+  readFlash = 5,                           // TM_DFF_READ_FLASH
+  rtReadFlash = 6,                         // TM_DFF_RT_READ_FLASH
+  verificaFichero = 7,                     // TM_DFF_VERIFICA_FICHERO
+  rtVerificaFichero = 8,                   // TM_DFF_RT_VERIFICA_FICHERO
+}
+
+// --------------------------------------- TT_ACTUALIZACION_V2 ---------------------------------------
+export enum EnTmActualizacionV2 {
+  noMensaje = 0,                           // TM_ACTUALIZACION_V2_NO_MENSAJE
+  informacion = 1,                         // TM_ACTUALIZACION_V2_INFORMACION
+  informacionRt = 2,                       // TM_ACTUALIZACION_V2_INFORMACION_RT
+}
+
+// --------------------------------------- TT_IMPORT_EXPORT_V2 ---------------------------------------
+export enum EnTmImportExportV2 {
+  noMensaje = 0,                           // TM_IMPORT_EXPORT_V2_NO_MENSAJE
+  importInfoUltimaCopiaSeguridad = 1,      // TM_IMPORT_INFO_ULTIMA_COPIA_SEGURIDAD
+  importInfoUltimaCopiaSeguridadRt = 2,    // TM_IMPORT_INFO_ULTIMA_COPIA_SEGURIDAD_RT
+  exportInicio = 3,                        // TM_EXPORT_INICIO
+  exportRtInicio = 4,                      // TM_EXPORT_RT_INICIO
 }
