@@ -52,10 +52,14 @@ export class TestController {
 
       const resTempS1 = this.trama.tempS1(25.31416);
       josLogger.info(`✅ Enviada trama temperatura tempS1: 25.31416ºC`);
-      josLogger.info(`Envíos realizados (2 tramas por envío más la presentación inicial): ${++contadorEnvios}`);
+
+      const resMetricas = this.trama.metricas();
+      josLogger.info(`✅ Enviada trama métricas.`);
+
+      josLogger.info(`Envíos realizados (3 tramas por envío más la presentación inicial): ${++contadorEnvios}`);
       josLogger.info('------------------------------');
 
-      if (!resPrese || !resTempS1) clearInterval(timer); // Usamos el propio ID que da esta función para detenerla desde dentro.
+      if (!resPrese || !resTempS1 || !resMetricas) clearInterval(timer); // Usamos el propio ID que da esta función para detenerla desde dentro.
     }, milisegundos);
   }
 
