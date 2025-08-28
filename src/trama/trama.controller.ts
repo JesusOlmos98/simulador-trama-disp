@@ -3,7 +3,7 @@ import { FrameDto, PresentacionDto } from 'src/dto/frame.dto';
 import { josLogger } from 'src/utils/logger';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
 import { readPresentacion, readNodoOrigen, readNodoDestino, readTempC } from 'src/utils/helpersTipado';
-import { defaultPresentacionCTI40 } from 'src/dto/defaultTrama';
+import { defaultPresentacionCTI40, defaultPresentacionOMEGA } from 'src/dto/defaultTrama';
 import { EnTipoEquipo, EnTipoMensaje, EnTipoTrama } from 'src/utils/enums';
 
 @Controller('trama')
@@ -17,7 +17,7 @@ export class TramaController {
   @Post('presentacion')
   async presentacion(@Body() body: unknown) {
     
-    const defaultPres: PresentacionDto = defaultPresentacionCTI40;
+    const defaultPres: PresentacionDto = defaultPresentacionOMEGA;
     
     const pres: PresentacionDto = readPresentacion(body, defaultPres);
     const data = this.tcp.crearDataPresentacion(pres); //done Aquí insertamos la data en la presentación.
@@ -70,7 +70,7 @@ export class TramaController {
   async tempS1(@Body() body?: unknown) {
     josLogger.info('Enviamos tempS1');
 
-    const tempC = readTempC(body, 25.31416);
+    const tempC = readTempC(body, 18.1234);
     const data = this.tcp.crearDataTempS1(tempC);
 
     const frame = this.tcp.crearFrame({

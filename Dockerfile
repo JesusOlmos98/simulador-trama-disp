@@ -50,10 +50,10 @@ COPY --from=build     /app/dist        ./dist
 COPY package.json yarn.lock ./
 
 # Puertos (HTTP Nest y TCP server)
-ENV PORT=8001
+ENV PORT=8002
 ENV DESTINY_PORT=8010
 ENV DESTINY_HOST=127.0.0.1
-EXPOSE 8001 8010
+EXPOSE 8002 8010
 
 USER app
 CMD ["node", "dist/src/main.js"]
