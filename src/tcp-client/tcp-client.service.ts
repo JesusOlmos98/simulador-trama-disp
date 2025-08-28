@@ -9,7 +9,7 @@ import { EnvConfiguration } from 'config/app.config';
 
 const env = EnvConfiguration();
 
-const HOST = '127.0.0.1';
+const DESTINY_HOST =  env.destinyHost ?? '127.0.0.1';
 const DESTINY_PORT = env.destinyPort ?? 8010; // 8020 o 8010;
 
 // Constantes protocolo
@@ -44,8 +44,8 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   private connect() {
 
     this.socket = new Socket();
-    this.socket.connect(DESTINY_PORT, HOST, () => {
-      josLogger.info(`🔌 Cliente TCP conectado a ${HOST}:${DESTINY_PORT}`);
+    this.socket.connect(DESTINY_PORT, DESTINY_HOST, () => {
+      josLogger.info(`🔌 Cliente TCP conectado a ${DESTINY_HOST}:${DESTINY_PORT}`);
     });
     this.socket.on('data', d => {
       josLogger.debug('📨 RX raw: ' + d.toString());

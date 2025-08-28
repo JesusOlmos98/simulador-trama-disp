@@ -3,8 +3,8 @@ import { FrameDto, PresentacionDto } from 'src/dto/frame.dto';
 import { josLogger } from 'src/utils/logger';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
 import { readPresentacion, readNodoOrigen, readNodoDestino, readTempC } from 'src/utils/helpersTipado';
-import { defaultPresentacion } from 'src/dto/defaultTrama';
-import { EnTipoMensaje, EnTipoTrama } from 'src/utils/enums';
+import { defaultPresentacionCTI40 } from 'src/dto/defaultTrama';
+import { EnTipoEquipo, EnTipoMensaje, EnTipoTrama } from 'src/utils/enums';
 
 @Controller('trama')
 export class TramaController {
@@ -16,22 +16,23 @@ export class TramaController {
    */
   @Post('presentacion')
   async presentacion(@Body() body: unknown) {
-    josLogger.info('Enviamos PRESENTACION');
-
-    const defaultPres: PresentacionDto = defaultPresentacion;
-
+    
+    const defaultPres: PresentacionDto = defaultPresentacionCTI40;
+    
     const pres: PresentacionDto = readPresentacion(body, defaultPres);
     const data = this.tcp.crearDataPresentacion(pres); //done Aquí insertamos la data en la presentación.
-
+    
     const frame: FrameDto = this.tcp.crearFrame({
       nodoOrigen: readNodoOrigen(body, 1),
       nodoDestino: readNodoDestino(body, 0),
-      tipoTrama: 25, // TT_SISTEMA
-      tipoMensaje: 1,  // TM_SISTEMA_TX_PRESENTACION
+      tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
+      tipoMensaje: EnTipoMensaje.txPresentacion,  // TM_SISTEMA_TX_PRESENTACION
       data,
     });
 
+    
     const enviarFrame = this.tcp.enviarFrame(frame);
+    josLogger.info(`Enviamos PRESENTACION ${(EnTipoEquipo[pres.tipoEquipo].toUpperCase())}`);
     if (!enviarFrame) return false;
     else return enviarFrame;
     // return this.tcp.enviarFrame(frame);
@@ -43,18 +44,18 @@ export class TramaController {
    */
   @Post('presencia')
   async presencia(@Body() body?: unknown) {
-    josLogger.info('Enviamos PRESENCIA');
-
+    
     const data = this.tcp.crearDataPresencia(); // vacío
     const frame = this.tcp.crearFrame({
       nodoOrigen: readNodoOrigen(body, 1),
       nodoDestino: readNodoDestino(body, 0),
-      tipoTrama: 25, // TT_SISTEMA
-      tipoMensaje: 4,  // TM_SISTEMA_TX_PRESENCIA
+      tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
+      tipoMensaje: EnTipoMensaje.txPresencia,  // TM_SISTEMA_TX_PRESENCIA
       data,
     });
-
+    
     const enviarFrame = this.tcp.enviarFrame(frame);
+    josLogger.info(`Enviamos PRESENCIA`);
     if (!enviarFrame) return false;
     else return enviarFrame;
     // return this.tcp.enviarFrame(frame);
@@ -75,7 +76,7 @@ export class TramaController {
     const frame = this.tcp.crearFrame({
       nodoOrigen: readNodoOrigen(body, 1),
       nodoDestino: readNodoDestino(body, 0),
-      tipoTrama: 25, // TT_SISTEMA
+      tipoTrama: EnTipoTrama.estadisticos, // TT_SISTEMA
       tipoMensaje: 0,  // Demo / reservado
       data,
     });

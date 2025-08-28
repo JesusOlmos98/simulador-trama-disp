@@ -8,11 +8,12 @@ export const josLogger = pino({
       levelFirst: true,
       translateTime:'SYS:mm/dd/yyyy  HH:MM:ss.l',
       // messageKey: 'msg',
-      include:'level, time', //,hostname,pid,
+      include:'level,time', //,hostname,pid,
       singleLine: false,
+
     }    
   },
-  level: 'info', // 'info' | 'debug' | 'trace' | 'warn' | 'error' | 'fatal'
+  level: 'info', //debug
 })
 
 // ** Niveles que soporta pino **

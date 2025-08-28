@@ -1,7 +1,7 @@
 import { Controller, Post, Query } from '@nestjs/common';
 import { josLogger } from 'src/utils/logger';
 import { TramaController } from 'src/trama/trama.controller';
-import { defaultPresentacion } from 'src/dto/defaultTrama';
+import { defaultPresentacionCTI40 } from 'src/dto/defaultTrama';
 import { PresentacionDto } from 'src/dto/frame.dto';
 import { EnTipoEquipo } from 'src/utils/enums';
 
@@ -26,7 +26,7 @@ export class TestController {
     josLogger.info('Enviamos todasTramasCti40:');
     josLogger.info('------------------------------');
 
-    const presentacion: PresentacionDto = defaultPresentacion;
+    const presentacion: PresentacionDto = defaultPresentacionCTI40;
     presentacion.tipoEquipo = EnTipoEquipo.cti40;
 
 
