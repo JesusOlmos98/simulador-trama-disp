@@ -1,10 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { FrameDto, PresentacionDto } from 'src/dto/frame.dto';
 import { josLogger } from 'src/utils/logger';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
 import { readPresentacion, readNodoOrigen, readNodoDestino, readTempC } from 'src/utils/helpersTipado';
-import { defaultPresentacionCTI40, defaultPresentacionOMEGA } from 'src/dto/defaultTrama';
-import { EnTipoEquipo, EnTipoMensaje, EnTipoTrama } from 'src/utils/enums';
+import { defaultPresentacionCTI40 } from 'src/dto/defaultTrama';
+import { FrameDto } from 'src/dto/frame.dto';
+import { PresentacionDto } from 'src/dto/tt_sistema.dto';
+import { EnTipoTrama, EnTipoEquipo, EnTmSistema, EnTmEstadisticos } from 'src/utils/enums';
 
 @Controller('trama')
 export class TramaController {
@@ -17,7 +18,7 @@ export class TramaController {
   @Post('presentacion')
   async presentacion(@Body() body: unknown) {
     
-    const defaultPres: PresentacionDto = defaultPresentacionOMEGA;
+    const defaultPres: PresentacionDto = defaultPresentacionCTI40;
     
     const pres: PresentacionDto = readPresentacion(body, defaultPres);
     const data = this.tcp.crearDataPresentacion(pres); //done Aquí insertamos la data en la presentación.
@@ -26,7 +27,7 @@ export class TramaController {
       nodoOrigen: readNodoOrigen(body, 1),
       nodoDestino: readNodoDestino(body, 0),
       tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
-      tipoMensaje: EnTipoMensaje.txPresentacion,  // TM_SISTEMA_TX_PRESENTACION
+      tipoMensaje: EnTmSistema.txPresentacion,  // TM_SISTEMA_TX_PRESENTACION
       data,
     });
 
@@ -50,7 +51,7 @@ export class TramaController {
       nodoOrigen: readNodoOrigen(body, 1),
       nodoDestino: readNodoDestino(body, 0),
       tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
-      tipoMensaje: EnTipoMensaje.txPresencia,  // TM_SISTEMA_TX_PRESENCIA
+      tipoMensaje: EnTmSistema.txPresencia,  // TM_SISTEMA_TX_PRESENCIA
       data,
     });
     
@@ -70,7 +71,7 @@ export class TramaController {
   async tempS1(@Body() body?: unknown) {
     josLogger.info('Enviamos tempS1');
 
-    const tempC = readTempC(body, 18.1234);
+    const tempC = readTempC(body, 25.31416);
     const data = this.tcp.crearDataTempS1(tempC);
 
     const frame = this.tcp.crearFrame({
@@ -100,8 +101,8 @@ export class TramaController {
     const frame = this.tcp.crearFrame({
       nodoOrigen: nodoOrg,
       nodoDestino: nodoDest,
-      tipoTrama: EnTipoTrama.sistema,             // TT_SISTEMA
-      tipoMensaje: EnTipoMensaje.txMetricas,      // TM_SISTEMA_TX_METRICAS (elige un código libre)
+      tipoTrama: EnTipoTrama.estadisticos,             // TT_SISTEMA
+      tipoMensaje: EnTmEstadisticos.enviaEstadistico,      // TM_SISTEMA_TX_METRICAS (elige un código libre)
       data,
     });
 

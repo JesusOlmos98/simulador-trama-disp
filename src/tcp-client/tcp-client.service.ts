@@ -1,9 +1,10 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { Socket } from 'node:net';
 import { josLogger } from 'src/utils/logger';
-import { FrameDto, PresentacionDto } from 'src/dto/frame.dto';
 import { crc16IBM } from 'src/utils/crc';
 import { EnvConfiguration } from 'config/app.config';
+import { FrameDto } from 'src/dto/frame.dto';
+import { PresentacionDto } from 'src/dto/tt_sistema.dto';
 
 //! CAPA 0
 

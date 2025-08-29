@@ -1,5 +1,7 @@
 import { EnTipoEquipo } from "src/utils/enums";
-import { PresentacionDto } from "./frame.dto";
+import { PresentacionDto } from "./tt_sistema.dto";
+
+// * Usados como ejemplo rápido para enviar tramas.
 
 export const defaultPresentacionCTI40: PresentacionDto = {
     nVariables: 6,
@@ -20,7 +22,3 @@ export const defaultPresentacionOMEGA: PresentacionDto = {
     claveEquipo: 0,
     versionHw: 1,
 };
-
-// export const defaultFrame = (data: Buffer | PresentacionDto | PresenciaDto | EstadisticoDto) => {
-
-// }

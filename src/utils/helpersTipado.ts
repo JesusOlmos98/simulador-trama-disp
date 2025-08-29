@@ -1,7 +1,8 @@
 
 // Helpers de tipado
 
-import { PresentacionDto } from "src/dto/frame.dto";
+import { PresentacionDto } from "src/dto/tt_sistema.dto";
+
 
 export function isObject(v: unknown): v is Record<string, unknown> {
     return typeof v === 'object' && v !== null;

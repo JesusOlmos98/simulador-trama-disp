@@ -1,4 +1,5 @@
 import { EnTipoDato, EnEstadisTipoRegistro } from "src/utils/enums";
+import { PresentacionDto } from "./tt_sistema.dto";
 
 export class FrameDto {
 
@@ -16,18 +17,6 @@ export class FrameDto {
 
 }
 
-export class PresentacionDto {
-
-    nVariables: number;
-    versionPresentacion: number;
-    mac: number;
-    versionEquipo: number;
-    tipoEquipo: number;
-    claveEquipo: number;
-    versionHw: number;
-
-}
-
 export class PresenciaDto {
 
     presencia: number; // Puede ser cualquier cosa
@@ -35,17 +24,28 @@ export class PresenciaDto {
 }
 
 //jos EstadisticoDto:
-export class FechaDto {
-    dia: number;      // uint8
-    mes: number;      // uint8
-    anio: number;     // uint16 (o uint8 según tu protocolo)
-}
-
-export class TiempoDto {
-    hora: number;     // uint8
-    min: number;      // uint8
-    seg: number;      // uint8
-}
+export enum DiasSemana {
+     SABADO = 0,
+     DOMINGO = 1,
+     LUNES = 2,
+     MARTES = 3,
+     MIERCOLES = 4,
+     JUEVES = 5,
+     VIERNES = 6
+ }
+ 
+ export interface Fecha {
+     dia: number;
+     mes: number;
+     anyo: number;
+     diaSemana?: DiasSemana;                                                                 //Día de la semana opcional
+ }
+ 
+ export interface Tiempo {
+     hora: number;
+     min: number;
+     seg: number;
+ }
 
 export class EstadisticoDto {
     mac: number;                              // uint32_t
@@ -61,8 +61,8 @@ export class EstadisticoDto {
     res3: number;
     res4: number;
     
-    fecha: FechaDto;                          // Fecha
-    hora: TiempoDto;                          // Tiempo
+    fecha: Fecha;                          // Fecha
+    hora: Tiempo;                          // Tiempo
     
     res5: number;                             // uint8  // ! reservado
     numeroDatos: number;                      // uint8  // ! número de bloques que siguen

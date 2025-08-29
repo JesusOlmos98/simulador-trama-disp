@@ -162,7 +162,7 @@ export enum EnTipoDato {
 }
 
 // --------------------------------------- EnTipoTrama ---------------------------------------
-export enum EnTipoTrama {
+export enum EnTipoTrama { // TT
   omegaPantallaPlaca = 13,     // TT_OMEGA_PANTALLA_PLACA (Pintado de pantallas)
   depuracion = 14,             // TT_DEPURACION (Tramas depuración)
   serviciosClaveValor = 23,    // TT_SERVICIOS_CLAVE_VALOR
@@ -177,27 +177,13 @@ export enum EnTipoTrama {
   actualizacionV2 = 32,        // TT_ACTUALIZACION_V2
 }
 
-// --------------------------------------- EnTipoMensaje ---------------------------------------
-export enum EnTipoMensaje {
-  noMensaje = 0,                       // TM_SISTEMA_NO_MENSAJE
-  txPresentacion = 1,                  // TM_SISTEMA_TX_PRESENTACION
-  rtPresentacion = 2,                  // TM_SISTEMA_RT_PRESENTACION
-  rtAckTramaSinRespuesta = 3,          // TM_SISTEMA_RT_ACK_TRAMA_SIN_RESPUESTA
-  txPresencia = 4,                     // TM_SISTEMA_TX_PRESENCIA
-  rtPresencia = 5,                     // TM_SISTEMA_RT_PRESENCIA
-  txUrlDescargaOta = 6,                // TM_SISTEMA_TX_URL_DESCARGA_OTA
-  rtUrlDescargaOta = 7,                // TM_SISTEMA_RT_URL_DESCARGA_OTA
-  txEstadoDispositivo = 8,             // TM_SISTEMA_TX_ESTADO_DISPOSITIVO
-  rtEstadoDispositivo = 9,             // TM_SISTEMA_RT_ESTADO_DISPOSITIVO
-  txProgresoActualizacion = 10,        // TM_SISTEMA_TX_PROGRESO_ACTUALIZACION
-  rtProgresoActualizacion = 11,        // TM_SISTEMA_RT_PROGRESO_ACTUALIZACION
-  txConfigFinal = 12,                  // TM_SISTEMA_TX_CONFIG_FINAL
-  rtConfigFinal = 13,                  // TM_SISTEMA_RT_CONFIG_FINAL
-  txMetricas = 14,                  // TM_SISTEMA_TX_METRICAS
-  rtMetricas = 15,                  // TM_SISTEMA_RT_METRICAS
-}
-
-//jos Otros tipos de mensajes:
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX TM (TipoMensaje) XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 // --------------------------------------- TT_OMEGA_PANTALLA_PLACA ---------------------------------------
 export enum EnTmOmegaPantallaPlaca {
@@ -293,4 +279,256 @@ export enum EnTmImportExportV2 {
   importInfoUltimaCopiaSeguridadRt = 2,    // TM_IMPORT_INFO_ULTIMA_COPIA_SEGURIDAD_RT
   exportInicio = 3,                        // TM_EXPORT_INICIO
   exportRtInicio = 4,                      // TM_EXPORT_RT_INICIO
+}
+
+/** Tipos de mensaje dentro de TT_SISTEMA */
+export enum EnTmSistema {
+  noMensaje                   = 0,
+  txPresentacion              = 1,
+  rtPresentacion              = 2,
+  rtAckTramaSinRespuesta      = 3,
+  txPresencia                 = 4,
+  rtPresencia                 = 5,
+  txUrlDescargaOta            = 6,
+  rtUrlDescargaOta            = 7,
+  txEstadoDispositivo         = 8,
+  rtEstadoDispositivo         = 9,
+  txProgresoActualizacion     = 10,
+  rtProgresoActualizacion     = 11,
+  txConfigFinal               = 12,
+  rtConfigFinal               = 13,
+}
+
+/** EN_GCSPA_EVENTO_ACTUALIZACION_SERVER (doc) */
+export enum EnGcspaEventoActualizacionServer {
+  noDefinido                         = 0,
+  iniciandoDescarga                  = 1,
+  verificandoFichero                 = 2,
+  descargaFicheroOk                  = 3,
+  descargaCompletadaOkActualizacion  = 4,
+  errorConexionServer                = 5,
+  errorDescargaFichero               = 6,
+  errorDesconocido                   = 7,
+  errorFlash                         = 8,
+}
+
+/** SCV: tipo de paquete (petición / respuesta). Fuente: “Servicios clave valor – Opción 1”. */
+export enum EnScvTipo {
+  peticion = 0,   // ENUM_SCV_TIPO_PETICION
+  respuesta = 1,  // ENUM_SCV_TIPO_RESPUESTA
+}
+
+/** Import/Export v1 – RT inicio importación. Fuente: 1.4.2. */
+export enum EnImportExportRtInicioImportacion {
+  ok = 0,
+  error = 1,
+}
+
+/** Import/Export v1 – RT inicio exportación. Fuente: 1.4.6. */
+export enum EnImportExportRtInicioExportacion {
+  ok = 0,
+  nombreFicheroExiste = 1,
+  usbNoDetectado = 2,
+  noTienePermisos = 3,
+  usbSinEspacioSuficiente = 4,
+}
+
+/** OK/ERROR genérico. Aparece en varios apartados (CRC, info última copia, etc.). Fuente: 1.4.10, 1.8.2, 1.8.4. */
+export enum CtiOkError {
+  ok = 0,     // OK_c
+  error = 1,  // ERROR_c
+}
+
+/** Estado del proceso de importación. Fuente: 1.4.11. */
+export enum EnImportExportEstadoProcesoImportacion {
+  noIniciado = 0,
+  iniciando = 1,
+  errorBorradoFlash = 2,
+  noUsb = 3,
+  sinPermisos = 4,
+  noRespondeDispositivo = 5,
+  ficheroVersionSuperiorNecesitaActualizar = 6,
+  versionImportacionDiferente = 7,
+  tipoEquipoDiferenteFichero = 8,
+  errorEeprom = 9,
+  okCompletada = 10,
+  errorDescarga = 11,
+}
+
+/** Descarga de ficheros – RT inicio. Fuente: 1.5.2. */
+export enum EnDescargaFicheroRtInicio {
+  ficheroListo = 0,
+  error = 1,
+  procesandoFicheroEspere = 2, // reintentar hasta que esté listo
+}
+
+/** Subida de ficheros – RT inicio. Fuente: 1.5.7. */
+export enum EnSubirFicheroRtInicio {
+  ok = 0,
+  error = 1,
+  procesandoFicheroEspere = 2, // reintentar
+}
+
+/** Subida de ficheros – estado CRC. Fuente: 1.5.11. */
+export enum EnSubirFicheroCrc {
+  ok = 0,
+  error = 1,
+  calculando = 2,
+}
+
+/** Actualización V2 – rutas de artefactos. Fuente: 1.7.1. */
+export enum EnArRutaActualizacion {
+  produccion = 0,
+  preProduccion = 1,
+  soporteProduccion = 2,
+}
+
+/** Import/Export V2 – tipo de exportación. Fuente: 1.8.6. */
+export enum EnTipoExportacion {
+  copiaSeguridad = 0,
+  personalizada = 1,
+}
+
+/** Omega UI – catálogo de objetos. Fuente: listado ST_nombre_objetos (1. Objetos pinta pantallas OMEGA). */
+export enum EnOmegaObjeto {
+  vacio = 0,
+  plantilla = 1,
+  encabezado = 2,
+  lineaTextVarVar = 3,
+  lineaTextVar = 4,
+  lineaText = 5,
+  lineaInfoTextVar = 6,
+  lineaInfoTextText = 7,
+  editVariables = 8,
+  cambioParametro = 9,
+  camposMultiseleccion = 10,
+
+  idUnicoEdicion = 12,
+  pantallaRespuestaTrama = 13,
+
+  tablaConfig = 14,
+  tablaDatos = 15,
+  lineaTextText = 16,
+  textoConfirmacionCambioVariable = 17,
+  lineaTextTextVarVar = 18,
+  lineaInfoTextTextVarVar = 19,
+
+  lineaGrafica = 20,
+  ventilacionGrupoGrafico = 21,
+  ventilacionGrupoGraficoEdit = 22,
+  multiselecVentilacionGrupo = 23,
+
+  paginaMasMenos = 25,
+  tablaColorFilas = 26,
+  tablaNavegacionFilas = 27,
+  tablaDatosSinEdicion = 28,
+  cambioParametroVentilacionGrupo = 29,
+  trasEditPantallaAtras = 30,
+  encabezadoEditIcono = 31,
+  ptrObjetoMasTamano = 32,
+
+  editVariablesString = 33,
+  cambioParametroString = 34,
+
+  lineaTextString = 35,
+  varIndividual = 36,
+  varIndividualNavegacionOEdit = 37,
+
+  encabezado3Iconos = 38,
+
+  etapasVentiladoresVisual = 39,
+  popup = 40,
+  vineta = 41,
+  graficaProgresionRangos = 42,
+  panelControlComponentes = 43, // el doc tiene una errata “componenetes”
+  graficaProgresionIcon = 44,
+  representacionSondas = 45,
+
+  encabezado4Iconos = 46,
+  etapasVentiladoresVisualSize = 47,
+  lineaTextTextVarVarVar = 48,
+  lineaInfoTextVarVarVar = 49,
+  panelControlComponentesMotor = 50,
+  refrescoPantalla = 51,
+  camposMultiseleccionConTextoCambio = 52,
+  claveParaEntrar = 53,
+  pintaIconoBloquearEquipo = 54,
+  popupAccion = 55,
+  descripcionPantallaCambioParametro = 56,
+  lineaTextTextEbusFinal = 57,
+  stringPlantilla = 58,
+  cambiaParametroTituloPersonalizado = 59,
+  lineaTextTextText = 60,
+  lineaTextTextVar = 61,
+  libreIcon = 62,
+  libreTexto = 63,
+  libreVariable = 64,
+  libreLineas = 65,
+  barraAccesoDirectoIcon = 66,
+  textoConcatenadoPlantilla = 67,
+  cambioParametroConcatenado = 68,
+  stringPlantillaV3 = 69,
+
+  tablaDinamicaInit = 70,
+  tablaDinamicaFila = 71,
+
+  posXyLibreResolucion = 72, // el doc escribe “RESOSUCION” en una parte
+  posXyLibreIcon = 73,
+  posXyLibreTexto = 74,
+  posXyLibreVariable = 75,
+  posXyLibreLineas = 76,
+
+  // ! Conflicto en el documento: para el valor 77 se citan dos objetos distintos.
+  varBuffer = 77,                    // listado global (pág. de catálogo)
+  pintaEstadisticosColumna = 77,     // sección 1.65 OBJ_PINTA_ESTADISTICOS_COLUMNA  // ! El doc duplica el ID 77.
+
+  ptrObjetoMedioTamano = 78,
+
+  nombreFin = 1000, // separador de rango
+}
+
+/** OBJ_POPUP_ACCION – acciones del popup. Fuente: 1.47. */
+export enum EnPopupAccion {
+  noAccion = 0,
+  resetTotalEquipo = 1,
+  reiniciaEquipo = 2,
+}
+
+/** Objetos libres (icono/texto/variable/líneas) – acciones. Fuente: 1.61, 1.62, 1.63, 1.64. */
+export enum EnAccionesObjetoLibre {
+  sinAccion = 0,
+  parpadea = 1,
+}
+
+/** Objetos libres (texto/variable) – justificación. Fuente: 1.62, 1.63. */
+export enum EnJustificacionObjetoLibre {
+  izquierda = 0,
+  derecha = 1,
+  centro = 2,
+}
+
+/** OBJ_POS_XY_LIBRE_LINEAS – tipo de gráfico. Fuente: 1.64. */
+export enum EnTipoGraficoLineas {
+  linea = 0,
+  rectangulo = 1,
+}
+
+/** OBJ_PINTA_ESTADISTICOS_COLUMNA – tipo de columna. Fuente: 1.65. */
+export enum EnTipoColumnaEstadisticos {
+  fecha = 0,
+  hora = 1,
+  diaCrianza = 2,
+  iconoNavegacion = 3,
+  coleccionIconos = 4,
+  coleccionTextos = 5,
+  estadistico = 6,
+  idCrianza = 7,
+  fechaHora = 8,
+}
+
+/** OBJ_TABLA_DINAMICA_INIT – flags de propiedades. Fuente: 1.58. */
+export enum EnTablaDinamicaPropiedades {
+  filasNavegables = 0x0001,
+  filasConColor = 0x0002,
+  filasDatosConUnidades = 0x0004,
 }
