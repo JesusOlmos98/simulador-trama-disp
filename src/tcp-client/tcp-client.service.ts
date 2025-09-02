@@ -1,17 +1,15 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { Socket } from 'node:net';
-import { josLogger } from 'src/utils/logger';
+import { josLogger } from 'src/utils/josLogger';
 import { crc16IBM } from 'src/utils/crc';
 import { EnvConfiguration } from 'config/app.config';
 import { Fecha, FrameDto, Tiempo } from 'src/dto/frame.dto';
 import { ConfigFinalTxDto, EstadoDispositivoTxDto, PresentacionDto, ProgresoActualizacionTxDto, UrlDescargaOtaTxDto } from 'src/dto/tt_sistema.dto';
-import { PeticionConsolaDto, RtPeticionConsolaDto } from 'src/dto/tt_depuracion.dto';
-import { EnScvTipo, EnTipoDato } from 'src/utils/enums';
-import { ScvDto } from 'src/dto/tt_scv.dto';
-import { encodeScvValor } from 'src/utils/helpersTipado';
-import { EstadisticoValorDto, EstadisticoDato } from 'src/dto/tt_estadisticos.dto';
+import { PeticionConsolaDto } from 'src/dto/tt_depuracion.dto';
 import { defaultDataTempSonda1 } from 'src/dto/defaultTrama';
-import { getDataSection } from 'src/utils/get';
+import { getDataSection, getTipoMensaje, getTipoTrama, hexDump } from 'src/utils/get';
+import { EnTipoTrama, EnTmEstadisticos } from 'src/utils/enums';
+import { ACK_TTL_MS } from 'src/utils/helpersTipado';
 
 //! CAPA 0
 
@@ -28,17 +26,22 @@ const START = Buffer.from(START_ARR);
 const END = Buffer.from(END_ARR);
 
 const PROTO_VERSION = 2; // según doc
-const TT_SISTEMA = 25;   // Tipo de trama SISTEMA
-const TM_SISTEMA_TX_PRESENTACION = 1;
-const TM_SISTEMA_TX_PRESENCIA = 4;
 
 // Máximo datos (no frame completo): 2480 bytes
 const MAX_DATA_BYTES = 2480; // ver protocolo
 const MAX_FRAME_BYTES = 2500; // frame completo (aprox)
 
+const ACK_TIMEOUT_MS = 6000;
+
 @Injectable()
 export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   private socket: Socket | null = null;
+
+  // --- Control de estadísticos en vuelo ---
+  private statIdSecond = 0;                   // segundo (epoch) del último ID generado
+  private statIdCounter = 0;                  // contador 0..255 dentro del segundo
+  private pendingStats = new Map<number, { ts: number }>(); // id -> timestamp envío
+  private receivedAcks = new Set<number>();
 
   onModuleInit() {
     this.connect();
@@ -48,29 +51,88 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     this.socket?.destroy();
   }
 
+  /** Genera un identificador_unico_dentro_del_segundo (0..255) y hace wrap por segundo. */
+  public nextStatId(): number {
+    const sec = Math.floor(Date.now() / 1000);
+    if (sec !== this.statIdSecond) {
+      this.statIdSecond = sec;
+      this.statIdCounter = 0;
+    }
+    const id = this.statIdCounter & 0xFF;
+    this.statIdCounter = (this.statIdCounter + 1) & 0xFF;
+    return id;
+  }
+
+  /** Registra un estadístico pendiente de ACK. */
+  public trackPendingStat(id: number) {
+    this.pendingStats.set(id & 0xFF, { ts: Date.now() });
+  }
+
+  /** Limpia pendientes antiguos para evitar choque entre segundos distintos. */
+  private sweepPendingStats() {
+    const now = Date.now();
+    for (const [id, meta] of this.pendingStats) {
+      if (now - meta.ts > ACK_TTL_MS) {
+        this.pendingStats.delete(id);
+      }
+    }
+  }
+
+  private async delay(ms: number) {
+    return await new Promise<void>(r => setTimeout(r, ms));
+  }
+
   // ------------------------------------------- CONEXIÓN -------------------------------------------
   private connect() {
+
     this.socket = new Socket();
+    // this.socket.setNoDelay(true);
+
     this.socket.connect(DESTINY_PORT, DESTINY_HOST, () => {
       josLogger.debug("env.destinyHost: " + env.destinyHost);
       josLogger.info(`🔌 Cliente TCP conectado a ${DESTINY_HOST}:${DESTINY_PORT}`);
     });
+
     this.socket.on('data', serverResponse => {
-      josLogger.debug('La respuesta (RX) probablemente sea el ACK de la última operación.');
-      josLogger.debug('📨 RX raw: ' + serverResponse.toString());
-      josLogger.debug(`📨 RX len=${serverResponse.length}`);
-      josLogger.debug('📨 RX HEX:\n' + hexDump(serverResponse));
-      josLogger.debug('📨 RX b64: ' + serverResponse.toString('base64') + '\n');
-      const dataACK= getDataSection(serverResponse);
-      josLogger.debug('📨 Data ACK: '+dataACK);
-      // josLogger.debug('📨 Data:\n');
-      // josLogger.debug(dataACK.toString('hex'));
-      // josLogger.debug('📨 Data b64:\n');
-      // josLogger.debug(dataACK.toString('base64'));
-      // josLogger.debug('📨 Data ASCII:\n');
-      // josLogger.debug(dataACK.toString('ascii'));
+
+      try {
+        const tt = getTipoTrama(serverResponse);
+        const tm = getTipoMensaje(serverResponse);
+
+        josLogger.debug('La respuesta (RX) probablemente sea el ACK de la última operación.');
+        josLogger.debug('📨 RX raw: ' + serverResponse.toString());
+        josLogger.debug(`📨 RX len=${serverResponse.length}`);
+        josLogger.debug('📨 RX HEX:\n' + hexDump(serverResponse));
+        josLogger.debug('📨 RX b64: ' + serverResponse.toString('base64'));
+        const dataACK = getDataSection(serverResponse);
+        josLogger.debug('📨 Data ACK: ' + dataACK);
+        josLogger.debug('📨 Data ACK b64: ' + dataACK.toString('base64'));
+        josLogger.debug('📨 Data ACK HEX: ' + dataACK.toString('hex'));
+        josLogger.debug('📨 RX len=' + serverResponse.length);
+
+        if (tt === EnTipoTrama.estadisticos && tm === EnTmEstadisticos.rtEstadistico) {
+          const dataACK = getDataSection(serverResponse);
+          const ackId = dataACK.readUInt8(dataACK.length - 1);
+
+          this.receivedAcks.add(ackId & 0xFF);                 // lo marca como recibido
+          josLogger.info(`✅ ACK estadístico id=${ackId} recibido`);
+
+          // (opcional) si mantienes tus métricas antiguas:
+          if (this.pendingStats.has(ackId)) this.pendingStats.delete(ackId);
+
+          this.sweepPendingStats();
+          return; // ya tratado
+
+        }
+
+      } catch (e) {
+        josLogger.error('Error procesando RX: ' + (e as Error).message);
+      }
+
     });
+
     this.socket.on('error', e => josLogger.error('❗ Socket error: ' + e.message));
+
     this.socket.on('close', () => {
       josLogger.error("env.destinyHost: " + env.destinyHost);
       josLogger.error("env.destinyPort: " + env.destinyPort);
@@ -93,9 +155,9 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     return { bytes: buf.length, hex: buf.toString('hex') };
   }
 
-  //* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  //* XXXXXXXXXXXXXX Aquí se serializan los datos a enviar (metiéndole el respectivo objeto) XXXXXXXXXXXXXX
-  //* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  //* -----------------------------------------------------------------------------------------------------
+  //* -------------- Aquí se serializan los datos a enviar (metiéndole el respectivo objeto) --------------
+  //* -----------------------------------------------------------------------------------------------------
 
   // ------------------------------------------- BUILDERS -------------------------------------------
   /** Builder genérico de FrameDto a partir de parámetros sueltos, crea el frame. */
@@ -151,30 +213,42 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     return Buffer.concat([start, header, datosBuf, crcBuf, end]);
   }
 
-  /** Serializa un FrameDto (creado con crearFrame) a Buffer (Little Endian) */
-  // serializarFrame(f: FrameDto): Buffer {
-  //   const start = f.inicioTrama;
-  //   const end = f.finTrama;
+  /** Espera hasta timeout a que llegue el ACK con ese id. */
+  private async waitAck(id: number, timeoutMs = ACK_TIMEOUT_MS): Promise<void> {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      if (this.receivedAcks.has(id & 0xFF)) {
+        this.receivedAcks.delete(id & 0xFF); // lo consumimos
+        return; // ACK encontrado
+      }
+      await this.delay(50); // intervalo de comprobación
+    }
+    throw new Error(`ACK timeout id=${id}`);
+  }
 
-  //   const header = Buffer.alloc(1 + 1 + 2 + 2 + 1 + 1 + 2);
-  //   let offset = 0;
-  //   header.writeUInt8(f.versionProtocolo, offset); offset += 1;
-  //   header.writeUInt8(f.reserva ?? 0, offset); offset += 1;
-  //   header.writeUInt16LE(f.nodoOrigen, offset); offset += 2;
-  //   header.writeUInt16LE(f.nodoDestino, offset); offset += 2;
-  //   header.writeUInt8(f.tipoTrama, offset); offset += 1;
-  //   header.writeUInt8(f.tipoMensaje, offset); offset += 1;
-  //   header.writeUInt16LE(f.longitud, offset); offset += 2;
+  /** Envía un estadístico y espera su ACK; si no llega en 6s, reintenta el MISMO frame. */
+  public async enviarEstadisticoYEsperarAck(id: number, frame: FrameDto): Promise<boolean> {
+    // reintentos indefinidos; si quieres límite, añade un contador
+    while (true) {
+      this.trackPendingStat(id); // opcional: telemetría
 
-  //   const datosBuf = Buffer.isBuffer(f.datos) ? f.datos : Buffer.alloc(0); // ! si alguien dejó un DTO aquí por error, mandamos vacío
+      const res = this.enviarFrame(frame);
+      if (!res) {
+        josLogger.error(`❌ Fallo al enviar frame de estadístico id=${id}`);
+        await this.delay(200); // evita bucles calientes
+        continue;
+      }
 
-  //   // CRC-16 Modbus sobre header+datos (placeholder)
-  //   const crc = Buffer.alloc(2);
-  //   const crcVal = crc16IBM(Buffer.concat([header, datosBuf]));
-  //   crc.writeUInt16LE(crcVal, 0);
+      try {
+        await this.waitAck(id, ACK_TIMEOUT_MS);
+        return true; // ACK correcto recibido
+      } catch (e) {
+        josLogger.warn(`⏳ Timeout ACK (${ACK_TIMEOUT_MS}ms) para estadístico id=${id} → reintentando MISMO frame…`);
+        // loop: reintenta mismo frame con mismo id
+      }
+    }
+  }
 
-  //   return Buffer.concat([start, header, datosBuf, crc, end]);
-  // }
 
   // ------------------------------------------- PAYLOADS -------------------------------------------
 
@@ -259,19 +333,6 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
-  /** Demo: cuerpo con una temperatura uint32 (x100) */
-  // crearDataTempS1(tempC?: number) {
-  // const data = Buffer.alloc(4);
-  // const raw = Math.round(tempC * 100);
-  // data.writeUInt32LE(raw, 0);
-
-  // const data = defaultDataTempSonda1;
-  // return data;
-  // }
-
-  // Convenio local: fecha -> yyyymmdd (uint32 LE), hora -> segundos del día (uint32 LE)
-  // tipoDato (cabecera) = 47 (0x2F)
-
   /** Serializa los datos de una temperatura a buffer, es decir, 
    * coge todos los objetos y subobjetos de tt_estadisticos.dto, 
    * incluyendo los tipo Fecha y Tiempo y los serializa para obtener 
@@ -335,55 +396,6 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     return data;
   }
 
-  // -------------------------------------------------- OPCIONAL: helper para empaquetar en tu EnviaEstadisticoDto.datos[] --------------------------------------------------
-  // Este helper transforma un "EstadisticoValorDto" en el array de bloques (tipo_dato, size, dato[])
-  // que pide TM_ESTADISTICOS_envia_estadistico. Útil para temperaturas.
-  serializarDatosFromEstadisticoValor(e: EstadisticoValorDto): EstadisticoDato[] {
-    const { valorTipo = EnTipoDato.float } = e;
-
-    // pequeñas utilidades para empaquetar LE:
-    const u8 = (n: number) => Buffer.from([n & 0xFF]);
-    const u16 = (n: number) => { const b = Buffer.alloc(2); b.writeUInt16LE(n & 0xFFFF, 0); return b; };
-    const tiempo = (t: Tiempo) => {
-      //* El doc no fija la representación binaria exacta de TD_TIEMPO en esta sección.
-      //* Sugerencia: segundos desde 00:00:00 como uint32 LE (hh*3600+mm*60+ss).
-      const s = ((t.hora | 0) * 3600 + (t.min | 0) * 60 + (t.seg | 0)) >>> 0;
-      const b = Buffer.alloc(4); b.writeUInt32LE(s, 0); return b;
-    };
-
-    // encoder genérico únicamente para tipos usados aquí (uint8, uint16, float, tiempo)
-    const encode = (tipo: EnTipoDato, n: number | Tiempo): Buffer => {
-      switch (tipo) {
-        case EnTipoDato.uint8: return u8(Number(n));
-        case EnTipoDato.uint16: return u16(Number(n));
-        case EnTipoDato.float: { const b = Buffer.alloc(4); b.writeFloatLE(Number(n), 0); return b; }
-        case EnTipoDato.tiempo: return tiempo(n as Tiempo);
-        default:
-          //* Si necesitas más tipos (int16, uint32, etc.), amplía aquí.
-          throw new Error(`Tipo no soportado en este helper: ${tipo}`);
-      }
-    };
-
-    const make = (tipoDato: EnTipoDato, datoBuf: Buffer) => ({
-      tipoDato,
-      sizeDatoByte: datoBuf.length,
-      dato: datoBuf,
-    });
-
-    return [
-      make(EnTipoDato.uint16, encode(EnTipoDato.uint16, e.nombreEstadistico)),               // Nombre estadístico
-      make(EnTipoDato.uint8, encode(EnTipoDato.uint8, e.periodicidad)),                   // Periodicidad
-      make(valorTipo, encode(valorTipo, e.valorMedio)),                     // Valor medio
-      make(valorTipo, encode(valorTipo, e.valorMax)),                       // Valor máx
-      make(valorTipo, encode(valorTipo, e.valorMin)),                       // Valor mín
-      make(EnTipoDato.tiempo, encode(EnTipoDato.tiempo, e.horaValorMax)),                   // Hora valor máx
-      make(EnTipoDato.tiempo, encode(EnTipoDato.tiempo, e.horaValorMin)),                   // Hora valor mín
-      make(EnTipoDato.uint8, encode(EnTipoDato.uint8, e.estado)),                         // Estado (0/1)
-      make(EnTipoDato.uint8, encode(EnTipoDato.uint8, e.unidad)),                         // Unidad (EN_GT_UNIDADES)
-    ];
-  }
-
-
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
@@ -407,6 +419,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     return data;
   }
 
+
   //! En principio supongo que esto sería respuesta del propio servidor.
   // -------------------------------------------------- TM_DEPURACION_rt_peticion_consola --------------------------------------------------
   /** Payload: uint16 identificador_cliente (LE) + bytes UTF-8 de 'datos' */
@@ -428,11 +441,6 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
 
 
 
@@ -497,277 +505,16 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   // }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   /** Cuerpo TM_SISTEMA_TX_METRICAS:
   *  offset 0..7  : sentNs  (u64 LE) -> process.hrtime.bigint()
   *  offset 8..11 : seq     (u32 LE)
   */
-  crearDataMetricas(seq = 0) {
-    const data = Buffer.alloc(12);
-    const sentNs = process.hrtime.bigint();   // reloj monotónico (ns)
-    data.writeBigUInt64LE(sentNs, 0);         // u64 LE
-    data.writeUInt32LE(seq >>> 0, 8);         // u32 LE
-    return data;
-  }
+  // crearDataMetricas(seq = 0) {
+  //   const data = Buffer.alloc(12);
+  //   const sentNs = process.hrtime.bigint();   // reloj monotónico (ns)
+  //   data.writeBigUInt64LE(sentNs, 0);         // u64 LE
+  //   data.writeUInt32LE(seq >>> 0, 8);         // u32 LE
+  //   return data;
+  // }
 
 }
-
-// ------------------------------------------- hexDump -------------------------------------------
-/** Convierte un buffer en texto hexadecimal en columnas. */
-export function hexDump(buf: Buffer, width = 16): string {
-  const hex: string[] = buf.toString('hex').match(/.{1,2}/g) ?? []; // Divide en grupos de 2 bytes
-  const lines: string[] = [];                                       // Aquí irá el resultado
-
-  for (let i = 0; i < hex.length; i += width) {
-    const slice = hex.slice(i, i + width);                          // Toma un "ancho" de bytes
-    lines.push(slice.join(' '));                                    // ok
-  }
-  return lines.join('\n');
-}
-
-
-
-// import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-// import { Socket } from 'node:net';
-// import { josLogger } from 'src/logger';
-
-// //! CAPA 0
-
-// const HOST = '127.0.0.1';
-// const PORT = 8010;
-
-// // === Constantes protocolo ===
-// const START = Buffer.from([0xCC, 0xAA, 0xAA, 0xAA]);
-// const END = Buffer.from([0xCC, 0xBB, 0xBB, 0xBB]);
-
-// const PROTO_VERSION = 2; // según doc
-// const TT_SISTEMA = 25;   // Tipo de trama SISTEMA
-// const TM_SISTEMA_TX_PRESENTACION = 1;
-// const TM_SISTEMA_TX_PRESENCIA = 4;
-
-// // Máximo datos (no frame completo): 2480 bytes
-// const MAX_DATA_BYTES = 2480; // ver sección 1 del doc
-
-// @Injectable()
-// export class TcpClientService implements OnModuleInit, OnModuleDestroy {
-//   private socket: Socket | null = null;
-
-//   onModuleInit() {
-//     this.connect();
-//   }
-//   onModuleDestroy() {
-//     this.socket?.destroy();
-//   }
-
-//   // ------------------------------------------- PRESENTACION -------------------------------------------
-//   private connect() {
-
-//     this.socket = new Socket();
-//     this.socket.connect(PORT, HOST, () => {
-//       josLogger.info(`🔌 Cliente TCP conectado a ${HOST}:${PORT}`);
-//     });
-//     this.socket.on('data', d => {
-//       josLogger.debug('📨 RX raw: ' + d.toString())
-//       josLogger.debug(`📨 RX len=${d.length}`);
-//       josLogger.debug('📨 RX HEX:\n' + hexDump(d));
-//       josLogger.debug('📨 RX b64: ' + d.toString('base64') + '\n');
-//     });
-//     this.socket.on('error', e => josLogger.error('❗ Socket error: ' + e.message));
-//     this.socket.on('close', () => {
-//       josLogger.error('🛑 Conexión cerrada. Reintentando en 1s…');
-//       setTimeout(() => this.connect(), 1000);
-//     });
-
-//   }
-
-//   // ------------------------------------------- PRESENTACION -------------------------------------------
-//   /** Enviar un frame ya montado */
-//   sendFrame(frame: Buffer) {
-//     if (!this.socket || !this.socket.writable) {
-//       throw new Error('Socket no conectado');
-//     }
-//     this.socket.write(frame);
-//     return { bytes: frame.length, hex: frame.toString('hex') };
-//   }
-
-//   // ------------------------------------------- PRESENTACION -------------------------------------------
-//   /** Builder genérico de frame CTI (little-endian) */
-//   buildFrame(params: {
-//     reserved?: number,
-//     originNode: number,
-//     destNode: number,
-//     tipoTrama: number,
-//     tipoMensaje: number,
-//     data: Buffer
-//   }) {
-//     const {
-//       reserved = 0,
-//       originNode,
-//       destNode,
-//       tipoTrama,
-//       tipoMensaje,
-//       data
-//     } = params;
-
-//     if (data.length > MAX_DATA_BYTES) {
-//       throw new Error(`El cuerpo supera ${MAX_DATA_BYTES} bytes`);
-//     }
-
-//     // Encabezado variable (después del START)
-//     const header = Buffer.alloc(1 + 1 + 2 + 2 + 1 + 1 + 2); // ver sección 1
-//     let o = 0;
-//     header.writeUInt8(PROTO_VERSION, o); o += 1;           // Versión protocolo
-//     header.writeUInt8(reserved, o); o += 1;                 // Reserva
-//     header.writeUInt16LE(originNode, o); o += 2;            // Nodo origen
-//     header.writeUInt16LE(destNode, o); o += 2;              // Nodo destino
-//     header.writeUInt8(tipoTrama, o); o += 1;                // Tipo de Trama
-//     header.writeUInt8(tipoMensaje, o); o += 1;              // Tipo de mensaje
-//     header.writeUInt16LE(data.length, o); o += 2;           // Tamaño datos
-
-//     // CRC de 2 bytes sobre (header + data) o sobre todo excepto START/END (el doc no lo precisa).
-//     // Usamos Modbus/IBM (0xA001) como placeholder típico y lo escribimos LE.
-//     const crc = Buffer.alloc(2);
-//     const crcVal = this.crc16Modbus(Buffer.concat([header, data]));
-//     crc.writeUInt16LE(crcVal, 0);
-
-//     // Frame completo: START + header + data + CRC + END
-//     return Buffer.concat([START, header, data, crc, END]);
-//   }
-
-//   // ------------------------------------------- Creación -------------------------------------------
-//   // CRC-16 Modbus (placeholder). Si tu equipo usa otro polinomio, cámbialo.
-//   private crc16Modbus(buf: Buffer) {
-//     let crc = 0xFFFF;
-//     for (let pos = 0; pos < buf.length; pos++) {
-//       crc ^= buf[pos];
-//       for (let i = 0; i < 8; i++) {
-//         const lsb = crc & 1;
-//         crc >>= 1;
-//         if (lsb) crc ^= 0xA001;
-//       }
-//     }
-//     return crc & 0xFFFF;
-//   }
-
-//   // ------------------------------------------- Datos Presentacion -------------------------------------------
-//   /** Cuerpo TM_SISTEMA_TX_PRESENTACION (N_variables=6) */
-//   buildDataPresentacion(p: {
-//     versionPresentacion: number,
-//     mac: number,
-//     versionEquipo: number,
-//     tipoEquipo: number,
-//     claveEquipo: number,
-//     versionHw: number
-//   }) {
-//     const data = Buffer.alloc(4 * (1 + 6)); // 7 uint32
-//     let o = 0;
-//     data.writeUInt32LE(6, o); o += 4;                         // N_variables (6)
-//     data.writeUInt32LE(p.versionPresentacion, o); o += 4;     // version_presentacion
-//     data.writeUInt32LE(p.mac, o); o += 4;                     // MAC
-//     data.writeUInt32LE(p.versionEquipo, o); o += 4;           // VERSION_EQUIPO
-//     data.writeUInt32LE(p.tipoEquipo, o); o += 4;              // tipo_equipo
-//     data.writeUInt32LE(p.claveEquipo, o); o += 4;             // clave_equipo
-//     data.writeUInt32LE(p.versionHw, o); o += 4;               // VERSION_HW
-//     return data;
-//   }
-
-//   // ------------------------------------------- Datos Presencia -------------------------------------------
-//   /** Cuerpo TM_SISTEMA_TX_PRESENCIA (el doc no define campos -> vacío) */
-//   buildDataPresencia() {
-//     return Buffer.alloc(0);
-//   }
-
-//   // ------------------------------------------- Datos TempS1 -------------------------------------------
-//   /** Demo: cuerpo con una temperatura uint32 (x100) */
-//   buildDataTempS1(tempC: number) {
-//     const data = Buffer.alloc(4);
-//     const raw = Math.round(tempC * 100);
-//     data.writeUInt32LE(raw, 0);
-//     return data;
-//   }
-// }
-
-// // ------------------------------------------- hexDump -------------------------------------------
-// /** Función para transofrmar un buffer en un string de texto hexadecimal. */
-// function hexDump(buf: Buffer, width = 16): string {
-//   const hex: string[] = buf.toString('hex').match(/.{1,2}/g) ?? []; // ← string[]
-//   const lines: string[] = [];                                       // ← string[]
-
-//   for (let i = 0; i < hex.length; i += width) {
-//     const slice = hex.slice(i, i + width);                          // string[]
-//     lines.push(slice.join(' '));                                    // ok
-//   }
-//   return lines.join('\n');
-// }
-
-
-
-
-// import { Injectable } from '@nestjs/common';
-// import { CreateTcpClientDto } from './dto/create-tcp-client.dto';
-// import { UpdateTcpClientDto } from './dto/update-tcp-client.dto';
-
-// @Injectable()
-// export class TcpClientService {
-//   create(createTcpClientDto: CreateTcpClientDto) {
-//     return 'This action adds a new tcpClient';
-//   }
-
-//   findAll() {
-//     return `This action returns all tcpClient`;
-//   }
-
-//   findOne(id: number) {
-//     return `This action returns a #${id} tcpClient`;
-//   }
-
-//   update(id: number, updateTcpClientDto: UpdateTcpClientDto) {
-//     return `This action updates a #${id} tcpClient`;
-//   }
-
-//   remove(id: number) {
-//     return `This action removes a #${id} tcpClient`;
-//   }
-// }

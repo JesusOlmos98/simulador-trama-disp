@@ -1,13 +1,12 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { josLogger } from 'src/utils/logger';
+import { josLogger } from 'src/utils/josLogger';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
-import { readPresentacion, readNodoOrigen, readNodoDestino, readTempC } from 'src/utils/helpersTipado';
-import { defaultPresentacionCTI40 } from 'src/dto/defaultTrama';
+import { defaultDataTempSonda1, defaultPresentacionCTI40 } from 'src/dto/defaultTrama';
 import { FrameDto } from 'src/dto/frame.dto';
 import { ConfigFinalTxDto, EstadoDispositivoTxDto, PresentacionDto, ProgresoActualizacionTxDto, UrlDescargaOtaTxDto } from 'src/dto/tt_sistema.dto';
-import { EnTipoTrama, EnTipoEquipo, EnTmSistema, EnTmEstadisticos, EnGcspaEventoActualizacionServer, EnTmDepuracion, EnTipoDato, EnTmServiciosClaveValor } from 'src/utils/enums';
-import { PeticionConsolaDto, RtPeticionConsolaDto } from 'src/dto/tt_depuracion.dto';
-import { ScvDto } from 'src/dto/tt_scv.dto';
+import { EnTipoTrama, EnTipoEquipo, EnTmSistema, EnTmEstadisticos, EnGcspaEventoActualizacionServer, EnTmDepuracion } from 'src/utils/enums';
+import { PeticionConsolaDto } from 'src/dto/tt_depuracion.dto';
+import { readPresentacion, readNodoOrigen, readNodoDestino, readTempC } from 'src/utils/helpersTipado';
 
 @Controller('trama')
 export class TramaController {
@@ -180,7 +179,6 @@ export class TramaController {
   // * -------------------------------------------------------------------------------------------------------------------
 
   // done Sería el primer estadístico, temperatura de la sonda 1 (S1).
-  //! Hay que ver como gestionar el tipo Fecha y tipo Tiempo para enviarlo serialozado y después deserializarlo en commact, también como se define por tipo de dato y tal.
   // ------------------------------------------- TEMPS1 -------------------------------------------
   /** POST /api/trama/tempS1
    * body (opcional): { nodoOrigen?, nodoDestino?, tempC? } o { datos: { tempC? } }
@@ -189,6 +187,10 @@ export class TramaController {
   @Post('tempSonda1')
   async tempSonda1(@Body() body?: unknown) {
     josLogger.info('Enviamos tempSonda1');
+
+    const id = this.tcp.nextStatId();
+    defaultDataTempSonda1.identificadorUnicoDentroDelSegundo = id;
+    josLogger.info(`📈 Estadístico id=${defaultDataTempSonda1.identificadorUnicoDentroDelSegundo} enviado`);
 
     const tempC = readTempC(body, 25.31416);
     const data = this.tcp.crearDataTempS1(tempC);
@@ -201,10 +203,13 @@ export class TramaController {
       data,
     });
 
-    const enviarFrame = this.tcp.enviarFrame(frame);
-    if (!enviarFrame) return false;
-    else return enviarFrame;
-    // return this.tcp.enviarFrame(frame);
+    const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
+    return ok;
+    
+    // this.tcp.trackPendingStat(id);
+    // const enviarFrame = this.tcp.enviarFrame(frame);
+    // if (!enviarFrame) return false;
+    // else return enviarFrame;
   }
 
   // * -------------------------------------------------------------------------------------------------------------------
@@ -415,25 +420,25 @@ export class TramaController {
 
   //! Métricas para pruebas.
   // trama.controller.ts
-  @Post('metricas')
-  async metricas(@Body() body?: any) {
-    josLogger.info('Enviamos METRICAS');
+  // @Post('metricas')
+  // async metricas(@Body() body?: any) {
+  //   josLogger.info('Enviamos METRICAS');
 
-    const seq = Number(body?.seq ?? 0);       // opcional en body
-    const nodoOrg = readNodoOrigen(1);
-    const nodoDest = readNodoDestino(0);
+  //   const seq = Number(body?.seq ?? 0);       // opcional en body
+  //   const nodoOrg = readNodoOrigen(1);
+  //   const nodoDest = readNodoDestino(0);
 
-    const data = this.tcp.crearDataMetricas(seq);
-    const frame = this.tcp.crearFrame({
-      nodoOrigen: nodoOrg,
-      nodoDestino: nodoDest,
-      tipoTrama: EnTipoTrama.estadisticos,             // TT_SISTEMA
-      tipoMensaje: EnTmEstadisticos.enviaEstadistico,      // TM_SISTEMA_TX_METRICAS (elige un código libre)
-      data,
-    });
+  //   const data = this.tcp.crearDataMetricas(seq);
+  //   const frame = this.tcp.crearFrame({
+  //     nodoOrigen: nodoOrg,
+  //     nodoDestino: nodoDest,
+  //     tipoTrama: EnTipoTrama.estadisticos,             // TT_SISTEMA
+  //     tipoMensaje: EnTmEstadisticos.enviaEstadistico,      // TM_SISTEMA_TX_METRICAS (elige un código libre)
+  //     data,
+  //   });
 
-    const enviarFrame = this.tcp.enviarFrame(frame);
-    return enviarFrame || false;
-  }
+  //   const enviarFrame = this.tcp.enviarFrame(frame);
+  //   return enviarFrame || false;
+  // }
 
 }

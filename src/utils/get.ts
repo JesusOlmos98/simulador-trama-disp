@@ -73,6 +73,23 @@ export function getDataSection(frame: Buffer): Buffer {
 }
 
 /**
+ * Extrae el identificador_unico_dentro_del_segundo de una trama de estadísticos.
+ * Regla: es el ÚLTIMO byte de la sección DATA (justo antes del CRC) cuando
+ * la trama es TT_ESTADISTICOS (especialmente en RT: longitud = 1).
+ * Si no es una TT_ESTADISTICOS o no hay datos, devuelve undefined.
+ */
+export function getIdentificadorUnicoDentroDelSegundo(frame: Buffer): number | undefined {
+  if (getTipoTrama(frame) !== EnTipoTrama.estadisticos) return undefined; // Evaluamos que sea una trama de estadísticos
+
+  const data = getDataSection(frame);                                     // Obtenemos el payload
+  if (data.length < 1) return undefined;                                  // Verirficamos que haya algo, no puede ser que el payload sólo tenga un byte
+  
+  return data.readUInt8(data.length - 1);                                 // Leemos el último byte del payload, que si es un estadístico debería ser el identificador_unico_dentro_del_segundo
+  // Opcional: si quieres acotar solo a RT (ACK), descomenta:
+  // if (getTipoMensaje(frame) !== EnTmEstadisticos.rtEstadistico) return undefined;
+}
+
+/**
  * Extrae el CRC recibido (últimos 2 bytes antes de END).
  */
 export function getCRCFromFrame(frame: Buffer): number {
@@ -155,4 +172,20 @@ export const TT2TM = {
   [EnTipoTrama.descargaSubidaFicheros]: EnTmDescargaSubidaFicheros,
   [EnTipoTrama.actualizacionV2]: EnTmActualizacionV2,
 } as const;
+
+// ------------------------------------------- hexDump -------------------------------------------
+/** Convierte un buffer en texto hexadecimal en columnas. */
+export function hexDump(buf: Buffer, width = 16): string {
+  const hex: string[] = buf.toString('hex').match(/.{1,2}/g) ?? []; // Divide en grupos de 2 bytes
+  const lines: string[] = [];                                       // Aquí irá el resultado
+
+  for (let i = 0; i < hex.length; i += width) {
+    const slice = hex.slice(i, i + width);                          // Toma un "ancho" de bytes
+    lines.push(slice.join(' '));                                    // ok
+  }
+  return lines.join('\n');
+
+}
+
+
 

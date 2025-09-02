@@ -1,5 +1,5 @@
 import { Controller, Post, Query } from '@nestjs/common';
-import { josLogger } from 'src/utils/logger';
+import { josLogger } from 'src/utils/josLogger';
 import { TramaController } from 'src/trama/trama.controller';
 import { defaultPresentacionCTI40 } from 'src/dto/defaultTrama';
 import { EnTipoEquipo } from 'src/utils/enums';
@@ -58,56 +58,4 @@ export class TestController {
     }, milisegundos);
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // @Post()
-  // create(@Body() createTestDto: CreateTestDto) {
-  //   return this.testService.create(createTestDto);
-  // }
-
-  // @Get()
-  // findAll() {
-  //   return this.testService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.testService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateTestDto: UpdateTestDto) {
-  //   return this.testService.update(+id, updateTestDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.testService.remove(+id);
-  // }
 }
