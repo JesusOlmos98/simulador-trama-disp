@@ -1,4 +1,4 @@
-import pino from 'pino'
+import pino from 'pino';
 
 export const josLogger = pino({
   transport: {
@@ -6,15 +6,14 @@ export const josLogger = pino({
     options: {
       colorize: true,
       levelFirst: true,
-      translateTime:'SYS:mm/dd/yyyy  HH:MM:ss.l',
+      translateTime: 'SYS:mm/dd/yyyy  HH:MM:ss.l',
       // messageKey: 'msg',
-      include:'level,time', //,hostname,pid,
+      include: 'level,time', //,hostname,pid,
       singleLine: false,
-
-    }    
+    },
   },
   level: 'debug', //debug
-})
+});
 
 // ** Niveles que soporta pino **
 // logger.fatal('fatal');
@@ -23,4 +22,3 @@ export const josLogger = pino({
 // logger.info('info');
 // logger.debug('debug');
 // logger.trace('trace');
-

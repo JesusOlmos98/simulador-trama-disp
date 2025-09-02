@@ -1,4 +1,4 @@
-import { EnTmDepuracion } from "src/utils/enums";
+import { EnTmDepuracion } from 'src/utils/enums';
 
 // -------------------------------------------------- TM_DEPURACION_peticion_consola --------------------------------------------------
 export class PeticionConsolaDto {

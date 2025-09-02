@@ -8,14 +8,17 @@ import { EnvConfiguration } from 'config/app.config';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TramaModule, TcpClientModule, TestModule,
+  imports: [
+    TramaModule,
+    TcpClientModule,
+    TestModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [EnvConfiguration],              
-      envFilePath: ['.env.local', '.env'],   // primero .env.local si existe
-    })
+      load: [EnvConfiguration],
+      envFilePath: ['.env.local', '.env'], // primero .env.local si existe
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

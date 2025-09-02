@@ -1,4 +1,4 @@
-import { EnGcspaEventoActualizacionServer, EnTmSistema } from "src/utils/enums";
+import { EnGcspaEventoActualizacionServer, EnTmSistema } from 'src/utils/enums';
 
 // * DTOs de los posibles mensajes enviados en las tramas TT_SISTEMA, cada uno de
 // * estos DTOs sería el "payload" o "data" de la trama, que contempla un máximo de 2480 bytes.
@@ -98,18 +98,18 @@ export class ProgresoActualizacionRtDto {}
 
 // -------------------------------------------------- MAPA TM → DTO --------------------------------------------------
 export type TtSistemaPayloadMap = {
-  [EnTmSistema.noMensaje]:                  undefined;
-  [EnTmSistema.txPresentacion]:             PresentacionDto;
-  [EnTmSistema.rtPresentacion]:             RtPresentacionDto;
-  [EnTmSistema.rtAckTramaSinRespuesta]:     RtAckTramaSinRespuestaDto;
-  [EnTmSistema.txPresencia]:                PresenciaTxDto;
-  [EnTmSistema.rtPresencia]:                PresenciaRtDto;
-  [EnTmSistema.txUrlDescargaOta]:           UrlDescargaOtaTxDto;
-  [EnTmSistema.rtUrlDescargaOta]:           UrlDescargaOtaRtDto;
-  [EnTmSistema.txEstadoDispositivo]:        EstadoDispositivoTxDto;
-  [EnTmSistema.rtEstadoDispositivo]:        EstadoDispositivoRtDto;
-  [EnTmSistema.txProgresoActualizacion]:    ProgresoActualizacionTxDto;
-  [EnTmSistema.rtProgresoActualizacion]:    ProgresoActualizacionRtDto;
-  [EnTmSistema.txConfigFinal]:              ConfigFinalTxDto;
-  [EnTmSistema.rtConfigFinal]:              ConfigFinalRtDto;
+  [EnTmSistema.noMensaje]: undefined;
+  [EnTmSistema.txPresentacion]: PresentacionDto;
+  [EnTmSistema.rtPresentacion]: RtPresentacionDto;
+  [EnTmSistema.rtAckTramaSinRespuesta]: RtAckTramaSinRespuestaDto;
+  [EnTmSistema.txPresencia]: PresenciaTxDto;
+  [EnTmSistema.rtPresencia]: PresenciaRtDto;
+  [EnTmSistema.txUrlDescargaOta]: UrlDescargaOtaTxDto;
+  [EnTmSistema.rtUrlDescargaOta]: UrlDescargaOtaRtDto;
+  [EnTmSistema.txEstadoDispositivo]: EstadoDispositivoTxDto;
+  [EnTmSistema.rtEstadoDispositivo]: EstadoDispositivoRtDto;
+  [EnTmSistema.txProgresoActualizacion]: ProgresoActualizacionTxDto;
+  [EnTmSistema.rtProgresoActualizacion]: ProgresoActualizacionRtDto;
+  [EnTmSistema.txConfigFinal]: ConfigFinalTxDto;
+  [EnTmSistema.rtConfigFinal]: ConfigFinalRtDto;
 };

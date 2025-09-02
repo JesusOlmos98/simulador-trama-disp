@@ -7,19 +7,19 @@ import { PresentacionDto } from 'src/dto/tt_sistema.dto';
 
 @Controller('test')
 export class TestController {
-
   constructor(
     private readonly trama: TramaController,
     // private readonly tcp: TcpClientService,
     // private timer: NodeJS.Timeout,
-  ) { }
+  ) {}
 
   @Post('todastramascti40')
   async todasTramasCti40(@Query('ms') ms?: string) {
-
     const milisegundos = parseInt(ms ?? '1000');
 
-    josLogger.info('Enviando todas las tramas CTI40 cada ' + milisegundos + ' ms');
+    josLogger.info(
+      'Enviando todas las tramas CTI40 cada ' + milisegundos + ' ms',
+    );
     let timer: NodeJS.Timeout;
     let contadorEnvios = 0;
 
@@ -51,11 +51,12 @@ export class TestController {
       const resTempSonda1 = this.trama.tempSonda1();
       josLogger.info(`✅ Enviada trama tempSonda1.`);
 
-      josLogger.info(`Envíos realizados (3 tramas por envío más la presentación inicial): ${++contadorEnvios}`);
+      josLogger.info(
+        `Envíos realizados (3 tramas por envío más la presentación inicial): ${++contadorEnvios}`,
+      );
       josLogger.info('------------------------------');
 
       if (!resPrese || !resTempSonda1) clearInterval(timer); // Usamos el propio ID que da esta función para detenerla desde dentro.
     }, milisegundos);
   }
-
 }

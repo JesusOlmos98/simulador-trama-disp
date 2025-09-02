@@ -1,7 +1,5 @@
-
 // --------------------------------------- EnTipoEquipo ---------------------------------------
 export enum EnTipoEquipo {
-
   noDefinido = 0,
 
   // 0 al 100 no se pueden añadir equipos porque tenemos MAC de 9 y de 8 dígitos;
@@ -162,19 +160,20 @@ export enum EnTipoDato {
 }
 
 // --------------------------------------- EnTipoTrama ---------------------------------------
-export enum EnTipoTrama { // TT
-  omegaPantallaPlaca = 13,     // TT_OMEGA_PANTALLA_PLACA (Pintado de pantallas)
-  depuracion = 14,             // TT_DEPURACION (Tramas depuración)
-  serviciosClaveValor = 23,    // TT_SERVICIOS_CLAVE_VALOR
-  actualizacionServer = 24,    // TT_ACTUALIZACION_SERVER (Actualización remota)
-  sistema = 25,                // TT_SISTEMA (Funciones de sistema)
-  estadisticos = 26,           // TT_ESTADISTICOS (Envío de estadísticos)
-  comuniRadar = 27,            // TT_COMUNI_RADAR (Comunicación radar)
-  comuniBle = 28,              // TT_COMUNI_BLE (Comunicación BLE)
-  descargaFicherosFlash = 29,  // TT_DESCARGA_FICHEROS_FLASH
+export enum EnTipoTrama {
+  // TT
+  omegaPantallaPlaca = 13, // TT_OMEGA_PANTALLA_PLACA (Pintado de pantallas)
+  depuracion = 14, // TT_DEPURACION (Tramas depuración)
+  serviciosClaveValor = 23, // TT_SERVICIOS_CLAVE_VALOR
+  actualizacionServer = 24, // TT_ACTUALIZACION_SERVER (Actualización remota)
+  sistema = 25, // TT_SISTEMA (Funciones de sistema)
+  estadisticos = 26, // TT_ESTADISTICOS (Envío de estadísticos)
+  comuniRadar = 27, // TT_COMUNI_RADAR (Comunicación radar)
+  comuniBle = 28, // TT_COMUNI_BLE (Comunicación BLE)
+  descargaFicherosFlash = 29, // TT_DESCARGA_FICHEROS_FLASH
   importacionExportacion = 30, // TT_IMPORTACION_EXPORTACION
   descargaSubidaFicheros = 31, // TT_DESCARGA_SUBIDA_FICHEROS
-  actualizacionV2 = 32,        // TT_ACTUALIZACION_V2
+  actualizacionV2 = 32, // TT_ACTUALIZACION_V2
 }
 
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -187,138 +186,138 @@ export enum EnTipoTrama { // TT
 
 // --------------------------------------- TT_OMEGA_PANTALLA_PLACA ---------------------------------------
 export enum EnTmOmegaPantallaPlaca {
-  pidePantalla = 1,                        // TM_pide_pantalla
-  rtPantalla = 2,                          // TM_rt_pantalla
-  enviaEstadistico = 3,                    // TM_envia_estadistico
-  rtEstadistico = 4,                       // TM_rt_estadistico
-  pidePantallaPrincipal = 5,               // TM_pide_pantalla_principal
-  cambiaParametro = 6,                     // TM_cambia_parametro
-  pideEstadisticoPantallaLocal = 7,        // TM_OMEGA_PANTALLA_PLACA_pide_estadistico_pantalla_local
+  pidePantalla = 1, // TM_pide_pantalla
+  rtPantalla = 2, // TM_rt_pantalla
+  enviaEstadistico = 3, // TM_envia_estadistico
+  rtEstadistico = 4, // TM_rt_estadistico
+  pidePantallaPrincipal = 5, // TM_pide_pantalla_principal
+  cambiaParametro = 6, // TM_cambia_parametro
+  pideEstadisticoPantallaLocal = 7, // TM_OMEGA_PANTALLA_PLACA_pide_estadistico_pantalla_local
 }
 
 // --------------------------------------- TT_DEPURACION ---------------------------------------
 export enum EnTmDepuracion {
-  noMensaje = 0,                           // TM_DEPURACION_NO_mensaje
-  peticionConsola = 1,                     // TM_DEPURACION_peticion_consola
-  rtPeticionConsola = 2,                   // TM_DEPURACION_rt_peticion_consola
+  noMensaje = 0, // TM_DEPURACION_NO_mensaje
+  peticionConsola = 1, // TM_DEPURACION_peticion_consola
+  rtPeticionConsola = 2, // TM_DEPURACION_rt_peticion_consola
 }
 
 // --------------------------------------- TT_SERVICIOS_CLAVE_VALOR (SCV) ---------------------------------------
 export enum EnTmServiciosClaveValor {
-  peticionServidorFinal = 0,               // TM_SCV_PETICION_SERVIDOR_FINAL
-  rtPeticionServidorFinal = 1,             // TM_SCV_RT_PETICION_SERVIDOR_FINAL
-  peticionFinalServidor = 2,               // TM_SCV_PETICION_FINAL_SERVIDOR
-  rtPeticionFinalServidor = 3,             // TM_SCV_RT_PETICION_FINAL_SERVIDOR
+  peticionServidorFinal = 0, // TM_SCV_PETICION_SERVIDOR_FINAL
+  rtPeticionServidorFinal = 1, // TM_SCV_RT_PETICION_SERVIDOR_FINAL
+  peticionFinalServidor = 2, // TM_SCV_PETICION_FINAL_SERVIDOR
+  rtPeticionFinalServidor = 3, // TM_SCV_RT_PETICION_FINAL_SERVIDOR
 }
 
 // --------------------------------------- TT_ESTADISTICOS ---------------------------------------
 export enum EnTmEstadisticos {
-  enviaEstadistico = 1,                    // TM_ESTADISTICOS_envia_estadistico
-  rtEstadistico = 2,                       // TM_ESTADISTICOS_rt_estadistico
+  enviaEstadistico = 1, // TM_ESTADISTICOS_envia_estadistico
+  rtEstadistico = 2, // TM_ESTADISTICOS_rt_estadistico
 }
 
 // --------------------------------------- TT_COMUNI_BLE ---------------------------------------
 export enum EnTmComuniBle {
-  peticionEnviarDatos = 1,                 // TM_COMUNI_BLE_PETICION_ENVIAR_DATOS
-  envioDatos = 2,                          // TM_COMUNI_BLE_ENVIO_DATOS_
-  envioDatosAck = 3,                       // TM_COMUNI_BLE_ENVIO_DATOS_ACK
+  peticionEnviarDatos = 1, // TM_COMUNI_BLE_PETICION_ENVIAR_DATOS
+  envioDatos = 2, // TM_COMUNI_BLE_ENVIO_DATOS_
+  envioDatosAck = 3, // TM_COMUNI_BLE_ENVIO_DATOS_ACK
 }
 
 // --------------------------------------- TT_IMPORTACION_EXPORTACION (v1) ---------------------------------------
 export enum EnTmImportExport {
-  noMensaje = 0,                           // TM_IMPORT_EXPORT_NO_MENSAJE
-  iniciaImportacion = 1,                   // TM_IMPORT_EXPORT_INICIA_IMPORTACION
-  rtIniciaImportacion = 2,                 // TM_IMPORT_EXPORT_RT_INICIA_IMPORTACION
-  datosImport = 3,                         // TM_IMPORT_EXPORT_DATOS_IMPORT
-  rtDatosImport = 4,                       // TM_IMPORT_EXPORT_RT_DATOS_IMPORT
-  inicioExport = 5,                        // TM_IMPORT_EXPORT_INICIO_EXPORT
-  rtInicioExport = 6,                      // TM_IMPORT_EXPORT_RT_INICIO_EXPORT
-  datosExport = 7,                         // TM_IMPORT_EXPORT_DATOS_EXPORT
-  rtDatosExport = 8,                       // TM_IMPORT_EXPORT_RT_DATOS_EXPORT
-  crcFichero = 9,                          // TM_IMPORT_EXPORT_CRC_FICHERO
-  rtCrcFichero = 10,                       // TM_IMPORT_EXPORT_RT_CRC_FICHERO
-  estadoImportacion = 11,                  // TM_IMPORT_EXPORT_ESTADO_IMPORTACION
-  rtEstadoImportacion = 12,                // TM_IMPORT_EXPORT_RT_ESTADO_IMPORTACION
+  noMensaje = 0, // TM_IMPORT_EXPORT_NO_MENSAJE
+  iniciaImportacion = 1, // TM_IMPORT_EXPORT_INICIA_IMPORTACION
+  rtIniciaImportacion = 2, // TM_IMPORT_EXPORT_RT_INICIA_IMPORTACION
+  datosImport = 3, // TM_IMPORT_EXPORT_DATOS_IMPORT
+  rtDatosImport = 4, // TM_IMPORT_EXPORT_RT_DATOS_IMPORT
+  inicioExport = 5, // TM_IMPORT_EXPORT_INICIO_EXPORT
+  rtInicioExport = 6, // TM_IMPORT_EXPORT_RT_INICIO_EXPORT
+  datosExport = 7, // TM_IMPORT_EXPORT_DATOS_EXPORT
+  rtDatosExport = 8, // TM_IMPORT_EXPORT_RT_DATOS_EXPORT
+  crcFichero = 9, // TM_IMPORT_EXPORT_CRC_FICHERO
+  rtCrcFichero = 10, // TM_IMPORT_EXPORT_RT_CRC_FICHERO
+  estadoImportacion = 11, // TM_IMPORT_EXPORT_ESTADO_IMPORTACION
+  rtEstadoImportacion = 12, // TM_IMPORT_EXPORT_RT_ESTADO_IMPORTACION
 }
 
 // --------------------------------------- TT_DESCARGA_SUBIDA_FICHEROS (D/S) ---------------------------------------
 export enum EnTmDescargaSubidaFicheros {
-  noMensaje = 0,                           // TM_DESCARGA_FICHEROS_NO_MENSAJE
-  descargaInicia = 1,                      // TM_DESCARGA_FICHEROS_INICIA
-  descargaRtInicia = 2,                    // TM_DESCARGA_FICHEROS_RT_INICIA
-  descargaDatos = 3,                       // TM_DESCARGA_FICHEROS_DATOS
-  descargaRtDatos = 4,                     // TM_DESCARGA_FICHEROS_RT_DATOS
-  subirInicia = 5,                         // TM_SUBIR_FICHEROS_INICIA
-  subirRtInicia = 6,                       // TM_SUBIR_FICHEROS_RT_INICIA
+  noMensaje = 0, // TM_DESCARGA_FICHEROS_NO_MENSAJE
+  descargaInicia = 1, // TM_DESCARGA_FICHEROS_INICIA
+  descargaRtInicia = 2, // TM_DESCARGA_FICHEROS_RT_INICIA
+  descargaDatos = 3, // TM_DESCARGA_FICHEROS_DATOS
+  descargaRtDatos = 4, // TM_DESCARGA_FICHEROS_RT_DATOS
+  subirInicia = 5, // TM_SUBIR_FICHEROS_INICIA
+  subirRtInicia = 6, // TM_SUBIR_FICHEROS_RT_INICIA
 }
 
 // --------------------------------------- TT_DESCARGA_FICHEROS_FLASH (DFF) ---------------------------------------
 export enum EnTmDff {
-  noMensaje = 0,                           // TM_DFF_NO_MENSAJE
+  noMensaje = 0, // TM_DFF_NO_MENSAJE
   // (1) no aparece en el listado
-  borraFlash = 2,                          // TM_DFF_BORRA_FLASH
-  rtBorraFlash = 3,                        // TM_DFF_RT_BORRA_FLASH
-  writeFlash = 4,                          // TM_DFF_WRITE_FLASH
-  readFlash = 5,                           // TM_DFF_READ_FLASH
-  rtReadFlash = 6,                         // TM_DFF_RT_READ_FLASH
-  verificaFichero = 7,                     // TM_DFF_VERIFICA_FICHERO
-  rtVerificaFichero = 8,                   // TM_DFF_RT_VERIFICA_FICHERO
+  borraFlash = 2, // TM_DFF_BORRA_FLASH
+  rtBorraFlash = 3, // TM_DFF_RT_BORRA_FLASH
+  writeFlash = 4, // TM_DFF_WRITE_FLASH
+  readFlash = 5, // TM_DFF_READ_FLASH
+  rtReadFlash = 6, // TM_DFF_RT_READ_FLASH
+  verificaFichero = 7, // TM_DFF_VERIFICA_FICHERO
+  rtVerificaFichero = 8, // TM_DFF_RT_VERIFICA_FICHERO
 }
 
 // --------------------------------------- TT_ACTUALIZACION_V2 ---------------------------------------
 export enum EnTmActualizacionV2 {
-  noMensaje = 0,                           // TM_ACTUALIZACION_V2_NO_MENSAJE
-  informacion = 1,                         // TM_ACTUALIZACION_V2_INFORMACION
-  informacionRt = 2,                       // TM_ACTUALIZACION_V2_INFORMACION_RT
+  noMensaje = 0, // TM_ACTUALIZACION_V2_NO_MENSAJE
+  informacion = 1, // TM_ACTUALIZACION_V2_INFORMACION
+  informacionRt = 2, // TM_ACTUALIZACION_V2_INFORMACION_RT
 }
 
 // --------------------------------------- TT_IMPORT_EXPORT_V2 ---------------------------------------
 export enum EnTmImportExportV2 {
-  noMensaje = 0,                           // TM_IMPORT_EXPORT_V2_NO_MENSAJE
-  importInfoUltimaCopiaSeguridad = 1,      // TM_IMPORT_INFO_ULTIMA_COPIA_SEGURIDAD
-  importInfoUltimaCopiaSeguridadRt = 2,    // TM_IMPORT_INFO_ULTIMA_COPIA_SEGURIDAD_RT
-  exportInicio = 3,                        // TM_EXPORT_INICIO
-  exportRtInicio = 4,                      // TM_EXPORT_RT_INICIO
+  noMensaje = 0, // TM_IMPORT_EXPORT_V2_NO_MENSAJE
+  importInfoUltimaCopiaSeguridad = 1, // TM_IMPORT_INFO_ULTIMA_COPIA_SEGURIDAD
+  importInfoUltimaCopiaSeguridadRt = 2, // TM_IMPORT_INFO_ULTIMA_COPIA_SEGURIDAD_RT
+  exportInicio = 3, // TM_EXPORT_INICIO
+  exportRtInicio = 4, // TM_EXPORT_RT_INICIO
 }
 
 /** Tipos de mensaje dentro de TT_SISTEMA */
 export enum EnTmSistema {
-  noMensaje                   = 0,
-  txPresentacion              = 1,
-  rtPresentacion              = 2,
-  rtAckTramaSinRespuesta      = 3,
-  txPresencia                 = 4,
-  rtPresencia                 = 5,
-  txUrlDescargaOta            = 6,
-  rtUrlDescargaOta            = 7,
-  txEstadoDispositivo         = 8,
-  rtEstadoDispositivo         = 9,
-  txProgresoActualizacion     = 10,
-  rtProgresoActualizacion     = 11,
-  txConfigFinal               = 12,
-  rtConfigFinal               = 13,
+  noMensaje = 0,
+  txPresentacion = 1,
+  rtPresentacion = 2,
+  rtAckTramaSinRespuesta = 3,
+  txPresencia = 4,
+  rtPresencia = 5,
+  txUrlDescargaOta = 6,
+  rtUrlDescargaOta = 7,
+  txEstadoDispositivo = 8,
+  rtEstadoDispositivo = 9,
+  txProgresoActualizacion = 10,
+  rtProgresoActualizacion = 11,
+  txConfigFinal = 12,
+  rtConfigFinal = 13,
 
-  txMetricas                  = 254,  //jos
-  rtMetricas                  = 255,  //jos
+  txMetricas = 254, //jos
+  rtMetricas = 255, //jos
 }
 
 /** EN_GCSPA_EVENTO_ACTUALIZACION_SERVER (doc) */
 export enum EnGcspaEventoActualizacionServer {
-  noDefinido                         = 0,
-  iniciandoDescarga                  = 1,
-  verificandoFichero                 = 2,
-  descargaFicheroOk                  = 3,
-  descargaCompletadaOkActualizacion  = 4,
-  errorConexionServer                = 5,
-  errorDescargaFichero               = 6,
-  errorDesconocido                   = 7,
-  errorFlash                         = 8,
+  noDefinido = 0,
+  iniciandoDescarga = 1,
+  verificandoFichero = 2,
+  descargaFicheroOk = 3,
+  descargaCompletadaOkActualizacion = 4,
+  errorConexionServer = 5,
+  errorDescargaFichero = 6,
+  errorDesconocido = 7,
+  errorFlash = 8,
 }
 
 /** SCV: tipo de paquete (petición / respuesta). Fuente: “Servicios clave valor – Opción 1”. */
 export enum EnScvTipo {
-  peticion = 0,   // ENUM_SCV_TIPO_PETICION
-  respuesta = 1,  // ENUM_SCV_TIPO_RESPUESTA
+  peticion = 0, // ENUM_SCV_TIPO_PETICION
+  respuesta = 1, // ENUM_SCV_TIPO_RESPUESTA
 }
 
 /** Import/Export v1 – RT inicio importación. Fuente: 1.4.2. */
@@ -338,8 +337,8 @@ export enum EnImportExportRtInicioExportacion {
 
 /** OK/ERROR genérico. Aparece en varios apartados (CRC, info última copia, etc.). Fuente: 1.4.10, 1.8.2, 1.8.4. */
 export enum CtiOkError {
-  ok = 0,     // OK_c
-  error = 1,  // ERROR_c
+  ok = 0, // OK_c
+  error = 1, // ERROR_c
 }
 
 /** Estado del proceso de importación. Fuente: 1.4.11. */
@@ -482,8 +481,8 @@ export enum EnOmegaObjeto {
   posXyLibreLineas = 76,
 
   // ! Conflicto en el documento: para el valor 77 se citan dos objetos distintos.
-  varBuffer = 77,                    // listado global (pág. de catálogo)
-  pintaEstadisticosColumna = 77,     // sección 1.65 OBJ_PINTA_ESTADISTICOS_COLUMNA  // ! El doc duplica el ID 77.
+  varBuffer = 77, // listado global (pág. de catálogo)
+  pintaEstadisticosColumna = 77, // sección 1.65 OBJ_PINTA_ESTADISTICOS_COLUMNA  // ! El doc duplica el ID 77.
 
   ptrObjetoMedioTamano = 78,
 
@@ -624,33 +623,40 @@ export enum EnEstadisticosControladores {
 
 // 2.1 / 1.1 EN_ESTADIS_PERIODICIDAD (flags)
 export enum EnEstadisPeriodicidad {
-  noConfig             = 0,        // EN_ESTADIS_PERIODICIDAD_NO_CONFIG
-  variable             = 0b00000001, // EN_ESTADIS_PERIODICIDAD_VARIABLE
-  envioHoras           = 0b00000010, // EN_ESTADIS_PERIODICIDAD_ENVIO_HORAS
-  envioDia             = 0b00000100, // EN_ESTADIS_PERIODICIDAD_ENVIO_DIA
-  variableInstantaneo  = 0b00001000, // EN_ESTADIS_PERIODICIDAD_VARIABLE_INSTANTANEO (aparece en 1.1 y 2.1) 
+  noConfig = 0, // EN_ESTADIS_PERIODICIDAD_NO_CONFIG
+  variable = 0b00000001, // EN_ESTADIS_PERIODICIDAD_VARIABLE
+  envioHoras = 0b00000010, // EN_ESTADIS_PERIODICIDAD_ENVIO_HORAS
+  envioDia = 0b00000100, // EN_ESTADIS_PERIODICIDAD_ENVIO_DIA
+  variableInstantaneo = 0b00001000, // EN_ESTADIS_PERIODICIDAD_VARIABLE_INSTANTANEO (aparece en 1.1 y 2.1)
+}
+
+export enum EnContadoresTipo {
+  otros = 0,
+  electricidad = 1,
+  agua = 2,
+  max,
 }
 
 // 2.2 EN_GT_UNIDADES (lista extendida con %/Pa/ppm)
 export enum EnGtUnidades {
-  noUnidad        = 0,  // EN_GT_UNID_NO_UNIDAD
-  gradoCentigrado = 1,  // EN_GT_UNID_GRADO_CENTIGRADO
-  gradoFahrenheit = 2,  // EN_GT_UNID_GRADO_Fahrenheit
-  litros          = 3,  // EN_GT_UNID_LITROS
-  galones         = 4,  // EN_GT_UNID_GALONES
-  kilos           = 5,  // EN_GT_UNID_KILOS
-  libra           = 6,  // EN_GT_UNID_LIBRA
-  m3h             = 7,  // EN_GT_UNID_M3H
-  cfm             = 8,  // EN_GT_UNID_CFM
-  vatio           = 9,  // EN_GT_UNID_VATIO
-  porcentaje      = 10, // EN_GT_UNID_PORCENTAJE
-  pascales        = 11, // EN_GT_UNID_PASCALES
-  ppm             = 12, // EN_GT_UNID_PPM
-  max             = 13, // EN_GT_UNID_MAX (marcador final)
+  noUnidad = 0, // EN_GT_UNID_NO_UNIDAD
+  gradoCentigrado = 1, // EN_GT_UNID_GRADO_CENTIGRADO
+  gradoFahrenheit = 2, // EN_GT_UNID_GRADO_Fahrenheit
+  litros = 3, // EN_GT_UNID_LITROS
+  galones = 4, // EN_GT_UNID_GALONES
+  kilos = 5, // EN_GT_UNID_KILOS
+  libra = 6, // EN_GT_UNID_LIBRA
+  m3h = 7, // EN_GT_UNID_M3H
+  cfm = 8, // EN_GT_UNID_CFM
+  vatio = 9, // EN_GT_UNID_VATIO
+  porcentaje = 10, // EN_GT_UNID_PORCENTAJE
+  pascales = 11, // EN_GT_UNID_PASCALES
+  ppm = 12, // EN_GT_UNID_PPM
+  max = 13, // EN_GT_UNID_MAX (marcador final)
 }
 
 // No aparece como enum en el doc, pero el campo 'estado' usa 0/1:
 export enum EnEstadoDatoEstadistico {
-  correcto   = 0, // dato correcto
+  correcto = 0, // dato correcto
   noCorrecto = 1, // el dato no es correcto
 }

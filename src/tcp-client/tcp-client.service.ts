@@ -6,10 +6,11 @@ import { EnvConfiguration } from 'config/app.config';
 import { Fecha, FrameDto, Tiempo } from 'src/dto/frame.dto';
 import { ConfigFinalTxDto, EstadoDispositivoTxDto, PresentacionDto, ProgresoActualizacionTxDto, UrlDescargaOtaTxDto } from 'src/dto/tt_sistema.dto';
 import { PeticionConsolaDto } from 'src/dto/tt_depuracion.dto';
-import { defaultDataTempSonda1 } from 'src/dto/defaultTrama';
-import { getDataSection, getTipoMensaje, getTipoTrama, hexDump } from 'src/utils/get';
+import { defaultDataActividadCalefaccion1 as defaultDataActividadCalefaccion1, defaultDataContadorAgua, defaultDataTempSonda1 } from 'src/dto/defaultTrama';
+import { getDataSection, getTipoMensaje, getTipoTrama, hexDump } from 'src/utils/getters';
 import { EnTipoTrama, EnTmEstadisticos } from 'src/utils/enums';
 import { ACK_TTL_MS } from 'src/utils/helpersTipado';
+import { EnviaEstadisticoDto } from 'src/dto/tt_estadisticos.dto';
 
 //! CAPA 0
 
@@ -338,21 +339,37 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
    * incluyendo los tipo Fecha y Tiempo y los serializa para obtener 
    * el "data" en bytes para la trama. */
   crearDataTempS1(_tempC?: number): Buffer {
-    const dto = defaultDataTempSonda1; // Datos de ejemplo.
+    const dto = defaultDataTempSonda1;
+    return this.serializarEstadisticoPayload(dto);
+  }
 
-    // Calcular longitudes para establecer los bytes del buffer en función del estadístico, que puede tener dato[] variables.
-    const HEADER_LEN = 22; // 4(mac)+1(tipoDatoHdr)+1(idSeg)+1(ver)+1(tipoReg)+4(res1..4)+4(fecha)+4(hora)+1(res5)+1(nDatos)
+  /** TM_ESTADISTICOS_envia_estadistico — Contador */
+  crearDataContador(): Buffer {
+    const dto = defaultDataContadorAgua;
+    return this.serializarEstadisticoPayload(dto);
+  }
+
+  /** TM_ESTADISTICOS_envia_estadistico — Actividad */
+  crearDataActividad(): Buffer {
+    const dto = defaultDataActividadCalefaccion1;
+    return this.serializarEstadisticoPayload(dto);
+  }
+
+  /** Serializa un EnviaEstadisticoDto a Buffer (cabecera + items). */
+  private serializarEstadisticoPayload(dto: EnviaEstadisticoDto): Buffer {
+    // 4(mac)+1(tipoDatoHdr)+1(idSeg)+1(ver)+1(tipoReg)+4(res1..4)+4(fecha)+4(hora)+1(res5)+1(nDatos)
+    const HEADER_LEN = 22;
     const itemsLen = dto.datos.reduce((acc, it) => acc + 2 + (it.sizeDatoByte ?? it.dato.length), 0);
     const data = Buffer.alloc(HEADER_LEN + itemsLen);
 
     let offset = 0;
 
-    // ---- cabecera estadístico ----
-    data.writeUInt32LE(dto.mac >>> 0, offset); offset += 4;                                       // MAC
-    data.writeUInt8((dto.tipoDato & 0xFF) >>> 0, offset++);                                   // tipo_dato (cabecera) => 47
-    data.writeUInt8((dto.identificadorUnicoDentroDelSegundo ?? 0) & 0xFF, offset++);          // id dentro del segundo (uint8)
-    data.writeUInt8((dto.version ?? 0) & 0xFF, offset++);                                     // VERSION (uint8)
-    data.writeUInt8((dto.tipoRegistro ?? 0) & 0xFF, offset++);                                // tipo_registro (uint8)
+    // cabecera estadístico
+    data.writeUInt32LE(dto.mac >>> 0, offset); offset += 4;                              // MAC
+    data.writeUInt8((dto.tipoDato & 0xFF) >>> 0, offset++);                              // tipo_dato cabecera (47)
+    data.writeUInt8((dto.identificadorUnicoDentroDelSegundo ?? 0) & 0xFF, offset++);    // id dentro del segundo
+    data.writeUInt8((dto.version ?? 0) & 0xFF, offset++);                                // VERSION
+    data.writeUInt8((dto.tipoRegistro ?? 0) & 0xFF, offset++);                           // tipo_registro
 
     data.writeUInt8((dto.res1 ?? 0) & 0xFF, offset++);
     data.writeUInt8((dto.res2 ?? 0) & 0xFF, offset++);
@@ -360,37 +377,33 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     data.writeUInt8((dto.res4 ?? 0) & 0xFF, offset++);
 
     // fecha -> yyyymmdd (uint32 LE)
-    const f: Fecha = dto.fecha;
-    const yyyy = (f.anyo ?? 0) >>> 0;
-    const mm = (f.mes ?? 0) >>> 0;
-    const dd = (f.dia ?? 0) >>> 0;
+    const yyyy = (dto.fecha.anyo ?? 0) >>> 0;
+    const mm = (dto.fecha.mes ?? 0) >>> 0;
+    const dd = (dto.fecha.dia ?? 0) >>> 0;
     const fechaU32 = (yyyy * 10000 + mm * 100 + dd) >>> 0;
     data.writeUInt32LE(fechaU32, offset); offset += 4;
 
     // hora -> segundos desde 00:00 (uint32 LE)
-    const t: Tiempo = dto.hora;
-    const hh = (t.hora ?? 0) >>> 0;
-    const mi = (t.min ?? t.min ?? 0) >>> 0;
-    const ss = (t.seg ?? t.seg ?? 0) >>> 0;
+    const hh = (dto.hora.hora ?? 0) >>> 0;
+    const mi = (dto.hora.min ?? 0) >>> 0;
+    const ss = (dto.hora.seg ?? 0) >>> 0;
     const segundosDelDia = ((hh * 3600 + mi * 60 + ss) >>> 0);
     data.writeUInt32LE(segundosDelDia, offset); offset += 4;
 
     data.writeUInt8((dto.res5 ?? 0) & 0xFF, offset++);
 
-    const nDatos = dto.datos.length & 0xFF; // forzamos a uint8
-    data.writeUInt8(nDatos, offset++);                                               // numero_datos
+    const nDatos = dto.datos.length & 0xFF;
+    data.writeUInt8(nDatos, offset++);                                                  // numero_datos
 
-    // ---- items datos[]: tipo (u8) | size (u8) | dato[size] ----
+    // items datos[]: tipo (u8) | size (u8) | dato[size]
     for (const it of dto.datos) {
       const size = it.sizeDatoByte ?? it.dato.length;
       if (size !== it.dato.length) {
-        // Si te interesa, puedes normalizar: size = it.dato.length;
-        // Aquí validamos para que no haya incoherencias silenciosas.
         throw new Error(`Size inconsistente en item tipo=${it.tipoDato}: sizeDatoByte=${it.sizeDatoByte} dato.len=${it.dato.length}`);
       }
-      data.writeUInt8((it.tipoDato & 0xFF) >>> 0, offset++); // tipo_dato (ENUM_TIPO_DATO)
+      data.writeUInt8((it.tipoDato & 0xFF) >>> 0, offset++);// tipo_dato
       data.writeUInt8(size & 0xFF, offset++);               // size_dato_byte
-      it.dato.copy(data, offset); offset += size;                // dato[size]
+      it.dato.copy(data, offset); offset += size;           // dato[size]
     }
 
     return data;

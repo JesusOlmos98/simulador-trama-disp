@@ -1,5 +1,4 @@
-import { EnTipoDato, EnScvTipo } from "src/utils/enums";
-
+import { EnTipoDato, EnScvTipo } from 'src/utils/enums';
 
 //! WIP: Servicios Clave Valor
 
@@ -17,12 +16,11 @@ import { EnTipoDato, EnScvTipo } from "src/utils/enums";
 // };
 
 export type ScvDto = {
-  uidEnvioTrama: number;          // uint16
-  servicio: number;               // uint16
-  tipo: EnScvTipo;                // uint8 (peticion|respuesta)
-  nClaves: number;                  // uint16
-  clave: number;                    // uint16
+  uidEnvioTrama: number; // uint16
+  servicio: number; // uint16
+  tipo: EnScvTipo; // uint8 (peticion|respuesta)
+  nClaves: number; // uint16
+  clave: number; // uint16
 
-  claves: [];               // N_claves = claves.length
-
-}
+  claves: []; // N_claves = claves.length
+};

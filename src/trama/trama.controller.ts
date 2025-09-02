@@ -1,12 +1,35 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { josLogger } from 'src/utils/josLogger';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
-import { defaultDataTempSonda1, defaultPresentacionCTI40 } from 'src/dto/defaultTrama';
+import {
+  defaultDataActividadCalefaccion1,
+  defaultDataContadorAgua,
+  defaultDataTempSonda1,
+  defaultPresentacionCTI40,
+} from 'src/dto/defaultTrama';
 import { FrameDto } from 'src/dto/frame.dto';
-import { ConfigFinalTxDto, EstadoDispositivoTxDto, PresentacionDto, ProgresoActualizacionTxDto, UrlDescargaOtaTxDto } from 'src/dto/tt_sistema.dto';
-import { EnTipoTrama, EnTipoEquipo, EnTmSistema, EnTmEstadisticos, EnGcspaEventoActualizacionServer, EnTmDepuracion } from 'src/utils/enums';
+import {
+  ConfigFinalTxDto,
+  EstadoDispositivoTxDto,
+  PresentacionDto,
+  ProgresoActualizacionTxDto,
+  UrlDescargaOtaTxDto,
+} from 'src/dto/tt_sistema.dto';
+import {
+  EnTipoTrama,
+  EnTipoEquipo,
+  EnTmSistema,
+  EnTmEstadisticos,
+  EnGcspaEventoActualizacionServer,
+  EnTmDepuracion,
+} from 'src/utils/enums';
 import { PeticionConsolaDto } from 'src/dto/tt_depuracion.dto';
-import { readPresentacion, readNodoOrigen, readNodoDestino, readTempC } from 'src/utils/helpersTipado';
+import {
+  readPresentacion,
+  readNodoOrigen,
+  readNodoDestino,
+  readTempC,
+} from 'src/utils/helpersTipado';
 
 @Controller('trama')
 export class TramaController {
@@ -28,7 +51,6 @@ export class TramaController {
    */
   @Post('presentacion')
   async presentacion() {
-
     const defaultPres: PresentacionDto = defaultPresentacionCTI40;
 
     const pres: PresentacionDto = readPresentacion(defaultPres);
@@ -38,13 +60,14 @@ export class TramaController {
       nodoOrigen: readNodoOrigen(1),
       nodoDestino: readNodoDestino(0),
       tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
-      tipoMensaje: EnTmSistema.txPresentacion,  // TM_SISTEMA_TX_PRESENTACION
+      tipoMensaje: EnTmSistema.txPresentacion, // TM_SISTEMA_TX_PRESENTACION
       data,
     });
 
-
     const enviarFrame = this.tcp.enviarFrame(frame);
-    josLogger.info(`Enviamos PRESENTACION ${(EnTipoEquipo[pres.tipoEquipo].toUpperCase())}`);
+    josLogger.info(
+      `Enviamos PRESENTACION ${EnTipoEquipo[pres.tipoEquipo].toUpperCase()}`,
+    );
     if (!enviarFrame) return false;
     else return enviarFrame;
   }
@@ -55,13 +78,12 @@ export class TramaController {
    */
   @Post('presencia')
   async presencia() {
-
     const data = this.tcp.crearDataPresencia(); // vacío
     const frame = this.tcp.crearFrame({
       nodoOrigen: readNodoOrigen(1),
       nodoDestino: readNodoDestino(0),
       tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
-      tipoMensaje: EnTmSistema.txPresencia,  // TM_SISTEMA_TX_PRESENCIA
+      tipoMensaje: EnTmSistema.txPresencia, // TM_SISTEMA_TX_PRESENCIA
       data,
     });
 
@@ -74,21 +96,20 @@ export class TramaController {
   // ------------------------------------------- ESTADO DISPOSITIVO -------------------------------------------
   @Post('estadoDispositivo')
   async estadoDispositivo() {
-
     // Datos de ejemplo
     const estadoDispositivo: EstadoDispositivoTxDto = {
       nVariables: 6,
       version: 1,
       idEnvio: 1234,
-      alarmaEquipo: 0,                                                           // Si es distinto de 0, hay alarama
-    }
+      alarmaEquipo: 0, // Si es distinto de 0, hay alarama
+    };
 
     const data = this.tcp.serializarDataEstadoDispositivo(estadoDispositivo);
     const frame = this.tcp.crearFrame({
       nodoOrigen: readNodoOrigen(1),
       nodoDestino: readNodoDestino(0),
-      tipoTrama: EnTipoTrama.sistema,                                            // TT_SISTEMA
-      tipoMensaje: EnTmSistema.txEstadoDispositivo,                                      // TM_SISTEMA_TX_PRESENCIA
+      tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
+      tipoMensaje: EnTmSistema.txEstadoDispositivo, // TM_SISTEMA_TX_PRESENCIA
       data,
     });
 
@@ -103,16 +124,16 @@ export class TramaController {
   async configFinal() {
     // Datos de ejemplo (doc 2.4.7)
     const cfg: ConfigFinalTxDto = {
-      version: 0,          // inicialmente 0
-      enviaEstadisticos: 1 // 0: no envía; 1: intenta enviar hasta infinito
+      version: 0, // inicialmente 0
+      enviaEstadisticos: 1, // 0: no envía; 1: intenta enviar hasta infinito
     };
 
     const data = this.tcp.serializarDataConfigFinal(cfg);
     const frame = this.tcp.crearFrame({
       nodoOrigen: readNodoOrigen(1),
       nodoDestino: readNodoDestino(0),
-      tipoTrama: EnTipoTrama.sistema,              // TT_SISTEMA
-      tipoMensaje: EnTmSistema.txConfigFinal,      // 12
+      tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
+      tipoMensaje: EnTmSistema.txConfigFinal, // 12
       data,
     });
 
@@ -134,8 +155,8 @@ export class TramaController {
     const frame = this.tcp.crearFrame({
       nodoOrigen: readNodoOrigen(1),
       nodoDestino: readNodoDestino(0),
-      tipoTrama: EnTipoTrama.sistema,           // TT_SISTEMA
-      tipoMensaje: EnTmSistema.txUrlDescargaOta,// 6
+      tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
+      tipoMensaje: EnTmSistema.txUrlDescargaOta, // 6
       data,
     });
 
@@ -158,7 +179,7 @@ export class TramaController {
     const frame = this.tcp.crearFrame({
       nodoOrigen: readNodoOrigen(1),
       nodoDestino: readNodoDestino(0),
-      tipoTrama: EnTipoTrama.sistema,                   // TT_SISTEMA
+      tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
       tipoMensaje: EnTmSistema.txProgresoActualizacion, // 10
       data,
     });
@@ -179,37 +200,78 @@ export class TramaController {
   // * -------------------------------------------------------------------------------------------------------------------
 
   // done Sería el primer estadístico, temperatura de la sonda 1 (S1).
-  // ------------------------------------------- TEMPS1 -------------------------------------------
-  /** POST /api/trama/tempS1
-   * body (opcional): { nodoOrigen?, nodoDestino?, tempC? } o { datos: { tempC? } }
-   * NOTA: demo sencilla. Si quieres formalizarlo, lo llevamos a TT_ESTADISTICOS.
-   */
+  // ------------------------------------------- VALOR (ejemplo tempSonda1) -------------------------------------------
+  /** POST /api/trama/tempSonda1 */
   @Post('tempSonda1')
   async tempSonda1(@Body() body?: unknown) {
     josLogger.info('Enviamos tempSonda1');
 
     const id = this.tcp.nextStatId();
     defaultDataTempSonda1.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(`📈 Estadístico id=${defaultDataTempSonda1.identificadorUnicoDentroDelSegundo} enviado`);
+    josLogger.info(
+      `📈 Estadístico id=${defaultDataTempSonda1.identificadorUnicoDentroDelSegundo} enviado`,
+    );
 
-    const tempC = readTempC(body, 25.31416);
-    const data = this.tcp.crearDataTempS1(tempC);
+    const data = this.tcp.crearDataTempS1();
 
     const frame = this.tcp.crearFrame({
       nodoOrigen: readNodoOrigen(1),
       nodoDestino: readNodoDestino(0),
-      tipoTrama: EnTipoTrama.estadisticos, // TT_SISTEMA
+      tipoTrama: EnTipoTrama.estadisticos,
       tipoMensaje: EnTmEstadisticos.enviaEstadistico,
       data,
     });
 
     const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
     return ok;
-    
-    // this.tcp.trackPendingStat(id);
-    // const enviarFrame = this.tcp.enviarFrame(frame);
-    // if (!enviarFrame) return false;
-    // else return enviarFrame;
+  }
+
+  // ------------------------------------------- CONTADOR (ej. agua) -------------------------------------------
+  /** POST /api/trama/contadorAgua */
+  @Post('contadorAgua')
+  async contadorAgua() {
+    josLogger.info('Enviamos contadorAgua');
+
+    const id = this.tcp.nextStatId();
+    defaultDataContadorAgua.identificadorUnicoDentroDelSegundo = id;
+    josLogger.info(`📈 Estadístico contador id=${id} enviado`);
+
+    const data = this.tcp.crearDataContador();
+
+    const frame = this.tcp.crearFrame({
+      nodoOrigen: readNodoOrigen(1),
+      nodoDestino: readNodoDestino(0),
+      tipoTrama: EnTipoTrama.estadisticos,
+      tipoMensaje: EnTmEstadisticos.enviaEstadistico,
+      data,
+    });
+
+    const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
+    return ok;
+  }
+
+  // ------------------------------------------- ACTIVIDAD (ej. Calefaccion) -------------------------------------------
+  /** POST /api/trama/actividadCalefaccion1 */
+  @Post('actividadCalefaccion1')
+  async actividadCalefaccion1() {
+    josLogger.info('Enviamos actividadCalefaccion1');
+
+    const id = this.tcp.nextStatId();
+    defaultDataActividadCalefaccion1.identificadorUnicoDentroDelSegundo = id;
+    josLogger.info(`📈 Estadístico actividad id=${id} enviado`);
+
+    const data = this.tcp.crearDataActividad();
+
+    const frame = this.tcp.crearFrame({
+      nodoOrigen: readNodoOrigen(1),
+      nodoDestino: readNodoDestino(0),
+      tipoTrama: EnTipoTrama.estadisticos,
+      tipoMensaje: EnTmEstadisticos.enviaEstadistico,
+      data,
+    });
+
+    const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
+    return ok;
   }
 
   // * -------------------------------------------------------------------------------------------------------------------
@@ -223,7 +285,7 @@ export class TramaController {
   // * -------------------------------------------------------------------------------------------------------------------
 
   // ------------------------------------------- DEPURACIÓN: PETICIÓN CONSOLA -------------------------------------------
-  @Post("depuracion/peticionConsola")
+  @Post('depuracion/peticionConsola')
   async depuracionPeticionConsola() {
     // Ejemplo de datos
     const dto: PeticionConsolaDto = {
@@ -234,13 +296,13 @@ export class TramaController {
     const frame = this.tcp.crearFrame({
       nodoOrigen: readNodoOrigen(1),
       nodoDestino: readNodoDestino(0),
-      tipoTrama: EnTipoTrama.depuracion,               // TT_DEPURACION
-      tipoMensaje: EnTmDepuracion.peticionConsola,     // 1
+      tipoTrama: EnTipoTrama.depuracion, // TT_DEPURACION
+      tipoMensaje: EnTmDepuracion.peticionConsola, // 1
       data,
     });
 
     const ok = this.tcp.enviarFrame(frame);
-    josLogger.info("Enviamos DEPURACION PETICION CONSOLA");
+    josLogger.info('Enviamos DEPURACION PETICION CONSOLA');
     return !!ok && ok;
   }
 
@@ -276,13 +338,6 @@ export class TramaController {
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
 
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
@@ -406,18 +461,6 @@ export class TramaController {
   //   return !!ok && ok;
   // }
 
-
-
-
-
-
-
-
-
-
-
-
-
   //! Métricas para pruebas.
   // trama.controller.ts
   // @Post('metricas')
@@ -440,5 +483,4 @@ export class TramaController {
   //   const enviarFrame = this.tcp.enviarFrame(frame);
   //   return enviarFrame || false;
   // }
-
 }

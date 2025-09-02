@@ -10,4 +10,4 @@ import { TramaModule } from 'src/trama/trama.module';
   providers: [TestService],
   exports: [TestService],
 })
-export class TestModule { }
+export class TestModule {}
