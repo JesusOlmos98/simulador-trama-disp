@@ -297,6 +297,9 @@ export enum EnTmSistema {
   rtProgresoActualizacion     = 11,
   txConfigFinal               = 12,
   rtConfigFinal               = 13,
+
+  txMetricas                  = 254,  //jos
+  rtMetricas                  = 255,  //jos
 }
 
 /** EN_GCSPA_EVENTO_ACTUALIZACION_SERVER (doc) */
@@ -531,4 +534,115 @@ export enum EnTablaDinamicaPropiedades {
   filasNavegables = 0x0001,
   filasConColor = 0x0002,
   filasDatosConUnidades = 0x0004,
+}
+
+/** Estadísticos de controladores (sensores, contadores, actividades, etc.) */
+export enum EnEstadisticosControladores {
+  vacio = 0,
+
+  tempSonda1 = 1,
+  tempSonda2 = 2,
+  tempSonda3 = 3,
+  tempSonda4 = 4,
+  // tempSonda5 = 5,
+  // tempSonda6 = 6,
+  // tempSonda7 = 7,
+  // tempSonda8 = 8,
+  // tempSonda9 = 9,
+  // tempSonda10 = 10,
+  // tempSonda11 = 11,
+  // tempSonda12 = 12,
+
+  actividadHumidificar = 15,
+  actividadDeshumidificar = 16,
+
+  actividadCalefaccion1 = 20,
+  actividadCalefaccion2 = 21,
+  // actividadCalefaccion3 = 22,
+  // actividadCalefaccion4 = 23,
+  // actividadCalefaccion5 = 24,
+  // actividadCalefaccion6 = 25,
+
+  temperaturaInterior = 30,
+  temperaturaExterior = 31,
+  temperaturaConsigna = 32,
+
+  humedadInterior = 33,
+  humedadExterior = 34,
+  humedadConsigna = 35,
+
+  co2Interior = 36,
+  co2Consigna = 37,
+
+  nh3Interior = 38,
+  nh3Consigna = 39,
+
+  actividadEa1 = 50,
+  // actividadEa2 = 51,
+  // actividadEa3 = 52,
+  // actividadEa4 = 53,
+  // actividadEa5 = 54,
+  // actividadEa6 = 55,
+  // actividadEa7 = 56,
+  // actividadEa8 = 57,
+  // actividadEa9 = 58,
+  // actividadEa10 = 59,
+
+  contadorAgua = 60,
+
+  contador1 = 70,
+  contador2 = 71,
+  // contador3 = 22,
+  // contador4 = 23,
+
+  actividadContactoTermico1 = 80,
+  actividadContactoTermico2 = 81,
+
+  actividadRefrigeracion1 = 90,
+
+  actividadEtapaVent1 = 100,
+  actividadEtapaVent2 = 101,
+  actividadEtapaVent3 = 102,
+  actividadEtapaVent4 = 103,
+  actividadEtapaVent5 = 104,
+  actividadEtapaVent6 = 105,
+  actividadEtapaVent7 = 106,
+  actividadEtapaVent8 = 107,
+
+  // actividadEtapaVent7 = 150,
+}
+
+// --------------------------------------------------------------------------------------------------------------
+
+// 2.1 / 1.1 EN_ESTADIS_PERIODICIDAD (flags)
+export enum EnEstadisPeriodicidad {
+  noConfig             = 0,        // EN_ESTADIS_PERIODICIDAD_NO_CONFIG
+  variable             = 0b00000001, // EN_ESTADIS_PERIODICIDAD_VARIABLE
+  envioHoras           = 0b00000010, // EN_ESTADIS_PERIODICIDAD_ENVIO_HORAS
+  envioDia             = 0b00000100, // EN_ESTADIS_PERIODICIDAD_ENVIO_DIA
+  variableInstantaneo  = 0b00001000, // EN_ESTADIS_PERIODICIDAD_VARIABLE_INSTANTANEO (aparece en 1.1 y 2.1) 
+}
+
+// 2.2 EN_GT_UNIDADES (lista extendida con %/Pa/ppm)
+export enum EnGtUnidades {
+  noUnidad        = 0,  // EN_GT_UNID_NO_UNIDAD
+  gradoCentigrado = 1,  // EN_GT_UNID_GRADO_CENTIGRADO
+  gradoFahrenheit = 2,  // EN_GT_UNID_GRADO_Fahrenheit
+  litros          = 3,  // EN_GT_UNID_LITROS
+  galones         = 4,  // EN_GT_UNID_GALONES
+  kilos           = 5,  // EN_GT_UNID_KILOS
+  libra           = 6,  // EN_GT_UNID_LIBRA
+  m3h             = 7,  // EN_GT_UNID_M3H
+  cfm             = 8,  // EN_GT_UNID_CFM
+  vatio           = 9,  // EN_GT_UNID_VATIO
+  porcentaje      = 10, // EN_GT_UNID_PORCENTAJE
+  pascales        = 11, // EN_GT_UNID_PASCALES
+  ppm             = 12, // EN_GT_UNID_PPM
+  max             = 13, // EN_GT_UNID_MAX (marcador final)
+}
+
+// No aparece como enum en el doc, pero el campo 'estado' usa 0/1:
+export enum EnEstadoDatoEstadistico {
+  correcto   = 0, // dato correcto
+  noCorrecto = 1, // el dato no es correcto
 }

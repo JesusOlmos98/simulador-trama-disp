@@ -15,7 +15,7 @@ export class TestController {
   ) { }
 
   @Post('todastramascti40')
-  async todasTramasCti40(@Query('ms') ms?: string){
+  async todasTramasCti40(@Query('ms') ms?: string) {
 
     const milisegundos = parseInt(ms ?? '1000');
 
@@ -29,11 +29,8 @@ export class TestController {
     const presentacion: PresentacionDto = defaultPresentacionCTI40;
     presentacion.tipoEquipo = EnTipoEquipo.cti40;
 
-
-
-
     //Done Aquí enviamos la presentación.
-    this.trama.presentacion(presentacion); // Ya lleva el equipo CTI40 por defecto
+    this.trama.presentacion(); // Ya lleva el equipo CTI40 por defecto
     josLogger.info(`Enviada trama presentación: 
       \nnVariables: ${presentacion.nVariables}
       \nversionPresentacion: ${presentacion.versionPresentacion}
@@ -43,23 +40,21 @@ export class TestController {
       \nclaveEquipo: ${presentacion.claveEquipo}
       \nversionHw: ${presentacion.versionHw}`);
 
-
-
     //Done Aquí enviamos la presencia y estadístico (simulando la temperatura) cada X milisegundos.
     timer = setInterval(() => {
       const resPrese = this.trama.presencia();
       josLogger.info(`✅ Enviada trama presencia.`);
 
-      const resTempS1 = this.trama.tempS1(25.31416);
-      josLogger.info(`✅ Enviada trama temperatura tempS1: 25.31416ºC`);
+      // const resMetricas = this.trama.metricas();
+      // josLogger.info(`✅ Enviada trama métricas.`);
 
-      const resMetricas = this.trama.metricas();
-      josLogger.info(`✅ Enviada trama métricas.`);
+      const resTempSonda1 = this.trama.tempSonda1();
+      josLogger.info(`✅ Enviada trama tempSonda1.`);
 
       josLogger.info(`Envíos realizados (3 tramas por envío más la presentación inicial): ${++contadorEnvios}`);
       josLogger.info('------------------------------');
 
-      if (!resPrese || !resTempS1 || !resMetricas) clearInterval(timer); // Usamos el propio ID que da esta función para detenerla desde dentro.
+      if (!resPrese || !resTempSonda1) clearInterval(timer); // Usamos el propio ID que da esta función para detenerla desde dentro.
     }, milisegundos);
   }
 

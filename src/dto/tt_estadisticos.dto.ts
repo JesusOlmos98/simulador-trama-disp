@@ -1,4 +1,4 @@
-import { EnTmEstadisticos, EnEstadisTipoRegistro, EnTipoDato } from "src/utils/enums";
+import { EnTmEstadisticos, EnEstadisTipoRegistro, EnTipoDato, EnEstadisPeriodicidad, EnEstadoDatoEstadistico, EnGtUnidades } from "src/utils/enums";
 import { Fecha, Tiempo } from "./frame.dto";
 
 // -------------------------------------------------- TM_ESTADISTICOS_envia_estadistico --------------------------------------------------
@@ -65,3 +65,47 @@ export type TtEstadisticosPayloadMap = {
   [EnTmEstadisticos.enviaEstadistico]: EnviaEstadisticoDto;
   [EnTmEstadisticos.rtEstadistico]: RtEstadisticoDto;
 };
+
+
+// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+
+// -------------------------------------------------- DTO "1.2 Estadístico valor" --------------------------------------------------
+// Doc: Nombre(TD_UINT16), Periodicidad(TD_UINT8), Valor_medio(TD_), Valor_max(TD_), Valor_min(TD_),
+//      Hora_valor_max(TD_TIEMPO), Hora_valor_min(TD_TIEMPO), estado(TD_UINT8 {0/1}), unidad(TD_UINT8 EN_GT_UNIDADES).
+export interface EstadisticoValorDto {
+  /** TD_UINT16: identificador del estadístico (catálogo propio) */
+  nombreEstadistico: number;
+
+  /** TD_UINT8: periodicidad (flags) */
+  periodicidad: EnEstadisPeriodicidad;
+
+  /** TD_: valor medio (tipo configurable; para temperatura suele ser FLOAT) */
+  valorMedio: number;
+
+  /** TD_: valor máximo */
+  valorMax: number;
+
+  /** TD_: valor mínimo */
+  valorMin: number;
+
+  /** TD_TIEMPO: hora a la que se alcanzó el máximo */
+  horaValorMax: Tiempo;
+
+  /** TD_TIEMPO: hora a la que se alcanzó el mínimo */
+  horaValorMin: Tiempo;
+
+  /** TD_UINT8: 0 correcto, 1 no correcto */
+  estado: EnEstadoDatoEstadistico;
+
+  /** TD_UINT8: unidad del dato (EN_GT_UNIDADES) */
+  unidad: EnGtUnidades;
+
+  /**
+   * Tipo base de los campos valorMedio/valorMax/valorMin.
+   * Por defecto FLOAT (temperaturas); si tu estadístico usa enteros, cámbialo (p.ej. UINT16/INT16).
+   */
+  valorTipo?: EnTipoDato; // default: EnTipoDato.float
+}
