@@ -199,8 +199,7 @@ export class TramaController {
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
-  // done Sería el primer estadístico, temperatura de la sonda 1 (S1).
-  // ------------------------------------------- VALOR (ejemplo tempSonda1) -------------------------------------------
+  // ------------------------------------------- VALOR (ej. tempSonda1) -------------------------------------------
   /** POST /api/trama/tempSonda1 */
   @Post('tempSonda1')
   async tempSonda1(@Body() body?: unknown) {
@@ -226,7 +225,7 @@ export class TramaController {
     return ok;
   }
 
-  // ------------------------------------------- CONTADOR (ej. agua) -------------------------------------------
+  // ------------------------------------------- CONTADOR (ej. contadorAgua) -------------------------------------------
   /** POST /api/trama/contadorAgua */
   @Post('contadorAgua')
   async contadorAgua() {
@@ -250,7 +249,7 @@ export class TramaController {
     return ok;
   }
 
-  // ------------------------------------------- ACTIVIDAD (ej. Calefaccion) -------------------------------------------
+  // ------------------------------------------- ACTIVIDAD (ej. actividadCalefaccion1) -------------------------------------------
   /** POST /api/trama/actividadCalefaccion1 */
   @Post('actividadCalefaccion1')
   async actividadCalefaccion1() {
@@ -305,6 +304,41 @@ export class TramaController {
     josLogger.info('Enviamos DEPURACION PETICION CONSOLA');
     return !!ok && ok;
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+
+
+
+
+
 
   // ------------------------------------------- DEPURACIÓN: RT PETICIÓN CONSOLA -------------------------------------------
   // @Post("depuracion/rtPeticionConsola")

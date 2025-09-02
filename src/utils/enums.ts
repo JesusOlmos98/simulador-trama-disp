@@ -660,3 +660,46 @@ export enum EnEstadoDatoEstadistico {
   correcto = 0, // dato correcto
   noCorrecto = 1, // el dato no es correcto
 }
+
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Registros_Alarmas.pdf XXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+/** Acciones de alarma. */
+export enum EnAlarmasAccion {
+  off = 0,
+  onAlarma = 1,  // activa relé asociado
+  onAviso = 2,   // no activa relé asociado
+}
+
+/** Estado instantáneo de la alarma (ON/OFF) */
+export enum EnAlarmaEstado {
+  off = 0,
+  on = 1,
+}
+
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Registros_eventos.pdf XXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+/** Eventos de aplicación (Entradas/Salidas de crianza). */
+export enum EnEeEventosApli {
+  inicioCrianza = 1,
+  entradaAnimales = 2,
+  finCrianza = 3,
+  altaBajaRetirada = 4,
+}
+
+/** Acciones de alta/baja/retirada en crianza. */
+export enum EnCrianzaAltaBajaAccion {
+  baja = 0,
+  alta = 1,
+  retirada = 2,
+  eliminarUltimoRegistro = 3,
+  eliminarTodosRegistros = 4,
+}
+
+/** Tipo de animal en crianza. */
+export enum EnCrianzaTipoAnimal {
+  mixtos = 0,
+  soloMachos = 1,
+  soloHembras = 2,
+  machoHembraSeparado = 3,
+  max = 4, // centinela
+}

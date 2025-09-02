@@ -7,6 +7,11 @@ import {
   EnGtUnidades,
   EnContadoresTipo,
   EnEstadisticosControladores,
+  EnCrianzaAltaBajaAccion,
+  EnCrianzaTipoAnimal,
+  EnEeEventosApli,
+  EnAlarmaEstado,
+  EnAlarmasAccion,
 } from 'src/utils/enums';
 import { Fecha, Tiempo } from './frame.dto';
 
@@ -14,11 +19,18 @@ import { Fecha, Tiempo } from './frame.dto';
 
 //* Frame = FrameDto ----> Data/Payload = EnviaEstadisticoDto ----> dato[] = EstadisticoDato ----> dato = EstadisticoValorDto
 
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXX EnEstadisTipoRegistro.estadisticos XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
 // -------------------------------------------------- EnviaEstadisticoDto --------------------------------------------------
 export class EnviaEstadisticoDto {
   /** uint32 MAC (ID de equipo) */
   mac: number;
-
   /** uint8 tipo_dato (cabecera) */
   tipoDato: EnTipoDato;
   // El doc lo llama TIPO_DATO_ACCION_REGISTRO_DATOS_GENERICO. No aparece su enum específico;
@@ -182,13 +194,13 @@ const tiempoToSegundos = (t: Tiempo) => ((t.hora ?? 0) * 3600 + (t.min ?? 0) * 6
 
 function packByTipo(v: number, tipo: EnTipoDato): Buffer {
   switch (tipo) {
-    case EnTipoDato.uint8:  return u8(v);
-    case EnTipoDato.int8:   return i8(v);
+    case EnTipoDato.uint8: return u8(v);
+    case EnTipoDato.int8: return i8(v);
     case EnTipoDato.uint16: return u16LE(v);
-    case EnTipoDato.int16:  return i16LE(v);
+    case EnTipoDato.int16: return i16LE(v);
     case EnTipoDato.uint32: return u32LE(v);
-    case EnTipoDato.int32:  return i32LE(v);
-    case EnTipoDato.float:  return f32LE(v);
+    case EnTipoDato.int32: return i32LE(v);
+    case EnTipoDato.float: return f32LE(v);
     default:
       throw new Error(`Tipo de valor no soportado en estadístico valor: ${EnTipoDato[tipo]} (${tipo})`);
   }
@@ -199,8 +211,8 @@ export function serializarDatosEstadisticoValor(d: EstadisticoValorDto): Estadis
   const base = d.valorTipo ?? EnTipoDato.float;
 
   const medio = packByTipo(d.valorMedio, base);
-  const max   = packByTipo(d.valorMax,   base);
-  const min   = packByTipo(d.valorMin,   base);
+  const max = packByTipo(d.valorMax, base);
+  const min = packByTipo(d.valorMin, base);
 
   const horamax = u32LE(tiempoToSegundos(d.horaValorMax));
   const horamin = u32LE(tiempoToSegundos(d.horaValorMin));
@@ -214,8 +226,8 @@ export function serializarDatosEstadisticoValor(d: EstadisticoValorDto): Estadis
 
     // [2..4] valores (TD_ según d.valorTipo)
     { tipoDato: base, sizeDatoByte: medio.length, dato: medio }, // valorMedio
-    { tipoDato: base, sizeDatoByte: max.length,   dato: max   }, // valorMax
-    { tipoDato: base, sizeDatoByte: min.length,   dato: min   }, // valorMin
+    { tipoDato: base, sizeDatoByte: max.length, dato: max }, // valorMax
+    { tipoDato: base, sizeDatoByte: min.length, dato: min }, // valorMin
 
     // [5..6] horas (TD_TIEMPO = uint32 segundos)
     { tipoDato: EnTipoDato.tiempo, sizeDatoByte: 4, dato: horamax }, // horaValorMax
@@ -251,12 +263,12 @@ export function serializarDatosEstadisticoContador(dto: EstadisticoContadorDto):
 
   const out: EstadisticoDato[] = [
     { tipoDato: EnTipoDato.uint16, sizeDatoByte: 2, dato: nombre },           // nombreEstadistico
-    { tipoDato: EnTipoDato.uint8,  sizeDatoByte: 1, dato: periodicidad },     // periodicidad
-    { tipoDato: EnTipoDato.uint8,  sizeDatoByte: 1, dato: tipoContador },     // tipoContador
-    { tipoDato: EnTipoDato.uint8,  sizeDatoByte: 1, dato: unidad },           // unidad
-    { tipoDato: EnTipoDato.float,  sizeDatoByte: 4, dato: multiplicador },    // multiplicador
-    { tipoDato: valorTipo,         sizeDatoByte: valor.length, dato: valor }, // valor (tipo configurable)
-    { tipoDato: EnTipoDato.uint8,  sizeDatoByte: 1, dato: estado },           // estado
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: periodicidad },     // periodicidad
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: tipoContador },     // tipoContador
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: unidad },           // unidad
+    { tipoDato: EnTipoDato.float, sizeDatoByte: 4, dato: multiplicador },    // multiplicador
+    { tipoDato: valorTipo, sizeDatoByte: valor.length, dato: valor }, // valor (tipo configurable)
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: estado },           // estado
   ];
   return out;
 }
@@ -275,9 +287,111 @@ export function serializarDatosEstadisticoActividad(dto: EstadisticoActividadDto
 
   const out: EstadisticoDato[] = [
     { tipoDato: EnTipoDato.uint16, sizeDatoByte: 2, dato: nombre },       // nombreEstadistico
-    { tipoDato: EnTipoDato.uint8,  sizeDatoByte: 1, dato: periodicidad }, // periodicidad
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: periodicidad }, // periodicidad
     { tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: valorSeg },     // valorSegundosConectado
-    { tipoDato: EnTipoDato.uint8,  sizeDatoByte: 1, dato: estado },       // estado
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: estado },       // estado
   ];
   return out;
+}
+
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXX EnEstadisTipoRegistro.eventos XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+/** 1.2. INICIO_CRIANZA */
+export interface EeInicioCrianzaDto {
+  /** TD_UINT16: código de evento (fijo = inicioCrianza) */
+  evento: EnEeEventosApli.inicioCrianza;
+  /** TD_INT16 */
+  diaCrianza: number;
+  /** TD_UINT32 */
+  idUnicoCrianza: number;
+}
+
+/** 1.3. ENTRADA_ANIMALES */
+export interface EeEntradaAnimalesDto {
+  /** TD_UINT16: código de evento (fijo = entradaAnimales) */
+  evento: EnEeEventosApli.entradaAnimales;
+  /** TD_UINT32 */
+  idUnicoCrianza: number;
+  /** TD_UINT8 (ENUM_CRIANZA_TIPO_ANIMAL) */
+  inicioCrianzaTipoAnimal: EnCrianzaTipoAnimal;
+  /** TD_INT16 */
+  diaEntradaAnimales: number;
+  /** TD_UINT32 */
+  nAnimalesInicioCrianzaMachosMixtos: number;
+  /** TD_UINT32 */
+  nAnimalesInicioCrianzaHembras: number;
+}
+
+/** 1.4. FIN_CRIANZA */
+export interface EeFinCrianzaDto {
+  /** TD_UINT16: código de evento (fijo = finCrianza) */
+  evento: EnEeEventosApli.finCrianza;
+  /** TD_UINT32 */
+  idUnicoCrianza: number;
+  /** TD_INT16 */
+  diaCrianza: number;
+  /** TD_UINT32 */
+  nAnimalesActualesMachosMixtos: number;
+  /** TD_UINT32 */
+  nAnimalesActualesHembras: number;
+}
+
+/** 1.5. ALTA_BAJA_RETIRADA */
+export interface EeAltaBajaRetiradaDto {
+  /** TD_UINT16: código de evento (fijo = altaBajaRetirada) */
+  evento: EnEeEventosApli.altaBajaRetirada;
+  /** TD_UINT32 */
+  idUnicoCrianza: number;
+  /** TD_UINT8 (ENUM_CRIANZA_ALTA_BAJA_ACCION) */
+  accion: EnCrianzaAltaBajaAccion;
+  /** TD_INT16 */
+  diaCrianza: number;
+  /** TD_FECHA */
+  fechaIntroducirAccion: Fecha;
+  /** TD_UINT32 */
+  nAnimalesAccionMachosMixtos: number;
+  /** TD_UINT32 */
+  nAnimalesAccionHembras: number;
+}
+
+/** Unión útil si necesitas un tipo común */
+export type EeEventoPayload =
+  | EeInicioCrianzaDto
+  | EeEntradaAnimalesDto
+  | EeFinCrianzaDto
+  | EeAltaBajaRetiradaDto;
+
+/** (Opcional) Mapa evento -> DTO para tipar routers/clasificadores */
+export type EeEventosPayloadMap = {
+  [EnEeEventosApli.inicioCrianza]: EeInicioCrianzaDto;
+  [EnEeEventosApli.entradaAnimales]: EeEntradaAnimalesDto;
+  [EnEeEventosApli.finCrianza]: EeFinCrianzaDto;
+  [EnEeEventosApli.altaBajaRetirada]: EeAltaBajaRetiradaDto;
+};
+
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXX EnEstadisTipoRegistro.alarmas XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+/** Estadístico: Alarma */
+export interface EstadisticoAlarmaDto {
+  /** TD_UINT16: identificador/texto de la alarma */
+  textoAlarma: number;
+  /** TD_UINT8: estado actual (encendida/apagada) */
+  estadoAlarma: EnAlarmaEstado;
+  /**
+   * TD_UINT8: configuración de la alarma (desconectada/aviso/alarma)
+   * EN_ALARMAS_ACCION
+   */
+  accionConfigurada: EnAlarmasAccion;
 }
