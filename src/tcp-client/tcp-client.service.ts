@@ -2,37 +2,17 @@ import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { Socket } from 'node:net';
 import { josLogger } from 'src/utils/josLogger';
 import { crc16IBM } from 'src/utils/crc';
-import { EnvConfiguration } from 'config/app.config';
-import { Fecha, FrameDto, Tiempo } from 'src/dto/frame.dto';
 import { ConfigFinalTxDto, EstadoDispositivoTxDto, PresentacionDto, ProgresoActualizacionTxDto, UrlDescargaOtaTxDto } from 'src/dto/tt_sistema.dto';
 import { PeticionConsolaDto } from 'src/dto/tt_depuracion.dto';
-import { defaultDataActividadCalefaccion1 as defaultDataActividadCalefaccion1, defaultDataContadorAgua, defaultDataTempSonda1 } from 'src/dto/defaultTrama';
+import { defaultDataActividadCalefaccion1 as defaultDataActividadCalefaccion1, defaultDataAlarmaTempAlta, defaultDataContadorAgua, defaultDataEventoInicioCrianza, defaultDataTempSonda1 } from 'src/dto/defaultTrama';
 import { getDataSection, getTipoMensaje, getTipoTrama, hexDump } from 'src/utils/getters';
 import { EnTipoTrama, EnTmEstadisticos } from 'src/utils/enums';
-import { ACK_TTL_MS } from 'src/utils/helpersTipado';
 import { EnviaEstadisticoDto } from 'src/dto/tt_estadisticos.dto';
+import { env } from 'node:process';
+import { FrameDto } from 'src/dto/frame.dto';
+import { DESTINY_PORT, DESTINY_HOST, PROTO_VERSION, MAX_DATA_BYTES, START, END, ACK_TIMEOUT_MS, ACK_TTL_MS } from 'src/utils/constGlobales';
 
 //! CAPA 0
-
-const env = EnvConfiguration();
-
-const DESTINY_HOST = env.destinyHost ?? '127.0.0.1';
-const DESTINY_PORT = env.destinyPort ?? 8010; // 8020 o 8010;
-
-// Constantes protocolo
-const START_ARR = [0xCC, 0xAA, 0xAA, 0xAA] as const;
-const END_ARR = [0xCC, 0xBB, 0xBB, 0xBB] as const;
-
-const START = Buffer.from(START_ARR);
-const END = Buffer.from(END_ARR);
-
-const PROTO_VERSION = 2; // según doc
-
-// Máximo datos (no frame completo): 2480 bytes
-const MAX_DATA_BYTES = 2480; // ver protocolo
-const MAX_FRAME_BYTES = 2500; // frame completo (aprox)
-
-const ACK_TIMEOUT_MS = 6000;
 
 @Injectable()
 export class TcpClientService implements OnModuleInit, OnModuleDestroy {
@@ -194,14 +174,14 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
 
     // Header (NO incluye el "start")
     const header = Buffer.alloc(1 + 1 + 2 + 2 + 1 + 1 + 2);
-    let o = 0;
-    header.writeUInt8(f.versionProtocolo, o); o += 1;
-    header.writeUInt8(f.reserva ?? 0, o); o += 1;
-    header.writeUInt16LE(f.nodoOrigen, o); o += 2;
-    header.writeUInt16LE(f.nodoDestino, o); o += 2;
-    header.writeUInt8(f.tipoTrama, o); o += 1;
-    header.writeUInt8(f.tipoMensaje, o); o += 1;
-    header.writeUInt16LE(f.longitud, o); o += 2;
+    let offset = 0;
+    header.writeUInt8(f.versionProtocolo, offset); offset += 1;
+    header.writeUInt8(f.reserva ?? 0, offset); offset += 1;
+    header.writeUInt16LE(f.nodoOrigen, offset); offset += 2;
+    header.writeUInt16LE(f.nodoDestino, offset); offset += 2;
+    header.writeUInt8(f.tipoTrama, offset); offset += 1;
+    header.writeUInt8(f.tipoMensaje, offset); offset += 1;
+    header.writeUInt16LE(f.longitud, offset); offset += 2;
 
     const datosBuf = Buffer.isBuffer(f.datos) ? f.datos : Buffer.alloc(0);
 
@@ -251,6 +231,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   }
 
 
+
   // ------------------------------------------- PAYLOADS -------------------------------------------
 
   // * -------------------------------------------------------------------------------------------------------------------
@@ -267,13 +248,13 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   crearDataPresentacion(p: PresentacionDto) {
     const data = Buffer.alloc(4 * (1 + p.nVariables)); // 7 uint32
     let offset = 0;
-    data.writeUInt32LE(p.nVariables, offset); offset += 4;                          // N_variables (6)
-    data.writeUInt32LE(p.versionPresentacion, offset); offset += 4;         // version_presentacion
-    data.writeUInt32LE(p.mac, offset); offset += 4;        // MAC  
+    data.writeUInt32LE(p.nVariables, offset); offset += 4;           // N_variables (6)
+    data.writeUInt32LE(p.versionPresentacion, offset); offset += 4;  // version_presentacion
+    data.writeUInt32LE(p.mac, offset); offset += 4;                  // MAC  
     data.writeUInt32LE(p.versionEquipo, offset); offset += 4;        // VERSION_EQUIPO
-    data.writeUInt32LE(p.tipoEquipo, offset); offset += 4;        // tipo_equipo
-    data.writeUInt32LE(p.claveEquipo, offset); offset += 4;        // clave_equipo
-    data.writeUInt32LE(p.versionHw, offset); offset += 4;        // VERSION_HW
+    data.writeUInt32LE(p.tipoEquipo, offset); offset += 4;           // tipo_equipo
+    data.writeUInt32LE(p.claveEquipo, offset); offset += 4;          // clave_equipo
+    data.writeUInt32LE(p.versionHw, offset); offset += 4;            // VERSION_HW
     return data;
   }
 
@@ -343,15 +324,23 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     return this.serializarEstadisticoPayload(dto);
   }
 
-  /** TM_ESTADISTICOS_envia_estadistico — Contador */
   crearDataContador(): Buffer {
     const dto = defaultDataContadorAgua;
     return this.serializarEstadisticoPayload(dto);
   }
 
-  /** TM_ESTADISTICOS_envia_estadistico — Actividad */
   crearDataActividad(): Buffer {
     const dto = defaultDataActividadCalefaccion1;
+    return this.serializarEstadisticoPayload(dto);
+  }
+
+  crearDataEventoInicioCrianza(): Buffer {
+    const dto = defaultDataEventoInicioCrianza;
+    return this.serializarEstadisticoPayload(dto);
+  }
+
+  crearDataAlarmaTempAlta(): Buffer {
+    const dto = defaultDataAlarmaTempAlta;
     return this.serializarEstadisticoPayload(dto);
   }
 
@@ -387,7 +376,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     const hh = (dto.hora.hora ?? 0) >>> 0;
     const mi = (dto.hora.min ?? 0) >>> 0;
     const ss = (dto.hora.seg ?? 0) >>> 0;
-    const segundosDelDia = ((hh * 3600 + mi * 60 + ss) >>> 0);
+    const segundosDelDia = ((hh * 3600 + mi * 60 + ss) >>> 0); //jos la IA podría usar aquí el tiempoToSeg y terminamos antes
     data.writeUInt32LE(segundosDelDia, offset); offset += 4;
 
     data.writeUInt8((dto.res5 ?? 0) & 0xFF, offset++);
@@ -409,6 +398,15 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     return data;
   }
 
+  // private serializarEstadisTipoEventoPayload(dto: EnviaEstadisticoDto): Buffer {
+  //   const d = Buffer.alloc(0);
+  //   return d;
+  // }
+
+  // private serializarEstadisTipoAlarmaPayload(dto: EnviaEstadisticoDto): Buffer {
+  //   const d = Buffer.alloc(0);
+  //   return d;
+  // }
 
 
 
@@ -434,11 +432,11 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
 
 
 
-//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
 
 
 

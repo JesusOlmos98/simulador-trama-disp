@@ -1,35 +1,12 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { josLogger } from 'src/utils/josLogger';
-import { TcpClientService } from 'src/tcp-client/tcp-client.service';
-import {
-  defaultDataActividadCalefaccion1,
-  defaultDataContadorAgua,
-  defaultDataTempSonda1,
-  defaultPresentacionCTI40,
-} from 'src/dto/defaultTrama';
-import { FrameDto } from 'src/dto/frame.dto';
-import {
-  ConfigFinalTxDto,
-  EstadoDispositivoTxDto,
-  PresentacionDto,
-  ProgresoActualizacionTxDto,
-  UrlDescargaOtaTxDto,
-} from 'src/dto/tt_sistema.dto';
-import {
-  EnTipoTrama,
-  EnTipoEquipo,
-  EnTmSistema,
-  EnTmEstadisticos,
-  EnGcspaEventoActualizacionServer,
-  EnTmDepuracion,
-} from 'src/utils/enums';
-import { PeticionConsolaDto } from 'src/dto/tt_depuracion.dto';
-import {
-  readPresentacion,
-  readNodoOrigen,
-  readNodoDestino,
-  readTempC,
-} from 'src/utils/helpersTipado';
+import { Controller, Post, Body } from "@nestjs/common";
+import { defaultPresentacionCTI40, defaultDataTempSonda1, defaultDataContadorAgua, defaultDataActividadCalefaccion1, defaultDataEventoInicioCrianza, defaultDataAlarmaTempAlta } from "src/dto/defaultTrama";
+import { FrameDto } from "src/dto/frame.dto";
+import { PeticionConsolaDto } from "src/dto/tt_depuracion.dto";
+import { PresentacionDto, EstadoDispositivoTxDto, ConfigFinalTxDto, UrlDescargaOtaTxDto, ProgresoActualizacionTxDto } from "src/dto/tt_sistema.dto";
+import { TcpClientService } from "src/tcp-client/tcp-client.service";
+import { EnTipoTrama, EnTmSistema, EnTipoEquipo, EnGcspaEventoActualizacionServer, EnTmEstadisticos, EnTmDepuracion } from "src/utils/enums";
+import { readPresentacion, readNodoOrigen, readNodoDestino } from "src/utils/helpersTipado";
+import { josLogger } from "src/utils/josLogger";
 
 @Controller('trama')
 export class TramaController {
@@ -273,6 +250,56 @@ export class TramaController {
     return ok;
   }
 
+  // ------------------------------------------- EVENTO (ej. inicioCrianza) -------------------------------------------
+  /** POST /api/trama/eventoInicioCrianza */
+  @Post('eventoInicioCrianza')
+  async eventoInicioCrianza() {
+    josLogger.info('Enviamos eventoInicioCrianza');
+
+    const id = this.tcp.nextStatId();
+    defaultDataEventoInicioCrianza.identificadorUnicoDentroDelSegundo = id;
+    josLogger.info(`📈 Estadístico evento id=${id} enviado`);
+
+    // Wrapper público en tu TcpClientService (igual que crearDataContador/Actividad/TempS1)
+    const data = this.tcp.crearDataEventoInicioCrianza();
+
+    const frame = this.tcp.crearFrame({
+      nodoOrigen: readNodoOrigen(1),
+      nodoDestino: readNodoDestino(0),
+      tipoTrama: EnTipoTrama.estadisticos,
+      tipoMensaje: EnTmEstadisticos.enviaEstadistico,
+      data,
+    });
+
+    const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
+    return ok;
+  }
+
+  // ------------------------------------------- ALARMA (ej. alarmaTempAlta) -------------------------------------------
+  /** POST /api/trama/alarmaTempAlta */
+  @Post('alarmaTempAlta')
+  async alarmaTempAlta() {
+    josLogger.info('Enviamos alarmaTempAlta');
+
+    const id = this.tcp.nextStatId();
+    defaultDataAlarmaTempAlta.identificadorUnicoDentroDelSegundo = id;
+    josLogger.info(`📈 Estadístico alarma id=${id} enviado`);
+
+    // Wrapper público en tu TcpClientService
+    const data = this.tcp.crearDataAlarmaTempAlta();
+
+    const frame = this.tcp.crearFrame({
+      nodoOrigen: readNodoOrigen(1),
+      nodoDestino: readNodoDestino(0),
+      tipoTrama: EnTipoTrama.estadisticos,
+      tipoMensaje: EnTmEstadisticos.enviaEstadistico,
+      data,
+    });
+
+    const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
+    return ok;
+  }
+
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
@@ -329,11 +356,11 @@ export class TramaController {
 
 
 
-//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-//! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
 
 
 

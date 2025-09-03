@@ -1,45 +1,14 @@
-import { Buffer } from 'node:buffer';
-import { crc16IBM } from 'src/utils/crc';
-import {
-  EnTmOmegaPantallaPlaca,
-  EnTmDepuracion,
-  EnTmServiciosClaveValor,
-  EnTmSistema,
-  EnTmEstadisticos,
-  EnTmComuniBle,
-  EnTmDff,
-  EnTmImportExport,
-  EnTmDescargaSubidaFicheros,
-  EnTmActualizacionV2,
-  EnTmImportExportV2,
-  EnTipoTrama,
-  EnTipoDato,
-} from 'src/utils/enums';
+import { HeaderFields } from "src/dto/frame.dto";
+import { START, END, HEADER_OFFSET, HEADER_SIZE, ESTADIS_HEADER_LEN, TIPO_REGISTRO_ESTADISTICO_OFFSET_EN_PAYLOAD } from "./constGlobales";
+import { crc16IBM } from "./crc";
+import { EnTipoTrama, EnTmOmegaPantallaPlaca, EnTmDepuracion, EnTmServiciosClaveValor, EnTmSistema, EnTmEstadisticos, EnTmComuniBle, EnTmDff, EnTmImportExport, EnTmDescargaSubidaFicheros, EnTmActualizacionV2, EnTmImportExportV2, EnTipoDato, EnEstadisTipoRegistro, EnEeEventosApli, EnAlarmaEstado, EnAlarmasAccion } from "./enums";
 
-export const START = Buffer.from([0xcc, 0xaa, 0xaa, 0xaa] as const);
-export const END = Buffer.from([0xcc, 0xbb, 0xbb, 0xbb] as const);
-
-const HEADER_OFFSET = START.length; // empieza justo después de START
-const HEADER_SIZE = 10; // 1+1+2+2+1+1+2
-
-export interface HeaderFields {
-  versionProtocolo: number;
-  reserva: number;
-  nodoOrigen: number;
-  nodoDestino: number;
-  tipoTrama: number;
-  tipoMensaje: number;
-  longitud: number;
-}
-
-//jos Validación de inicio y fin
+//*  Validación de inicio y fin
 export function inicioCorrecto(buf: Buffer): boolean {
-  // return buf.length >= inicioEsperado.length && buf.subarray(0, inicioEsperado.length).equals(inicioEsperado);p
   return getStart(buf).equals(START);
 }
 
 export function finalCorrecto(buf: Buffer): boolean {
-  //   return buf.length >= finEsperado.length && buf.subarray(buf.length - finEsperado.length).equals(finEsperado);
   return getEnd(buf).equals(END);
 }
 
@@ -139,15 +108,15 @@ export function getCRC(frame: Buffer): {
 // jos Funciones para el Header
 /** Lee todos los campos del header */
 export function parseHeader(frame: Buffer): HeaderFields {
-  const o = HEADER_OFFSET;
+  const offset = HEADER_OFFSET;
 
-  const versionProtocolo = frame.readUInt8(o + 0);
-  const reserva = frame.readUInt8(o + 1);
-  const nodoOrigen = frame.readUInt16LE(o + 2);
-  const nodoDestino = frame.readUInt16LE(o + 4);
-  const tipoTrama = frame.readUInt8(o + 6);
-  const tipoMensaje = frame.readUInt8(o + 7);
-  const longitud = frame.readUInt16LE(o + 8);
+  const versionProtocolo = frame.readUInt8(offset + 0);
+  const reserva = frame.readUInt8(offset + 1);
+  const nodoOrigen = frame.readUInt16LE(offset + 2);
+  const nodoDestino = frame.readUInt16LE(offset + 4);
+  const tipoTrama = frame.readUInt8(offset + 6);
+  const tipoMensaje = frame.readUInt8(offset + 7);
+  const longitud = frame.readUInt16LE(offset + 8);
 
   return {
     versionProtocolo,
@@ -227,9 +196,6 @@ export function hexDump(buf: Buffer, width = 16): string {
 //done ------------------------------------------------------------------------------------------------------------------------
 //done ------------------------------------------------------------------------------------------------------------------------
 
-
-const ESTADIS_HEADER_LEN = 22; // MAC(4)+cabecera(4)+res(4)+fecha(4)+hora(4)+res5(1)+nDatos(1)
-
 /** Lee un item (tipo,size,valor) en offset y devuelve también el nuevo offset. */
 function readItemAt(data: Buffer, offset: number) {
   if (offset + 2 > data.length) return undefined;
@@ -244,15 +210,15 @@ function readItemAt(data: Buffer, offset: number) {
 /** Convierte el buffer de un item al número correspondiente según EnTipoDato (LE). */
 function itemToNumber(tipo: number, value: Buffer): number | undefined {
   switch (tipo) {
-    case EnTipoDato.uint8:  return value.readUInt8(0);
-    case EnTipoDato.int8:   return value.readInt8(0);
+    case EnTipoDato.uint8: return value.readUInt8(0);
+    case EnTipoDato.int8: return value.readInt8(0);
     case EnTipoDato.uint16: return value.readUInt16LE(0);
-    case EnTipoDato.int16:  return value.readInt16LE(0);
+    case EnTipoDato.int16: return value.readInt16LE(0);
     case EnTipoDato.uint32: return value.readUInt32LE(0);
-    case EnTipoDato.int32:  return value.readInt32LE(0);
-    case EnTipoDato.float:  return value.readFloatLE(0);
+    case EnTipoDato.int32: return value.readInt32LE(0);
+    case EnTipoDato.float: return value.readFloatLE(0);
     case EnTipoDato.tiempo: return value.readUInt32LE(0); // segundos del día (convenio local)
-    default:                return undefined;             // otros tipos no numéricos/soportados
+    default: return undefined;             // otros tipos no numéricos/soportados
   }
 }
 
@@ -347,3 +313,146 @@ export function getNombreEstadistico(frame: Buffer): number | undefined {
   // Tipos no esperados para nombre (evitamos suposiciones).
   return undefined;
 }
+
+/** Devuelve el tipoRegistro (ENUM_ESTADIS_TIPO_REGISTRO) del payload de un estadístico TX.
+ *  Si la trama no es TT=estadisticos o TM!=enviaEstadistico, devuelve undefined.
+ */
+export function getTipoRegistroEstadistico(frame: Buffer): EnEstadisTipoRegistro | undefined {
+  // Solo aplica a TT_ESTADISTICOS + TM_ENVIA_ESTADISTICO
+  if (getTipoTrama(frame) !== EnTipoTrama.estadisticos) return undefined;
+  if (getTipoMensaje(frame) !== EnTmEstadisticos.enviaEstadistico) return undefined;
+
+  const data = getDataSection(frame); // payload del estadístico
+  if (data.length < TIPO_REGISTRO_ESTADISTICO_OFFSET_EN_PAYLOAD + 1) return undefined;
+
+  const tipoReg = data.readUInt8(TIPO_REGISTRO_ESTADISTICO_OFFSET_EN_PAYLOAD);
+  return tipoReg as EnEstadisTipoRegistro;
+}
+
+/** Devuelve el tipo de evento (ENUM_EE_EVENTOS_APLI) del primer item de un estadístico de EVENTOS. */
+export function getTipoEventoEstadistico(frame: Buffer): EnEeEventosApli | undefined {
+  // 1) Verifica TT y TM
+  if (getTipoTrama(frame) !== EnTipoTrama.estadisticos) return undefined;
+  if (getTipoMensaje(frame) !== EnTmEstadisticos.enviaEstadistico) return undefined;
+
+  // 2) Verifica que el payload sea de tipoRegistro EVENTOS
+  const tipoReg = getTipoRegistroEstadistico(frame);
+  if (tipoReg !== EnEstadisTipoRegistro.eventos) return undefined;
+
+  // 3) Carga payload y comprueba mínimos
+  const data = getDataSection(frame);
+  if (!data || data.length < ESTADIS_HEADER_LEN + 4) return undefined; // tipo(1)+size(1)+al menos 2 bytes de dato
+
+  // 4) Debe existir al menos 1 item
+  const nDatos = data.readUInt8(ESTADIS_HEADER_LEN - 1);
+  if (nDatos < 1) return undefined;
+
+  // 5) Primer item => código de evento (TD_UINT16 LE)
+  const tipo0 = data.readUInt8(ESTADIS_HEADER_LEN + 0);
+  const size0 = data.readUInt8(ESTADIS_HEADER_LEN + 1);
+  const start0 = ESTADIS_HEADER_LEN + 2;
+  const end0 = start0 + size0;
+  if (end0 > data.length) return undefined;
+
+  // Por doc debe ser uint16; si no coincide el 'tipo', mientras el size sea 2 lo leemos igual.
+  if (tipo0 === EnTipoDato.uint16 && size0 >= 2) {
+    return data.readUInt16LE(start0) as EnEeEventosApli;
+  }
+  if (size0 === 2) {
+    return data.readUInt16LE(start0) as EnEeEventosApli;
+  }
+
+  return undefined;
+}
+
+/** Item[0] = textoAlarma (TD_UINT16 LE) */
+export function getTextoAlarma(frame: Buffer): number | undefined {
+  if (getTipoRegistroEstadistico(frame) !== EnEstadisTipoRegistro.alarmas) return undefined;
+  
+  const data = getDataSection(frame);
+  if (!data) return undefined;
+  
+  const nDatos = data.readUInt8(ESTADIS_HEADER_LEN - 1);
+  if (nDatos < 1) return undefined;
+  
+  let offset = ESTADIS_HEADER_LEN; // comienzo de items
+  const tipo0 = data.readUInt8(offset + 0);
+  const size0 = data.readUInt8(offset + 1);
+  const start0 = offset + 2;
+  const end0 = start0 + size0;
+  if (end0 > data.length) return undefined;
+  
+  // Esperado: uint16 (size 2). Si no, intentamos LE si hay 2 bytes.
+  if (size0 >= 2) {
+    return data.readUInt16LE(start0);
+  }
+  return undefined;
+}
+
+/** Item[1] = estadoAlarma (TD_UINT8) */
+export function getEstadoAlarma(frame: Buffer): EnAlarmaEstado | undefined {
+  if (getTipoRegistroEstadistico(frame) !== EnEstadisTipoRegistro.alarmas) return undefined;
+  
+  const data = getDataSection(frame);
+  if (!data) return undefined;
+  
+  const nDatos = data.readUInt8(ESTADIS_HEADER_LEN - 1);
+  if (nDatos < 2) return undefined;
+  
+  // Saltar primer item
+  let offset = ESTADIS_HEADER_LEN;
+  const size0 = data.readUInt8(offset + 1);
+  offset = offset + 2 + size0;
+  
+  const tipo1 = data.readUInt8(offset + 0);
+  const size1 = data.readUInt8(offset + 1);
+  const start1 = offset + 2;
+  const end1 = start1 + size1;
+  if (end1 > data.length || size1 < 1) return undefined;
+  
+  const v = data.readUInt8(start1);
+  return v as EnAlarmaEstado;
+}
+
+/** Item[2] = accionConfigurada (TD_UINT8) */
+export function getAccionConfigurada(frame: Buffer): EnAlarmasAccion | undefined {
+  if (getTipoRegistroEstadistico(frame) !== EnEstadisTipoRegistro.alarmas) return undefined;
+  
+  const data = getDataSection(frame);
+  if (!data) return undefined;
+  
+  const nDatos = data.readUInt8(ESTADIS_HEADER_LEN - 1);
+  if (nDatos < 3) return undefined;
+  
+  // Saltar item[0]
+  let offset = ESTADIS_HEADER_LEN;
+  const size0 = data.readUInt8(offset + 1);
+  offset = offset + 2 + size0;
+  
+  // Saltar item[1]
+  const size1 = data.readUInt8(offset + 1);
+  offset = offset + 2 + size1;
+  
+  // Leer item[2]
+  const tipo2 = data.readUInt8(offset + 0);
+  const size2 = data.readUInt8(offset + 1);
+  const start2 = offset + 2;
+  const end2 = start2 + size2;
+  if (end2 > data.length || size2 < 1) return undefined;
+  
+  const v = data.readUInt8(start2);
+  return v as EnAlarmasAccion;
+}
+
+// Valida que sea TT=ESTADISTICOS, TM=enviaEstadistico y tipoRegistro=ALARMAS
+// function isFrameEstadisticoAlarma(frame: Buffer): boolean {
+//   if (getTipoTrama(frame) !== EnTipoTrama.estadisticos) return false;
+//   if (getTipoMensaje(frame) !== EnTmEstadisticos.enviaEstadistico) return false;
+
+//   const data = getDataSection(frame);
+//   if (!data || data.length < ESTADIS_HEADER_LEN) return false;
+
+//   const tipoRegistro = data.readUInt8(7); // offset dentro del payload
+//   return tipoRegistro === EnEstadisTipoRegistro.alarmas;
+// }
+

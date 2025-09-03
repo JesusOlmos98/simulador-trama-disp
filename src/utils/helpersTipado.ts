@@ -1,25 +1,6 @@
 // Helpers de tipado
 
 import { PresentacionDto } from 'src/dto/tt_sistema.dto';
-import {
-  EnTipoTrama,
-  EnTmOmegaPantallaPlaca,
-  EnTmDepuracion,
-  EnTmServiciosClaveValor,
-  EnTmSistema,
-  EnTmEstadisticos,
-  EnTmComuniBle,
-  EnTmDff,
-  EnTmImportExport,
-  EnTmDescargaSubidaFicheros,
-  EnTmActualizacionV2,
-  EnTmImportExportV2,
-  EnScvTipo,
-  EnTipoDato,
-} from './enums';
-
-export const TIPO_DATO_ACCION_REGISTRO_DATOS_GENERICO = 47; // 0x2F
-export const ACK_TTL_MS = 2000; // vencimiento de pendientes (evitar colisiones entre segundos)
 
 export function isObject(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null;
@@ -80,65 +61,65 @@ export function readPresentacion(
   // return isPresentacionDto(datos) ? (datos as PresentacionDto) : def;
 }
 
-// ----------------------------- Helpers de codificación de valores SCV -----------------------------
-export function encodeScvValor(
-  tipo: EnTipoDato,
-  valor: number | string | Buffer,
-): Buffer {
-  if (Buffer.isBuffer(valor)) return valor;
+// // ----------------------------- Helpers de codificación de valores SCV -----------------------------
+// export function encodeScvValor(
+//   tipo: EnTipoDato,
+//   valor: number | string | Buffer,
+// ): Buffer {
+//   if (Buffer.isBuffer(valor)) return valor;
 
-  switch (tipo) {
-    case EnTipoDato.uint8: {
-      const b = Buffer.alloc(1);
-      b.writeUInt8((Number(valor) >>> 0) & 0xff, 0);
-      return b;
-    }
-    case EnTipoDato.int8: {
-      const b = Buffer.alloc(1);
-      b.writeInt8(Number(valor) | 0, 0);
-      return b;
-    }
-    case EnTipoDato.uint16: {
-      const b = Buffer.alloc(2);
-      b.writeUInt16LE((Number(valor) >>> 0) & 0xffff, 0);
-      return b;
-    }
-    case EnTipoDato.int16: {
-      const b = Buffer.alloc(2);
-      b.writeInt16LE(Number(valor) | 0, 0);
-      return b;
-    }
-    case EnTipoDato.uint32: {
-      const b = Buffer.alloc(4);
-      b.writeUInt32LE(Number(valor) >>> 0, 0);
-      return b;
-    }
-    case EnTipoDato.int32: {
-      const b = Buffer.alloc(4);
-      b.writeInt32LE(Number(valor) | 0, 0);
-      return b;
-    }
-    case EnTipoDato.float: {
-      const b = Buffer.alloc(4);
-      b.writeFloatLE(Number(valor), 0);
-      return b;
-    }
-    case EnTipoDato.string4:
-    case EnTipoDato.string32:
-    case EnTipoDato.stringUnicode16:
-    case EnTipoDato.stringUnicode32:
-    case EnTipoDato.concatenado: {
-      // Por simplicidad codificamos strings en UTF-8; si el server requiere Unicode-16, cambia aquí.
-      return Buffer.from(String(valor), 'utf8');
-    }
-    default: {
-      // Fallback razonable: si nos llega un número lo empaquetamos como uint32; si no, utf8
-      if (typeof valor === 'number') {
-        const b = Buffer.alloc(4);
-        b.writeUInt32LE(valor >>> 0, 0);
-        return b;
-      }
-      return Buffer.from(String(valor), 'utf8');
-    }
-  }
-}
+//   switch (tipo) {
+//     case EnTipoDato.uint8: {
+//       const b = Buffer.alloc(1);
+//       b.writeUInt8((Number(valor) >>> 0) & 0xff, 0);
+//       return b;
+//     }
+//     case EnTipoDato.int8: {
+//       const b = Buffer.alloc(1);
+//       b.writeInt8(Number(valor) | 0, 0);
+//       return b;
+//     }
+//     case EnTipoDato.uint16: {
+//       const b = Buffer.alloc(2);
+//       b.writeUInt16LE((Number(valor) >>> 0) & 0xffff, 0);
+//       return b;
+//     }
+//     case EnTipoDato.int16: {
+//       const b = Buffer.alloc(2);
+//       b.writeInt16LE(Number(valor) | 0, 0);
+//       return b;
+//     }
+//     case EnTipoDato.uint32: {
+//       const b = Buffer.alloc(4);
+//       b.writeUInt32LE(Number(valor) >>> 0, 0);
+//       return b;
+//     }
+//     case EnTipoDato.int32: {
+//       const b = Buffer.alloc(4);
+//       b.writeInt32LE(Number(valor) | 0, 0);
+//       return b;
+//     }
+//     case EnTipoDato.float: {
+//       const b = Buffer.alloc(4);
+//       b.writeFloatLE(Number(valor), 0);
+//       return b;
+//     }
+//     case EnTipoDato.string4:
+//     case EnTipoDato.string32:
+//     case EnTipoDato.stringUnicode16:
+//     case EnTipoDato.stringUnicode32:
+//     case EnTipoDato.concatenado: {
+//       // Por simplicidad codificamos strings en UTF-8; si el server requiere Unicode-16, cambia aquí.
+//       return Buffer.from(String(valor), 'utf8');
+//     }
+//     default: {
+//       // Fallback razonable: si nos llega un número lo empaquetamos como uint32; si no, utf8
+//       if (typeof valor === 'number') {
+//         const b = Buffer.alloc(4);
+//         b.writeUInt32LE(valor >>> 0, 0);
+//         return b;
+//       }
+//       return Buffer.from(String(valor), 'utf8');
+//     }
+//   }
+// }

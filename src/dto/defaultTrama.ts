@@ -1,17 +1,8 @@
-import {
-  EnContadoresTipo,
-  EnEstadisPeriodicidad,
-  EnEstadisticosControladores,
-  EnEstadisTipoRegistro,
-  EnEstadoDatoEstadistico,
-  EnGtUnidades,
-  EnTipoDato,
-  EnTipoEquipo,
-} from 'src/utils/enums';
-import { PresentacionDto } from './tt_sistema.dto';
-import { EnviaEstadisticoDto, EstadisticoActividadDto, EstadisticoContadorDto, EstadisticoDato, EstadisticoValorDto, serializarDatosEstadisticoActividad, serializarDatosEstadisticoContador, serializarDatosEstadisticoValor } from './tt_estadisticos.dto';
-import { Fecha, Tiempo } from './frame.dto';
-import { TIPO_DATO_ACCION_REGISTRO_DATOS_GENERICO } from 'src/utils/helpersTipado';
+import { EnTipoEquipo, EnEstadisticosControladores, EnEstadisPeriodicidad, EnEstadoDatoEstadistico, EnGtUnidades, EnTipoDato, EnEstadisTipoRegistro, EnContadoresTipo, EnEeEventosApli, EnAlarmas, EnAlarmaEstado, EnAlarmasAccion } from "src/utils/enums";
+import { Tiempo, Fecha } from "src/utils/tiposGlobales";
+import { EstadisticoValorDto, EstadisticoDato, serializarDatosEstadisticoValor, EnviaEstadisticoDto, EstadisticoContadorDto, serializarDatosEstadisticoContador, EstadisticoActividadDto, serializarDatosEstadisticoActividad, EeInicioCrianzaDto, serializarDatosEstadisticoEvento, EstadisticoAlarmaDto, serializarDatosEstadisticoAlarma } from "./tt_estadisticos.dto";
+import { PresentacionDto } from "./tt_sistema.dto";
+import { TIPO_DATO_ACCION_REGISTRO_DATOS_GENERICO } from "src/utils/constGlobales";
 
 // * Usados como ejemplo rápido para enviar tramas.
 
@@ -149,4 +140,68 @@ export const defaultDataActividadCalefaccion1: EnviaEstadisticoDto = {
 
   numeroDatos: datosActividadCalefaccion1.length,
   datos: datosActividadCalefaccion1,
+};
+
+//* ------------------------------------------------------------------------------------------------------------------------------
+//* -------------------------------------------------- defaultDataEventoInicioCrianza -------------------------------------------
+//* ------------------------------------------------------------------------------------------------------------------------------
+
+export const defaultEventoInicioCrianza: EeInicioCrianzaDto = {
+  evento: EnEeEventosApli.inicioCrianza, // TD_UINT16
+  diaCrianza: 0,                         // TD_INT16
+  idUnicoCrianza: 0xA1B2C3D4,            // TD_UINT32
+};
+
+// Serializamos a la lista de items (tipo/size/dato)
+const datosEventoInicioCrianza: EstadisticoDato[] = serializarDatosEstadisticoEvento(defaultEventoInicioCrianza);
+
+export const defaultDataEventoInicioCrianza: EnviaEstadisticoDto = {
+  mac: 0x12345678,
+  tipoDato: TIPO_DATO_ACCION_REGISTRO_DATOS_GENERICO,    // 47
+  identificadorUnicoDentroDelSegundo: 0x00,              // se rellena con nextStatId()
+  version: 1,
+  tipoRegistro: EnEstadisTipoRegistro.eventos,           // 👈 evento
+  res1: 0x00,
+  res2: 0x00,
+  res3: 0x00,
+  res4: 0x00,
+
+  fecha: { dia: 11, mes: 11, anyo: 2020 } as Fecha,
+  hora: { hora: 11, min: 11, seg: 11 } as Tiempo,
+  res5: 0x00,
+
+  numeroDatos: datosEventoInicioCrianza.length,
+  datos: datosEventoInicioCrianza,
+};
+
+//* ------------------------------------------------------------------------------------------------------------------------------
+//* -------------------------------------------------- defaultDataAlarmaTempAlta ------------------------------------------------
+//* ------------------------------------------------------------------------------------------------------------------------------
+
+export const defaultDatosAlarmaTempAlta: EstadisticoAlarmaDto = {
+  textoAlarma: EnAlarmas.temperaturaRelativaMaxima,               // TD_UINT16 (ID de texto/alarma)
+  estadoAlarma: EnAlarmaEstado.on,                                // TD_UINT8 (estado actual: OFF/ON_ALARMA/ON_AVISO)
+  accionConfigurada: EnAlarmasAccion.onAlarma,                    // TD_UINT8 (config: OFF/ALARM/AVISO)
+};
+
+// Serializamos a la lista de items (tipo/size/dato)
+const datosAlarmaTempAlta: EstadisticoDato[] = serializarDatosEstadisticoAlarma(defaultDatosAlarmaTempAlta);
+
+export const defaultDataAlarmaTempAlta: EnviaEstadisticoDto = {
+  mac: 0x12345678,
+  tipoDato: TIPO_DATO_ACCION_REGISTRO_DATOS_GENERICO,    // 47
+  identificadorUnicoDentroDelSegundo: 0x00,              // se rellena con nextStatId()
+  version: 1,
+  tipoRegistro: EnEstadisTipoRegistro.alarmas,           // 👈 alarma
+  res1: 0x00,
+  res2: 0x00,
+  res3: 0x00,
+  res4: 0x00,
+
+  fecha: { dia: 11, mes: 11, anyo: 2020 } as Fecha,
+  hora: { hora: 11, min: 11, seg: 11 } as Tiempo,
+  res5: 0x00,
+
+  numeroDatos: datosAlarmaTempAlta.length,
+  datos: datosAlarmaTempAlta,
 };

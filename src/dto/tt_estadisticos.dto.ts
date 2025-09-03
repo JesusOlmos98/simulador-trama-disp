@@ -1,19 +1,5 @@
-import {
-  EnTmEstadisticos,
-  EnEstadisTipoRegistro,
-  EnTipoDato,
-  EnEstadisPeriodicidad,
-  EnEstadoDatoEstadistico,
-  EnGtUnidades,
-  EnContadoresTipo,
-  EnEstadisticosControladores,
-  EnCrianzaAltaBajaAccion,
-  EnCrianzaTipoAnimal,
-  EnEeEventosApli,
-  EnAlarmaEstado,
-  EnAlarmasAccion,
-} from 'src/utils/enums';
-import { Fecha, Tiempo } from './frame.dto';
+import { EnTipoDato, EnEstadisTipoRegistro, EnEstadisticosControladores, EnEstadisPeriodicidad, EnEstadoDatoEstadistico, EnGtUnidades, EnContadoresTipo, EnTmEstadisticos, EnEeEventosApli, EnCrianzaTipoAnimal, EnCrianzaAltaBajaAccion, EnAlarmaEstado, EnAlarmasAccion } from "src/utils/enums";
+import { Fecha, Tiempo } from "src/utils/tiposGlobales";
 
 // -------------------------------------------------- TM_ESTADISTICOS_envia_estadistico --------------------------------------------------
 
@@ -243,7 +229,6 @@ export function serializarDatosEstadisticoValor(d: EstadisticoValorDto): Estadis
   return out;
 }
 
-
 // -------------------------------- serializarDatosEstadisticoContador --------------------------------
 export function serializarDatosEstadisticoContador(dto: EstadisticoContadorDto): EstadisticoDato[] {
   const valorTipo = dto.valorTipo ?? EnTipoDato.uint32;
@@ -361,19 +346,136 @@ export interface EeAltaBajaRetiradaDto {
 }
 
 /** Unión útil si necesitas un tipo común */
-export type EeEventoPayload =
+export type EstadisticoEventoDto =
   | EeInicioCrianzaDto
   | EeEntradaAnimalesDto
   | EeFinCrianzaDto
   | EeAltaBajaRetiradaDto;
 
 /** (Opcional) Mapa evento -> DTO para tipar routers/clasificadores */
-export type EeEventosPayloadMap = {
-  [EnEeEventosApli.inicioCrianza]: EeInicioCrianzaDto;
-  [EnEeEventosApli.entradaAnimales]: EeEntradaAnimalesDto;
-  [EnEeEventosApli.finCrianza]: EeFinCrianzaDto;
-  [EnEeEventosApli.altaBajaRetirada]: EeAltaBajaRetiradaDto;
-};
+// export type EeEventosPayloadMap = {
+//   [EnEeEventosApli.inicioCrianza]: EeInicioCrianzaDto;
+//   [EnEeEventosApli.entradaAnimales]: EeEntradaAnimalesDto;
+//   [EnEeEventosApli.finCrianza]: EeFinCrianzaDto;
+//   [EnEeEventosApli.altaBajaRetirada]: EeAltaBajaRetiradaDto;
+// };
+
+export function serializarDatosEstadisticoEvento(dto: EstadisticoEventoDto): EstadisticoDato[] {
+  const out: EstadisticoDato[] = [];
+
+  // [0] ENUM_EE_EVENTOS_* (TD_UINT16)
+  const ev = Buffer.alloc(2);
+  ev.writeUInt16LE(dto.evento >>> 0, 0);
+  out.push({ tipoDato: EnTipoDato.uint16, sizeDatoByte: 2, dato: ev });
+
+  switch (dto.evento) {
+    case EnEeEventosApli.inicioCrianza: {
+      // dia_crianza (TD_INT16)
+      const dia = Buffer.alloc(2);
+      dia.writeInt16LE(dto.diaCrianza ?? 0, 0);
+      out.push({ tipoDato: EnTipoDato.int16, sizeDatoByte: 2, dato: dia });
+
+      // ID_unico_crianza (TD_UINT32)
+      const id = Buffer.alloc(4);
+      id.writeUInt32LE(dto.idUnicoCrianza >>> 0, 0);
+      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: id });
+      break;
+    }
+
+    case EnEeEventosApli.entradaAnimales: {
+      // ID_unico_crianza (TD_UINT32)
+      const id = Buffer.alloc(4);
+      id.writeUInt32LE(dto.idUnicoCrianza >>> 0, 0);
+      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: id });
+
+      // inicio_crianza_tipo_animal (TD_UINT8)
+      const tipoAnimal = Buffer.from([ (dto.inicioCrianzaTipoAnimal ?? 0) & 0xFF ]);
+      out.push({ tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: tipoAnimal });
+
+      // dia_entrada_animales (TD_INT16)
+      const diaEntrada = Buffer.alloc(2);
+      diaEntrada.writeInt16LE(dto.diaEntradaAnimales ?? 0, 0);
+      out.push({ tipoDato: EnTipoDato.int16, sizeDatoByte: 2, dato: diaEntrada });
+
+      // N_animales_inicio_crianza_machos_mixtos (TD_UINT32)
+      const nMachosMixtos = Buffer.alloc(4);
+      nMachosMixtos.writeUInt32LE((dto.nAnimalesInicioCrianzaMachosMixtos ?? 0) >>> 0, 0);
+      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: nMachosMixtos });
+
+      // N_animales_inicio_crianza_hembras (TD_UINT32)
+      const nHembras = Buffer.alloc(4);
+      nHembras.writeUInt32LE((dto.nAnimalesInicioCrianzaHembras ?? 0) >>> 0, 0);
+      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: nHembras });
+      break;
+    }
+
+    case EnEeEventosApli.finCrianza: {
+      // ID_unico_crianza (TD_UINT32)
+      const id = Buffer.alloc(4);
+      id.writeUInt32LE(dto.idUnicoCrianza >>> 0, 0);
+      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: id });
+
+      // dia_crianza (TD_INT16)
+      const dia = Buffer.alloc(2);
+      dia.writeInt16LE(dto.diaCrianza ?? 0, 0);
+      out.push({ tipoDato: EnTipoDato.int16, sizeDatoByte: 2, dato: dia });
+
+      // N_animales_actuales_machos_mixtos (TD_UINT32)
+      const nMachosMixtos = Buffer.alloc(4);
+      nMachosMixtos.writeUInt32LE((dto.nAnimalesActualesMachosMixtos ?? 0) >>> 0, 0);
+      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: nMachosMixtos });
+
+      // N_animales_actuales_hembras (TD_UINT32)
+      const nHembras = Buffer.alloc(4);
+      nHembras.writeUInt32LE((dto.nAnimalesActualesHembras ?? 0) >>> 0, 0);
+      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: nHembras });
+      break;
+    }
+
+    case EnEeEventosApli.altaBajaRetirada: {
+      // ID_unico_crianza (TD_UINT32)
+      const id = Buffer.alloc(4);
+      id.writeUInt32LE(dto.idUnicoCrianza >>> 0, 0);
+      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: id });
+
+      // accion (TD_UINT8)
+      const accion = Buffer.from([ (dto.accion ?? 0) & 0xFF ]);
+      out.push({ tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: accion });
+
+      // dia_crianza (TD_INT16)
+      const dia = Buffer.alloc(2);
+      dia.writeInt16LE(dto.diaCrianza ?? 0, 0);
+      out.push({ tipoDato: EnTipoDato.int16, sizeDatoByte: 2, dato: dia });
+
+      // fecha_introducir_accion (TD_FECHA) -> yyyymmdd (uint32 LE)
+      const yyyy = dto.fechaIntroducirAccion?.anyo ?? 0;
+      const mm   = dto.fechaIntroducirAccion?.mes  ?? 0;
+      const dd   = dto.fechaIntroducirAccion?.dia  ?? 0;
+      const fechaNum = (yyyy * 10000 + mm * 100 + dd) >>> 0;
+      const fechaBuf = Buffer.alloc(4);
+      fechaBuf.writeUInt32LE(fechaNum, 0);
+      out.push({ tipoDato: EnTipoDato.fecha, sizeDatoByte: 4, dato: fechaBuf });
+
+      // N_animales_accion_machos_mixtos (TD_UINT32)
+      const nMachosMixtos = Buffer.alloc(4);
+      nMachosMixtos.writeUInt32LE((dto.nAnimalesAccionMachosMixtos ?? 0) >>> 0, 0);
+      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: nMachosMixtos });
+
+      // N_animales_accion_hembras (TD_UINT32)
+      const nHembras = Buffer.alloc(4);
+      nHembras.writeUInt32LE((dto.nAnimalesAccionHembras ?? 0) >>> 0, 0);
+      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: nHembras });
+      break;
+    }
+
+    default: {
+      // por seguridad, aunque no debería entrar aquí
+      throw new Error(`Evento no soportado: ${(dto as any)?.evento}`);
+    }
+  }
+
+  return out;
+}
 
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -394,4 +496,24 @@ export interface EstadisticoAlarmaDto {
    * EN_ALARMAS_ACCION
    */
   accionConfigurada: EnAlarmasAccion;
+}
+
+export function serializarDatosEstadisticoAlarma(dto: EstadisticoAlarmaDto): EstadisticoDato[] {
+  // Texto alarma (TD_UINT16)
+  const texto = Buffer.alloc(2);
+  texto.writeUInt16LE(dto.textoAlarma >>> 0, 0);
+
+  // Estado alarma (TD_UINT8)
+  const estado = Buffer.from([ (dto.estadoAlarma ?? 0) & 0xFF ]);
+
+  // EN_ALARMAS_ACCION (config) (TD_UINT8)
+  const config = Buffer.from([ (dto.accionConfigurada ?? 0) & 0xFF ]);
+
+  const out: EstadisticoDato[] = [
+    { tipoDato: EnTipoDato.uint16, sizeDatoByte: 2, dato: texto },  // textoAlarma
+    { tipoDato: EnTipoDato.uint8,  sizeDatoByte: 1, dato: estado }, // estadoAlarma (OFF/ON_ALARMA/ON_AVISO)
+    { tipoDato: EnTipoDato.uint8,  sizeDatoByte: 1, dato: config }, // configAccion (OFF/ALARM/AVISO)
+  ];
+
+  return out;
 }

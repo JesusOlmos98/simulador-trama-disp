@@ -676,6 +676,103 @@ export enum EnAlarmaEstado {
   on = 1,
 }
 
+export enum EnAlarmas {
+  noAlarma,
+  sinSondaHumedad,
+  ct1SinSondas,
+  ct2SinSondas,
+  ct3SinSondas,
+  ct4SinSondas,
+
+  eaASinSondas,
+  eaBSinSondas,
+  eaCSinSondas,
+  eaDSinSondas,
+  eaESinSondas,
+
+  ventilacionSinSondas,
+
+  cal1SinSondas,
+  cal2SinSondas,
+
+  sonda1NoConectada,
+  sonda2NoConectada,
+  sonda3NoConectada,
+  sonda4NoConectada,
+
+  sonda1DiferenciaMax,
+  sonda2DiferenciaMax,
+  sonda3DiferenciaMax,
+  sonda4DiferenciaMax,
+
+  sonda1DiferenciaMin,
+  sonda2DiferenciaMin,
+  sonda3DiferenciaMin,
+  sonda4DiferenciaMin,
+
+  sonda1Cortocircuitada,
+  sonda2Cortocircuitada,
+  sonda3Cortocircuitada,
+  sonda4Cortocircuitada,
+
+  co2Max,
+  nh3Max,
+
+  sinSondaNh3,
+  sinSondaCo2,
+
+  sondaHumedadInteriorNc,
+
+  sondaDepresionNc,
+
+  sondaHumedadExteriorNc,
+
+  humedadRelativaMaxima,
+  humedadRelativaMinima,
+
+  temperaturaExteriorSinSonda,
+
+  cr1SinSondas,
+  cr2SinSondas,
+
+  temperaturaRelativaMaxima,
+  temperaturaRelativaMinima,
+
+  aguaVigilanciaDerrameCGeneral,
+  aguaVigilanciaDerrameLinea1,
+  aguaVigilanciaDerrameLinea2,
+  aguaVigilanciaDerrameLinea3,
+  aguaVigilanciaDerrameLinea4,
+  aguaVigilanciaDerrameLinea5,
+
+  aguaVigilanciaMinimoCGeneral,
+  aguaVigilanciaMinimoLinea1,
+  aguaVigilanciaMinimoLinea2,
+  aguaVigilanciaMinimoLinea3,
+  aguaVigilanciaMinimoLinea4,
+  aguaVigilanciaMinimoLinea5,
+
+  cal1Valvula3Vias,
+  cal2Valvula3Vias,
+
+  errorEeprom,
+  errorImportacionDefectuosa,
+
+  motorD1Extremo,
+  motorD2Extremo,
+
+  motorD1Atasco,
+  motorD2Atasco,
+
+  motorD1SentidoInvertido,
+  motorD2SentidoInvertido,
+
+  motorD1FcInvertido,
+  motorD2FcInvertido,
+
+  maxAlarmas,
+}
+
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Registros_eventos.pdf XXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 /** Eventos de aplicación (Entradas/Salidas de crianza). */
