@@ -2,15 +2,42 @@ import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { Socket } from 'node:net';
 import { josLogger } from 'src/utils/josLogger';
 import { crc16IBM } from 'src/utils/crc';
-import { ConfigFinalTxDto, EstadoDispositivoTxDto, PresentacionDto, ProgresoActualizacionTxDto, UrlDescargaOtaTxDto } from 'src/dto/tt_sistema.dto';
+import {
+  ConfigFinalTxDto,
+  EstadoDispositivoTxDto,
+  PresentacionDto,
+  ProgresoActualizacionTxDto,
+  UrlDescargaOtaTxDto,
+} from 'src/dto/tt_sistema.dto';
 import { PeticionConsolaDto } from 'src/dto/tt_depuracion.dto';
-import { defaultDataActividadCalefaccion1 as defaultDataActividadCalefaccion1, defaultDataAlarmaTempAlta, defaultDataContadorAgua, defaultDataEventoInicioCrianza, defaultDataTempSonda1 } from 'src/dto/defaultTrama';
-import { getDataSection, getTipoMensaje, getTipoTrama, hexDump } from 'src/utils/getters';
-import { EnTipoTrama, EnTmEstadisticos } from 'src/utils/enums';
+import {
+  defaultDataActividadCalefaccion1 as defaultDataActividadCalefaccion1,
+  defaultDataAlarmaTempAlta,
+  defaultDataCambioParametro,
+  defaultDataContadorAgua,
+  defaultDataEventoInicioCrianza,
+  defaultDataTempSonda1,
+} from 'src/dto/defaultTrama';
+import { EnTipoTrama, EnTmEstadisticos } from 'src/utils/globals/enums';
 import { EnviaEstadisticoDto } from 'src/dto/tt_estadisticos.dto';
 import { env } from 'node:process';
 import { FrameDto } from 'src/dto/frame.dto';
-import { DESTINY_PORT, DESTINY_HOST, PROTO_VERSION, MAX_DATA_BYTES, START, END, ACK_TIMEOUT_MS, ACK_TTL_MS } from 'src/utils/constGlobales';
+import {
+  DESTINY_PORT,
+  DESTINY_HOST,
+  PROTO_VERSION,
+  MAX_DATA_BYTES,
+  START,
+  END,
+  ACK_TIMEOUT_MS,
+  ACK_TTL_MS,
+} from 'src/utils/globals/constGlobales';
+import {
+  getTipoTrama,
+  getTipoMensaje,
+  getDataSection,
+} from 'src/utils/get/getTrama';
+import { hexDump } from 'src/utils/helpers';
 
 //! CAPA 0
 
@@ -19,8 +46,8 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   private socket: Socket | null = null;
 
   // --- Control de estadísticos en vuelo ---
-  private statIdSecond = 0;                   // segundo (epoch) del último ID generado
-  private statIdCounter = 0;                  // contador 0..255 dentro del segundo
+  private statIdSecond = 0; // segundo (epoch) del último ID generado
+  private statIdCounter = 0; // contador 0..255 dentro del segundo
   private pendingStats = new Map<number, { ts: number }>(); // id -> timestamp envío
   private receivedAcks = new Set<number>();
 
@@ -39,14 +66,14 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
       this.statIdSecond = sec;
       this.statIdCounter = 0;
     }
-    const id = this.statIdCounter & 0xFF;
-    this.statIdCounter = (this.statIdCounter + 1) & 0xFF;
+    const id = this.statIdCounter & 0xff;
+    this.statIdCounter = (this.statIdCounter + 1) & 0xff;
     return id;
   }
 
   /** Registra un estadístico pendiente de ACK. */
   public trackPendingStat(id: number) {
-    this.pendingStats.set(id & 0xFF, { ts: Date.now() });
+    this.pendingStats.set(id & 0xff, { ts: Date.now() });
   }
 
   /** Limpia pendientes antiguos para evitar choque entre segundos distintos. */
@@ -60,27 +87,30 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   }
 
   private async delay(ms: number) {
-    return await new Promise<void>(r => setTimeout(r, ms));
+    return await new Promise<void>((r) => setTimeout(r, ms));
   }
 
   // ------------------------------------------- CONEXIÓN -------------------------------------------
   private connect() {
-
     this.socket = new Socket();
     // this.socket.setNoDelay(true);
 
     this.socket.connect(DESTINY_PORT, DESTINY_HOST, () => {
-      josLogger.debug("env.destinyHost: " + env.destinyHost);
-      josLogger.info(`🔌 Cliente TCP conectado a ${DESTINY_HOST}:${DESTINY_PORT}`);
+      josLogger.debug('env.destinyHost: ' + env.destinyHost);
+      josLogger.info(
+        `🔌 Cliente TCP conectado a ${DESTINY_HOST}:${DESTINY_PORT}`,
+      );
     });
 
-    this.socket.on('data', serverResponse => {
-
+    //* ------------------------------ ↓↓↓ socket on data ↓↓↓ ------------------------------
+    this.socket.on('data', (serverResponse) => {
       try {
         const tt = getTipoTrama(serverResponse);
         const tm = getTipoMensaje(serverResponse);
 
-        josLogger.debug('La respuesta (RX) probablemente sea el ACK de la última operación.');
+        josLogger.debug(
+          'La respuesta (RX) probablemente sea el ACK de la última operación.',
+        );
         josLogger.debug('📨 RX raw: ' + serverResponse.toString());
         josLogger.debug(`📨 RX len=${serverResponse.length}`);
         josLogger.debug('📨 RX HEX:\n' + hexDump(serverResponse));
@@ -91,11 +121,14 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         josLogger.debug('📨 Data ACK HEX: ' + dataACK.toString('hex'));
         josLogger.debug('📨 RX len=' + serverResponse.length);
 
-        if (tt === EnTipoTrama.estadisticos && tm === EnTmEstadisticos.rtEstadistico) {
+        if (
+          tt === EnTipoTrama.estadisticos &&
+          tm === EnTmEstadisticos.rtEstadistico
+        ) {
           const dataACK = getDataSection(serverResponse);
           const ackId = dataACK.readUInt8(dataACK.length - 1);
 
-          this.receivedAcks.add(ackId & 0xFF);                 // lo marca como recibido
+          this.receivedAcks.add(ackId & 0xff); // lo marca como recibido
           josLogger.info(`✅ ACK estadístico id=${ackId} recibido`);
 
           // (opcional) si mantienes tus métricas antiguas:
@@ -103,25 +136,24 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
 
           this.sweepPendingStats();
           return; // ya tratado
-
         }
-
       } catch (e) {
         josLogger.error('Error procesando RX: ' + (e as Error).message);
       }
-
     });
+    //* ------------------------------ ↑↑↑ socket on data ↑↑↑ ------------------------------
 
-    this.socket.on('error', e => josLogger.error('❗ Socket error: ' + e.message));
+    this.socket.on('error', (e) =>
+      josLogger.error('❗ Socket error: ' + e.message),
+    );
 
     this.socket.on('close', () => {
-      josLogger.error("env.destinyHost: " + env.destinyHost);
-      josLogger.error("env.destinyPort: " + env.destinyPort);
+      josLogger.error('env.destinyHost: ' + env.destinyHost);
+      josLogger.error('env.destinyPort: ' + env.destinyPort);
       josLogger.error('process.env.DESTINY_PORT: ' + process.env.DESTINY_PORT);
       josLogger.error('🛑 Conexión cerrada. Reintentando en 1s…');
       setTimeout(() => this.connect(), 1000);
     });
-
   }
 
   // ------------------------------------------- ENVÍO -------------------------------------------
@@ -142,9 +174,24 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
 
   // ------------------------------------------- BUILDERS -------------------------------------------
   /** Builder genérico de FrameDto a partir de parámetros sueltos, crea el frame. */
-  crearFrame(params: { nodoOrigen: number, nodoDestino: number, tipoTrama: number, tipoMensaje: number, data: Buffer, reserva?: number, versionProtocolo?: number }): FrameDto {
-
-    const { nodoOrigen, nodoDestino, tipoTrama, tipoMensaje, data, reserva = 0, versionProtocolo = PROTO_VERSION } = params;
+  crearFrame(params: {
+    nodoOrigen: number;
+    nodoDestino: number;
+    tipoTrama: number;
+    tipoMensaje: number;
+    data: Buffer;
+    reserva?: number;
+    versionProtocolo?: number;
+  }): FrameDto {
+    const {
+      nodoOrigen,
+      nodoDestino,
+      tipoTrama,
+      tipoMensaje,
+      data,
+      reserva = 0,
+      versionProtocolo = PROTO_VERSION,
+    } = params;
 
     if (data.length > MAX_DATA_BYTES) {
       throw new Error(`El cuerpo supera ${MAX_DATA_BYTES} bytes`);
@@ -160,7 +207,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
       tipoMensaje,
       longitud: data.length,
       datos: data, // Buffer
-      crc: 0,      // done se recalcula en serializeFrame
+      crc: 0, // done se recalcula en serializeFrame
       finTrama: END,
     };
 
@@ -175,21 +222,28 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     // Header (NO incluye el "start")
     const header = Buffer.alloc(1 + 1 + 2 + 2 + 1 + 1 + 2);
     let offset = 0;
-    header.writeUInt8(f.versionProtocolo, offset); offset += 1;
-    header.writeUInt8(f.reserva ?? 0, offset); offset += 1;
-    header.writeUInt16LE(f.nodoOrigen, offset); offset += 2;
-    header.writeUInt16LE(f.nodoDestino, offset); offset += 2;
-    header.writeUInt8(f.tipoTrama, offset); offset += 1;
-    header.writeUInt8(f.tipoMensaje, offset); offset += 1;
-    header.writeUInt16LE(f.longitud, offset); offset += 2;
+    header.writeUInt8(f.versionProtocolo, offset);
+    offset += 1;
+    header.writeUInt8(f.reserva ?? 0, offset);
+    offset += 1;
+    header.writeUInt16LE(f.nodoOrigen, offset);
+    offset += 2;
+    header.writeUInt16LE(f.nodoDestino, offset);
+    offset += 2;
+    header.writeUInt8(f.tipoTrama, offset);
+    offset += 1;
+    header.writeUInt8(f.tipoMensaje, offset);
+    offset += 1;
+    header.writeUInt16LE(f.longitud, offset);
+    offset += 2;
 
     const datosBuf = Buffer.isBuffer(f.datos) ? f.datos : Buffer.alloc(0);
 
     // === CRC16 IBM/ARC sobre (header + datos) ===
     const crcSegment = Buffer.concat([header, datosBuf]);
-    const crcValSwapped = crc16IBM(crcSegment);        // ya viene "swappeado" como el server lo compara
+    const crcValSwapped = crc16IBM(crcSegment); // ya viene "swappeado" como el server lo compara
     const crcBuf = Buffer.alloc(2);
-    crcBuf.writeUInt16BE(crcValSwapped, 0);            // el server hace readUInt16BE → ¡coinciden!
+    crcBuf.writeUInt16BE(crcValSwapped, 0); // el server hace readUInt16BE → ¡coinciden!
 
     return Buffer.concat([start, header, datosBuf, crcBuf, end]);
   }
@@ -198,8 +252,8 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   private async waitAck(id: number, timeoutMs = ACK_TIMEOUT_MS): Promise<void> {
     const deadline = Date.now() + timeoutMs;
     while (Date.now() < deadline) {
-      if (this.receivedAcks.has(id & 0xFF)) {
-        this.receivedAcks.delete(id & 0xFF); // lo consumimos
+      if (this.receivedAcks.has(id & 0xff)) {
+        this.receivedAcks.delete(id & 0xff); // lo consumimos
         return; // ACK encontrado
       }
       await this.delay(50); // intervalo de comprobación
@@ -208,7 +262,10 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   }
 
   /** Envía un estadístico y espera su ACK; si no llega en 6s, reintenta el MISMO frame. */
-  public async enviarEstadisticoYEsperarAck(id: number, frame: FrameDto): Promise<boolean> {
+  public async enviarEstadisticoYEsperarAck(
+    id: number,
+    frame: FrameDto,
+  ): Promise<boolean> {
     // reintentos indefinidos; si quieres límite, añade un contador
     while (true) {
       this.trackPendingStat(id); // opcional: telemetría
@@ -224,13 +281,13 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         await this.waitAck(id, ACK_TIMEOUT_MS);
         return true; // ACK correcto recibido
       } catch (e) {
-        josLogger.warn(`⏳ Timeout ACK (${ACK_TIMEOUT_MS}ms) para estadístico id=${id} → reintentando MISMO frame…`);
+        josLogger.warn(
+          `⏳ Timeout ACK (${ACK_TIMEOUT_MS}ms) para estadístico id=${id} → reintentando MISMO frame…`,
+        );
         // loop: reintenta mismo frame con mismo id
       }
     }
   }
-
-
 
   // ------------------------------------------- PAYLOADS -------------------------------------------
 
@@ -248,13 +305,20 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   crearDataPresentacion(p: PresentacionDto) {
     const data = Buffer.alloc(4 * (1 + p.nVariables)); // 7 uint32
     let offset = 0;
-    data.writeUInt32LE(p.nVariables, offset); offset += 4;           // N_variables (6)
-    data.writeUInt32LE(p.versionPresentacion, offset); offset += 4;  // version_presentacion
-    data.writeUInt32LE(p.mac, offset); offset += 4;                  // MAC  
-    data.writeUInt32LE(p.versionEquipo, offset); offset += 4;        // VERSION_EQUIPO
-    data.writeUInt32LE(p.tipoEquipo, offset); offset += 4;           // tipo_equipo
-    data.writeUInt32LE(p.claveEquipo, offset); offset += 4;          // clave_equipo
-    data.writeUInt32LE(p.versionHw, offset); offset += 4;            // VERSION_HW
+    data.writeUInt32LE(p.nVariables, offset);
+    offset += 4; // N_variables (6)
+    data.writeUInt32LE(p.versionPresentacion, offset);
+    offset += 4; // version_presentacion
+    data.writeUInt32LE(p.mac, offset);
+    offset += 4; // MAC
+    data.writeUInt32LE(p.versionEquipo, offset);
+    offset += 4; // VERSION_EQUIPO
+    data.writeUInt32LE(p.tipoEquipo, offset);
+    offset += 4; // tipo_equipo
+    data.writeUInt32LE(p.claveEquipo, offset);
+    offset += 4; // clave_equipo
+    data.writeUInt32LE(p.versionHw, offset);
+    offset += 4; // VERSION_HW
     return data;
   }
 
@@ -267,10 +331,14 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   serializarDataEstadoDispositivo(ed: EstadoDispositivoTxDto) {
     const data = Buffer.alloc(16);
     let offset = 0;
-    data.writeUInt32LE(ed.nVariables, offset); offset += 4;        // N_variables
-    data.writeUInt32LE(ed.version, offset); offset += 4;           // version
-    data.writeUInt32LE(ed.idEnvio, offset); offset += 4;           // ID_ENVIO
-    data.writeUInt32LE(ed.alarmaEquipo, offset); offset += 4;      // Alarma_equipo
+    data.writeUInt32LE(ed.nVariables, offset);
+    offset += 4; // N_variables
+    data.writeUInt32LE(ed.version, offset);
+    offset += 4; // version
+    data.writeUInt32LE(ed.idEnvio, offset);
+    offset += 4; // ID_ENVIO
+    data.writeUInt32LE(ed.alarmaEquipo, offset);
+    offset += 4; // Alarma_equipo
     return data;
   }
 
@@ -279,8 +347,9 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   serializarDataConfigFinal(cf: ConfigFinalTxDto) {
     const data = Buffer.alloc(8);
     let o = 0;
-    data.writeUInt32LE(cf.version >>> 0, o); o += 4;               // version
-    data.writeUInt32LE(cf.enviaEstadisticos >>> 0, o);             // Envia_estadisticos (0/1)
+    data.writeUInt32LE(cf.version >>> 0, o);
+    o += 4; // version
+    data.writeUInt32LE(cf.enviaEstadisticos >>> 0, o); // Envia_estadisticos (0/1)
     return data;
   }
 
@@ -289,8 +358,9 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   serializarDataUrlDescargaOta(ota: UrlDescargaOtaTxDto) {
     const data = Buffer.alloc(8);
     let o = 0;
-    data.writeUInt32LE(ota.versionTramaOta >>> 0, o); o += 4;      // VERSION_TRAMA_OTA (=1)
-    data.writeUInt32LE(ota.tipoEquipo >>> 0, o);                   // tipo_equipo (EN_TIPO_EQUIPO)
+    data.writeUInt32LE(ota.versionTramaOta >>> 0, o);
+    o += 4; // VERSION_TRAMA_OTA (=1)
+    data.writeUInt32LE(ota.tipoEquipo >>> 0, o); // tipo_equipo (EN_TIPO_EQUIPO)
     return data;
   }
 
@@ -299,8 +369,10 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   serializarDataProgresoActualizacion(pa: ProgresoActualizacionTxDto) {
     const data = Buffer.alloc(12);
     let o = 0;
-    data.writeUInt32LE(pa.nVariables >>> 0, o); o += 4;            // N_variables
-    data.writeUInt32LE(pa.version >>> 0, o); o += 4;               // version
+    data.writeUInt32LE(pa.nVariables >>> 0, o);
+    o += 4; // N_variables
+    data.writeUInt32LE(pa.version >>> 0, o);
+    o += 4; // version
     data.writeUInt32LE(pa.estadoProgreso as unknown as number, o); // EN_GCSPA_EVENTO_ACTUALIZACION_SERVER
     return data;
   }
@@ -315,9 +387,9 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
-  /** Serializa los datos de una temperatura a buffer, es decir, 
-   * coge todos los objetos y subobjetos de tt_estadisticos.dto, 
-   * incluyendo los tipo Fecha y Tiempo y los serializa para obtener 
+  /** Serializa los datos de una temperatura a buffer, es decir,
+   * coge todos los objetos y subobjetos de tt_estadisticos.dto,
+   * incluyendo los tipo Fecha y Tiempo y los serializa para obtener
    * el "data" en bytes para la trama. */
   crearDataTempS1(_tempC?: number): Buffer {
     const dto = defaultDataTempSonda1;
@@ -344,116 +416,82 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     return this.serializarEstadisticoPayload(dto);
   }
 
+  crearDataCambioParametro(): Buffer {
+    const dto = defaultDataCambioParametro;
+    return this.serializarEstadisticoPayload(dto);
+  }
+
   /** Serializa un EnviaEstadisticoDto a Buffer (cabecera + items). */
   private serializarEstadisticoPayload(dto: EnviaEstadisticoDto): Buffer {
     // 4(mac)+1(tipoDatoHdr)+1(idSeg)+1(ver)+1(tipoReg)+4(res1..4)+4(fecha)+4(hora)+1(res5)+1(nDatos)
     const HEADER_LEN = 22;
-    const itemsLen = dto.datos.reduce((acc, it) => acc + 2 + (it.sizeDatoByte ?? it.dato.length), 0);
+    const itemsLen = dto.datos.reduce(
+      (acc, it) => acc + 2 + (it.sizeDatoByte ?? it.dato.length),
+      0,
+    );
     const data = Buffer.alloc(HEADER_LEN + itemsLen);
 
     let offset = 0;
 
     // cabecera estadístico
-    data.writeUInt32LE(dto.mac >>> 0, offset); offset += 4;                              // MAC
-    data.writeUInt8((dto.tipoDato & 0xFF) >>> 0, offset++);                              // tipo_dato cabecera (47)
-    data.writeUInt8((dto.identificadorUnicoDentroDelSegundo ?? 0) & 0xFF, offset++);    // id dentro del segundo
-    data.writeUInt8((dto.version ?? 0) & 0xFF, offset++);                                // VERSION
-    data.writeUInt8((dto.tipoRegistro ?? 0) & 0xFF, offset++);                           // tipo_registro
+    data.writeUInt32LE(dto.mac >>> 0, offset);
+    offset += 4; // MAC
+    data.writeUInt8((dto.tipoDato & 0xff) >>> 0, offset++); // tipo_dato cabecera (47)
+    data.writeUInt8(
+      (dto.identificadorUnicoDentroDelSegundo ?? 0) & 0xff,
+      offset++,
+    ); // id dentro del segundo
+    data.writeUInt8((dto.version ?? 0) & 0xff, offset++); // VERSION
+    data.writeUInt8((dto.tipoRegistro ?? 0) & 0xff, offset++); // tipo_registro
 
-    data.writeUInt8((dto.res1 ?? 0) & 0xFF, offset++);
-    data.writeUInt8((dto.res2 ?? 0) & 0xFF, offset++);
-    data.writeUInt8((dto.res3 ?? 0) & 0xFF, offset++);
-    data.writeUInt8((dto.res4 ?? 0) & 0xFF, offset++);
+    data.writeUInt8((dto.res1 ?? 0) & 0xff, offset++);
+    data.writeUInt8((dto.res2 ?? 0) & 0xff, offset++);
+    data.writeUInt8((dto.res3 ?? 0) & 0xff, offset++);
+    data.writeUInt8((dto.res4 ?? 0) & 0xff, offset++);
 
     // fecha -> yyyymmdd (uint32 LE)
     const yyyy = (dto.fecha.anyo ?? 0) >>> 0;
     const mm = (dto.fecha.mes ?? 0) >>> 0;
     const dd = (dto.fecha.dia ?? 0) >>> 0;
     const fechaU32 = (yyyy * 10000 + mm * 100 + dd) >>> 0;
-    data.writeUInt32LE(fechaU32, offset); offset += 4;
+    data.writeUInt32LE(fechaU32, offset);
+    offset += 4;
 
     // hora -> segundos desde 00:00 (uint32 LE)
     const hh = (dto.hora.hora ?? 0) >>> 0;
     const mi = (dto.hora.min ?? 0) >>> 0;
     const ss = (dto.hora.seg ?? 0) >>> 0;
-    const segundosDelDia = ((hh * 3600 + mi * 60 + ss) >>> 0); //jos la IA podría usar aquí el tiempoToSeg y terminamos antes
-    data.writeUInt32LE(segundosDelDia, offset); offset += 4;
+    const segundosDelDia = (hh * 3600 + mi * 60 + ss) >>> 0; //jos la IA podría usar aquí el tiempoToSeg y terminamos antes
+    data.writeUInt32LE(segundosDelDia, offset);
+    offset += 4;
 
-    data.writeUInt8((dto.res5 ?? 0) & 0xFF, offset++);
+    data.writeUInt8((dto.res5 ?? 0) & 0xff, offset++);
 
-    const nDatos = dto.datos.length & 0xFF;
-    data.writeUInt8(nDatos, offset++);                                                  // numero_datos
+    const nDatos = dto.datos.length & 0xff;
+    data.writeUInt8(nDatos, offset++); // numero_datos
 
     // items datos[]: tipo (u8) | size (u8) | dato[size]
     for (const it of dto.datos) {
       const size = it.sizeDatoByte ?? it.dato.length;
       if (size !== it.dato.length) {
-        throw new Error(`Size inconsistente en item tipo=${it.tipoDato}: sizeDatoByte=${it.sizeDatoByte} dato.len=${it.dato.length}`);
+        throw new Error(
+          `Size inconsistente en item tipo=${it.tipoDato}: sizeDatoByte=${it.sizeDatoByte} dato.len=${it.dato.length}`,
+        );
       }
-      data.writeUInt8((it.tipoDato & 0xFF) >>> 0, offset++);// tipo_dato
-      data.writeUInt8(size & 0xFF, offset++);               // size_dato_byte
-      it.dato.copy(data, offset); offset += size;           // dato[size]
+      data.writeUInt8((it.tipoDato & 0xff) >>> 0, offset++); // tipo_dato
+      data.writeUInt8(size & 0xff, offset++); // size_dato_byte
+      it.dato.copy(data, offset);
+      offset += size; // dato[size]
     }
 
     return data;
   }
 
-  // private serializarEstadisTipoEventoPayload(dto: EnviaEstadisticoDto): Buffer {
-  //   const d = Buffer.alloc(0);
-  //   return d;
-  // }
-
-  // private serializarEstadisTipoAlarmaPayload(dto: EnviaEstadisticoDto): Buffer {
-  //   const d = Buffer.alloc(0);
-  //   return d;
-  // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
@@ -468,7 +506,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   // -------------------------------------------------- TM_DEPURACION_peticion_consola --------------------------------------------------
   /** Payload: uint16 identificador_cliente (LE) */
   // serializarDepuracionPeticionConsola(p: PeticionConsolaDto) {
-  //   const data = Buffer.alloc(2);  
+  //   const data = Buffer.alloc(2);
   //   data.writeUInt16LE((p.identificadorCliente ?? 0) & 0xFFFF, 0);
   //   return data;
   // }
@@ -478,12 +516,11 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     return data;
   }
 
-
   //! En principio supongo que esto sería respuesta del propio servidor.
   // -------------------------------------------------- TM_DEPURACION_rt_peticion_consola --------------------------------------------------
   /** Payload: uint16 identificador_cliente (LE) + bytes UTF-8 de 'datos' */
   // serializarDepuracionRtPeticionConsola(r: RtPeticionConsolaDto) {
-  //   const texto = r.datos ?? "";  
+  //   const texto = r.datos ?? "";
   //   const textoBuf = Buffer.from(texto, "utf8");
   //   const data = Buffer.alloc(2 + textoBuf.length);
   //   data.writeUInt16LE((r.identificadorCliente ?? 0) & 0xFFFF, 0);
@@ -501,8 +538,6 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
-
-
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
@@ -513,13 +548,13 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
-  //! WIP: Servicios Clave Valor  
+  //! WIP: Servicios Clave Valor
   // private serializarScv(dto: ScvDto): Buffer {
-  //   const headerSize = 2 + 2 + 1 + 2; // uid (u16) + servicio (u16) + tipo (u8) + N_claves (u16)  
+  //   const headerSize = 2 + 2 + 1 + 2; // uid (u16) + servicio (u16) + tipo (u8) + N_claves (u16)
   //   const bloques: Buffer[] = [];
 
   //   for (const par of dto.claves) {
-  //     const payload = encodeScvValor(par.tipo, par.valor);  
+  //     const payload = encodeScvValor(par.tipo, par.valor);
   //     if (payload.length > 0xFFFF) throw new Error("SCV: valor excede 65535 bytes");
 
   //     const bloque = Buffer.alloc(2 + 1 + 2 + payload.length);
@@ -548,26 +583,25 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   // // ----------------------------- Serializadores públicos para cada TM -----------------------------
   // /** TM_SCV_PETICION_SERVIDOR_FINAL (0) */
   // serializarScvPeticionServidorFinal(dto: Omit<ScvDto, "tipo">) {
-  //   return this.serializarScv({ ...dto, tipo: EnScvTipo.peticion });  
+  //   return this.serializarScv({ ...dto, tipo: EnScvTipo.peticion });
   // }
   // /** TM_SCV_RT_PETICION_SERVIDOR_FINAL (1) */
   // serializarScvRtPeticionServidorFinal(dto: Omit<ScvDto, "tipo">) {
-  //   return this.serializarScv({ ...dto, tipo: EnScvTipo.respuesta });  
+  //   return this.serializarScv({ ...dto, tipo: EnScvTipo.respuesta });
   // }
   // /** TM_SCV_PETICION_FINAL_SERVIDOR (2) */
   // serializarScvPeticionFinalServidor(dto: Omit<ScvDto, "tipo">) {
-  //   return this.serializarScv({ ...dto, tipo: EnScvTipo.peticion });  
+  //   return this.serializarScv({ ...dto, tipo: EnScvTipo.peticion });
   // }
   // /** TM_SCV_RT_PETICION_FINAL_SERVIDOR (3) */
   // serializarScvRtPeticionFinalServidor(dto: Omit<ScvDto, "tipo">) {
-  //   return this.serializarScv({ ...dto, tipo: EnScvTipo.respuesta });  
+  //   return this.serializarScv({ ...dto, tipo: EnScvTipo.respuesta });
   // }
 
-
   /** Cuerpo TM_SISTEMA_TX_METRICAS:
-  *  offset 0..7  : sentNs  (u64 LE) -> process.hrtime.bigint()
-  *  offset 8..11 : seq     (u32 LE)
-  */
+   *  offset 0..7  : sentNs  (u64 LE) -> process.hrtime.bigint()
+   *  offset 8..11 : seq     (u32 LE)
+   */
   // crearDataMetricas(seq = 0) {
   //   const data = Buffer.alloc(12);
   //   const sentNs = process.hrtime.bigint();   // reloj monotónico (ns)
@@ -575,5 +609,4 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   //   data.writeUInt32LE(seq >>> 0, 8);         // u32 LE
   //   return data;
   // }
-
 }

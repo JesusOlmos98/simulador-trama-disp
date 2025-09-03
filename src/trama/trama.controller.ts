@@ -1,12 +1,37 @@
-import { Controller, Post, Body } from "@nestjs/common";
-import { defaultPresentacionCTI40, defaultDataTempSonda1, defaultDataContadorAgua, defaultDataActividadCalefaccion1, defaultDataEventoInicioCrianza, defaultDataAlarmaTempAlta } from "src/dto/defaultTrama";
-import { FrameDto } from "src/dto/frame.dto";
-import { PeticionConsolaDto } from "src/dto/tt_depuracion.dto";
-import { PresentacionDto, EstadoDispositivoTxDto, ConfigFinalTxDto, UrlDescargaOtaTxDto, ProgresoActualizacionTxDto } from "src/dto/tt_sistema.dto";
-import { TcpClientService } from "src/tcp-client/tcp-client.service";
-import { EnTipoTrama, EnTmSistema, EnTipoEquipo, EnGcspaEventoActualizacionServer, EnTmEstadisticos, EnTmDepuracion } from "src/utils/enums";
-import { readPresentacion, readNodoOrigen, readNodoDestino } from "src/utils/helpersTipado";
-import { josLogger } from "src/utils/josLogger";
+import { Controller, Post, Body } from '@nestjs/common';
+import {
+  defaultPresentacionCTI40,
+  defaultDataTempSonda1,
+  defaultDataContadorAgua,
+  defaultDataActividadCalefaccion1,
+  defaultDataEventoInicioCrianza,
+  defaultDataAlarmaTempAlta,
+  defaultDataCambioParametro,
+} from 'src/dto/defaultTrama';
+import { FrameDto } from 'src/dto/frame.dto';
+import { PeticionConsolaDto } from 'src/dto/tt_depuracion.dto';
+import {
+  PresentacionDto,
+  EstadoDispositivoTxDto,
+  ConfigFinalTxDto,
+  UrlDescargaOtaTxDto,
+  ProgresoActualizacionTxDto,
+} from 'src/dto/tt_sistema.dto';
+import { TcpClientService } from 'src/tcp-client/tcp-client.service';
+import {
+  EnTipoTrama,
+  EnTmSistema,
+  EnTipoEquipo,
+  EnGcspaEventoActualizacionServer,
+  EnTmEstadisticos,
+  EnTmDepuracion,
+} from 'src/utils/globals/enums';
+import {
+  readPresentacion,
+  readNodoOrigen,
+  readNodoDestino,
+} from 'src/utils/helpers';
+import { josLogger } from 'src/utils/josLogger';
 
 @Controller('trama')
 export class TramaController {
@@ -285,8 +310,29 @@ export class TramaController {
     defaultDataAlarmaTempAlta.identificadorUnicoDentroDelSegundo = id;
     josLogger.info(`📈 Estadístico alarma id=${id} enviado`);
 
-    // Wrapper público en tu TcpClientService
     const data = this.tcp.crearDataAlarmaTempAlta();
+
+    const frame = this.tcp.crearFrame({
+      nodoOrigen: readNodoOrigen(1),
+      nodoDestino: readNodoDestino(0),
+      tipoTrama: EnTipoTrama.estadisticos,
+      tipoMensaje: EnTmEstadisticos.enviaEstadistico,
+      data,
+    });
+
+    const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
+    return ok;
+  }
+
+  @Post('cambioParametro')
+  async cambioParametro() {
+    josLogger.info('Enviamos cambioParametro');
+
+    const id = this.tcp.nextStatId();
+    defaultDataCambioParametro.identificadorUnicoDentroDelSegundo = id;
+    josLogger.info(`📈 Estadístico cambioParametro id=${id} enviado`);
+
+    const data = this.tcp.crearDataCambioParametro();
 
     const frame = this.tcp.crearFrame({
       nodoOrigen: readNodoOrigen(1),
@@ -332,40 +378,11 @@ export class TramaController {
     return !!ok && ok;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-
-
-
-
-
 
   // ------------------------------------------- DEPURACIÓN: RT PETICIÓN CONSOLA -------------------------------------------
   // @Post("depuracion/rtPeticionConsola")

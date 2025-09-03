@@ -2,7 +2,7 @@ import { Controller, Post, Query } from '@nestjs/common';
 import { josLogger } from 'src/utils/josLogger';
 import { TramaController } from 'src/trama/trama.controller';
 import { defaultPresentacionCTI40 } from 'src/dto/defaultTrama';
-import { EnTipoEquipo } from 'src/utils/enums';
+import { EnTipoEquipo } from 'src/utils/globals/enums';
 import { PresentacionDto } from 'src/dto/tt_sistema.dto';
 
 @Controller('test')

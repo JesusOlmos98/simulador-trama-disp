@@ -5,7 +5,7 @@ export enum EnTipoEquipo {
   // 0 al 100 no se pueden añadir equipos porque tenemos MAC de 9 y de 8 dígitos;
   // para que ANSI y uint32 coincidan se omite este rango.
 
-  // DOSI_ELECTRONICO = 1, // ! Estaba comentado en C; referencia histórica no incluida como miembro
+  // DOSI_ELECTRONICO = 1, // ? Estaba comentado en C; referencia histórica no incluida como miembro
 
   tc3 = 101,
   v4 = 106,
@@ -143,7 +143,7 @@ export enum EnTipoDato {
   string4 = 30,
   string32 = 34,
 
-  // ! Este tipo de dato está en desuso: se utiliza TIPO_P_STRING_unicode16_simple que está más optimizado
+  // ? Este tipo de dato está en desuso: se utiliza TIPO_P_STRING_unicode16_simple que está más optimizado
   pString32 = 36,
 
   pStringUnicode16 = 44,
@@ -480,9 +480,9 @@ export enum EnOmegaObjeto {
   posXyLibreVariable = 75,
   posXyLibreLineas = 76,
 
-  // ! Conflicto en el documento: para el valor 77 se citan dos objetos distintos.
+  // ? Conflicto en el documento: para el valor 77 se citan dos objetos distintos.
   varBuffer = 77, // listado global (pág. de catálogo)
-  pintaEstadisticosColumna = 77, // sección 1.65 OBJ_PINTA_ESTADISTICOS_COLUMNA  // ! El doc duplica el ID 77.
+  // pintaEstadisticosColumna = 77, // sección 1.65 OBJ_PINTA_ESTADISTICOS_COLUMNA  // ? El doc duplica el ID 77.
 
   ptrObjetoMedioTamano = 78,
 
@@ -666,8 +666,8 @@ export enum EnEstadoDatoEstadistico {
 /** Acciones de alarma. */
 export enum EnAlarmasAccion {
   off = 0,
-  onAlarma = 1,  // activa relé asociado
-  onAviso = 2,   // no activa relé asociado
+  onAlarma = 1, // activa relé asociado
+  onAviso = 2, // no activa relé asociado
 }
 
 /** Estado instantáneo de la alarma (ON/OFF) */

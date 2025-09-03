@@ -1,5 +1,7 @@
-import { EnTipoDato, EnEstadisTipoRegistro, EnEstadisticosControladores, EnEstadisPeriodicidad, EnEstadoDatoEstadistico, EnGtUnidades, EnContadoresTipo, EnTmEstadisticos, EnEeEventosApli, EnCrianzaTipoAnimal, EnCrianzaAltaBajaAccion, EnAlarmaEstado, EnAlarmasAccion } from "src/utils/enums";
-import { Fecha, Tiempo } from "src/utils/tiposGlobales";
+import { tiempoToSeg } from "src/utils/fnTiempo";
+import { EnTipoDato, EnEstadisTipoRegistro, EnEstadisticosControladores, EnEstadisPeriodicidad, EnEstadoDatoEstadistico, EnGtUnidades, EnContadoresTipo, EnEeEventosApli, EnCrianzaTipoAnimal, EnCrianzaAltaBajaAccion, EnAlarmaEstado, EnAlarmasAccion } from "src/utils/globals/enums";
+import { Fecha, Tiempo } from "src/utils/globals/tiposGlobales";
+import { packByTipo, u32LE, u16LE, u8 } from "src/utils/helpers";
 
 // -------------------------------------------------- TM_ESTADISTICOS_envia_estadistico --------------------------------------------------
 
@@ -7,9 +9,7 @@ import { Fecha, Tiempo } from "src/utils/tiposGlobales";
 
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // done XXXXXXXXXXXXXXXXXXXXXXXXX EnEstadisTipoRegistro.estadisticos XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
@@ -95,7 +95,6 @@ export interface EstadisticoValorDto {
   valorTipo?: EnTipoDato; // default: EnTipoDato.float
 }
 
-
 // -------------------------------------------------- EstadisticoContadorDto --------------------------------------------------
 /**
  * Estructura “estadístico contador” (doc 1.3):
@@ -158,54 +157,30 @@ export class RtEstadisticoDto {
   identificadorUnicoDentroDelSegundo: number;
 }
 
-// -------------------------------------------------- MAPA TM → DTO TtEstadisticosPayloadMap --------------------------------------------------
-export type TtEstadisticosPayloadMap = {
-  [EnTmEstadisticos.enviaEstadistico]: EnviaEstadisticoDto;
-  [EnTmEstadisticos.rtEstadistico]: RtEstadisticoDto;
-};
-
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-const u8 = (v: number) => Buffer.from([v & 0xFF]);
-const i8 = (v: number) => { const b = Buffer.alloc(1); b.writeInt8(v); return b; };
-const u16LE = (v: number) => { const b = Buffer.alloc(2); b.writeUInt16LE(v >>> 0, 0); return b; };
-const i16LE = (v: number) => { const b = Buffer.alloc(2); b.writeInt16LE(v | 0, 0); return b; };
-const u32LE = (v: number) => { const b = Buffer.alloc(4); b.writeUInt32LE(v >>> 0, 0); return b; };
-const i32LE = (v: number) => { const b = Buffer.alloc(4); b.writeInt32LE(v | 0, 0); return b; };
-const f32LE = (v: number) => { const b = Buffer.alloc(4); b.writeFloatLE(v); return b; };
-
-const tiempoToSegundos = (t: Tiempo) => ((t.hora ?? 0) * 3600 + (t.min ?? 0) * 60 + (t.seg ?? 0)) >>> 0;
-
-function packByTipo(v: number, tipo: EnTipoDato): Buffer {
-  switch (tipo) {
-    case EnTipoDato.uint8: return u8(v);
-    case EnTipoDato.int8: return i8(v);
-    case EnTipoDato.uint16: return u16LE(v);
-    case EnTipoDato.int16: return i16LE(v);
-    case EnTipoDato.uint32: return u32LE(v);
-    case EnTipoDato.int32: return i32LE(v);
-    case EnTipoDato.float: return f32LE(v);
-    default:
-      throw new Error(`Tipo de valor no soportado en estadístico valor: ${EnTipoDato[tipo]} (${tipo})`);
-  }
-}
 
 /** Convierte un EstadisticoValorDto a la lista de items (tipo/size/dato) que espera la trama. */
-export function serializarDatosEstadisticoValor(d: EstadisticoValorDto): EstadisticoDato[] {
+export function serializarDatosEstadisticoValor(
+  d: EstadisticoValorDto,
+): EstadisticoDato[] {
   const base = d.valorTipo ?? EnTipoDato.float;
 
   const medio = packByTipo(d.valorMedio, base);
   const max = packByTipo(d.valorMax, base);
   const min = packByTipo(d.valorMin, base);
 
-  const horamax = u32LE(tiempoToSegundos(d.horaValorMax));
-  const horamin = u32LE(tiempoToSegundos(d.horaValorMin));
+  const horamax = u32LE(tiempoToSeg(d.horaValorMax));
+  const horamin = u32LE(tiempoToSeg(d.horaValorMin));
 
   const out: EstadisticoDato[] = [
     // [0] nombre (TD_UINT16)
-    { tipoDato: EnTipoDato.uint16, sizeDatoByte: 2, dato: u16LE(d.nombreEstadistico) },
+    {
+      tipoDato: EnTipoDato.uint16,
+      sizeDatoByte: 2,
+      dato: u16LE(d.nombreEstadistico),
+    },
 
     // [1] periodicidad (TD_UINT8)
     { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: u8(d.periodicidad) },
@@ -230,60 +205,62 @@ export function serializarDatosEstadisticoValor(d: EstadisticoValorDto): Estadis
 }
 
 // -------------------------------- serializarDatosEstadisticoContador --------------------------------
-export function serializarDatosEstadisticoContador(dto: EstadisticoContadorDto): EstadisticoDato[] {
+export function serializarDatosEstadisticoContador(
+  dto: EstadisticoContadorDto,
+): EstadisticoDato[] {
   const valorTipo = dto.valorTipo ?? EnTipoDato.uint32;
 
   const nombre = Buffer.alloc(2);
   nombre.writeUInt16LE(dto.nombreEstadistico >>> 0, 0);
 
-  const periodicidad = Buffer.from([dto.periodicidad & 0xFF]);
-  const tipoContador = Buffer.from([dto.tipoContador & 0xFF]);
-  const unidad = Buffer.from([dto.unidad & 0xFF]);
+  const periodicidad = Buffer.from([dto.periodicidad & 0xff]);
+  const tipoContador = Buffer.from([dto.tipoContador & 0xff]);
+  const unidad = Buffer.from([dto.unidad & 0xff]);
 
   const multiplicador = Buffer.alloc(4);
   multiplicador.writeFloatLE(dto.multiplicador, 0);
 
   const valor = packByTipo(dto.valor, valorTipo);
-  const estado = Buffer.from([dto.estado & 0xFF]);
+  const estado = Buffer.from([dto.estado & 0xff]);
 
   const out: EstadisticoDato[] = [
-    { tipoDato: EnTipoDato.uint16, sizeDatoByte: 2, dato: nombre },           // nombreEstadistico
-    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: periodicidad },     // periodicidad
-    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: tipoContador },     // tipoContador
-    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: unidad },           // unidad
-    { tipoDato: EnTipoDato.float, sizeDatoByte: 4, dato: multiplicador },    // multiplicador
+    { tipoDato: EnTipoDato.uint16, sizeDatoByte: 2, dato: nombre }, // nombreEstadistico
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: periodicidad }, // periodicidad
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: tipoContador }, // tipoContador
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: unidad }, // unidad
+    { tipoDato: EnTipoDato.float, sizeDatoByte: 4, dato: multiplicador }, // multiplicador
     { tipoDato: valorTipo, sizeDatoByte: valor.length, dato: valor }, // valor (tipo configurable)
-    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: estado },           // estado
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: estado }, // estado
   ];
   return out;
 }
 
 // -------------------------------- serializarDatosEstadisticoActividad --------------------------------
-export function serializarDatosEstadisticoActividad(dto: EstadisticoActividadDto): EstadisticoDato[] {
+export function serializarDatosEstadisticoActividad(
+  dto: EstadisticoActividadDto,
+): EstadisticoDato[] {
   const nombre = Buffer.alloc(2);
   nombre.writeUInt16LE(dto.nombreEstadistico >>> 0, 0);
 
-  const periodicidad = Buffer.from([dto.periodicidad & 0xFF]);
+  const periodicidad = Buffer.from([dto.periodicidad & 0xff]);
 
   const valorSeg = Buffer.alloc(4);
   valorSeg.writeUInt32LE(dto.valorSegundosConectado >>> 0, 0);
 
-  const estado = Buffer.from([dto.estado & 0xFF]);
+  const estado = Buffer.from([dto.estado & 0xff]);
 
   const out: EstadisticoDato[] = [
-    { tipoDato: EnTipoDato.uint16, sizeDatoByte: 2, dato: nombre },       // nombreEstadistico
+    { tipoDato: EnTipoDato.uint16, sizeDatoByte: 2, dato: nombre }, // nombreEstadistico
     { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: periodicidad }, // periodicidad
-    { tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: valorSeg },     // valorSegundosConectado
-    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: estado },       // estado
+    { tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: valorSeg }, // valorSegundosConectado
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: estado }, // estado
   ];
   return out;
 }
 
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXX EnEstadisTipoRegistro.eventos XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
@@ -360,7 +337,9 @@ export type EstadisticoEventoDto =
 //   [EnEeEventosApli.altaBajaRetirada]: EeAltaBajaRetiradaDto;
 // };
 
-export function serializarDatosEstadisticoEvento(dto: EstadisticoEventoDto): EstadisticoDato[] {
+export function serializarDatosEstadisticoEvento(
+  dto: EstadisticoEventoDto,
+): EstadisticoDato[] {
   const out: EstadisticoDato[] = [];
 
   // [0] ENUM_EE_EVENTOS_* (TD_UINT16)
@@ -389,23 +368,44 @@ export function serializarDatosEstadisticoEvento(dto: EstadisticoEventoDto): Est
       out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: id });
 
       // inicio_crianza_tipo_animal (TD_UINT8)
-      const tipoAnimal = Buffer.from([ (dto.inicioCrianzaTipoAnimal ?? 0) & 0xFF ]);
-      out.push({ tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: tipoAnimal });
+      const tipoAnimal = Buffer.from([
+        (dto.inicioCrianzaTipoAnimal ?? 0) & 0xff,
+      ]);
+      out.push({
+        tipoDato: EnTipoDato.uint8,
+        sizeDatoByte: 1,
+        dato: tipoAnimal,
+      });
 
       // dia_entrada_animales (TD_INT16)
       const diaEntrada = Buffer.alloc(2);
       diaEntrada.writeInt16LE(dto.diaEntradaAnimales ?? 0, 0);
-      out.push({ tipoDato: EnTipoDato.int16, sizeDatoByte: 2, dato: diaEntrada });
+      out.push({
+        tipoDato: EnTipoDato.int16,
+        sizeDatoByte: 2,
+        dato: diaEntrada,
+      });
 
       // N_animales_inicio_crianza_machos_mixtos (TD_UINT32)
       const nMachosMixtos = Buffer.alloc(4);
-      nMachosMixtos.writeUInt32LE((dto.nAnimalesInicioCrianzaMachosMixtos ?? 0) >>> 0, 0);
-      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: nMachosMixtos });
+      nMachosMixtos.writeUInt32LE(
+        (dto.nAnimalesInicioCrianzaMachosMixtos ?? 0) >>> 0,
+        0,
+      );
+      out.push({
+        tipoDato: EnTipoDato.uint32,
+        sizeDatoByte: 4,
+        dato: nMachosMixtos,
+      });
 
       // N_animales_inicio_crianza_hembras (TD_UINT32)
       const nHembras = Buffer.alloc(4);
       nHembras.writeUInt32LE((dto.nAnimalesInicioCrianzaHembras ?? 0) >>> 0, 0);
-      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: nHembras });
+      out.push({
+        tipoDato: EnTipoDato.uint32,
+        sizeDatoByte: 4,
+        dato: nHembras,
+      });
       break;
     }
 
@@ -422,13 +422,24 @@ export function serializarDatosEstadisticoEvento(dto: EstadisticoEventoDto): Est
 
       // N_animales_actuales_machos_mixtos (TD_UINT32)
       const nMachosMixtos = Buffer.alloc(4);
-      nMachosMixtos.writeUInt32LE((dto.nAnimalesActualesMachosMixtos ?? 0) >>> 0, 0);
-      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: nMachosMixtos });
+      nMachosMixtos.writeUInt32LE(
+        (dto.nAnimalesActualesMachosMixtos ?? 0) >>> 0,
+        0,
+      );
+      out.push({
+        tipoDato: EnTipoDato.uint32,
+        sizeDatoByte: 4,
+        dato: nMachosMixtos,
+      });
 
       // N_animales_actuales_hembras (TD_UINT32)
       const nHembras = Buffer.alloc(4);
       nHembras.writeUInt32LE((dto.nAnimalesActualesHembras ?? 0) >>> 0, 0);
-      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: nHembras });
+      out.push({
+        tipoDato: EnTipoDato.uint32,
+        sizeDatoByte: 4,
+        dato: nHembras,
+      });
       break;
     }
 
@@ -439,7 +450,7 @@ export function serializarDatosEstadisticoEvento(dto: EstadisticoEventoDto): Est
       out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: id });
 
       // accion (TD_UINT8)
-      const accion = Buffer.from([ (dto.accion ?? 0) & 0xFF ]);
+      const accion = Buffer.from([(dto.accion ?? 0) & 0xff]);
       out.push({ tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: accion });
 
       // dia_crianza (TD_INT16)
@@ -449,8 +460,8 @@ export function serializarDatosEstadisticoEvento(dto: EstadisticoEventoDto): Est
 
       // fecha_introducir_accion (TD_FECHA) -> yyyymmdd (uint32 LE)
       const yyyy = dto.fechaIntroducirAccion?.anyo ?? 0;
-      const mm   = dto.fechaIntroducirAccion?.mes  ?? 0;
-      const dd   = dto.fechaIntroducirAccion?.dia  ?? 0;
+      const mm = dto.fechaIntroducirAccion?.mes ?? 0;
+      const dd = dto.fechaIntroducirAccion?.dia ?? 0;
       const fechaNum = (yyyy * 10000 + mm * 100 + dd) >>> 0;
       const fechaBuf = Buffer.alloc(4);
       fechaBuf.writeUInt32LE(fechaNum, 0);
@@ -458,13 +469,24 @@ export function serializarDatosEstadisticoEvento(dto: EstadisticoEventoDto): Est
 
       // N_animales_accion_machos_mixtos (TD_UINT32)
       const nMachosMixtos = Buffer.alloc(4);
-      nMachosMixtos.writeUInt32LE((dto.nAnimalesAccionMachosMixtos ?? 0) >>> 0, 0);
-      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: nMachosMixtos });
+      nMachosMixtos.writeUInt32LE(
+        (dto.nAnimalesAccionMachosMixtos ?? 0) >>> 0,
+        0,
+      );
+      out.push({
+        tipoDato: EnTipoDato.uint32,
+        sizeDatoByte: 4,
+        dato: nMachosMixtos,
+      });
 
       // N_animales_accion_hembras (TD_UINT32)
       const nHembras = Buffer.alloc(4);
       nHembras.writeUInt32LE((dto.nAnimalesAccionHembras ?? 0) >>> 0, 0);
-      out.push({ tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: nHembras });
+      out.push({
+        tipoDato: EnTipoDato.uint32,
+        sizeDatoByte: 4,
+        dato: nHembras,
+      });
       break;
     }
 
@@ -479,9 +501,7 @@ export function serializarDatosEstadisticoEvento(dto: EstadisticoEventoDto): Est
 
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXX EnEstadisTipoRegistro.alarmas XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
@@ -498,21 +518,101 @@ export interface EstadisticoAlarmaDto {
   accionConfigurada: EnAlarmasAccion;
 }
 
-export function serializarDatosEstadisticoAlarma(dto: EstadisticoAlarmaDto): EstadisticoDato[] {
+export function serializarDatosEstadisticoAlarma(
+  dto: EstadisticoAlarmaDto,
+): EstadisticoDato[] {
   // Texto alarma (TD_UINT16)
   const texto = Buffer.alloc(2);
   texto.writeUInt16LE(dto.textoAlarma >>> 0, 0);
 
   // Estado alarma (TD_UINT8)
-  const estado = Buffer.from([ (dto.estadoAlarma ?? 0) & 0xFF ]);
+  const estado = Buffer.from([(dto.estadoAlarma ?? 0) & 0xff]);
 
   // EN_ALARMAS_ACCION (config) (TD_UINT8)
-  const config = Buffer.from([ (dto.accionConfigurada ?? 0) & 0xFF ]);
+  const config = Buffer.from([(dto.accionConfigurada ?? 0) & 0xff]);
 
   const out: EstadisticoDato[] = [
-    { tipoDato: EnTipoDato.uint16, sizeDatoByte: 2, dato: texto },  // textoAlarma
-    { tipoDato: EnTipoDato.uint8,  sizeDatoByte: 1, dato: estado }, // estadoAlarma (OFF/ON_ALARMA/ON_AVISO)
-    { tipoDato: EnTipoDato.uint8,  sizeDatoByte: 1, dato: config }, // configAccion (OFF/ALARM/AVISO)
+    { tipoDato: EnTipoDato.uint16, sizeDatoByte: 2, dato: texto }, // textoAlarma
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: estado }, // estadoAlarma (OFF/ON_ALARMA/ON_AVISO)
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: config }, // configAccion (OFF/ALARM/AVISO)
+  ];
+
+  return out;
+}
+
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXX EnEstadisTipoRegistro.cambioParametros XXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+/**
+ * Estadístico: Cambio de parámetro (doc 1.1)
+ * - idCliente:        TD_UINT32
+ * - tituloOpcion:     TD_CONCATENADO
+ * - opcionLinea:      TD_CONCATENADO
+ * - valor:            Tipo de datos variable (si es numérico) o TD_CONCATENADO (si es texto)
+ */
+export interface EstadisticoCambioParametroDto { 
+  /** TD_UINT32: Identificación cliente */
+  idCliente: number;
+
+  /** TD_CONCATENADO: Título de la opción */
+  tituloOpcion: string;
+
+  /** TD_CONCATENADO: Opción (línea) */
+  opcionLinea: string;
+
+  /**
+   * Variable valor: Si el valor es NUMÉRICO, indica el tipo base (uint8/uint16/uint32/int16/int32/float…)
+   * y rellena 'valorNumero'. Si es TEXTO, deja 'valorTipo' y 'valorNumero' undefined
+   * y rellena 'valorTexto' (TD_CONCATENADO).
+   */
+  valorTipo?: EnTipoDato;   // ← sólo si valor es numérico
+  valorNumero?: number;     // ← sólo si valor es numérico
+  valorTexto?: string;      // ← sólo si valor es texto (TD_CONCATENADO)
+}
+
+// Serializa "Cambio de parámetro" → lista de items { tipoDato, sizeDatoByte, dato }
+export function serializarDatosEstadisticoCambioParametros(
+  dto: EstadisticoCambioParametroDto,
+): EstadisticoDato[] {
+  // [0] idCliente (TD_UINT32)
+  const idClienteBuf = Buffer.alloc(4);
+  idClienteBuf.writeUInt32LE(dto.idCliente >>> 0, 0);
+
+  // [1] tituloOpcion (TD_CONCATENADO)
+  const tituloBuf = Buffer.from(dto.tituloOpcion ?? "", "utf8");
+
+  // [2] opcionLinea (TD_CONCATENADO)
+  const opcionBuf = Buffer.from(dto.opcionLinea ?? "", "utf8");
+
+  // [3] valor (numérico con tipo o concatenado si es texto)
+  let valorItem: EstadisticoDato;
+  if (dto.valorTipo !== undefined && dto.valorNumero !== undefined) {
+    const vbuf = packByTipo(dto.valorNumero, dto.valorTipo);
+    valorItem = {
+      tipoDato: dto.valorTipo,
+      sizeDatoByte: vbuf.length,
+      dato: vbuf,
+    };
+  } else if (dto.valorTexto !== undefined) {
+    const vbuf = Buffer.from(dto.valorTexto, "utf8");
+    valorItem = {
+      // Asegúrate de tener este miembro en tu enum EnTipoDato (TD_CONCATENADO)
+      tipoDato: EnTipoDato.concatenado,
+      sizeDatoByte: vbuf.length,
+      dato: vbuf,
+    };
+  } else {
+    throw new Error("CambioParametro: debes indicar valorNumero+valorTipo o valorTexto.");
+  }
+
+  const out: EstadisticoDato[] = [
+    { tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: idClienteBuf },      // idCliente
+    { tipoDato: EnTipoDato.concatenado, sizeDatoByte: tituloBuf.length, dato: tituloBuf }, // tituloOpcion
+    { tipoDato: EnTipoDato.concatenado, sizeDatoByte: opcionBuf.length, dato: opcionBuf }, // opcionLinea
+    valorItem,                                                                 // valor (numérico o texto)
   ];
 
   return out;
