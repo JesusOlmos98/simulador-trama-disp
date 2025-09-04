@@ -20,7 +20,7 @@ import {
   UrlDescargaOtaTxDto,
   ProgresoActualizacionTxDto,
 } from 'src/dtoLE/tt_sistema.dto';
-import { TcpClientService } from 'src/tcp-client/tcp-client.service';
+import { TcpClientService } from 'src/tcp-client/tcp-client.serviceDEPRECATED';
 import {
   EnTipoTrama,
   EnTmSistema,

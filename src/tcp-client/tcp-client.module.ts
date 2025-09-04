@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TcpClientService } from './tcp-client.service';
+import { TcpClientService } from './tcp-client.serviceDEPRECATED';
 
 @Module({
   // imports: [TramaModule],
