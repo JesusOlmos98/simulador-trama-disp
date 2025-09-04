@@ -215,7 +215,10 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     }
 
     // Decide en runtime: viejo (BE, v1) vs nuevo (LE, v2)
-    const isOld = (frame as any).versionProtocolo === 1;
+    const isOld = (frame as any).versionProtocolo !== 2;
+
+    if (isOld) josLogger.debug('enviarFrame() 8002 Antiguos');
+    else josLogger.debug('enviarFrame() 8003 Nuevos');
 
     const buf = isOld
       ? this.serializarFrame(frame as FrameOldDto)    // Serializa header 9B (BE) y CRC de 1 byte (LSB CRC16)
@@ -267,6 +270,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     const isOld = params.reserva === undefined ? true : params.reserva === null ? true : false;
 
     if (isOld) { // Equipos antiguos (la variable resesrva NO está en la trama de los equipos antiguos)
+      josLogger.debug('crearFrame() 8002 Antiguos');
       const {
         nodoOrigen,
         nodoDestino,
@@ -291,6 +295,8 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
       } as FrameOldDto;
 
     } else { // Equipos nuevos
+      josLogger.debug('crearFrame() 8003 Nuevos');
+
       const {
         nodoOrigen,
         nodoDestino,
@@ -330,6 +336,8 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     // Header (NO incluye el "start")
 
     if (isOld) {
+      josLogger.debug('serializarFrame() 8002 Antiguos');
+
       const header = Buffer.alloc(1 + 2 + 2 + 1 + 1 + 2);
       let o = 0;
       header.writeUInt8(f.versionProtocolo & 0xff, o); o += 1;
@@ -345,6 +353,8 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
 
       return Buffer.concat([start, header, datosBuf, crcBuf, end]);
     }
+
+    josLogger.debug('serializarFrame() 8003 Nuevos');
 
     // Nuevo → LE + header 10B (con reserva) + CRC16 (2B) escrito en BE
     const header = Buffer.alloc(1 + 1 + 2 + 2 + 1 + 1 + 2);
@@ -462,7 +472,8 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
 
     let data: Buffer = Buffer.alloc(0);
 
-    if (p.password) { // Equipos antiguos (la variable password SOLO está en la trama de los equipos antiguos)
+    if (p.password !== undefined) { // Equipos antiguos (la variable password SOLO está en la trama de los equipos antiguos)
+      josLogger.debug('crearDataPresentacion() 8002 Antiguos');
 
       const params = p as unknown as PresentacionCentralOldDto;
 
@@ -483,6 +494,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
       data.writeUInt16BE(params.crcTabla & 0xffff, offset); offset += 2;        // crcTabla (2) BE
 
     } else { // Equipos nuevos
+      josLogger.debug('crearDataPresentacion() 8003 Nuevos');
 
       const params = p as PresentacionDto;
 

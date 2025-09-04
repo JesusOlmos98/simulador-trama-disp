@@ -60,6 +60,8 @@ export class TramaController {
     let enviarFrame: boolean | { bytes: number; hex: string; } = false;
 
     if (ver === '0') { // 8002 Antiguos
+
+      josLogger.debug('@Post("presentacion") 8002 Antiguos');
       const defaultPres: PresentacionCentralOldDto = defaultPresentacionOmegaOld;
       const data = this.tcp.crearDataPresentacion({
         tipoEquipo: defaultPres.tipoEquipo,
@@ -75,13 +77,16 @@ export class TramaController {
         tipoTrama: EnTipoTrama.sistema,          // TT_SISTEMA
         tipoMensaje: EnTmSistema.txPresentacion, // TM_SISTEMA_TX_PRESENTACION
         data,
-        reserva: 0,
+        // reserva: 0, //done NO enviamos reserva en los antiguos, nos sirve como flag en crearFrame()
       }) as FrameOldDto;
 
       enviarFrame = this.tcp.enviarFrame(frame as FrameOldDto);
       josLogger.info(`Enviamos PRESENTACION equipo VIEJO ${EnTipoEquipo[defaultPres.tipoEquipo].toUpperCase()} al puerto ${usePort}`,);
-    
+
     } else { // 8003 Nuevos
+
+      josLogger.debug('@Post("presentacion") 8003 Nuevos');
+
       const defaultPres: PresentacionDto = defaultPresentacionCTI40;
       // const pres: PresentacionDto = readPresentacion(defaultPres);
       const data = this.tcp.crearDataPresentacion(defaultPres); //done Aquí insertamos la data en la presentación.
@@ -113,9 +118,7 @@ export class TramaController {
     if (ver === '0') { // 8002 Antiguos
       const defaultPres: PresentacionCentralOldDto = defaultPresentacionOmegaOld;
       // const frame:FrameOldDto = 
-
-
-
+//! WIP
 
     } else { // 8003 Nuevos
       const data = this.tcp.crearDataPresencia(); // vacío
