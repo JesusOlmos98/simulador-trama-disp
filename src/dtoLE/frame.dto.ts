@@ -10,13 +10,9 @@ export class FrameDto {
   tipoTrama: number;
   tipoMensaje: number;
   longitud: number; // Tamaño trama datos
-  datos: Buffer | PresentacionDto | PresenciaDto | EnviaEstadisticoDto; // Datos a enviar
+  datos: Buffer | PresentacionDto | EnviaEstadisticoDto //| PresenciaDto; // Datos a enviar
   crc: number;
   finTrama: Buffer;
-}
-
-export class PresenciaDto {
-  presencia: number; // Puede ser cualquier cosa o nada
 }
 
 export interface HeaderFields {
@@ -28,3 +24,7 @@ export interface HeaderFields {
   tipoMensaje: number;
   longitud: number;
 }
+
+// export class PresenciaDto {
+//   presencia: number; // Puede ser cualquier cosa o nada
+// }

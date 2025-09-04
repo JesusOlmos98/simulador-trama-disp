@@ -2,42 +2,14 @@ import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { Socket } from 'node:net';
 import { josLogger } from 'src/utils/josLogger';
 import { crc16IBM } from 'src/utils/crc';
-import {
-  ConfigFinalTxDto,
-  EstadoDispositivoTxDto,
-  PresentacionDto,
-  ProgresoActualizacionTxDto,
-  UrlDescargaOtaTxDto,
-} from 'src/dto/tt_sistema.dto';
-import { PeticionConsolaDto } from 'src/dto/tt_depuracion.dto';
-import {
-  defaultDataActividadCalefaccion1 as defaultDataActividadCalefaccion1,
-  defaultDataAlarmaTempAlta,
-  defaultDataCambioParametro,
-  defaultDataContadorAgua,
-  defaultDataEventoInicioCrianza,
-  defaultDataTempSonda1,
-} from 'src/dto/defaultTrama';
-import { EnTipoTrama, EnTmEstadisticos } from 'src/utils/globals/enums';
-import { EnviaEstadisticoDto } from 'src/dto/tt_estadisticos.dto';
-import { env } from 'node:process';
-import { FrameDto } from 'src/dto/frame.dto';
-import {
-  DESTINY_PORT,
-  DESTINY_HOST,
-  PROTO_VERSION,
-  MAX_DATA_BYTES,
-  START,
-  END,
-  ACK_TIMEOUT_MS,
-  ACK_TTL_MS,
-} from 'src/utils/globals/constGlobales';
-import {
-  getTipoTrama,
-  getTipoMensaje,
-  getDataSection,
-} from 'src/utils/get/getTrama';
-import { hexDump } from 'src/utils/helpers';
+import { PeticionConsolaDto } from 'src/dtoLE/tt_depuracion.dto';
+import { EnviaEstadisticoDto } from 'src/dtoLE/tt_estadisticos.dto';
+import { FrameDto } from 'src/dtoLE/frame.dto';
+import { EnvConfiguration } from 'config/app.config';
+import { defaultDataTempSonda1, defaultDataContadorAgua, defaultDataActividadCalefaccion1, defaultDataEventoInicioCrianza, defaultDataAlarmaTempAlta, defaultDataCambioParametro } from 'src/dtoLE/defaultTrama';
+import { PresentacionDto, EstadoDispositivoTxDto, ConfigFinalTxDto, UrlDescargaOtaTxDto, ProgresoActualizacionTxDto } from 'src/dtoLE/tt_sistema.dto';
+import { getTipoTrama, getTipoMensaje } from 'src/utils/BE/get/getTrama';
+import { ACK_TTL_MS, PROTO_VERSION, MAX_DATA_BYTES, START, END, ACK_TIMEOUT_MS } from 'src/utils/BE/globals/constGlobales';
 
 //! CAPA 0
 
@@ -51,11 +23,21 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   private pendingStats = new Map<number, { ts: number }>(); // id -> timestamp envío
   private receivedAcks = new Set<number>();
 
+  private env = EnvConfiguration();
+  private defaultHost = this.env.destinyHost;
+  private defaultPort = this.env.destinyPort;
+
+  private currentHost = this.defaultHost;
+  private currentPort = this.defaultPort;
+  private connectPromise: Promise<void> | null = null;
+  private reconnectTimer: NodeJS.Timeout | null = null;
+
   onModuleInit() {
     this.connect();
   }
 
   onModuleDestroy() {
+    // if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
     this.socket?.destroy();
   }
 
@@ -71,94 +53,160 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     return id;
   }
 
+  //done Función para manejar el cambio de puerto dinámico (segun el valor de "ver" en los endpoints)
+  /** Cambia host/puerto si hace falta y garantiza conexión abierta y usable. */
+  async switchTargetAndEnsureConnected(opts: { host?: string; port?: number }) {
+    const host = opts.host ?? this.defaultHost;
+    const port = opts.port ?? this.defaultPort;
+
+    // ¿ya estamos en ese destino y conectados?
+    if (this.socket && !this.socket.destroyed &&
+      this.socket.remoteAddress === host && this.socket.remotePort === port) {
+      return; // ya estamos conectados a ese target
+    }
+
+    // Cambiamos target y reconectamos
+    this.currentHost = host;
+    this.currentPort = port;
+
+    // cerramos la conexión anterior (si la hay)
+    if (this.socket && !this.socket.destroyed) {
+      this.socket.destroy(); // dispara 'close' pero vamos a conectar manualmente ahora
+    }
+    await this.connect(); // espera hasta que esté conectada
+  }
+
   /** Registra un estadístico pendiente de ACK. */
   public trackPendingStat(id: number) {
     this.pendingStats.set(id & 0xff, { ts: Date.now() });
   }
 
   /** Limpia pendientes antiguos para evitar choque entre segundos distintos. */
-  private sweepPendingStats() {
-    const now = Date.now();
-    for (const [id, meta] of this.pendingStats) {
-      if (now - meta.ts > ACK_TTL_MS) {
-        this.pendingStats.delete(id);
-      }
-    }
-  }
+  // private sweepPendingStats() {
+  //   const now = Date.now();
+  //   for (const [id, meta] of this.pendingStats) {
+  //     if (now - meta.ts > ACK_TTL_MS) {
+  //       this.pendingStats.delete(id);
+  //     }
+  //   }
+  // }
 
   private async delay(ms: number) {
     return await new Promise<void>((r) => setTimeout(r, ms));
   }
 
   // ------------------------------------------- CONEXIÓN -------------------------------------------
-  private connect() {
-    this.socket = new Socket();
-    // this.socket.setNoDelay(true);
 
-    this.socket.connect(DESTINY_PORT, DESTINY_HOST, () => {
-      josLogger.debug('env.destinyHost: ' + env.destinyHost);
-      josLogger.info(
-        `🔌 Cliente TCP conectado a ${DESTINY_HOST}:${DESTINY_PORT}`,
-      );
-    });
+  //* XXXXXXXXXXXXXXXXXXXXXXXXXX ↓↓↓ NUEVA CONEXIÓN ↓↓↓ XXXXXXXXXXXXXXXXXXXXXXXXXX
+  /** Garantiza que hay socket conectado al target actual. */
+  private async connect(): Promise<void> {
+    if (this.connectPromise) return this.connectPromise; // evita carreras
 
-    //* ------------------------------ ↓↓↓ socket on data ↓↓↓ ------------------------------
-    this.socket.on('data', (serverResponse) => {
-      try {
-        const tt = getTipoTrama(serverResponse);
-        const tm = getTipoMensaje(serverResponse);
+    this.connectPromise = new Promise<void>((resolve, reject) => {
+      const socket = new Socket();
+      this.socket = socket;
 
-        josLogger.debug(
-          'La respuesta (RX) probablemente sea el ACK de la última operación.',
-        );
-        josLogger.debug('📨 RX raw: ' + serverResponse.toString());
-        josLogger.debug(`📨 RX len=${serverResponse.length}`);
-        josLogger.debug('📨 RX HEX:\n' + hexDump(serverResponse));
-        josLogger.debug('📨 RX b64: ' + serverResponse.toString('base64'));
-        const dataACK = getDataSection(serverResponse);
-        josLogger.debug('📨 Data ACK: ' + dataACK);
-        josLogger.debug('📨 Data ACK b64: ' + dataACK.toString('base64'));
-        josLogger.debug('📨 Data ACK HEX: ' + dataACK.toString('hex'));
-        josLogger.debug('📨 RX len=' + serverResponse.length);
+      // Opcional: mantener viva la conexión
+      // s.setKeepAlive(true, 10_000);
+      // s.setNoDelay(true);
 
-        if (
-          tt === EnTipoTrama.estadisticos &&
-          tm === EnTmEstadisticos.rtEstadistico
-        ) {
-          const dataACK = getDataSection(serverResponse);
-          const ackId = dataACK.readUInt8(dataACK.length - 1);
+      socket.connect(this.currentPort, this.currentHost, () => {
+        josLogger.info(`🔌 Conectado a ${this.currentHost}:${this.currentPort}`);
+        if (this.reconnectTimer) { clearTimeout(this.reconnectTimer); this.reconnectTimer = null; }
+        resolve();
+      });
 
-          this.receivedAcks.add(ackId & 0xff); // lo marca como recibido
-          josLogger.info(`✅ ACK estadístico id=${ackId} recibido`);
+      socket.on('data', (serverResponse) => this.onData(serverResponse));
+      socket.on('error', (e) => josLogger.error(`❗ Socket error: ${e.message}`));
+      socket.on('close', () => {
+        josLogger.error(`🛑 Conexión cerrada (${this.currentHost}:${this.currentPort}). Reintentando en 1s…`);
+        this.connectPromise = null;                // ← libera el lock para permitir nuevo connect()
+        setTimeout(() => this.connect(), 1000);    // ← reintento único (como antes), no un setInterval
+      });
+    })
 
-          // (opcional) si mantienes tus métricas antiguas:
-          if (this.pendingStats.has(ackId)) this.pendingStats.delete(ackId);
-
-          this.sweepPendingStats();
-          return; // ya tratado
-        }
-      } catch (e) {
-        josLogger.error('Error procesando RX: ' + (e as Error).message);
-      }
-    });
-    //* ------------------------------ ↑↑↑ socket on data ↑↑↑ ------------------------------
-
-    this.socket.on('error', (e) =>
-      josLogger.error('❗ Socket error: ' + e.message),
-    );
-
-    this.socket.on('close', () => {
-      josLogger.error('env.destinyHost: ' + env.destinyHost);
-      josLogger.error('env.destinyPort: ' + env.destinyPort);
-      josLogger.error('process.env.DESTINY_PORT: ' + process.env.DESTINY_PORT);
-      josLogger.error('🛑 Conexión cerrada. Reintentando en 1s…');
-      setTimeout(() => this.connect(), 1000);
-    });
+    // return this.connectPromise;
   }
+
+  private onData(serverResponse: Buffer) {
+    try {
+      const tt = getTipoTrama(serverResponse);
+      const tm = getTipoMensaje(serverResponse);
+      // ... (tu código tal cual)
+    } catch (e) {
+      josLogger.error('Error procesando RX: ' + (e as Error).message);
+    }
+  }
+  //* XXXXXXXXXXXXXXXXXXXXXXXXXX ↑↑↑ NUEVA CONEXIÓN ↑↑↑ XXXXXXXXXXXXXXXXXXXXXXXXXX
+
+  // private async connect(): Promise<void> {
+  //   this.socket = new Socket();
+
+
+  //   // this.socket.setNoDelay(true);
+
+  //   this.socket.connect(DESTINY_PORT, DESTINY_HOST, () => {
+  //     josLogger.debug('env.destinyHost: ' + env.destinyHost);
+  //     josLogger.info(
+  //       `🔌 Cliente TCP conectado a ${DESTINY_HOST}:${DESTINY_PORT}`,
+  //     );
+  //   });
+
+  //* ------------------------------ ↓↓↓ socket on data ↓↓↓ ------------------------------
+  //   this.socket.on('data', (serverResponse) => {
+  //     try {
+  //       const tt = getTipoTrama(serverResponse);
+  //       const tm = getTipoMensaje(serverResponse);
+
+  //       josLogger.debug(
+  //         'La respuesta (RX) probablemente sea el ACK de la última operación.',
+  //       );
+  //       josLogger.debug('📨 RX raw: ' + serverResponse.toString());
+  //       josLogger.debug(`📨 RX len=${serverResponse.length}`);
+  //       josLogger.debug('📨 RX HEX:\n' + hexDump(serverResponse));
+  //       josLogger.debug('📨 RX b64: ' + serverResponse.toString('base64'));
+  //       const dataACK = getDataSection(serverResponse);
+  //       josLogger.debug('📨 Data ACK: ' + dataACK);
+  //       josLogger.debug('📨 Data ACK b64: ' + dataACK.toString('base64'));
+  //       josLogger.debug('📨 Data ACK HEX: ' + dataACK.toString('hex'));
+  //       josLogger.debug('📨 RX len=' + serverResponse.length);
+
+  //       if (tt === EnTipoTrama.estadisticos && tm === EnTmEstadisticos.rtEstadistico) {
+  //         const dataACK = getDataSection(serverResponse);
+  //         const ackId = dataACK.readUInt8(dataACK.length - 1);
+
+  //         this.receivedAcks.add(ackId & 0xff); // lo marca como recibido
+  //         josLogger.info(`✅ ACK estadístico id=${ackId} recibido`);
+
+  //         // (opcional) si mantienes tus métricas antiguas:
+  //         if (this.pendingStats.has(ackId)) this.pendingStats.delete(ackId);
+
+  //         this.sweepPendingStats();
+  //         return; // ya tratado
+  //       }
+  //     } catch (e) {
+  //       josLogger.error('Error procesando RX: ' + (e as Error).message);
+  //     }
+  //   });
+  //   //* ------------------------------ ↑↑↑ socket on data ↑↑↑ ------------------------------
+
+  //   this.socket.on('error', (e) =>
+  //     josLogger.error('❗ Socket error: ' + e.message),
+  //   );
+
+  //   this.socket.on('close', () => {
+  //     josLogger.error('env.destinyHost: ' + env.destinyHost);
+  //     josLogger.error('env.destinyPort: ' + env.destinyPort);
+  //     josLogger.error('process.env.DESTINY_PORT: ' + process.env.DESTINY_PORT);
+  //     josLogger.error('🛑 Conexión cerrada. Reintentando en 1s…');
+  //     setTimeout(() => this.connect(), 1000);
+  //   });
+  // }
 
   // ------------------------------------------- ENVÍO -------------------------------------------
   /** Enviar un FrameDto (se serializa internamente a Buffer) */
   enviarFrame(frame: FrameDto) {
+
     if (!this.socket || !this.socket.writable) {
       josLogger.fatal('XXX Socket no conectado XXX');
       return false;
@@ -166,6 +214,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     const buf = this.serializarFrame(frame);
     this.socket.write(buf);
     return { bytes: buf.length, hex: buf.toString('hex') };
+
   }
 
   //* -----------------------------------------------------------------------------------------------------

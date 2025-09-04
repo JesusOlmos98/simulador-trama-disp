@@ -1,6 +1,6 @@
 import { ESTADIS_HEADER_LEN, TIPO_REGISTRO_ESTADISTICO_OFFSET_EN_PAYLOAD } from "../globals/constGlobales";
 import { EnTipoDato, EnTipoTrama, EnTmEstadisticos, EnEstadisTipoRegistro, EnEeEventosApli, EnAlarmaEstado, EnAlarmasAccion } from "../globals/enums";
-import { unpackNumberByTipo } from "../helpers";
+import { unpackNumberByTipo } from "../../helpers";
 import { getTipoTrama, getTipoMensaje, getDataSection } from "./getTrama";
 
 //done ------------------------------------------------------------------------------------------------------------------------

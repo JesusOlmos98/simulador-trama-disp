@@ -1,4 +1,4 @@
-import { Fecha, Tiempo } from './globals/tiposGlobales';
+import { Fecha, Tiempo } from './tiposGlobales';
 
 // -------------------------------------------------- tiempoDiferenciaFechas --------------------------------------------------
 export function tiempoDiferenciaFechas(fecha1: Fecha, fecha2: Fecha): number {

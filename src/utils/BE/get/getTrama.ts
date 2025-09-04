@@ -1,5 +1,5 @@
-import { HeaderFields } from 'src/dto/frame.dto';
-import { crc16IBM } from '../crc';
+import { HeaderFields } from 'src/dtoLE/frame.dto';
+import { crc16IBM } from '../../crc';
 import {
   START,
   END,

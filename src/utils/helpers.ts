@@ -1,5 +1,5 @@
-import { PresentacionDto } from 'src/dto/tt_sistema.dto';
-import { EnTipoDato } from './globals/enums';
+import { PresentacionDto } from 'src/dtoLE/tt_sistema.dto';
+import { EnTipoDato } from './BE/globals/enums';
 
 // ------------------------------------------- isObject -------------------------------------------
 export function isObject(v: unknown): v is Record<string, unknown> {

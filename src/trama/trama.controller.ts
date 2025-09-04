@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Query } from '@nestjs/common';
 import {
   defaultPresentacionCTI40,
   defaultDataTempSonda1,
@@ -7,16 +7,16 @@ import {
   defaultDataEventoInicioCrianza,
   defaultDataAlarmaTempAlta,
   defaultDataCambioParametro,
-} from 'src/dto/defaultTrama';
-import { FrameDto } from 'src/dto/frame.dto';
-import { PeticionConsolaDto } from 'src/dto/tt_depuracion.dto';
+} from 'src/dtoLE/defaultTrama';
+import { FrameDto } from 'src/dtoLE/frame.dto';
+import { PeticionConsolaDto } from 'src/dtoLE/tt_depuracion.dto';
 import {
   PresentacionDto,
   EstadoDispositivoTxDto,
   ConfigFinalTxDto,
   UrlDescargaOtaTxDto,
   ProgresoActualizacionTxDto,
-} from 'src/dto/tt_sistema.dto';
+} from 'src/dtoLE/tt_sistema.dto';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
 import {
   EnTipoTrama,
@@ -25,7 +25,7 @@ import {
   EnGcspaEventoActualizacionServer,
   EnTmEstadisticos,
   EnTmDepuracion,
-} from 'src/utils/globals/enums';
+} from 'src/utils/BE/globals/enums';
 import {
   readPresentacion,
   readNodoOrigen,
@@ -52,23 +52,25 @@ export class TramaController {
    * body (opcional): { nodoOrigen?, nodoDestino?, datos?: PresentacionDto }
    */
   @Post('presentacion')
-  async presentacion() {
-    const defaultPres: PresentacionDto = defaultPresentacionCTI40;
+  async presentacion(@Query('ver') ver?: string) {
+    const usePort = ver === '0' ? 8002 : 8003;
+    await this.tcp.switchTargetAndEnsureConnected({ port: usePort });
 
+    const defaultPres: PresentacionDto = defaultPresentacionCTI40;
     const pres: PresentacionDto = readPresentacion(defaultPres);
     const data = this.tcp.crearDataPresentacion(pres); //done Aquí insertamos la data en la presentación.
 
     const frame: FrameDto = this.tcp.crearFrame({
       nodoOrigen: readNodoOrigen(1),
       nodoDestino: readNodoDestino(0),
-      tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
+      tipoTrama: EnTipoTrama.sistema,          // TT_SISTEMA
       tipoMensaje: EnTmSistema.txPresentacion, // TM_SISTEMA_TX_PRESENTACION
       data,
     });
 
     const enviarFrame = this.tcp.enviarFrame(frame);
     josLogger.info(
-      `Enviamos PRESENTACION ${EnTipoEquipo[pres.tipoEquipo].toUpperCase()}`,
+      `Enviamos PRESENTACION ${EnTipoEquipo[pres.tipoEquipo].toUpperCase()} al puerto ${usePort}`,
     );
     if (!enviarFrame) return false;
     else return enviarFrame;

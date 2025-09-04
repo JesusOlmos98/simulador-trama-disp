@@ -1,6 +1,6 @@
 import { tiempoToSeg } from "src/utils/fnTiempo";
-import { EnTipoDato, EnEstadisTipoRegistro, EnEstadisticosControladores, EnEstadisPeriodicidad, EnEstadoDatoEstadistico, EnGtUnidades, EnContadoresTipo, EnEeEventosApli, EnCrianzaTipoAnimal, EnCrianzaAltaBajaAccion, EnAlarmaEstado, EnAlarmasAccion } from "src/utils/globals/enums";
-import { Fecha, Tiempo } from "src/utils/globals/tiposGlobales";
+import { EnTipoDato, EnEstadisTipoRegistro, EnEstadisticosControladores, EnEstadisPeriodicidad, EnEstadoDatoEstadistico, EnGtUnidades, EnContadoresTipo, EnEeEventosApli, EnCrianzaTipoAnimal, EnCrianzaAltaBajaAccion, EnAlarmaEstado, EnAlarmasAccion } from "src/utils/BE/globals/enums";
+import { Fecha, Tiempo } from "src/utils/tiposGlobales";
 import { packByTipo, u32LE, u16LE, u8 } from "src/utils/helpers";
 
 // -------------------------------------------------- TM_ESTADISTICOS_envia_estadistico --------------------------------------------------
