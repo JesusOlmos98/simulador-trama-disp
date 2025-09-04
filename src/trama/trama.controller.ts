@@ -1,4 +1,7 @@
 import { Controller, Post, Body, Query } from '@nestjs/common';
+import { defaultPresentacionOmegaOld } from 'src/dtoBE/defaultTramaOld';
+import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
+import { PresentacionCentralOldDto } from 'src/dtoBE/tt_sistemaOld.dto';
 import {
   defaultPresentacionCTI40,
   defaultDataTempSonda1,
@@ -27,7 +30,6 @@ import {
   EnTmDepuracion,
 } from 'src/utils/BE/globals/enums';
 import {
-  readPresentacion,
   readNodoOrigen,
   readNodoDestino,
 } from 'src/utils/helpers';
@@ -55,23 +57,46 @@ export class TramaController {
   async presentacion(@Query('ver') ver?: string) {
     const usePort = ver === '0' ? 8002 : 8003;
     await this.tcp.switchTargetAndEnsureConnected({ port: usePort });
+    let enviarFrame: boolean | { bytes: number; hex: string; } = false;
 
-    const defaultPres: PresentacionDto = defaultPresentacionCTI40;
-    const pres: PresentacionDto = readPresentacion(defaultPres);
-    const data = this.tcp.crearDataPresentacion(pres); //done Aquí insertamos la data en la presentación.
+    if (ver === '0') { // 8002 Antiguos
+      const defaultPres: PresentacionCentralOldDto = defaultPresentacionOmegaOld;
+      const data = this.tcp.crearDataPresentacion({
+        tipoEquipo: defaultPres.tipoEquipo,
+        mac: defaultPres.mac,
+        versionEquipo: defaultPres.versionEquipo,
+        password: defaultPres.password,
+        crcTabla: 0,
+      }); //done Aquí insertamos la data en la presentación.
 
-    const frame: FrameDto = this.tcp.crearFrame({
-      nodoOrigen: readNodoOrigen(1),
-      nodoDestino: readNodoDestino(0),
-      tipoTrama: EnTipoTrama.sistema,          // TT_SISTEMA
-      tipoMensaje: EnTmSistema.txPresentacion, // TM_SISTEMA_TX_PRESENTACION
-      data,
-    });
+      const frame: FrameOldDto = this.tcp.crearFrame({
+        nodoOrigen: readNodoOrigen(1),
+        nodoDestino: readNodoDestino(0),
+        tipoTrama: EnTipoTrama.sistema,          // TT_SISTEMA
+        tipoMensaje: EnTmSistema.txPresentacion, // TM_SISTEMA_TX_PRESENTACION
+        data,
+        reserva: 0,
+      }) as FrameOldDto;
 
-    const enviarFrame = this.tcp.enviarFrame(frame);
-    josLogger.info(
-      `Enviamos PRESENTACION ${EnTipoEquipo[pres.tipoEquipo].toUpperCase()} al puerto ${usePort}`,
-    );
+      enviarFrame = this.tcp.enviarFrame(frame as FrameOldDto);
+      josLogger.info(`Enviamos PRESENTACION equipo VIEJO ${EnTipoEquipo[defaultPres.tipoEquipo].toUpperCase()} al puerto ${usePort}`,);
+    
+    } else { // 8003 Nuevos
+      const defaultPres: PresentacionDto = defaultPresentacionCTI40;
+      // const pres: PresentacionDto = readPresentacion(defaultPres);
+      const data = this.tcp.crearDataPresentacion(defaultPres); //done Aquí insertamos la data en la presentación.
+      const frame: FrameDto = this.tcp.crearFrame({
+        nodoOrigen: readNodoOrigen(1),
+        nodoDestino: readNodoDestino(0),
+        tipoTrama: EnTipoTrama.sistema,          // TT_SISTEMA
+        tipoMensaje: EnTmSistema.txPresentacion, // TM_SISTEMA_TX_PRESENTACION
+        data,
+        reserva: 0,
+      }) as FrameDto;
+      enviarFrame = this.tcp.enviarFrame(frame);
+      josLogger.info(`Enviamos PRESENTACION equipo NUEVO ${EnTipoEquipo[defaultPres.tipoEquipo].toUpperCase()} al puerto ${usePort}`,);
+    }
+
     if (!enviarFrame) return false;
     else return enviarFrame;
   }
@@ -81,17 +106,29 @@ export class TramaController {
    * body (opcional): { nodoOrigen?, nodoDestino? }
    */
   @Post('presencia')
-  async presencia() {
-    const data = this.tcp.crearDataPresencia(); // vacío
-    const frame = this.tcp.crearFrame({
-      nodoOrigen: readNodoOrigen(1),
-      nodoDestino: readNodoDestino(0),
-      tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
-      tipoMensaje: EnTmSistema.txPresencia, // TM_SISTEMA_TX_PRESENCIA
-      data,
-    });
+  async presencia(@Query('ver') ver?: string) {
+    const usePort = ver === '0' ? 8002 : 8003;
+    await this.tcp.switchTargetAndEnsureConnected({ port: usePort });
+    let enviarFrame: boolean | { bytes: number; hex: string; } = false;
+    if (ver === '0') { // 8002 Antiguos
+      const defaultPres: PresentacionCentralOldDto = defaultPresentacionOmegaOld;
+      // const frame:FrameOldDto = 
 
-    const enviarFrame = this.tcp.enviarFrame(frame);
+
+
+
+    } else { // 8003 Nuevos
+      const data = this.tcp.crearDataPresencia(); // vacío
+      const frame = this.tcp.crearFrame({
+        nodoOrigen: readNodoOrigen(1),
+        nodoDestino: readNodoDestino(0),
+        tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
+        tipoMensaje: EnTmSistema.txPresencia, // TM_SISTEMA_TX_PRESENCIA
+        data,
+      }) as FrameDto;
+      enviarFrame = this.tcp.enviarFrame(frame);
+    }
+
     josLogger.info(`Enviamos PRESENCIA`);
     if (!enviarFrame) return false;
     else return enviarFrame;
@@ -99,7 +136,11 @@ export class TramaController {
 
   // ------------------------------------------- ESTADO DISPOSITIVO -------------------------------------------
   @Post('estadoDispositivo')
-  async estadoDispositivo() {
+  async estadoDispositivo(@Query('ver') ver?: string) {
+    const usePort = ver === '0' ? 8002 : 8003;
+    await this.tcp.switchTargetAndEnsureConnected({ port: usePort });
+    let enviarFrame: boolean | { bytes: number; hex: string; } = false;
+
     // Datos de ejemplo
     const estadoDispositivo: EstadoDispositivoTxDto = {
       nVariables: 6,
@@ -115,9 +156,9 @@ export class TramaController {
       tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
       tipoMensaje: EnTmSistema.txEstadoDispositivo, // TM_SISTEMA_TX_PRESENCIA
       data,
-    });
+    }) as FrameDto;
 
-    const enviarFrame = this.tcp.enviarFrame(frame);
+    enviarFrame = this.tcp.enviarFrame(frame);
     josLogger.info(`Enviamos ESTADO DISPOSITIVO`);
     if (!enviarFrame) return false;
     else return enviarFrame;
@@ -139,7 +180,7 @@ export class TramaController {
       tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
       tipoMensaje: EnTmSistema.txConfigFinal, // 12
       data,
-    });
+    }) as FrameDto;
 
     const ok = this.tcp.enviarFrame(frame);
     josLogger.info(`Enviamos CONFIG FINAL`);
@@ -162,7 +203,7 @@ export class TramaController {
       tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
       tipoMensaje: EnTmSistema.txUrlDescargaOta, // 6
       data,
-    });
+    }) as FrameDto;
 
     const ok = this.tcp.enviarFrame(frame);
     josLogger.info(`Enviamos URL DESCARGA OTA`);
@@ -186,7 +227,7 @@ export class TramaController {
       tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
       tipoMensaje: EnTmSistema.txProgresoActualizacion, // 10
       data,
-    });
+    }) as FrameDto;
 
     const ok = this.tcp.enviarFrame(frame);
     josLogger.info(`Enviamos PROGRESO ACTUALIZACION`);
@@ -223,7 +264,7 @@ export class TramaController {
       tipoTrama: EnTipoTrama.estadisticos,
       tipoMensaje: EnTmEstadisticos.enviaEstadistico,
       data,
-    });
+    }) as FrameDto;
 
     const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
     return ok;
@@ -247,7 +288,7 @@ export class TramaController {
       tipoTrama: EnTipoTrama.estadisticos,
       tipoMensaje: EnTmEstadisticos.enviaEstadistico,
       data,
-    });
+    }) as FrameDto;
 
     const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
     return ok;
@@ -271,7 +312,7 @@ export class TramaController {
       tipoTrama: EnTipoTrama.estadisticos,
       tipoMensaje: EnTmEstadisticos.enviaEstadistico,
       data,
-    });
+    }) as FrameDto;
 
     const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
     return ok;
@@ -296,7 +337,7 @@ export class TramaController {
       tipoTrama: EnTipoTrama.estadisticos,
       tipoMensaje: EnTmEstadisticos.enviaEstadistico,
       data,
-    });
+    }) as FrameDto;
 
     const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
     return ok;
@@ -320,7 +361,7 @@ export class TramaController {
       tipoTrama: EnTipoTrama.estadisticos,
       tipoMensaje: EnTmEstadisticos.enviaEstadistico,
       data,
-    });
+    }) as FrameDto;
 
     const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
     return ok;
@@ -342,7 +383,7 @@ export class TramaController {
       tipoTrama: EnTipoTrama.estadisticos,
       tipoMensaje: EnTmEstadisticos.enviaEstadistico,
       data,
-    });
+    }) as FrameDto;
 
     const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
     return ok;
@@ -373,7 +414,7 @@ export class TramaController {
       tipoTrama: EnTipoTrama.depuracion, // TT_DEPURACION
       tipoMensaje: EnTmDepuracion.peticionConsola, // 1
       data,
-    });
+    }) as FrameDto;
 
     const ok = this.tcp.enviarFrame(frame);
     josLogger.info('Enviamos DEPURACION PETICION CONSOLA');

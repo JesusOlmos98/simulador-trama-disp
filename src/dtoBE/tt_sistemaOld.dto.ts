@@ -1,53 +1,32 @@
 import { START, END } from "src/utils/BE/globals/constGlobales";
 
-export enum EnTipoMensajeOld {
-  tmRtPresenciaCentral          = 7,   // 5.2.1
-  tmPresentacionCentral         = 8,   // 5.2.2
-  tmRtTablaCentralMas           = 18,  // 5.2.3
-  tmRtTablaCentralFin           = 19,  // 5.2.3
-  tmEventoCambioEstadoNodo      = 20,  // 5.2.4
-  tmRtEnviaParametroHistorico   = 100, // 5.1.9 (origen central, TT_central_servidor)
-}
+// export enum EnTipoMensajeOld {
+//   tmRtPresenciaCentral          = 7,   // 5.2.1
+//   tmPresentacionCentral         = 8,   // 5.2.2
+//   tmRtTablaCentralMas           = 18,  // 5.2.3
+//   tmRtTablaCentralFin           = 19,  // 5.2.3
+//   tmEventoCambioEstadoNodo      = 20,  // 5.2.4
+//   tmRtEnviaParametroHistorico   = 100, // 5.1.9 (origen central, TT_central_servidor)
+// }
 
 // ---------------- Cabecera ----------------
-export interface HeaderFieldsOld {
-  versionProtocolo: number; // uint8
-  nodoOrigen: number;       // uint16 BE
-  nodoDestino: number;      // uint16 BE
-  tipoTrama: number;        // uint8
-  tipoMensaje: number;      // uint8
-  longitud: number;         // uint16 BE -> bytes del bloque `datos`
-}
+// export interface HeaderFieldsOld {
+//   versionProtocolo: number; // uint8
+//   nodoOrigen: number;       // uint16 BE
+//   nodoDestino: number;      // uint16 BE
+//   tipoTrama: number;        // uint8
+//   tipoMensaje: number;      // uint8
+//   longitud: number;         // uint16 BE -> bytes del bloque `datos`
+// }
 
-// ---------------- Frame completo ----------------
-export class FrameOldDto {
-  inicioTrama: Buffer = START;
 
-  // Cabecera
-  versionProtocolo: number;
-  nodoOrigen: number;
-  nodoDestino: number;
-  tipoTrama: number;
-  tipoMensaje: number;
-  longitud: number; // bytes del campo `datos` solamente
-
-  // Datos
-  datos: DatosCentralServidorViejo;
-
-  // CRC: 1 byte (LSB de CRC16 estándar sobre cabecera+datos)
-  crc: number;
-
-  finTrama: Buffer = END;
-}
-
-// =======================================
-//  Datos por tipo de mensaje (central → servidor)
-// =======================================
+//* Datos por tipo de mensaje (central → servidor)
 
 // ---------- 5.2.2 TM_presentacion_central ----------
 export interface PresentacionCentralOldDto {
-  tipoDispositivo: number; // uint8
-  mac: Buffer;             // 8 bytes
+  /** "Tipo dispositivo" en la doc y NO Tipo Equipo */
+  tipoEquipo: number;      // uint8
+  mac: number;             // 8 bytes
   versionEquipo: number;   // uint16 BE
   password: string;        // 16 bytes, null-terminated si <16
   crcTabla: number;        // uint16 BE (va dentro de datos)
@@ -60,6 +39,7 @@ export interface PresenciaNodoCrcOld {
   crcParametros: number;   // uint16 BE (antiguo: se envía 0 si no se usa)
   crcAlarmas: number;      // uint16 BE
 }
+
 export interface RtPresenciaCentralOldDto {
   // Repetido N veces (8 bytes por nodo en el método antiguo)
   nodos: PresenciaNodoCrcOld[];
@@ -77,6 +57,7 @@ export interface TablaCentralItemOld {
   infoEstado: number;     // uint8
   hayAlarma: number;      // uint8
 }
+
 export interface RtTablaCentralMasOldDto {
   items: TablaCentralItemOld[];
 }
@@ -106,11 +87,11 @@ export interface RtEnviaParametroHistoricoOldDto {
 }
 
 // Unión de datos posibles (central → servidor, protocolo antiguo)
-export type DatosCentralServidorViejo =
-  | PresentacionCentralOldDto
-  | RtPresenciaCentralOldDto
-  | RtTablaCentralMasOldDto
-  | RtTablaCentralFinOldDto
-  | EventoCambioEstadoNodoOldDto
-  | RtEnviaParametroHistoricoOldDto
-  | Buffer; // fallback para TMs no modelados todavía
+// export type DatosCentralServidorOld =
+//   | PresentacionCentralOldDto
+//   | RtPresenciaCentralOldDto
+//   | RtTablaCentralMasOldDto
+//   | RtTablaCentralFinOldDto
+//   | EventoCambioEstadoNodoOldDto
+//   | RtEnviaParametroHistoricoOldDto
+//   | Buffer; // fallback para TMs no modelados todavía

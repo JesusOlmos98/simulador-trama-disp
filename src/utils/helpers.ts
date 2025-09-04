@@ -58,14 +58,14 @@ export function readTempC(body: unknown, def = 25.0): number {
 
 // ------------------------------------------- readPresentacion -------------------------------------------
 /** Si no hay presentación en el body, devuelve la default. */
-export function readPresentacion(
-  /*body: unknown,*/ def: PresentacionDto,
-): PresentacionDto {
-  // if (!isObject(body))
-  return def;
-  // const datos = body['datos'];
-  // return isPresentacionDto(datos) ? (datos as PresentacionDto) : def;
-}
+// export function readPresentacion(
+//   /*body: unknown,*/ def: PresentacionDto,
+// ): PresentacionDto {
+//   // if (!isObject(body))
+//   return def;
+//   // const datos = body['datos'];
+//   // return isPresentacionDto(datos) ? (datos as PresentacionDto) : def;
+// }
 
 // ------------------------------------------- hexDump -------------------------------------------
 /** Convierte un buffer en texto hexadecimal en columnas. */

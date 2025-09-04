@@ -9,7 +9,10 @@ import { EnvConfiguration } from 'config/app.config';
 import { defaultDataTempSonda1, defaultDataContadorAgua, defaultDataActividadCalefaccion1, defaultDataEventoInicioCrianza, defaultDataAlarmaTempAlta, defaultDataCambioParametro } from 'src/dtoLE/defaultTrama';
 import { PresentacionDto, EstadoDispositivoTxDto, ConfigFinalTxDto, UrlDescargaOtaTxDto, ProgresoActualizacionTxDto } from 'src/dtoLE/tt_sistema.dto';
 import { getTipoTrama, getTipoMensaje } from 'src/utils/BE/get/getTrama';
-import { ACK_TTL_MS, PROTO_VERSION, MAX_DATA_BYTES, START, END, ACK_TIMEOUT_MS } from 'src/utils/BE/globals/constGlobales';
+import { PROTO_VERSION, MAX_DATA_BYTES, START, END, ACK_TIMEOUT_MS } from 'src/utils/BE/globals/constGlobales';
+import { END_BE, MAX_DATA_BYTES_BE, PROTO_VERSION_BE, START_BE } from 'src/utils/LE/globals/constGlobalesOld';
+import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
+import { PresentacionCentralOldDto } from 'src/dtoBE/tt_sistemaOld.dto';
 
 //! CAPA 0
 
@@ -204,18 +207,43 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   // }
 
   // ------------------------------------------- ENVÍO -------------------------------------------
-  /** Enviar un FrameDto (se serializa internamente a Buffer) */
-  enviarFrame(frame: FrameDto) {
-
+  /** Enviar un Frame (nuevo vs viejo) */
+  enviarFrame(frame: FrameDto | FrameOldDto) {
     if (!this.socket || !this.socket.writable) {
       josLogger.fatal('XXX Socket no conectado XXX');
       return false;
     }
-    const buf = this.serializarFrame(frame);
+
+    // Decide en runtime: viejo (BE, v1) vs nuevo (LE, v2)
+    const isOld = (frame as any).versionProtocolo === 1;
+
+    const buf = isOld
+      ? this.serializarFrame(frame as FrameOldDto)    // Serializa header 9B (BE) y CRC de 1 byte (LSB CRC16)
+      : this.serializarFrame(frame as FrameDto);      // Serializa header 10B (LE) como ya tenías
+
     this.socket.write(buf);
     return { bytes: buf.length, hex: buf.toString('hex') };
-
   }
+
+  //   enviarFrame(frame: FrameDto | FrameOldDto) {
+
+  // //! Primero equipos viejos:
+
+
+
+
+  // //! Y después caso de equipos nuevos:
+
+
+  //     if (!this.socket || !this.socket.writable) {
+  //       josLogger.fatal('XXX Socket no conectado XXX');
+  //       return false;
+  //     }
+  //     const buf = this.serializarFrame(frame as FrameDto);
+  //     this.socket.write(buf);
+  //     return { bytes: buf.length, hex: buf.toString('hex') };
+
+  //   }
 
   //* -----------------------------------------------------------------------------------------------------
   //* -------------- Aquí se serializan los datos a enviar (metiéndole el respectivo objeto) --------------
@@ -228,73 +256,141 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     nodoDestino: number;
     tipoTrama: number;
     tipoMensaje: number;
+    // longitud?: number;
     data: Buffer;
     reserva?: number;
     versionProtocolo?: number;
-  }): FrameDto {
-    const {
-      nodoOrigen,
-      nodoDestino,
-      tipoTrama,
-      tipoMensaje,
-      data,
-      reserva = 0,
-      versionProtocolo = PROTO_VERSION,
-    } = params;
+  }): FrameDto | FrameOldDto {
 
-    if (data.length > MAX_DATA_BYTES) {
-      throw new Error(`El cuerpo supera ${MAX_DATA_BYTES} bytes`);
+    let frame: FrameDto | FrameOldDto;
+
+    const isOld = params.reserva === undefined ? true : params.reserva === null ? true : false;
+
+    if (isOld) { // Equipos antiguos (la variable resesrva NO está en la trama de los equipos antiguos)
+      const {
+        nodoOrigen,
+        nodoDestino,
+        tipoTrama,
+        tipoMensaje,
+        // longitud,
+        data,
+        versionProtocolo = PROTO_VERSION_BE,
+      } = params;
+      if (data.length > MAX_DATA_BYTES_BE) { throw new Error(`El cuerpo supera ${MAX_DATA_BYTES_BE} bytes`); }
+      frame = {
+        inicioTrama: START_BE,
+        versionProtocolo,
+        nodoOrigen,
+        nodoDestino,
+        tipoTrama,
+        tipoMensaje,
+        longitud: data.length,
+        datos: data, // Buffer
+        crc: 0, // done se recalcula en serializeFrame
+        finTrama: END_BE,
+      } as FrameOldDto;
+
+    } else { // Equipos nuevos
+      const {
+        nodoOrigen,
+        nodoDestino,
+        tipoTrama,
+        tipoMensaje,
+        data,
+        reserva = 0,
+        versionProtocolo = PROTO_VERSION,
+      } = params;
+      if (data.length > MAX_DATA_BYTES) { throw new Error(`El cuerpo supera ${MAX_DATA_BYTES} bytes`); }
+      frame = {
+        inicioTrama: START,
+        versionProtocolo,
+        reserva,
+        nodoOrigen,
+        nodoDestino,
+        tipoTrama,
+        tipoMensaje,
+        longitud: data.length,
+        datos: data, // Buffer
+        crc: 0, // done se recalcula en serializeFrame
+        finTrama: END,
+      } as FrameDto;
     }
-
-    const frame: FrameDto = {
-      inicioTrama: START,
-      versionProtocolo,
-      reserva,
-      nodoOrigen,
-      nodoDestino,
-      tipoTrama,
-      tipoMensaje,
-      longitud: data.length,
-      datos: data, // Buffer
-      crc: 0, // done se recalcula en serializeFrame
-      finTrama: END,
-    };
 
     return frame;
   }
 
   /** Serializa un FrameDto (Little Endian en header, CRC escrito en BE como espera el server) */
-  serializarFrame(f: FrameDto): Buffer {
+  serializarFrame(f: FrameDto | FrameOldDto): Buffer {
     const start = f.inicioTrama;
     const end = f.finTrama;
 
+    const datosBuf = Buffer.alloc(0);
+
+    const isOld = f.versionProtocolo !== 2;
     // Header (NO incluye el "start")
+
+    if (isOld) {
+      const header = Buffer.alloc(1 + 2 + 2 + 1 + 1 + 2);
+      let o = 0;
+      header.writeUInt8(f.versionProtocolo & 0xff, o); o += 1;
+      header.writeUInt16BE(f.nodoOrigen & 0xffff, o); o += 2;
+      header.writeUInt16BE(f.nodoDestino & 0xffff, o); o += 2;
+      header.writeUInt8(f.tipoTrama & 0xff, o); o += 1;
+      header.writeUInt8(f.tipoMensaje & 0xff, o); o += 1;
+      header.writeUInt16BE(f.longitud & 0xffff, o); o += 2;
+
+      const crcSegment = Buffer.concat([header, datosBuf]);
+      const crc16 = crc16IBM(crcSegment);          // 16-bit
+      const crcBuf = Buffer.from([crc16 & 0xff]);  // LSB (1 byte)
+
+      return Buffer.concat([start, header, datosBuf, crcBuf, end]);
+    }
+
+    // Nuevo → LE + header 10B (con reserva) + CRC16 (2B) escrito en BE
     const header = Buffer.alloc(1 + 1 + 2 + 2 + 1 + 1 + 2);
     let offset = 0;
-    header.writeUInt8(f.versionProtocolo, offset);
-    offset += 1;
-    header.writeUInt8(f.reserva ?? 0, offset);
-    offset += 1;
-    header.writeUInt16LE(f.nodoOrigen, offset);
-    offset += 2;
-    header.writeUInt16LE(f.nodoDestino, offset);
-    offset += 2;
-    header.writeUInt8(f.tipoTrama, offset);
-    offset += 1;
-    header.writeUInt8(f.tipoMensaje, offset);
-    offset += 1;
-    header.writeUInt16LE(f.longitud, offset);
-    offset += 2;
+    header.writeUInt8(f.versionProtocolo & 0xff, offset); offset += 1;
+    header.writeUInt8(((f as any).reserva ?? 0) & 0xff, offset); offset += 1;
+    header.writeUInt16LE(f.nodoOrigen & 0xffff, offset); offset += 2;
+    header.writeUInt16LE(f.nodoDestino & 0xffff, offset); offset += 2;
+    header.writeUInt8(f.tipoTrama & 0xff, offset); offset += 1;
+    header.writeUInt8(f.tipoMensaje & 0xff, offset); offset += 1;
+    header.writeUInt16LE(f.longitud & 0xffff, offset); offset += 2;
 
-    const datosBuf = Buffer.isBuffer(f.datos) ? f.datos : Buffer.alloc(0);
-
-    // === CRC16 IBM/ARC sobre (header + datos) ===
     const crcSegment = Buffer.concat([header, datosBuf]);
-    const crcValSwapped = crc16IBM(crcSegment); // ya viene "swappeado" como el server lo compara
+    const crcValSwapped = crc16IBM(crcSegment); // tu helper actual
     const crcBuf = Buffer.alloc(2);
-    crcBuf.writeUInt16BE(crcValSwapped, 0); // el server hace readUInt16BE → ¡coinciden!
+    crcBuf.writeUInt16BE(crcValSwapped, 0);     // el server lee BE
 
     return Buffer.concat([start, header, datosBuf, crcBuf, end]);
+
+    //done Así manejaba solo los nuevos dispositivos:
+    // const header = Buffer.alloc(1 + 1 + 2 + 2 + 1 + 1 + 2);
+    // let offset = 0;
+    // header.writeUInt8(f.versionProtocolo, offset);
+    // offset += 1;
+    // header.writeUInt8(f.reserva ?? 0, offset);
+    // offset += 1;
+    // header.writeUInt16LE(f.nodoOrigen, offset);
+    // offset += 2;
+    // header.writeUInt16LE(f.nodoDestino, offset);
+    // offset += 2;
+    // header.writeUInt8(f.tipoTrama, offset);
+    // offset += 1;
+    // header.writeUInt8(f.tipoMensaje, offset);
+    // offset += 1;
+    // header.writeUInt16LE(f.longitud, offset);
+    // offset += 2;
+
+    // const datosBuf = Buffer.isBuffer(f.datos) ? f.datos : Buffer.alloc(0);
+
+    // // === CRC16 IBM/ARC sobre (header + datos) ===
+    // const crcSegment = Buffer.concat([header, datosBuf]);
+    // const crcValSwapped = crc16IBM(crcSegment); // ya viene "swappeado" como el server lo compara
+    // const crcBuf = Buffer.alloc(2);
+    // crcBuf.writeUInt16BE(crcValSwapped, 0); // el server hace readUInt16BE → ¡coinciden!
+
+    // return Buffer.concat([start, header, datosBuf, crcBuf, end]);
   }
 
   /** Espera hasta timeout a que llegue el ACK con ese id. */
@@ -351,30 +447,68 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   // * -------------------------------------------------------------------------------------------------------------------
 
   /** TM_SISTEMA_TX_PRESENTACION (N_variables=6) */
-  crearDataPresentacion(p: PresentacionDto) {
-    const data = Buffer.alloc(4 * (1 + p.nVariables)); // 7 uint32
-    let offset = 0;
-    data.writeUInt32LE(p.nVariables, offset);
-    offset += 4; // N_variables (6)
-    data.writeUInt32LE(p.versionPresentacion, offset);
-    offset += 4; // version_presentacion
-    data.writeUInt32LE(p.mac, offset);
-    offset += 4; // MAC
-    data.writeUInt32LE(p.versionEquipo, offset);
-    offset += 4; // VERSION_EQUIPO
-    data.writeUInt32LE(p.tipoEquipo, offset);
-    offset += 4; // tipo_equipo
-    data.writeUInt32LE(p.claveEquipo, offset);
-    offset += 4; // clave_equipo
-    data.writeUInt32LE(p.versionHw, offset);
-    offset += 4; // VERSION_HW
+  crearDataPresentacion(p: {
+    nVariables?: number;
+    versionPresentacion?: number;
+    mac: number;
+    versionEquipo: number;
+    tipoEquipo: number;
+    claveEquipo?: number;
+    versionHw?: number;
+    password?: string;
+    crcTabla?: number;
+    // tipoDispositivo?: number;
+  } /*PresentacionDto | PresentacionCentralOldDto*/): Buffer {
+
+    let data: Buffer = Buffer.alloc(0);
+
+    if (p.password) { // Equipos antiguos (la variable password SOLO está en la trama de los equipos antiguos)
+
+      const params = p as unknown as PresentacionCentralOldDto;
+
+      // Datos (BE): 1(tipo) + 8(MAC) + 2(version) + 16(password) + 2(crc) = 29 bytes
+      const passBuf = Buffer.alloc(16, 0x00);
+      const passBytes = Buffer.from(params.password ?? '', 'utf8');
+      passBytes.copy(passBuf, 0, 0, Math.min(passBytes.length, 15)); // null-terminated
+
+      data = Buffer.alloc(29);
+      let offset = 0;
+
+      data.writeUInt8(params.tipoEquipo & 0xff, offset); offset += 1;           // tipoDispositivo (1)
+      // params.mac.copy(data, offset, 0, 8); offset += 8;                         // MAC (8)
+      //! REVISAR el BigInt
+      data.writeBigUInt64BE(BigInt(params.mac), offset); offset += 8; // MAC (8 bytes BE desde number)
+      data.writeUInt16BE(params.versionEquipo & 0xffff, offset); offset += 2;   // versionEquipo (2) BE
+      passBuf.copy(data, offset); offset += 16;                                 // password (16)
+      data.writeUInt16BE(params.crcTabla & 0xffff, offset); offset += 2;        // crcTabla (2) BE
+
+    } else { // Equipos nuevos
+
+      const params = p as PresentacionDto;
+
+      data = Buffer.alloc(4 * (1 + params.nVariables)); // 7 uint32
+      let offset = 0;
+      data.writeUInt32LE(params.nVariables, offset);
+      offset += 4; // N_variables (6)
+      data.writeUInt32LE(params.versionPresentacion, offset);
+      offset += 4; // version_presentacion
+      data.writeUInt32LE(params.mac, offset);
+      offset += 4; // MAC
+      data.writeUInt32LE(params.versionEquipo, offset);
+      offset += 4; // VERSION_EQUIPO
+      data.writeUInt32LE(params.tipoEquipo, offset);
+      offset += 4; // tipo_equipo
+      data.writeUInt32LE(params.claveEquipo, offset);
+      offset += 4; // clave_equipo
+      data.writeUInt32LE(params.versionHw, offset);
+      offset += 4; // VERSION_HW
+    }
+
     return data;
   }
 
   /** TM_SISTEMA_TX_PRESENCIA */
-  crearDataPresencia() {
-    return Buffer.alloc(0);
-  }
+  crearDataPresencia() { return Buffer.alloc(0); }
 
   /** TM_SISTEMA_TX_ESTADO_DISPOSITIVO */
   serializarDataEstadoDispositivo(ed: EstadoDispositivoTxDto) {
