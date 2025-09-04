@@ -1,5 +1,5 @@
-import { TIPO_DATO_ACCION_REGISTRO_DATOS_GENERICO } from "src/utils/BE/globals/constGlobales";
-import { EnTipoEquipo, EnEstadisticosControladores, EnEstadisPeriodicidad, EnEstadoDatoEstadistico, EnGtUnidades, EnTipoDato, EnEstadisTipoRegistro, EnContadoresTipo, EnEeEventosApli, EnAlarmas, EnAlarmaEstado, EnAlarmasAccion } from "src/utils/BE/globals/enums";
+import { TIPO_DATO_ACCION_REGISTRO_DATOS_GENERICO } from "src/utils/LE/globals/constGlobales";
+import { EnTipoEquipo, EnEstadisticosControladores, EnEstadisPeriodicidad, EnEstadoDatoEstadistico, EnGtUnidades, EnTipoDato, EnEstadisTipoRegistro, EnContadoresTipo, EnEeEventosApli, EnAlarmas, EnAlarmaEstado, EnAlarmasAccion } from "src/utils/LE/globals/enums";
 import { Tiempo, Fecha } from "src/utils/tiposGlobales";
 import { EstadisticoValorDto, EstadisticoDato, serializarDatosEstadisticoValor, EnviaEstadisticoDto, EstadisticoContadorDto, serializarDatosEstadisticoContador, EstadisticoActividadDto, serializarDatosEstadisticoActividad, EeInicioCrianzaDto, serializarDatosEstadisticoEvento, EstadisticoAlarmaDto, serializarDatosEstadisticoAlarma, serializarDatosEstadisticoCambioParametros, EstadisticoCambioParametroDto } from "./tt_estadisticos.dto";
 import { PresentacionDto } from "./tt_sistema.dto";

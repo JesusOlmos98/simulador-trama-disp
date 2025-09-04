@@ -1,7 +1,7 @@
 import {
   EnGcspaEventoActualizacionServer,
   EnTmSistema,
-} from 'src/utils/BE/globals/enums';
+} from 'src/utils/LE/globals/enums';
 
 // * DTOs de los posibles mensajes enviados en las tramas TT_SISTEMA, cada uno de
 // * estos DTOs sería el "payload" o "data" de la trama, que contempla un máximo de 2480 bytes.

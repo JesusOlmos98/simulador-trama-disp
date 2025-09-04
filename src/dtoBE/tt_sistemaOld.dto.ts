@@ -1,4 +1,4 @@
-import { START, END } from "src/utils/BE/globals/constGlobales";
+import { START, END } from "src/utils/LE/globals/constGlobales";
 
 // export enum EnTipoMensajeOld {
 //   tmRtPresenciaCentral          = 7,   // 5.2.1

@@ -28,7 +28,7 @@ import {
   EnGcspaEventoActualizacionServer,
   EnTmEstadisticos,
   EnTmDepuracion,
-} from 'src/utils/BE/globals/enums';
+} from 'src/utils/LE/globals/enums';
 import {
   readNodoOrigen,
   readNodoDestino,

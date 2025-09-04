@@ -1,4 +1,4 @@
-import { START, END } from "src/utils/BE/globals/constGlobales";
+import { START, END } from "src/utils/LE/globals/constGlobales";
 import { PresentacionCentralOldDto, RtPresenciaCentralOldDto, RtTablaCentralMasOldDto, RtTablaCentralFinOldDto, EventoCambioEstadoNodoOldDto, RtEnviaParametroHistoricoOldDto } from "./tt_sistemaOld.dto";
 
 // ---------------- Frame completo ----------------

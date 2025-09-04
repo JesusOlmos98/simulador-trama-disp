@@ -1,4 +1,4 @@
-import { EnTipoDato, EnScvTipo } from 'src/utils/BE/globals/enums';
+import { EnTipoDato, EnScvTipo } from 'src/utils/LE/globals/enums';
 
 //! WIP: Servicios Clave Valor
 

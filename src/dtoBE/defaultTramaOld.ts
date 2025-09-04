@@ -1,4 +1,4 @@
-import { EnTipoEquipo } from "src/utils/BE/globals/enums";
+import { EnTipoEquipo } from "src/utils/LE/globals/enums";
 import { PresentacionCentralOldDto } from "./tt_sistemaOld.dto";
 
 // Presentación (Omega) – protocolo antiguo (Big Endian)
