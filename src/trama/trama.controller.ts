@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Query } from '@nestjs/common';
+import { Controller, Post, Body, Query, BadRequestException } from '@nestjs/common';
 import { defaultPresentacionOmegaOld } from 'src/dtoBE/defaultTramaOld';
 import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
 import { PresentacionCentralOldDto } from 'src/dtoBE/tt_sistemaOld.dto';
@@ -10,9 +10,11 @@ import {
   defaultDataEventoInicioCrianza,
   defaultDataAlarmaTempAlta,
   defaultDataCambioParametro,
+  defaultDatosValorTempSonda1,
 } from 'src/dtoLE/defaultTrama';
 import { FrameDto } from 'src/dtoLE/frame.dto';
 import { PeticionConsolaDto } from 'src/dtoLE/tt_depuracion.dto';
+import { EstadisticoDato, serializarDatosEstadisticoValor } from 'src/dtoLE/tt_estadisticos.dto';
 import {
   PresentacionDto,
   EstadoDispositivoTxDto,
@@ -28,7 +30,10 @@ import {
   EnGcspaEventoActualizacionServer,
   EnTmEstadisticos,
   EnTmDepuracion,
+  EnEstadisPeriodicidad,
+  EnEstadisticosControladores,
 } from 'src/utils/LE/globals/enums';
+import { parseDmYToFecha } from 'src/utils/helpers';
 import { josLogger } from 'src/utils/josLogger';
 
 @Controller('trama')
@@ -53,58 +58,12 @@ export class TramaController {
   async presentacion(@Query('ver') ver?: string) {
     const usePort = ver === '0' ? 8002 : 8003;
     await this.tcp.switchTargetAndEnsureConnected({ port: usePort });
-    // let enviarFrame: boolean | { bytes: number; hex: string; } = false;
 
     if (ver === '0') {                     // 8002 Antiguos
       this.tcp.handlerPresentacionOld();
     } else {                               // 8003 Nuevos
       this.tcp.handlerPresentacion();
     }
-
-    //! WIP TERMINAR
-    // josLogger.debug('@Post("presentacion") 8002 Antiguos');
-
-    //! Funcion aqui que ejecuta completamente el camino del equipo antiguo.
-    // const defaultPres: PresentacionCentralOldDto = defaultPresentacionOmegaOld;
-    // const data = this.tcp.crearDataPresentacion({
-    //   tipoEquipo: defaultPres.tipoEquipo,
-    //   mac: defaultPres.mac,
-    //   versionEquipo: defaultPres.versionEquipo,
-    //   password: defaultPres.password,
-    //   crcTabla: 0,
-    // }); //done Aquí insertamos la data en la presentación.
-
-    // const frame: FrameOldDto = this.tcp.crearFrame({
-    //   nodoOrigen: 1,
-    //   nodoDestino: 0,
-    //   tipoTrama: EnTipoTrama.sistema,          // TT_SISTEMA
-    //   tipoMensaje: EnTmSistema.txPresentacion, // TM_SISTEMA_TX_PRESENTACION
-    //   data,
-    // reserva: 0, //done NO enviamos reserva en los antiguos, nos sirve como flag en crearFrame()
-    // }) as FrameOldDto;
-
-    // enviarFrame = this.tcp.enviarFrame(frame as FrameOldDto);
-    // josLogger.info(`Enviamos PRESENTACION equipo VIEJO ${EnTipoEquipo[defaultPres.tipoEquipo].toUpperCase()} al puerto ${usePort}`,);
-
-
-    //   josLogger.debug('@Post("presentacion") 8003 Nuevos');
-
-    //   const defaultPres: PresentacionDto = defaultPresentacionCTI40;
-    //   const data = this.tcp.crearDataPresentacion(defaultPres); //done Aquí insertamos la data en la presentación.
-    //   const frame: FrameDto = this.tcp.crearFrame({
-    //     nodoOrigen: 1,
-    //     nodoDestino: 0,
-    //     tipoTrama: EnTipoTrama.sistema,          // TT_SISTEMA
-    //     tipoMensaje: EnTmSistema.txPresentacion, // TM_SISTEMA_TX_PRESENTACION
-    //     data,
-    //     reserva: 0,
-    //   });
-    //   enviarFrame = this.tcp.enviarFrame(frame);
-    //   josLogger.info(`Enviamos PRESENTACION equipo NUEVO ${EnTipoEquipo[defaultPres.tipoEquipo].toUpperCase()} al puerto ${usePort}`,);
-    // }
-
-    // if (!enviarFrame) return false;
-    // else return enviarFrame;
   }
 
   // ------------------------------------------- PRESENCIA -------------------------------------------
@@ -119,25 +78,8 @@ export class TramaController {
 
     if (ver === '0') { // 8002 Antiguos
       return this.tcp.handlerPresenciaOld();
-      // const defaultPres: PresentacionCentralOldDto = defaultPresentacionOmegaOld;
-      // const frame:FrameOldDto = 
-      //? WIP TERMINAR
     } else { // 8003 Nuevos
       return this.tcp.handlerPresencia();
-
-      //   const data = this.tcp.crearDataPresencia(); // vacío
-      //   const frame = this.tcp.crearFrame({
-      //     nodoOrigen: 1,
-      //     nodoDestino: 0,
-      //     tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
-      //     tipoMensaje: EnTmSistema.txPresencia, // TM_SISTEMA_TX_PRESENCIA
-      //     data,
-      //   });
-      //   enviarFrame = this.tcp.enviarFrame(frame);
-      // }
-      // josLogger.info(`Enviamos PRESENCIA`);
-      // if (!enviarFrame) return false;
-      // else return enviarFrame;
     }
   }
 
@@ -251,17 +193,150 @@ export class TramaController {
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
+  //! hacer con Querys tempSonda1, humedad, co2, nh3
+
   // ------------------------------------------- VALOR (ej. tempSonda1) -------------------------------------------
-  /** POST /api/trama/tempSonda1 */
+  // @Post('tempSonda1')
+  // async tempSonda1(
+  //   @Query('ver') ver?: string,
+  //   @Query('fi') fi?: string,
+  //   @Query('periodicidad') periodicidadRaw?: string,
+  //   @Query('tipo') tipoRaw?: string,
+  //   @Query('ff') ff?: string,
+  // ) {
+  //   josLogger.info('Enviamos tempSonda1');
+
+  //   // “Todos o ninguno”
+  //   const providedCount = [fi, periodicidadRaw, tipoRaw, ff].filter(v => v !== undefined).length;
+  //   if (providedCount !== 0 && providedCount !== 4) {
+  //     throw new BadRequestException('Debes enviar los cuatro parámetros (fi, periodicidad, tipo, ff) o ninguno.');
+  //   }
+
+  //   // Si vienen los 4, validamos/convertimos y aplicamos
+  //   if (providedCount === 4) {
+  //     try {
+  //       const fechaInicio = parseDmY(fi!);
+  //       const fechaFin = parseDmY(ff!);
+  //       if (fechaFin < fechaInicio) throw new Error('La fecha final debe ser posterior a la inicial.');
+
+  //       const periodicidad = coerceEnum(periodicidadRaw!, EnEstadisPeriodicidad);
+  //       const tipo = coerceEnum(tipoRaw!, EnEstadisticosControladores);
+
+  //       // Ajusta estos campos a tu DTO real de estadístico:
+  //       // ! Si tus nombres no coinciden, cambia aquí los nombres de propiedad.
+  //       defaultDataTempSonda1.fechaInicioEpoch = Math.floor(fechaInicio.getTime() / 1000); // ! Epoch UTC
+  //       defaultDataTempSonda1.fechaFinEpoch = Math.floor(fechaFin.getTime() / 1000);       // ! Epoch UTC
+  //       defaultDataTempSonda1.periodicidad = periodicidad as number;
+  //       defaultDataTempSonda1.tipoEstadistico = tipo as number;
+  //     } catch (e: any) {
+  //       throw new BadRequestException(`Parámetros inválidos: ${e.message}`);
+  //     }
+  //   }
+
+  //   // Flujo habitual (nuevo o viejo según ?ver)
+  //   const id = this.tcp.nextStatId();
+  //   defaultDataTempSonda1.identificadorUnicoDentroDelSegundo = id;
+  //   josLogger.info(`📈 Estadístico id=${defaultDataTempSonda1.identificadorUnicoDentroDelSegundo} enviado`);
+
+  //   const data = this.tcp.crearDataTempS1();
+
+  //   const frame = this.tcp.crearFrame({
+  //     nodoOrigen: 1,
+  //     nodoDestino: 0,
+  //     tipoTrama: EnTipoTrama.estadisticos,
+  //     tipoMensaje: EnTmEstadisticos.enviaEstadistico,
+  //     data,
+  //     // Para nuevos agrega reserva: 0; si quieres soportar ver=0 (viejos) en este endpoint,
+  //     // podrías decidir aquí en función de 'ver' como hiciste en presentación/presencia.
+  //     reserva: ver === '0' ? undefined as any : 0, // ! si NO quieres viejos aquí, quita esta línea
+  //   }) as FrameDto;
+
+  //   const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
+  //   return ok;
+  // }
+
+  // ────────── ENDPOINT ──────────
   @Post('tempSonda1')
-  async tempSonda1(@Body() body?: unknown) {
+  async tempSonda1(
+    @Query('fi') fi?: string,                                 // fecha inicio (DD-MM-YYYY)
+    @Query('periodicidad') periodicidadRaw?: string | number, // EnEstadisPeriodicidad
+    @Query('tipo') tipoRaw?: string | number,                 // EnEstadisticosControladores
+    @Query('ff') ff?: string,                                 // fecha fin (DD-MM-YYYY) — se valida pero este frame no la porta
+  ) {
     josLogger.info('Enviamos tempSonda1');
 
+    // “Todos o ninguno”
+    const provided = [fi, periodicidadRaw, tipoRaw, ff].filter(v => v !== undefined);
+    if (provided.length !== 0 && provided.length !== 4) {throw new BadRequestException('Debes enviar los cuatro parámetros (fi, periodicidad, tipo, ff) o ninguno.');}
+
+    // Token ACK
     const id = this.tcp.nextStatId();
     defaultDataTempSonda1.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(
-      `📈 Estadístico id=${defaultDataTempSonda1.identificadorUnicoDentroDelSegundo} enviado`,
-    );
+    josLogger.info(`📈 Estadístico id=${defaultDataTempSonda1.identificadorUnicoDentroDelSegundo} enviado`);
+
+    // Si llegan los 4, aplicamos overrides al “valor” y a la fecha del frame
+    if (provided.length === 4) {
+      try {
+
+        const periodicidad = typeof periodicidadRaw === "string" ? parseInt(periodicidadRaw) : periodicidadRaw; //coerceEnum(periodicidadRaw!, EnEstadisPeriodicidad);
+        const tipo = typeof tipoRaw === "string" ? parseInt(tipoRaw) : tipoRaw; //coerceEnum(tipoRaw!, EnEstadisticosControladores);
+
+        const parsedPreiodicidad = periodicidadRaw === 0
+          ? EnEstadisPeriodicidad.noConfig : periodicidadRaw === 1
+            ? EnEstadisPeriodicidad.variable : periodicidadRaw === 2
+              ? EnEstadisPeriodicidad.envioHoras : periodicidadRaw === 3
+                ? EnEstadisPeriodicidad.envioDia : EnEstadisPeriodicidad.variableInstantaneo;
+
+        // Fechas
+        const fechaInicio = parseDmYToFecha(fi!);
+        const _fechaFin = parseDmYToFecha(ff!); // Validamos que es fecha válida
+        // Nota: este tipo de frame no porta "fecha fin"; si en el futuro
+        // quieres enviar un rango, debería ser otro mensaje o varios frames.
+
+        // Enum periodicidad / tipo
+
+        // Ajustamos el “valor” base (se serializa a EstadisticoDato[])
+        defaultDatosValorTempSonda1.periodicidad = parsedPreiodicidad as EnEstadisPeriodicidad;
+        defaultDatosValorTempSonda1.nombreEstadistico = tipo as EnEstadisticosControladores;
+
+        // Ponemos la fecha de “inicio” en el frame de envío
+        defaultDataTempSonda1.fecha = fechaInicio;
+        // Puedes fijar hora a 00:00:00 si prefieres:
+        // defaultDataTempSonda1.hora = { hora: 0, min: 0, seg: 0 } as Tiempo;
+      } catch (e) {
+        throw new BadRequestException(`Parámetros inválidos: ${e.message}`);
+      }
+
+
+      //! aqui hay que manejar que envie TODOS los estadísticos segun los parámetros
+      // Re-serializamos el bloque de “valor” → EstadisticoDato[]
+      const datos: EstadisticoDato[] = serializarDatosEstadisticoValor(defaultDatosValorTempSonda1);
+      defaultDataTempSonda1.datos = datos;
+      defaultDataTempSonda1.numeroDatos = datos.length;
+
+      // Construimos payload con tu builder existente
+      const data = this.tcp.crearDataTempS1();
+
+      // Frame (equipos nuevos; este endpoint usa el flujo nuevo)
+      const frame = this.tcp.crearFrame({
+        nodoOrigen: 1,
+        nodoDestino: 0,
+        tipoTrama: EnTipoTrama.estadisticos,
+        tipoMensaje: EnTmEstadisticos.enviaEstadistico,
+        data,
+        reserva: 0, // nuevos
+      }) as FrameDto;
+
+      const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
+      return ok;
+    }
+
+
+    josLogger.info('Enviamos tempSonda1');
+
+    // const id = this.tcp.nextStatId();
+    defaultDataTempSonda1.identificadorUnicoDentroDelSegundo = id;
+    josLogger.info(`📈 Estadístico id=${defaultDataTempSonda1.identificadorUnicoDentroDelSegundo} enviado`);
 
     const data = this.tcp.crearDataTempS1();
 
@@ -275,6 +350,7 @@ export class TramaController {
 
     const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
     return ok;
+
   }
 
   // ------------------------------------------- CONTADOR (ej. contadorAgua) -------------------------------------------
@@ -285,7 +361,7 @@ export class TramaController {
 
     const id = this.tcp.nextStatId();
     defaultDataContadorAgua.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(`📈 Estadístico contador id=${id} enviado`);
+    josLogger.info(`📈 Estadístico contador id = ${id} enviado`);
 
     const data = this.tcp.crearDataContador();
 
@@ -309,7 +385,7 @@ export class TramaController {
 
     const id = this.tcp.nextStatId();
     defaultDataActividadCalefaccion1.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(`📈 Estadístico actividad id=${id} enviado`);
+    josLogger.info(`📈 Estadístico actividad id = ${id} enviado`);
 
     const data = this.tcp.crearDataActividad();
 
@@ -333,7 +409,7 @@ export class TramaController {
 
     const id = this.tcp.nextStatId();
     defaultDataEventoInicioCrianza.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(`📈 Estadístico evento id=${id} enviado`);
+    josLogger.info(`📈 Estadístico evento id = ${id} enviado`);
 
     // Wrapper público en tu TcpClientService (igual que crearDataContador/Actividad/TempS1)
     const data = this.tcp.crearDataEventoInicioCrianza();
@@ -358,7 +434,7 @@ export class TramaController {
 
     const id = this.tcp.nextStatId();
     defaultDataAlarmaTempAlta.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(`📈 Estadístico alarma id=${id} enviado`);
+    josLogger.info(`📈 Estadístico alarma id = ${id} enviado`);
 
     const data = this.tcp.crearDataAlarmaTempAlta();
 
@@ -380,7 +456,7 @@ export class TramaController {
 
     const id = this.tcp.nextStatId();
     defaultDataCambioParametro.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(`📈 Estadístico cambioParametro id=${id} enviado`);
+    josLogger.info(`📈 Estadístico cambioParametro id = ${id} enviado`);
 
     const data = this.tcp.crearDataCambioParametro();
 

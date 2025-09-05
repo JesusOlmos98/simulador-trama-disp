@@ -1,5 +1,6 @@
 import { PresentacionDto } from 'src/dtoLE/tt_sistema.dto';
 import { EnTipoDato } from './LE/globals/enums';
+import { Fecha } from './tiposGlobales';
 
 // ------------------------------------------- isObject -------------------------------------------
 export function isObject(v: unknown): v is Record<string, unknown> {
@@ -146,13 +147,13 @@ export function packByTipo(v: number, tipo: EnTipoDato): Buffer {
 export function unpackNumberByTipo(buf: Buffer, tipo: EnTipoDato): number | undefined {
   try {
     switch (tipo) {
-      case EnTipoDato.uint8:  return buf.length === 1 ? buf.readUInt8(0) : undefined;
-      case EnTipoDato.int8:   return buf.length === 1 ? buf.readInt8(0)  : undefined;
+      case EnTipoDato.uint8: return buf.length === 1 ? buf.readUInt8(0) : undefined;
+      case EnTipoDato.int8: return buf.length === 1 ? buf.readInt8(0) : undefined;
       case EnTipoDato.uint16: return buf.length === 2 ? buf.readUInt16LE(0) : undefined;
-      case EnTipoDato.int16:  return buf.length === 2 ? buf.readInt16LE(0)  : undefined;
+      case EnTipoDato.int16: return buf.length === 2 ? buf.readInt16LE(0) : undefined;
       case EnTipoDato.uint32: return buf.length === 4 ? buf.readUInt32LE(0) : undefined;
-      case EnTipoDato.int32:  return buf.length === 4 ? buf.readInt32LE(0)  : undefined;
-      case EnTipoDato.float:  return buf.length === 4 ? buf.readFloatLE(0)  : undefined;
+      case EnTipoDato.int32: return buf.length === 4 ? buf.readInt32LE(0) : undefined;
+      case EnTipoDato.float: return buf.length === 4 ? buf.readFloatLE(0) : undefined;
       default:
         return undefined;
     }
@@ -161,7 +162,36 @@ export function unpackNumberByTipo(buf: Buffer, tipo: EnTipoDato): number | unde
   }
 }
 
+export function parseDmYToFecha(input: string): Fecha {
+  const m = /^(\d{1,2})-(\d{1,2})-(\d{2}|\d{4})$/.exec(input.trim());
+  if (!m) throw new Error('Formato de fecha inválido. Usa DD-MM-YYYY');
+  let [, d, M, y] = m;
+  const dia = parseInt(d, 10);
+  const mes = parseInt(M, 10);
+  let anyo = parseInt(y, 10);
+  if (anyo < 100) anyo = 2000 + anyo;
+  // Validación simple
+  if (!(dia >= 1 && dia <= 31) || !(mes >= 1 && mes <= 12) || anyo < 2000 || anyo > 2099) {
+    throw new Error('Fecha fuera de rango');
+  }
+  return { dia, mes, anyo } as Fecha;
+}
 
+// export function coerceEnum<T extends Record<string, number>>(val: string | number, E: T): T[keyof T] {
+//   if (typeof val === 'number') {
+//     if (Object.values(E).includes(val as any)) return val as any;
+//     throw new Error('Valor numérico fuera del enum');
+//   }
+//   const s = String(val).trim();
+//   if (/^-?\d+$/.test(s)) {
+//     const n = Number(s);
+//     if (Object.values(E).includes(n as any)) return n as any;
+//     throw new Error('Valor numérico fuera del enum');
+//   }
+//   const key = Object.keys(E).find(k => k.toLowerCase() === s.toLowerCase());
+//   if (key) return (E as any)[key];
+//   throw new Error(`Valor "${val}" no pertenece al enum`);
+// }
 
 // // ----------------------------- Helpers de codificación de valores SCV -----------------------------
 // export function encodeScvValor(
