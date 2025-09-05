@@ -13,7 +13,7 @@ export enum EnDireccionNodosRed {
 }
 
 /** Tipos trama */
-export enum EnTipoTrama {
+export enum EnTipoTramaOld {
   ttNoConfigurada = 0,
   ttConfiguracionRf = 1,
   ttCentralDispositivo = 2,
@@ -267,7 +267,7 @@ export enum EnTmActualizaServer {
 }
 
 /** EBUS – Dispositivos */
-export enum EnBcTipoMensaje {
+export enum EnBcTipoMensajeOld {
   tmAccionEnvioCt = 0,
   tmRespuestaFin = 1,
   tmRespuestaErrorEstructura = 2,      // la placa recibió menos bytes de los esperados

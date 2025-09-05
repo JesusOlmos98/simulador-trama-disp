@@ -26,20 +26,20 @@ export function isPresentacionDto(v: unknown): v is PresentacionDto {
 }
 
 // ------------------------------------------- readNodoOrigen -------------------------------------------
-export function readNodoOrigen(/*body: unknown,*/ def = 1): number {
-  // if (!isObject(body))
-  return def;
-  // const raw = body['nodoOrigen'];
-  // return isNumber(raw) ? raw : def;
-}
+// export function readNodoOrigen(/*body: unknown,*/ def = 1): number {
+//   // if (!isObject(body))
+//   return def;
+//   // const raw = body['nodoOrigen'];
+//   // return isNumber(raw) ? raw : def;
+// }
 
-// ------------------------------------------- readNodoDestino -------------------------------------------
-export function readNodoDestino(/*body: unknown,*/ def = 0): number {
-  // if (!isObject(body))
-  return def;
-  // const raw = body['nodoDestino'];
-  // return isNumber(raw) ? raw : def;
-}
+// // ------------------------------------------- readNodoDestino -------------------------------------------
+// export function readNodoDestino(/*body: unknown,*/ def = 0): number {
+//   // if (!isObject(body))
+//   return def;
+//   // const raw = body['nodoDestino'];
+//   // return isNumber(raw) ? raw : def;
+// }
 
 // ------------------------------------------- readTempC -------------------------------------------
 export function readTempC(body: unknown, def = 25.0): number {
