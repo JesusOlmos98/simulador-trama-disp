@@ -32,9 +32,11 @@ import {
   EnTmDepuracion,
   EnEstadisPeriodicidad,
   EnEstadisticosControladores,
+  EnGtUnidades,
 } from 'src/utils/LE/globals/enums';
 import { parseDmYToFecha } from 'src/utils/helpers';
 import { josLogger } from 'src/utils/josLogger';
+import { Fecha, Tiempo } from 'src/utils/tiposGlobales';
 
 @Controller('trama')
 export class TramaController {
@@ -195,67 +197,147 @@ export class TramaController {
 
   //! hacer con Querys tempSonda1, humedad, co2, nh3
 
-  // ------------------------------------------- VALOR (ej. tempSonda1) -------------------------------------------
-  // @Post('tempSonda1')
-  // async tempSonda1(
-  //   @Query('ver') ver?: string,
-  //   @Query('fi') fi?: string,
-  //   @Query('periodicidad') periodicidadRaw?: string,
-  //   @Query('tipo') tipoRaw?: string,
-  //   @Query('ff') ff?: string,
-  // ) {
-  //   josLogger.info('Enviamos tempSonda1');
+  @Post('estadisticos')
+  async estadisticos(
+    @Query('fi') fi?: string,                                 // fecha inicio (DD-MM-YYYY)
+    @Query('periodicidad') periodicidadRaw?: string | number, // EnEstadisPeriodicidad
+    @Query('tipo') tipoRaw?: string | number,                 // EnEstadisticosControladores
+    @Query('ff') ff?: string,                                 // fecha fin (DD-MM-YYYY)
+  ) {
+    // Validación: deben llegar los 4 parámetros, sin “ver”
+    if (fi === undefined || periodicidadRaw === undefined || tipoRaw === undefined || ff === undefined) { throw new BadRequestException('Debes enviar los cuatro parámetros: fi, periodicidad, tipo y ff.'); }
 
-  //   // “Todos o ninguno”
-  //   const providedCount = [fi, periodicidadRaw, tipoRaw, ff].filter(v => v !== undefined).length;
-  //   if (providedCount !== 0 && providedCount !== 4) {
-  //     throw new BadRequestException('Debes enviar los cuatro parámetros (fi, periodicidad, tipo, ff) o ninguno.');
-  //   }
+    // Conectamos a equipos NUEVOS (8003) para este endpoint genérico
+    await this.tcp.switchTargetAndEnsureConnected({ port: 8003 });
 
-  //   // Si vienen los 4, validamos/convertimos y aplicamos
-  //   if (providedCount === 4) {
-  //     try {
-  //       const fechaInicio = parseDmY(fi!);
-  //       const fechaFin = parseDmY(ff!);
-  //       if (fechaFin < fechaInicio) throw new Error('La fecha final debe ser posterior a la inicial.');
+    const periodicidad = typeof periodicidadRaw === "string" ? parseInt(periodicidadRaw) : periodicidadRaw; //coerceEnum(periodicidadRaw!, EnEstadisPeriodicidad);
+    const tipo = typeof tipoRaw === "string" ? parseInt(tipoRaw) : tipoRaw; //coerceEnum(tipoRaw!, EnEstadisticosControladores);
 
-  //       const periodicidad = coerceEnum(periodicidadRaw!, EnEstadisPeriodicidad);
-  //       const tipo = coerceEnum(tipoRaw!, EnEstadisticosControladores);
+    const parsedPreiodicidad = periodicidad === 0
+      ? EnEstadisPeriodicidad.noConfig : periodicidad === 1
+        ? EnEstadisPeriodicidad.variable : periodicidad === 2
+          ? EnEstadisPeriodicidad.envioHoras : periodicidad === 3
+            ? EnEstadisPeriodicidad.envioDia : EnEstadisPeriodicidad.variableInstantaneo;
 
-  //       // Ajusta estos campos a tu DTO real de estadístico:
-  //       // ! Si tus nombres no coinciden, cambia aquí los nombres de propiedad.
-  //       defaultDataTempSonda1.fechaInicioEpoch = Math.floor(fechaInicio.getTime() / 1000); // ! Epoch UTC
-  //       defaultDataTempSonda1.fechaFinEpoch = Math.floor(fechaFin.getTime() / 1000);       // ! Epoch UTC
-  //       defaultDataTempSonda1.periodicidad = periodicidad as number;
-  //       defaultDataTempSonda1.tipoEstadistico = tipo as number;
-  //     } catch (e: any) {
-  //       throw new BadRequestException(`Parámetros inválidos: ${e.message}`);
-  //     }
-  //   }
+    // Parseo de fechas
+    const fIni = parseDmYToFecha(fi); // -> Fecha {dia,mes,anyo}
+    const fFin = parseDmYToFecha(ff);
+    const dtIni = new Date(fIni.anyo, (fIni.mes ?? 1) - 1, fIni.dia ?? 1, 0, 0, 0, 0);
+    const dtFin = new Date(fFin.anyo, (fFin.mes ?? 1) - 1, fFin.dia ?? 1, 23, 59, 59, 999);
+    if (isNaN(dtIni.getTime()) || isNaN(dtFin.getTime()) || dtIni > dtFin) {
+      throw new BadRequestException('Rango de fechas inválido.');
+    }
 
-  //   // Flujo habitual (nuevo o viejo según ?ver)
-  //   const id = this.tcp.nextStatId();
-  //   defaultDataTempSonda1.identificadorUnicoDentroDelSegundo = id;
-  //   josLogger.info(`📈 Estadístico id=${defaultDataTempSonda1.identificadorUnicoDentroDelSegundo} enviado`);
+    // Paso temporal según periodicidad
+    const stepMs = (() => {
+      switch (parsedPreiodicidad as EnEstadisPeriodicidad) {
+        case EnEstadisPeriodicidad.envioHoras: return 60 * 60 * 1000;      // 1 hora
+        case EnEstadisPeriodicidad.envioDia: return 24 * 60 * 60 * 1000; // 1 día
+        // variable / variableInstantaneo / noConfig → elegimos 1h como fallback sensato para pruebas
+        default: return 60 * 60 * 1000;
+      }
+    })();
 
-  //   const data = this.tcp.crearDataTempS1();
+    // Enviamos un punto por “step”
 
-  //   const frame = this.tcp.crearFrame({
-  //     nodoOrigen: 1,
-  //     nodoDestino: 0,
-  //     tipoTrama: EnTipoTrama.estadisticos,
-  //     tipoMensaje: EnTmEstadisticos.enviaEstadistico,
-  //     data,
-  //     // Para nuevos agrega reserva: 0; si quieres soportar ver=0 (viejos) en este endpoint,
-  //     // podrías decidir aquí en función de 'ver' como hiciste en presentación/presencia.
-  //     reserva: ver === '0' ? undefined as any : 0, // ! si NO quieres viejos aquí, quita esta línea
-  //   }) as FrameDto;
+    // 1) Ajustamos el DTO “valor” (el bloque de items)
+    defaultDatosValorTempSonda1.nombreEstadistico = tipo as EnEstadisticosControladores;
+    defaultDatosValorTempSonda1.periodicidad = parsedPreiodicidad as EnEstadisPeriodicidad;
+    defaultDatosValorTempSonda1.unidad = [EnEstadisticosControladores.tempSonda1, EnEstadisticosControladores.tempSonda2, EnEstadisticosControladores.tempSonda3, EnEstadisticosControladores.tempSonda4].includes(tipo as number)
+      ? EnGtUnidades.gradoCentigrado : [EnEstadisticosControladores.humedadInterior, EnEstadisticosControladores.humedadExterior].includes(tipo as number)
+        ? EnGtUnidades.porcentaje : [EnEstadisticosControladores.co2Interior, EnEstadisticosControladores.nh3Interior].includes(tipo as number)
+          ? EnGtUnidades.ppm : EnGtUnidades.gradoCentigrado;
 
-  //   const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
-  //   return ok;
-  // }
+    let enviados = 0;
+    let valor = [EnEstadisticosControladores.tempSonda1, EnEstadisticosControladores.tempSonda2, EnEstadisticosControladores.tempSonda3, EnEstadisticosControladores.tempSonda4].includes(tipo as number)
+      ? 28 : [EnEstadisticosControladores.humedadInterior, EnEstadisticosControladores.humedadExterior].includes(tipo as number)
+        ? 65 : tipo === EnEstadisticosControladores.co2Interior
+          ? 2850 : tipo === EnEstadisticosControladores.nh3Interior
+            ? 10 : 25;
 
-  // ────────── ENDPOINT ──────────
+    for (let t = dtIni.getTime(); t <= dtFin.getTime(); t += stepMs) {
+      
+      const d = new Date(t);
+
+      switch (tipo) {
+        case EnEstadisticosControladores.humedadInterior:
+        case EnEstadisticosControladores.humedadExterior: {
+          // Humedad: rango 55–75 (%)
+          const delta = (Math.random() * 1.4 + 0.1) * (Math.random() < 0.5 ? -1 : 1); // ±(0.1..1.5)
+          valor = Math.max(55, Math.min(75, Number((valor + delta).toFixed(2))));
+          defaultDatosValorTempSonda1.valorMedio = valor;
+          defaultDatosValorTempSonda1.valorMax = Math.min(75, Number((valor + 3.0).toFixed(2)));
+          defaultDatosValorTempSonda1.valorMin = Math.max(55, Number((valor - 2.0).toFixed(2)));
+          break;
+        }
+
+        case EnEstadisticosControladores.co2Interior: {
+          // CO₂: rango 2700–3000 (ppm)
+          const delta = (Math.random() * 30 + 10) * (Math.random() < 0.5 ? -1 : 1); // ±(10..40)
+          valor = Math.max(2700, Math.min(3000, Number((valor + delta).toFixed(2))));
+          defaultDatosValorTempSonda1.valorMedio = valor;
+          defaultDatosValorTempSonda1.valorMax = Math.min(3000, Number((valor + 80).toFixed(2)));
+          defaultDatosValorTempSonda1.valorMin = Math.max(2700, Number((valor - 60).toFixed(2)));
+          break;
+        }
+
+        case EnEstadisticosControladores.nh3Interior: {
+          // NH₃: rango 5–15 (ppm)
+          const delta = (Math.random() * 0.7 + 0.1) * (Math.random() < 0.5 ? -1 : 1); // ±(0.1..0.8)
+          valor = Math.max(5, Math.min(15, Number((valor + delta).toFixed(2))));
+          defaultDatosValorTempSonda1.valorMedio = valor;
+          defaultDatosValorTempSonda1.valorMax = Math.min(15, Number((valor + 1.2).toFixed(2)));
+          defaultDatosValorTempSonda1.valorMin = Math.max(5, Number((valor - 1.0).toFixed(2)));
+          break;
+        }
+
+        case EnEstadisticosControladores.tempSonda1:
+        case EnEstadisticosControladores.tempSonda2:
+        case EnEstadisticosControladores.tempSonda3:
+        case EnEstadisticosControladores.tempSonda4:
+        default: {
+          // Temperatura: rango 22–32 (°C)
+          const delta = (Math.random() * 0.3 + 0.1) * (Math.random() < 0.5 ? -1 : 1); // ±(0.1..0.4)
+          valor = Math.max(22, Math.min(32, Number((valor + delta).toFixed(2))));
+          defaultDatosValorTempSonda1.valorMedio = valor;
+          defaultDatosValorTempSonda1.valorMax = Math.min(32, Number((valor + 1.2).toFixed(2)));
+          defaultDatosValorTempSonda1.valorMin = Math.max(22, Number((valor - 1.0).toFixed(2)));
+          break;
+        }
+      }
+
+      // 2) Re-serializamos los items
+      const items = serializarDatosEstadisticoValor(defaultDatosValorTempSonda1);
+
+      // 3) Ajustamos el DTO “header” del estadístico
+      const fechaFrame: Fecha = { dia: d.getDate(), mes: d.getMonth() + 1, anyo: d.getFullYear() };
+      const horaFrame: Tiempo = { hora: d.getHours(), min: d.getMinutes(), seg: d.getSeconds() };
+
+      const ackId = this.tcp.nextStatId();
+      defaultDataTempSonda1.identificadorUnicoDentroDelSegundo = ackId;
+      defaultDataTempSonda1.fecha = fechaFrame;
+      defaultDataTempSonda1.hora = horaFrame;
+      defaultDataTempSonda1.datos = items;
+      defaultDataTempSonda1.numeroDatos = items.length;
+
+      // 4) Construimos el payload y el frame y lo enviamos esperando ACK
+      const data = this.tcp.crearDataTempS1();
+      const frame = this.tcp.crearFrame({
+        nodoOrigen: 1,
+        nodoDestino: 0,
+        tipoTrama: EnTipoTrama.estadisticos,
+        tipoMensaje: EnTmEstadisticos.enviaEstadistico,
+        data,
+        reserva: 0, // nuevos
+      });
+
+      const ok = await this.tcp.enviarEstadisticoYEsperarAck(ackId, frame as any);
+      if (ok) enviados++;
+    }
+
+    return { ok: true, enviados, desde: fi, hasta: ff, parsedPreiodicidad, tipo };
+  }
+
   @Post('tempSonda1')
   async tempSonda1(
     @Query('fi') fi?: string,                                 // fecha inicio (DD-MM-YYYY)
@@ -267,7 +349,7 @@ export class TramaController {
 
     // “Todos o ninguno”
     const provided = [fi, periodicidadRaw, tipoRaw, ff].filter(v => v !== undefined);
-    if (provided.length !== 0 && provided.length !== 4) {throw new BadRequestException('Debes enviar los cuatro parámetros (fi, periodicidad, tipo, ff) o ninguno.');}
+    if (provided.length !== 0 && provided.length !== 4) { throw new BadRequestException('Debes enviar los cuatro parámetros (fi, periodicidad, tipo, ff) o ninguno.'); }
 
     // Token ACK
     const id = this.tcp.nextStatId();
@@ -306,7 +388,6 @@ export class TramaController {
       } catch (e) {
         throw new BadRequestException(`Parámetros inválidos: ${e.message}`);
       }
-
 
       //! aqui hay que manejar que envie TODOS los estadísticos segun los parámetros
       // Re-serializamos el bloque de “valor” → EstadisticoDato[]

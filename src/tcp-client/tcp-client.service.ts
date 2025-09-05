@@ -701,10 +701,20 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         data.writeUInt8((dto.res4 ?? 0) & 0xff, offset++);
 
         // fecha -> yyyymmdd (uint32 LE)
-        const yyyy = (dto.fecha.anyo ?? 0) >>> 0;
-        const mm = (dto.fecha.mes ?? 0) >>> 0;
-        const dd = (dto.fecha.dia ?? 0) >>> 0;
-        const fechaU32 = (yyyy * 10000 + mm * 100 + dd) >>> 0;
+        // const yyyy = (dto.fecha.anyo ?? 0) >>> 0;
+        // const mm = (dto.fecha.mes ?? 0) >>> 0;
+        // const dd = (dto.fecha.dia ?? 0) >>> 0;
+        // const fechaU32 = (yyyy * 10000 + mm * 100 + dd) >>> 0;
+        // data.writeUInt32LE(fechaU32, offset);
+        // offset += 4;
+
+        // jos Antes serializaba como"yyyymmdd"
+        // fecha -> dd-mm-yyyy bit-packed (dia(8) | mes(8) | anyo(16)) en LE
+        const dd = (dto.fecha.dia ?? 0) & 0xff;
+        const mm = (dto.fecha.mes ?? 0) & 0xff;
+        const yyyy = (dto.fecha.anyo ?? 0) & 0xffff;
+        const fechaU32 = (yyyy << 16) | (mm << 8) | dd; // <-- DD-MM-YYYY bit-packed
+
         data.writeUInt32LE(fechaU32, offset);
         offset += 4;
 

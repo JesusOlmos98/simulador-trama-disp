@@ -68,7 +68,7 @@ export const defaultDataTempSonda1: EnviaEstadisticoDto = {
   res4: 0x00,
 
   fecha: { dia: 11, mes: 11, anyo: 2020 } as Fecha,
-  hora: { hora: 11, min: 11, seg: 11 } as Tiempo,
+  hora: { hora: 11, min: 10, seg: 9 } as Tiempo,
   res5: 0x00,
   numeroDatos: 9,
   datos: datosTempSonda1,

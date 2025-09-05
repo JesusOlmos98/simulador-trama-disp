@@ -41,101 +41,91 @@ export function getEstadisticoPayload(frame: Buffer): Buffer | undefined {
   return data;
 }
 
-export function getEstadTxMac(frame: Buffer): number | undefined {
+export function getEstadisHeaderMac(frame: Buffer): number | undefined {
   const data = getEstadisticoPayload(frame);
   if (!data) return undefined;
   return data.readUInt32LE(OFF_MAC);
 }
 
-export function getEstadTxTipoDatoHdr(frame: Buffer): EnTipoDato | undefined {
+export function getEstadisHeaderTipoDatoHdr(frame: Buffer): EnTipoDato | undefined {
   const data = getEstadisticoPayload(frame);
   if (!data) return undefined;
   return data.readUInt8(OFF_TIPO_DATO_HDR) as EnTipoDato;
 }
 
-export function getEstadTxAckId(frame: Buffer): number | undefined {
+export function getEstadisHeaderAckId(frame: Buffer): number | undefined {
   const data = getEstadisticoPayload(frame);
   if (!data) return undefined;
   return data.readUInt8(OFF_ACK_ID);
 }
 
-export function getEstadTxVersion(frame: Buffer): number | undefined {
+export function getEstadisHeaderVersion(frame: Buffer): number | undefined {
   const data = getEstadisticoPayload(frame);
   if (!data) return undefined;
   return data.readUInt8(OFF_VERSION);
 }
 
-export function getEstadTxTipoRegistro(frame: Buffer): EnEstadisTipoRegistro | undefined {
+export function getEstadisHeaderTipoRegistro(frame: Buffer): EnEstadisTipoRegistro | undefined {
   // ya tienes una función similar, la dejo por consistencia
   const data = getEstadisticoPayload(frame);
   if (!data) return undefined;
   return data.readUInt8(OFF_TIPO_REGISTRO) as EnEstadisTipoRegistro;
 }
 
-export function getEstadTxRes1(frame: Buffer): number | undefined {
+export function getEstadisHeaderRes1(frame: Buffer): number | undefined {
   const data = getEstadisticoPayload(frame);
   if (!data) return undefined;
   return data.readUInt8(OFF_RES1);
 }
-export function getEstadTxRes2(frame: Buffer): number | undefined {
+export function getEstadisHeaderRes2(frame: Buffer): number | undefined {
   const data = getEstadisticoPayload(frame);
   if (!data) return undefined;
   return data.readUInt8(OFF_RES2);
 }
-export function getEstadTxRes3(frame: Buffer): number | undefined {
+export function getEstadisHeaderRes3(frame: Buffer): number | undefined {
   const data = getEstadisticoPayload(frame);
   if (!data) return undefined;
   return data.readUInt8(OFF_RES3);
 }
-export function getEstadTxRes4(frame: Buffer): number | undefined {
+export function getEstadisHeaderRes4(frame: Buffer): number | undefined {
   const data = getEstadisticoPayload(frame);
   if (!data) return undefined;
   return data.readUInt8(OFF_RES4);
 }
 
-export function getEstadTxFechaRaw(frame: Buffer): number | undefined {
+export function getEstadisHeaderFechaRaw(frame: Buffer): number | undefined {
   const data = getEstadisticoPayload(frame);
   if (!data) return undefined;
   return data.readUInt32LE(OFF_FECHA_U32);
 }
-export function getEstadTxFecha(frame: Buffer): Fecha | undefined {
-  const raw = getEstadTxFechaRaw(frame);
+export function getEstadisHeaderFecha(frame: Buffer): Fecha | undefined {
+  const raw = getEstadisHeaderFechaRaw(frame);
   if (raw === undefined) return undefined;
   return fechaU32ToFecha(raw);
 }
 
-export function getEstadTxHoraRaw(frame: Buffer): number | undefined {
+export function getEstadisHeaderHoraRaw(frame: Buffer): number | undefined {
   const data = getEstadisticoPayload(frame);
   if (!data) return undefined;
   return data.readUInt32LE(OFF_HORA_U32);
 }
-export function getEstadTxHora(frame: Buffer): Tiempo | undefined {
-  const raw = getEstadTxHoraRaw(frame);
+export function getEstadisHeaderHora(frame: Buffer): Tiempo | undefined {
+  const raw = getEstadisHeaderHoraRaw(frame);
   if (raw === undefined) return undefined;
   return secondsToTiempo(raw); // si tu hora va en otro packing, cambia aquí
 }
 
-export function getEstadTxRes5(frame: Buffer): number | undefined {
+export function getEstadisHeaderRes5(frame: Buffer): number | undefined {
   const data = getEstadisticoPayload(frame);
   if (!data) return undefined;
   return data.readUInt8(OFF_RES5);
 }
 
-export function getEstadTxNumeroDatos(frame: Buffer): number | undefined {
+export function getEstadisHeaderNumeroDatos(frame: Buffer): number | undefined {
   const data = getEstadisticoPayload(frame);
   if (!data) return undefined;
   return data.readUInt8(OFF_NDATOS);
 }
-
-
-
-
-
-
-
-
-
-
 
 //done ------------------------------------------------------------------------------------------------------------------------
 //done ------------------------------------------------------------------------------------------------------------------------
@@ -316,7 +306,6 @@ export function getEstadisticoValorCompleto(frame: Buffer): (EstadisticoValorDto
 //done ------------------------------------------------------------------------------------------------------------------------
 //done ------------------------------------------------------------------------------------------------------------------------
 //done ------------------------------------------------------------------------------------------------------------------------
-
 
 const EC_IDX_NOMBRE = 0;
 const EC_IDX_PERIODICIDAD = 1;
@@ -530,7 +519,7 @@ function getItemAtDatosEventos(data: Buffer, index: number) {
 // -------------------------------
 
 /** Item[0] → evento (TD_UINT16) */
-export function getEEventoCodigo(frame: Buffer): EnEeEventosApli | undefined {
+export function getEEventoTipoEvento(frame: Buffer): EnEeEventosApli | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
   const it = getItemAtDatosEventos(data, 0); if (!it) return undefined;
   if (it.size >= 2) return it.value.readUInt16LE(0) as EnEeEventosApli;
@@ -544,7 +533,7 @@ export function getEEventoCodigo(frame: Buffer): EnEeEventosApli | undefined {
 /** Item[1] → diaCrianza (TD_INT16) */
 export function getEEInicioCrianzaDiaCrianza(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.inicioCrianza) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.inicioCrianza) return undefined;
 
   const it = getItemAtDatosEventos(data, 1); if (!it) return undefined;
   if (it.size >= 2) return it.value.readInt16LE(0);
@@ -554,7 +543,7 @@ export function getEEInicioCrianzaDiaCrianza(frame: Buffer): number | undefined 
 /** Item[2] → idUnicoCrianza (TD_UINT32) */
 export function getEEInicioCrianzaIdUnico(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.inicioCrianza) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.inicioCrianza) return undefined;
 
   const it = getItemAtDatosEventos(data, 2); if (!it) return undefined;
   if (it.size >= 4) return it.value.readUInt32LE(0);
@@ -568,7 +557,7 @@ export function getEEInicioCrianzaIdUnico(frame: Buffer): number | undefined {
 /** Item[1] → idUnicoCrianza (TD_UINT32) */
 export function getEEEntradaAnimalesIdUnico(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.entradaAnimales) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.entradaAnimales) return undefined;
 
   const it = getItemAtDatosEventos(data, 1); if (!it) return undefined;
   if (it.size >= 4) return it.value.readUInt32LE(0);
@@ -578,7 +567,7 @@ export function getEEEntradaAnimalesIdUnico(frame: Buffer): number | undefined {
 /** Item[2] → inicioCrianzaTipoAnimal (TD_UINT8) */
 export function getEEEntradaAnimalesTipoAnimal(frame: Buffer): EnCrianzaTipoAnimal | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.entradaAnimales) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.entradaAnimales) return undefined;
 
   const it = getItemAtDatosEventos(data, 2); if (!it) return undefined;
   if (it.size >= 1) return it.value.readUInt8(0) as EnCrianzaTipoAnimal;
@@ -588,7 +577,7 @@ export function getEEEntradaAnimalesTipoAnimal(frame: Buffer): EnCrianzaTipoAnim
 /** Item[3] → diaEntradaAnimales (TD_INT16) */
 export function getEEEntradaAnimalesDiaEntrada(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.entradaAnimales) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.entradaAnimales) return undefined;
 
   const it = getItemAtDatosEventos(data, 3); if (!it) return undefined;
   if (it.size >= 2) return it.value.readInt16LE(0);
@@ -598,7 +587,7 @@ export function getEEEntradaAnimalesDiaEntrada(frame: Buffer): number | undefine
 /** Item[4] → nAnimalesInicioCrianzaMachosMixtos (TD_UINT32) */
 export function getEEEntradaAnimalesNMachosMixtos(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.entradaAnimales) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.entradaAnimales) return undefined;
 
   const it = getItemAtDatosEventos(data, 4); if (!it) return undefined;
   if (it.size >= 4) return it.value.readUInt32LE(0);
@@ -608,7 +597,7 @@ export function getEEEntradaAnimalesNMachosMixtos(frame: Buffer): number | undef
 /** Item[5] → nAnimalesInicioCrianzaHembras (TD_UINT32) */
 export function getEEEntradaAnimalesNHembras(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.entradaAnimales) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.entradaAnimales) return undefined;
 
   const it = getItemAtDatosEventos(data, 5); if (!it) return undefined;
   if (it.size >= 4) return it.value.readUInt32LE(0);
@@ -622,7 +611,7 @@ export function getEEEntradaAnimalesNHembras(frame: Buffer): number | undefined 
 /** Item[1] → idUnicoCrianza (TD_UINT32) */
 export function getEEFinCrianzaIdUnico(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.finCrianza) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.finCrianza) return undefined;
 
   const it = getItemAtDatosEventos(data, 1); if (!it) return undefined;
   if (it.size >= 4) return it.value.readUInt32LE(0);
@@ -632,7 +621,7 @@ export function getEEFinCrianzaIdUnico(frame: Buffer): number | undefined {
 /** Item[2] → diaCrianza (TD_INT16) */
 export function getEEFinCrianzaDiaCrianza(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.finCrianza) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.finCrianza) return undefined;
 
   const it = getItemAtDatosEventos(data, 2); if (!it) return undefined;
   if (it.size >= 2) return it.value.readInt16LE(0);
@@ -642,7 +631,7 @@ export function getEEFinCrianzaDiaCrianza(frame: Buffer): number | undefined {
 /** Item[3] → nAnimalesActualesMachosMixtos (TD_UINT32) */
 export function getEEFinCrianzaNMachosMixtos(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.finCrianza) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.finCrianza) return undefined;
 
   const it = getItemAtDatosEventos(data, 3); if (!it) return undefined;
   if (it.size >= 4) return it.value.readUInt32LE(0);
@@ -652,7 +641,7 @@ export function getEEFinCrianzaNMachosMixtos(frame: Buffer): number | undefined 
 /** Item[4] → nAnimalesActualesHembras (TD_UINT32) */
 export function getEEFinCrianzaNHembras(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.finCrianza) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.finCrianza) return undefined;
 
   const it = getItemAtDatosEventos(data, 4); if (!it) return undefined;
   if (it.size >= 4) return it.value.readUInt32LE(0);
@@ -666,7 +655,7 @@ export function getEEFinCrianzaNHembras(frame: Buffer): number | undefined {
 /** Item[1] → idUnicoCrianza (TD_UINT32) */
 export function getEEAltaBajaRetiradaIdUnico(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.altaBajaRetirada) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.altaBajaRetirada) return undefined;
 
   const it = getItemAtDatosEventos(data, 1); if (!it) return undefined;
   if (it.size >= 4) return it.value.readUInt32LE(0);
@@ -676,7 +665,7 @@ export function getEEAltaBajaRetiradaIdUnico(frame: Buffer): number | undefined 
 /** Item[2] → accion (TD_UINT8) */
 export function getEEAltaBajaRetiradaAccion(frame: Buffer): EnCrianzaAltaBajaAccion | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.altaBajaRetirada) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.altaBajaRetirada) return undefined;
 
   const it = getItemAtDatosEventos(data, 2); if (!it) return undefined;
   if (it.size >= 1) return it.value.readUInt8(0) as EnCrianzaAltaBajaAccion;
@@ -686,7 +675,7 @@ export function getEEAltaBajaRetiradaAccion(frame: Buffer): EnCrianzaAltaBajaAcc
 /** Item[3] → diaCrianza (TD_INT16) */
 export function getEEAltaBajaRetiradaDiaCrianza(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.altaBajaRetirada) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.altaBajaRetirada) return undefined;
 
   const it = getItemAtDatosEventos(data, 3); if (!it) return undefined;
   if (it.size >= 2) return it.value.readInt16LE(0);
@@ -704,7 +693,7 @@ function fechaYYYYMMDDToFecha(u: number): Fecha {
 /** Item[4] → fechaIntroducirAccion (TD_FECHA yyyymmdd LE) */
 export function getEEAltaBajaRetiradaFecha(frame: Buffer): Fecha | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.altaBajaRetirada) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.altaBajaRetirada) return undefined;
 
   const it = getItemAtDatosEventos(data, 4); if (!it) return undefined;
   if (it.size >= 4) {
@@ -717,7 +706,7 @@ export function getEEAltaBajaRetiradaFecha(frame: Buffer): Fecha | undefined {
 /** Item[5] → nAnimalesAccionMachosMixtos (TD_UINT32) */
 export function getEEAltaBajaRetiradaNMachosMixtos(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.altaBajaRetirada) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.altaBajaRetirada) return undefined;
 
   const it = getItemAtDatosEventos(data, 5); if (!it) return undefined;
   if (it.size >= 4) return it.value.readUInt32LE(0);
@@ -727,7 +716,7 @@ export function getEEAltaBajaRetiradaNMachosMixtos(frame: Buffer): number | unde
 /** Item[6] → nAnimalesAccionHembras (TD_UINT32) */
 export function getEEAltaBajaRetiradaNHembras(frame: Buffer): number | undefined {
   const data = getEventoPayload(frame); if (!data) return undefined;
-  if (getEEventoCodigo(frame) !== EnEeEventosApli.altaBajaRetirada) return undefined;
+  if (getEEventoTipoEvento(frame) !== EnEeEventosApli.altaBajaRetirada) return undefined;
 
   const it = getItemAtDatosEventos(data, 6); if (!it) return undefined;
   if (it.size >= 4) return it.value.readUInt32LE(0);
@@ -738,7 +727,7 @@ export function getEEAltaBajaRetiradaNHembras(frame: Buffer): number | undefined
 // Extractor “completo” (opcional, por conveniencia)
 // -----------------------------------------------
 export function getEstadisticoEventoCompleto(frame: Buffer): EstadisticoEventoDto | undefined {
-  const ev = getEEventoCodigo(frame);
+  const ev = getEEventoTipoEvento(frame);
   if (ev === undefined) return undefined;
 
   switch (ev) {
@@ -830,7 +819,7 @@ export function getEstadisticoEventoCompleto(frame: Buffer): EstadisticoEventoDt
 // ------------------------------------------- getTextoAlarma -------------------------------------------
 /** Item[0] = textoAlarma (TD_UINT16 LE) */
 export function getEAlarmTextoAlarma(frame: Buffer): number | undefined {
-  if (getEstadTxTipoRegistro(frame) !== EnEstadisTipoRegistro.alarmas)
+  if (getEstadisHeaderTipoRegistro(frame) !== EnEstadisTipoRegistro.alarmas)
     return undefined;
 
   const data = getDataSection(frame);
@@ -856,7 +845,7 @@ export function getEAlarmTextoAlarma(frame: Buffer): number | undefined {
 // ------------------------------------------- getEstadoAlarma -------------------------------------------
 /** Item[1] = estadoAlarma (TD_UINT8) */
 export function getEAlarmEstadoAlarma(frame: Buffer): EnAlarmaEstado | undefined {
-  if (getEstadTxTipoRegistro(frame) !== EnEstadisTipoRegistro.alarmas)
+  if (getEstadisHeaderTipoRegistro(frame) !== EnEstadisTipoRegistro.alarmas)
     return undefined;
 
   const data = getDataSection(frame);
@@ -885,7 +874,7 @@ export function getEAlarmEstadoAlarma(frame: Buffer): EnAlarmaEstado | undefined
 export function getEAlarmAccionConfigurada(
   frame: Buffer,
 ): EnAlarmasAccion | undefined {
-  if (getEstadTxTipoRegistro(frame) !== EnEstadisTipoRegistro.alarmas)
+  if (getEstadisHeaderTipoRegistro(frame) !== EnEstadisTipoRegistro.alarmas)
     return undefined;
 
   const data = getDataSection(frame);
@@ -1080,7 +1069,7 @@ export function getEstadisticoItem(frame: Buffer, index: number):
   // Validaciones de TT/TM/tipoRegistro
   if (getTipoTrama(frame) !== EnTipoTrama.estadisticos) return undefined;
   if (getTipoMensaje(frame) !== EnTmEstadisticos.enviaEstadistico) return undefined;
-  if (getEstadTxTipoRegistro(frame) !== EnEstadisTipoRegistro.cambioParametros) return undefined;
+  if (getEstadisHeaderTipoRegistro(frame) !== EnEstadisTipoRegistro.cambioParametros) return undefined;
 
   const data = getDataSection(frame);
   if (!data || data.length < ESTADIS_HEADER_LEN) return undefined;
