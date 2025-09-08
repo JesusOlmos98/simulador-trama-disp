@@ -17,9 +17,7 @@ export class TestController {
   async todasTramasCti40(@Query('ms') ms?: string) {
     const milisegundos = parseInt(ms ?? '1000');
 
-    josLogger.info(
-      'Enviando todas las tramas CTI40 cada ' + milisegundos + ' ms',
-    );
+    josLogger.info('Enviando todas las tramas CTI40 cada ' + milisegundos + ' ms',);
     let timer: NodeJS.Timeout;
     let contadorEnvios = 0;
 

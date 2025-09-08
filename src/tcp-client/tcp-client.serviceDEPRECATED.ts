@@ -10,7 +10,7 @@ import { defaultDataTempSonda1, defaultDataContadorAgua, defaultDataActividadCal
 import { PresentacionDto, EstadoDispositivoTxDto, ConfigFinalTxDto, UrlDescargaOtaTxDto, ProgresoActualizacionTxDto } from 'src/dtoLE/tt_sistema.dto';
 import { getTipoTrama, getTipoMensaje, getDataSection } from 'src/utils/LE/get/getTrama';
 import { PROTO_VERSION, MAX_DATA_BYTES, START, END, ACK_TIMEOUT_MS, ACK_TTL_MS } from 'src/utils/LE/globals/constGlobales';
-import { END_BE, MAX_DATA_BYTES_BE, PROTO_VERSION_BE, START_BE } from 'src/utils/BE_Old/globals/constGlobales';
+import { END_OLD, MAX_DATA_BYTES_OLD, PROTO_VERSION_OLD, START_OLD } from 'src/utils/BE_Old/globals/constGlobales';
 import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
 import { PresentacionCentralOldDto } from 'src/dtoBE/tt_sistemaOld.dto';
 import { hexDump } from 'src/utils/helpers';
@@ -280,11 +280,11 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         tipoMensaje,
         // longitud,
         data,
-        versionProtocolo = PROTO_VERSION_BE,
+        versionProtocolo = PROTO_VERSION_OLD,
       } = params;
-      if (data.length > MAX_DATA_BYTES_BE) { throw new Error(`El cuerpo supera ${MAX_DATA_BYTES_BE} bytes`); }
+      if (data.length > MAX_DATA_BYTES_OLD) { throw new Error(`El cuerpo supera ${MAX_DATA_BYTES_OLD} bytes`); }
       frame = {
-        inicioTrama: START_BE,
+        inicioTrama: START_OLD,
         versionProtocolo,
         nodoOrigen,
         nodoDestino,
@@ -293,7 +293,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         longitud: data.length,
         datos: data, // Buffer
         crc: 0, // done se recalcula en serializeFrame
-        finTrama: END_BE,
+        finTrama: END_OLD,
       } as FrameOldDto;
 
     } else { // Equipos nuevos

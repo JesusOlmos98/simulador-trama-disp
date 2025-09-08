@@ -122,7 +122,7 @@ export const f32LE = (v: number) => {
 export function packByTipo(v: number, tipo: EnTipoDato): Buffer {
   switch (tipo) {
     case EnTipoDato.uint8:
-      return u8(v);
+      return u8Old(v);
     case EnTipoDato.int8:
       return i8(v);
     case EnTipoDato.uint16:
@@ -176,6 +176,50 @@ export function parseDmYToFecha(input: string): Fecha {
   }
   return { dia, mes, anyo } as Fecha;
 }
+
+
+
+//! --------------------------------------------------------------------------------------------------------------------------------
+//! --------------------------------------------------------------------------------------------------------------------------------
+//! ------------------------------------------- Helpers para dispositivos antiguos (Old) -------------------------------------------
+//! --------------------------------------------------------------------------------------------------------------------------------
+//! --------------------------------------------------------------------------------------------------------------------------------
+
+export const u8Old = (n: number) => Buffer.from([n & 0xFF]);
+export const u16BE = (n: number) => {
+  const b = Buffer.allocUnsafe(2);
+  b.writeUInt16BE(n >>> 0, 0);
+  return b;
+};
+
+/** Asegura un buffer de exactamente N bytes (trunca o padding con 0x00). */
+export function toFixedBuffer(src: Buffer, size: number): Buffer {
+  if (src.length === size) return src;
+  if (src.length > size) return src.subarray(0, size);
+  const out = Buffer.alloc(size, 0x00);
+  src.copy(out, 0);
+  return out;
+}
+
+/** PASSWORD de 16 bytes. Por defecto: ASCII/UTF-8 truncado y padding con 0x00. */
+export function encodePassword16(pwd: string): Buffer {
+  // Si tu firmware exige NULL-terminated explícito cuando <16, puedes forzarlo:
+  // const raw = Buffer.from(pwd ?? "", "ascii");
+  const raw = Buffer.from(pwd ?? "", "utf8");
+  const out = Buffer.alloc(16, 0x00);
+  raw.subarray(0, 16).copy(out, 0);
+  // Si quieres garantizar null-termination cuando <16:
+  // if (raw.length < 16) out[raw.length] = 0x00;
+  return out;
+}
+
+
+
+
+
+
+
+
 
 // export function coerceEnum<T extends Record<string, number>>(val: string | number, E: T): T[keyof T] {
 //   if (typeof val === 'number') {

@@ -10,7 +10,7 @@ import {
 } from 'src/dtoLE/defaultTrama';
 import { FrameDto } from 'src/dtoLE/frame.dto';
 import { PeticionConsolaDto } from 'src/dtoLE/tt_depuracion.dto';
-import { EstadisticoDato, serializarDatosEstadisticoValor } from 'src/dtoLE/tt_estadisticos.dto';
+import { serializarDatosEstadisticoValor } from 'src/dtoLE/tt_estadisticos.dto';
 import {
   EstadoDispositivoTxDto,
   ConfigFinalTxDto,
@@ -18,6 +18,8 @@ import {
   ProgresoActualizacionTxDto,
 } from 'src/dtoLE/tt_sistema.dto';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
+import { PROTO_VERSION_OLD } from 'src/utils/BE_Old/globals/constGlobales';
+import { EnTipoMensajeCentralServidor, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
 import {
   EnTipoTrama,
   EnTmSistema,
@@ -331,86 +333,15 @@ export class TramaController {
     return { ok: true, enviados, desde: fi, hasta: ff, parsedPreiodicidad, tipo };
   }
 
+  // ------------------------------------------- VALOR (ej. tempSonda1) -------------------------------------------
+  /** POST /api/trama/tempSonda1 */
   @Post('tempSonda1')
-  async tempSonda1(
-    @Query('fi') fi?: string,                                 // fecha inicio (DD-MM-YYYY)
-    @Query('periodicidad') periodicidadRaw?: string | number, // EnEstadisPeriodicidad
-    @Query('tipo') tipoRaw?: string | number,                 // EnEstadisticosControladores
-    @Query('ff') ff?: string,                                 // fecha fin (DD-MM-YYYY) — se valida pero este frame no la porta
-  ) {
+  async tempSonda1() {
     josLogger.info('Enviamos tempSonda1');
 
-    // “Todos o ninguno”
-    const provided = [fi, periodicidadRaw, tipoRaw, ff].filter(v => v !== undefined);
-    if (provided.length !== 0 && provided.length !== 4) { throw new BadRequestException('Debes enviar los cuatro parámetros (fi, periodicidad, tipo, ff) o ninguno.'); }
-
-    // Token ACK
     const id = this.tcp.nextStatId();
     defaultDataTempSonda1.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(`📈 Estadístico id=${defaultDataTempSonda1.identificadorUnicoDentroDelSegundo} enviado`);
-
-    // Si llegan los 4, aplicamos overrides al “valor” y a la fecha del frame
-    if (provided.length === 4) {
-      try {
-
-        const periodicidad = typeof periodicidadRaw === "string" ? parseInt(periodicidadRaw) : periodicidadRaw; //coerceEnum(periodicidadRaw!, EnEstadisPeriodicidad);
-        const tipo = typeof tipoRaw === "string" ? parseInt(tipoRaw) : tipoRaw; //coerceEnum(tipoRaw!, EnEstadisticosControladores);
-
-        const parsedPreiodicidad = periodicidadRaw === 0
-          ? EnEstadisPeriodicidad.noConfig : periodicidadRaw === 1
-            ? EnEstadisPeriodicidad.variable : periodicidadRaw === 2
-              ? EnEstadisPeriodicidad.envioHoras : periodicidadRaw === 3
-                ? EnEstadisPeriodicidad.envioDia : EnEstadisPeriodicidad.variableInstantaneo;
-
-        // Fechas
-        const fechaInicio = parseDmYToFecha(fi!);
-        const _fechaFin = parseDmYToFecha(ff!); // Validamos que es fecha válida
-        // Nota: este tipo de frame no porta "fecha fin"; si en el futuro
-        // quieres enviar un rango, debería ser otro mensaje o varios frames.
-
-        // Enum periodicidad / tipo
-
-        // Ajustamos el “valor” base (se serializa a EstadisticoDato[])
-        defaultDatosValorTempSonda1.periodicidad = parsedPreiodicidad as EnEstadisPeriodicidad;
-        defaultDatosValorTempSonda1.nombreEstadistico = tipo as EnEstadisticosControladores;
-
-        // Ponemos la fecha de “inicio” en el frame de envío
-        defaultDataTempSonda1.fecha = fechaInicio;
-        // Puedes fijar hora a 00:00:00 si prefieres:
-        // defaultDataTempSonda1.hora = { hora: 0, min: 0, seg: 0 } as Tiempo;
-      } catch (e) {
-        throw new BadRequestException(`Parámetros inválidos: ${e.message}`);
-      }
-
-      //! aqui hay que manejar que envie TODOS los estadísticos segun los parámetros
-      // Re-serializamos el bloque de “valor” → EstadisticoDato[]
-      const datos: EstadisticoDato[] = serializarDatosEstadisticoValor(defaultDatosValorTempSonda1);
-      defaultDataTempSonda1.datos = datos;
-      defaultDataTempSonda1.numeroDatos = datos.length;
-
-      // Construimos payload con tu builder existente
-      const data = this.tcp.crearDataTempS1();
-
-      // Frame (equipos nuevos; este endpoint usa el flujo nuevo)
-      const frame = this.tcp.crearFrame({
-        nodoOrigen: 1,
-        nodoDestino: 0,
-        tipoTrama: EnTipoTrama.estadisticos,
-        tipoMensaje: EnTmEstadisticos.enviaEstadistico,
-        data,
-        reserva: 0, // nuevos
-      }) as FrameDto;
-
-      const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
-      return ok;
-    }
-
-
-    josLogger.info('Enviamos tempSonda1');
-
-    // const id = this.tcp.nextStatId();
-    defaultDataTempSonda1.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(`📈 Estadístico id=${defaultDataTempSonda1.identificadorUnicoDentroDelSegundo} enviado`);
+    josLogger.info(`📈 Estadístico id=${defaultDataTempSonda1.identificadorUnicoDentroDelSegundo} enviado`,);
 
     const data = this.tcp.crearDataTempS1();
 
@@ -424,7 +355,6 @@ export class TramaController {
 
     const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
     return ok;
-
   }
 
   // ------------------------------------------- CONTADOR (ej. contadorAgua) -------------------------------------------
@@ -577,6 +507,59 @@ export class TramaController {
     josLogger.info('Enviamos DEPURACION PETICION CONSOLA');
     return !!ok && ok;
   }
+
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos ----------------------------------------------- TT SISTEMAS -------------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+
+  @Post('tablaDispositivos')
+  async tablaDispositivos(@Query('nDispositivos') nDispositivos?: string) {
+    let n = parseInt(nDispositivos ?? '10');
+    if (isNaN(n) || n === null || n === undefined || n < 1 || n > 20) {
+      josLogger.info(`Número de dispositivos inválido (${nDispositivos}). Usando 10 por defecto.`);
+      n = 10;
+    }
+
+    josLogger.info(`Enviando tabla de dispositivos con ${n} dispositivos`);
+
+    // Si no se introducen dispositivos serán 10 por defecto.
+    const { fin, mas } = this.tcp.crearBuffersTablaDispositivos(n);
+
+    if (mas) {
+      const frameMas = this.tcp.crearFrameOld({
+        nodoOrigen: 1,
+        nodoDestino: 0,
+        tipoTrama: EnTipoTramaOld.ttCentralServidor, // TT_central_servidor (=6)
+        tipoMensaje: EnTipoMensajeCentralServidor.tmRtTablaCentralMas, // (=7)
+        data: mas,
+        versionProtocolo: PROTO_VERSION_OLD,
+      });
+      josLogger.debug('Enviamos trama MAS de tabla de dispositivos (más de 13 dispositivos en total).');
+      this.tcp.enviarFrameOld(frameMas);
+    }
+
+    const frameFin = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.ttCentralServidor, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeCentralServidor.tmRtTablaCentralFin, // (=8)
+      data: fin,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+    josLogger.debug('Enviamos trama FIN de tabla de dispositivos.');
+    josLogger.debug('\n\n\n');
+    const okFin = this.tcp.enviarFrameOld(frameFin);
+    return okFin;
+  }
+
+  // josLogger.info(`✅ Enviando tabla de dispositivos ${i + 1}/${n}`);
+
 
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP

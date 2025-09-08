@@ -1,15 +1,15 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
 import { EnvConfiguration } from "config/app.config";
 import { Socket } from "node:net";
-import { defaultPresentacionOmegaOld } from "src/dtoBE/defaultTramaOld";
+import { crearDefaultDispositivoTablaOld, defaultPresentacionOmegaOld } from "src/dtoBE/defaultTramaOld";
 import { FrameOldDto } from "src/dtoBE/frameOld.dto";
-import { PresentacionCentralOldDto, RtPresenciaCentralOldDto } from "src/dtoBE/tt_sistemaOld.dto";
+import { PresentacionCentralOldDto, RtPresenciaCentralOldDto, RtTablaCentralFinOldDto, RtTablaCentralMasOldDto, TablaCentralItemOld } from "src/dtoBE/tt_sistemaOld.dto";
 import { defaultDataTempSonda1, defaultDataContadorAgua, defaultDataActividadCalefaccion1, defaultDataEventoInicioCrianza, defaultDataAlarmaTempAlta, defaultDataCambioParametro, defaultPresentacionCTI40 } from "src/dtoLE/defaultTrama";
 import { FrameDto } from "src/dtoLE/frame.dto";
 import { PeticionConsolaDto } from "src/dtoLE/tt_depuracion.dto";
 import { EnviaEstadisticoDto } from "src/dtoLE/tt_estadisticos.dto";
 import { PresentacionDto, EstadoDispositivoTxDto, ConfigFinalTxDto, UrlDescargaOtaTxDto, ProgresoActualizacionTxDto } from "src/dtoLE/tt_sistema.dto";
-import { DEF_MAX_DATOS_TRAMA, PROTO_VERSION_BE } from "src/utils/BE_Old/globals/constGlobales";
+import { DEF_MAX_DATOS_TRAMA, MAX_ITEMS_PER_FRAME, PROTO_VERSION_OLD } from "src/utils/BE_Old/globals/constGlobales";
 import { EnTipoTramaOld, EnTipoMensajeCentralServidor } from "src/utils/BE_Old/globals/enumOld";
 import { crc16IBM } from "src/utils/crc";
 import { hexDump } from "src/utils/helpers";
@@ -355,9 +355,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         } = params;
 
         // Límite clásico del campo datos (ajusta al nombre de tus constantes si difiere)
-        if (typeof DEF_MAX_DATOS_TRAMA === 'number' && data.length > DEF_MAX_DATOS_TRAMA) {
-            throw new Error(`El cuerpo supera ${DEF_MAX_DATOS_TRAMA} bytes`);
-        }
+        if (typeof DEF_MAX_DATOS_TRAMA === 'number' && data.length > DEF_MAX_DATOS_TRAMA) {throw new Error(`El cuerpo supera ${DEF_MAX_DATOS_TRAMA} bytes`);}
 
         const frame: FrameOldDto = {
             inicioTrama: START,         // mismos delimitadores que en nuevo
@@ -384,13 +382,13 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         // Header BE de 9 bytes (NO incluye el "start")
         // Versión(1) + Origen(2 BE) + Destino(2 BE) + TipoTrama(1) + TipoMensaje(1) + LenDatos(2 BE)
         const header = Buffer.alloc(1 + 2 + 2 + 1 + 1 + 2);
-        let o = 0;
-        header.writeUInt8(f.versionProtocolo & 0xff, o); o += 1;
-        header.writeUInt16BE(f.nodoOrigen & 0xffff, o); o += 2;
-        header.writeUInt16BE(f.nodoDestino & 0xffff, o); o += 2;
-        header.writeUInt8(f.tipoTrama & 0xff, o); o += 1;
-        header.writeUInt8(f.tipoMensaje & 0xff, o); o += 1;
-        header.writeUInt16BE(f.longitud & 0xffff, o); o += 2;
+        let offset = 0;
+        header.writeUInt8(f.versionProtocolo & 0xff, offset); offset += 1;
+        header.writeUInt16BE(f.nodoOrigen & 0xffff, offset); offset += 2;
+        header.writeUInt16BE(f.nodoDestino & 0xffff, offset); offset += 2;
+        header.writeUInt8(f.tipoTrama & 0xff, offset); offset += 1;
+        header.writeUInt8(f.tipoMensaje & 0xff, offset); offset += 1;
+        header.writeUInt16BE(f.longitud & 0xffff, offset); offset += 2;
 
         const datosBuf = Buffer.isBuffer(f.datos) ? f.datos : Buffer.alloc(0);
 
@@ -800,7 +798,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
             tipoTrama: EnTipoTramaOld.ttCentralServidor, // TT_central_servidor (=6)
             tipoMensaje: EnTipoMensajeCentralServidor.tmTramaPresentacionCentral, // (=8)
             data,
-            versionProtocolo: PROTO_VERSION_BE,
+            versionProtocolo: PROTO_VERSION_OLD,
         });
 
         return this.enviarFrameOld(frameOld);
@@ -817,10 +815,121 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
             tipoTrama: EnTipoTramaOld.ttCentralServidor, // TT_central_servidor (=6)
             tipoMensaje: EnTipoMensajeCentralServidor.tmRtPresenciaCentral, // (=7)
             data,
-            versionProtocolo: PROTO_VERSION_BE,
+            versionProtocolo: PROTO_VERSION_OLD,
         });
 
         return this.enviarFrameOld(frameOld);
+    }
+
+    // * -------------------------------------------------------------------------------------------------------------------
+    // * -------------------------------------------------------------------------------------------------------------------
+    // * -------------------------------------------------------------------------------------------------------------------
+    // * -------------------------------------------------------------------------------------------------------------------
+    // * ----------------------------------------------- TABLA DISPOSITIVOS Central -> Server ------------------------------
+    // * -------------------------------------------------------------------------------------------------------------------
+    // * -------------------------------------------------------------------------------------------------------------------
+    // * -------------------------------------------------------------------------------------------------------------------
+    // * -------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Crea N dispositivos "seed" y devuelve los DTOs necesarios para la tabla.
+     *
+     * - Si nDispositivos ≤ 13  -> sólo FIN
+     * - Si nDispositivos > 13  -> MAS (13 primeros) + FIN (resto, ≤ 13)
+     * - Se asume que nunca habrá más de 26; en tu caso habitual ≤ 20.
+     */
+    crearDataTablaDispositivos(nDispositivos: number): {
+        fin: RtTablaCentralFinOldDto;
+        mas?: RtTablaCentralMasOldDto;
+    } {
+        const n = Math.max(0, nDispositivos | 0);
+
+        // 1) Crear todos los items con seed = i
+        const allItems: TablaCentralItemOld[] = [];
+        for (let i = 1; i <= n; i++) {
+            allItems.push(crearDefaultDispositivoTablaOld(i));
+        }
+
+        // 2) Troceo en MAS/FIN (como mucho dos tramas)
+        if (allItems.length <= MAX_ITEMS_PER_FRAME) {
+            // Sólo FIN
+            return {
+                fin: { items: allItems },
+            };
+        } else {
+            // MAS con los 13 primeros, FIN con el resto (hasta 13)
+            const masItems = allItems.slice(0, MAX_ITEMS_PER_FRAME);
+            const finItems = allItems.slice(MAX_ITEMS_PER_FRAME, MAX_ITEMS_PER_FRAME * 2);
+            return {
+                mas: { items: masItems },
+                fin: { items: finItems },
+            };
+        }
+    }
+
+
+    /**
+     * Serializa un array de items (layout 34 bytes/ítem) a Buffer en BIG-ENDIAN.
+     * Válido tanto para TM_rt_tabla_central_mas como para TM_rt_tabla_central_fin.
+     */
+    serializarTablaCentralItemsBE(items: TablaCentralItemOld[]): Buffer {
+        const u8 = (n: number) => Buffer.from([n & 0xff]);
+        const u16BE = (n: number) => {
+            const b = Buffer.allocUnsafe(2);
+            b.writeUInt16BE((n >>> 0) & 0xffff, 0);
+            return b;
+        };
+        const toFixed = (buf: Buffer, size: number) => {
+            if (!buf) return Buffer.alloc(size);
+            if (buf.length === size) return buf;
+            if (buf.length > size) return buf.subarray(0, size);
+            const out = Buffer.alloc(size, 0x00);
+            buf.copy(out, 0);
+            return out;
+        };
+        const encodePwd16 = (s: string) => {
+            const raw = Buffer.from(s ?? "", "utf8");
+            const out = Buffer.alloc(16, 0x00);
+            raw.subarray(0, 16).copy(out, 0);
+            return out;
+        };
+
+        const parts: Buffer[] = [];
+        for (const it of items) {
+            parts.push(
+                toFixed(it.mac, 8),              // MAC (8)
+                u16BE(it.nodo),                  // NODO (2)
+                u8(it.estado),                   // ESTADO (1)
+                u8(it.tipoDispositivo),          // TIPO DISPOSITIVO (1)
+                u16BE(it.version),               // VERSION (2)
+                encodePwd16(it.password),        // PASSWORD (16)
+                u16BE(it.crcParametros ?? 0),    // CRC_PARAMETROS (2)
+                u8(it.infoEstado ?? 0),          // INFO_ESTADO (1)
+                u8(it.hayAlarma ?? 0),           // HAY_ALARMA (1)
+            );
+        }
+        return Buffer.concat(parts);
+    }
+
+    /**
+     * (Opcional) Conveniencia: crea los DTOs MAS/FIN y devuelve los *payloads*
+     * ya serializados en BE para ponerlos directamente en la trama.
+     *
+     * Regla:
+     *  - ≤13 -> sólo FIN
+     *  - >13 -> MAS (13) + FIN (resto)
+     */
+    crearBuffersTablaDispositivos(nDispositivos: number): {
+        fin: Buffer;
+        mas?: Buffer;
+    } {
+        const data = this.crearDataTablaDispositivos(nDispositivos);
+        const fin = this.serializarTablaCentralItemsBE(data.fin.items);
+        const mas = data.mas ? this.serializarTablaCentralItemsBE(data.mas.items) : undefined;
+        if (data.mas) console.table(data.mas.items);
+        console.table(data.fin.items);
+        
+        return { fin, mas };
     }
 
 

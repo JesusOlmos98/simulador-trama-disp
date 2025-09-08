@@ -1,24 +1,4 @@
-import { START, END } from "src/utils/LE/globals/constGlobales";
-
-// export enum EnTipoMensajeOld {
-//   tmRtPresenciaCentral          = 7,   // 5.2.1
-//   tmPresentacionCentral         = 8,   // 5.2.2
-//   tmRtTablaCentralMas           = 18,  // 5.2.3
-//   tmRtTablaCentralFin           = 19,  // 5.2.3
-//   tmEventoCambioEstadoNodo      = 20,  // 5.2.4
-//   tmRtEnviaParametroHistorico   = 100, // 5.1.9 (origen central, TT_central_servidor)
-// }
-
-// ---------------- Cabecera ----------------
-// export interface HeaderFieldsOld {
-//   versionProtocolo: number; // uint8
-//   nodoOrigen: number;       // uint16 BE
-//   nodoDestino: number;      // uint16 BE
-//   tipoTrama: number;        // uint8
-//   tipoMensaje: number;      // uint8
-//   longitud: number;         // uint16 BE -> bytes del bloque `datos`
-// }
-
+import { toFixedBuffer, u16BE, u8, encodePassword16 } from "src/utils/helpers";
 
 //* Datos por tipo de mensaje (central → servidor)
 
@@ -65,6 +45,60 @@ export interface RtTablaCentralFinOldDto {
   items: TablaCentralItemOld[];
 }
 
+/**
+ * Serializa el array de items de la tabla (layout 34 bytes/ítem) en BIG-ENDIAN.
+ * Válido tanto para TM_rt_tabla_central_mas como para TM_rt_tabla_central_fin.
+ *
+ * Layout por item (34 bytes):
+ *  - 8  bytes  MAC
+ *  - 2  bytes  NODO (u16 BE)
+ *  - 1  byte   ESTADO (u8)
+ *  - 1  byte   TIPO_DISPOSITIVO (u8)
+ *  - 2  bytes  VERSION (u16 BE)
+ *  - 16 bytes  PASSWORD (padding 0x00)
+ *  - 2  bytes  CRC_PARAMETROS (u16 BE)  [normalmente 0]
+ *  - 1  byte   INFO_ESTADO (u8)
+ *  - 1  byte   HAY_ALARMA (u8)
+ */
+export function serializeRtTablaCentralPayloadBE(
+  items: TablaCentralItemOld[],
+): Buffer {
+  const chunks: Buffer[] = [];
+
+  for (const it of items) {
+    const mac = toFixedBuffer(it.mac ?? Buffer.alloc(0), 8);        // 8
+    const nodo = u16BE(it.nodo);                                   // 2
+    const estado = u8(it.estado);                                  // 1
+    const tipo = u8(it.tipoDispositivo);                           // 1
+    const version = u16BE(it.version);                             // 2
+    const password = encodePassword16(it.password ?? "");          // 16
+    const crcPar = u16BE(it.crcParametros ?? 0);                   // 2
+    const info = u8(it.infoEstado ?? 0);                           // 1
+    const alarma = u8(it.hayAlarma ?? 0);                          // 1
+
+    chunks.push(mac, nodo, estado, tipo, version, password, crcPar, info, alarma);
+  }
+
+  return Buffer.concat(chunks);
+}
+
+// ========== (Opcional) Troceo en paquetes de hasta 13 ítems ==========
+
+/**
+ * Corta los items en grupos de hasta 13 para ajustarse al máximo de “Datos”
+ * por trama. Devuelve una lista de grupos; todos serían MAS excepto el último FIN.
+ */
+export function splitTablaCentralInFrames(
+  items: TablaCentralItemOld[],
+  maxPerFrame = 13,
+): TablaCentralItemOld[][] {
+  const out: TablaCentralItemOld[][] = [];
+  for (let i = 0; i < items.length; i += maxPerFrame) {
+    out.push(items.slice(i, i + maxPerFrame));
+  }
+  return out;
+}
+
 // ---------- 5.2.4 TM_evento_cambio_estado_nodo ----------
 export interface EventoCambioEstadoNodoItemOld {
   mac: Buffer;            // 8 bytes
@@ -85,6 +119,14 @@ export interface EventoCambioEstadoNodoOldDto {
 export interface RtEnviaParametroHistoricoOldDto {
   id: number; // uint8 (identificador eco)
 }
+
+
+
+
+
+
+
+
 
 // Unión de datos posibles (central → servidor, protocolo antiguo)
 // export type DatosCentralServidorOld =

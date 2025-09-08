@@ -1,7 +1,7 @@
 import { tiempoToSeg } from "src/utils/fnTiempo";
 import { EnTipoDato, EnEstadisTipoRegistro, EnEstadisticosControladores, EnEstadisPeriodicidad, EnEstadoDatoEstadistico, EnGtUnidades, EnContadoresTipo, EnEeEventosApli, EnCrianzaTipoAnimal, EnCrianzaAltaBajaAccion, EnAlarmaEstado, EnAlarmasAccion } from "src/utils/LE/globals/enums";
 import { Fecha, Tiempo } from "src/utils/tiposGlobales";
-import { packByTipo, u32LE, u16LE, u8 } from "src/utils/helpers";
+import { packByTipo, u32LE, u16LE, u8Old } from "src/utils/helpers";
 
 // -------------------------------------------------- TM_ESTADISTICOS_envia_estadistico --------------------------------------------------
 
@@ -183,7 +183,7 @@ export function serializarDatosEstadisticoValor(
     },
 
     // [1] periodicidad (TD_UINT8)
-    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: u8(d.periodicidad) },
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: u8Old(d.periodicidad) },
 
     // [2..4] valores (TD_ según d.valorTipo)
     { tipoDato: base, sizeDatoByte: medio.length, dato: medio }, // valorMedio
@@ -195,10 +195,10 @@ export function serializarDatosEstadisticoValor(
     { tipoDato: EnTipoDato.tiempo, sizeDatoByte: 4, dato: horamin }, // horaValorMin
 
     // [7] estado (TD_UINT8)
-    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: u8(d.estado) },
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: u8Old(d.estado) },
 
     // [8] unidad (TD_UINT8)
-    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: u8(d.unidad) },
+    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: u8Old(d.unidad) },
   ];
 
   return out;
