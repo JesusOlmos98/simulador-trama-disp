@@ -1,9 +1,5 @@
-import { Controller, Post, Body, Query, BadRequestException } from '@nestjs/common';
-import { defaultPresentacionOmegaOld } from 'src/dtoBE/defaultTramaOld';
-import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
-import { PresentacionCentralOldDto } from 'src/dtoBE/tt_sistemaOld.dto';
+import { Controller, Post, Query, BadRequestException } from '@nestjs/common';
 import {
-  defaultPresentacionCTI40,
   defaultDataTempSonda1,
   defaultDataContadorAgua,
   defaultDataActividadCalefaccion1,
@@ -16,7 +12,6 @@ import { FrameDto } from 'src/dtoLE/frame.dto';
 import { PeticionConsolaDto } from 'src/dtoLE/tt_depuracion.dto';
 import { EstadisticoDato, serializarDatosEstadisticoValor } from 'src/dtoLE/tt_estadisticos.dto';
 import {
-  PresentacionDto,
   EstadoDispositivoTxDto,
   ConfigFinalTxDto,
   UrlDescargaOtaTxDto,
@@ -195,8 +190,6 @@ export class TramaController {
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
-  //! hacer con Querys tempSonda1, humedad, co2, nh3
-
   @Post('estadisticos')
   async estadisticos(
     @Query('fi') fi?: string,                                 // fecha inicio (DD-MM-YYYY)
@@ -256,7 +249,7 @@ export class TramaController {
             ? 10 : 25;
 
     for (let t = dtIni.getTime(); t <= dtFin.getTime(); t += stepMs) {
-      
+
       const d = new Date(t);
 
       switch (tipo) {
