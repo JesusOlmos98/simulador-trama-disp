@@ -26,22 +26,6 @@ export function isPresentacionDto(v: unknown): v is PresentacionDto {
   );
 }
 
-// ------------------------------------------- readNodoOrigen -------------------------------------------
-// export function readNodoOrigen(/*body: unknown,*/ def = 1): number {
-//   // if (!isObject(body))
-//   return def;
-//   // const raw = body['nodoOrigen'];
-//   // return isNumber(raw) ? raw : def;
-// }
-
-// // ------------------------------------------- readNodoDestino -------------------------------------------
-// export function readNodoDestino(/*body: unknown,*/ def = 0): number {
-//   // if (!isObject(body))
-//   return def;
-//   // const raw = body['nodoDestino'];
-//   // return isNumber(raw) ? raw : def;
-// }
-
 // ------------------------------------------- readTempC -------------------------------------------
 export function readTempC(body: unknown, def = 25.0): number {
   if (!isObject(body)) return def;
@@ -56,17 +40,6 @@ export function readTempC(body: unknown, def = 25.0): number {
   }
   return def;
 }
-
-// ------------------------------------------- readPresentacion -------------------------------------------
-/** Si no hay presentación en el body, devuelve la default. */
-// export function readPresentacion(
-//   /*body: unknown,*/ def: PresentacionDto,
-// ): PresentacionDto {
-//   // if (!isObject(body))
-//   return def;
-//   // const datos = body['datos'];
-//   // return isPresentacionDto(datos) ? (datos as PresentacionDto) : def;
-// }
 
 // ------------------------------------------- hexDump -------------------------------------------
 /** Convierte un buffer en texto hexadecimal en columnas. */
@@ -177,8 +150,6 @@ export function parseDmYToFecha(input: string): Fecha {
   return { dia, mes, anyo } as Fecha;
 }
 
-
-
 //! --------------------------------------------------------------------------------------------------------------------------------
 //! --------------------------------------------------------------------------------------------------------------------------------
 //! ------------------------------------------- Helpers para dispositivos antiguos (Old) -------------------------------------------
@@ -203,99 +174,8 @@ export function toFixedBuffer(src: Buffer, size: number): Buffer {
 
 /** PASSWORD de 16 bytes. Por defecto: ASCII/UTF-8 truncado y padding con 0x00. */
 export function encodePassword16(pwd: string): Buffer {
-  // Si tu firmware exige NULL-terminated explícito cuando <16, puedes forzarlo:
-  // const raw = Buffer.from(pwd ?? "", "ascii");
   const raw = Buffer.from(pwd ?? "", "utf8");
   const out = Buffer.alloc(16, 0x00);
   raw.subarray(0, 16).copy(out, 0);
-  // Si quieres garantizar null-termination cuando <16:
-  // if (raw.length < 16) out[raw.length] = 0x00;
   return out;
 }
-
-
-
-
-
-
-
-
-
-// export function coerceEnum<T extends Record<string, number>>(val: string | number, E: T): T[keyof T] {
-//   if (typeof val === 'number') {
-//     if (Object.values(E).includes(val as any)) return val as any;
-//     throw new Error('Valor numérico fuera del enum');
-//   }
-//   const s = String(val).trim();
-//   if (/^-?\d+$/.test(s)) {
-//     const n = Number(s);
-//     if (Object.values(E).includes(n as any)) return n as any;
-//     throw new Error('Valor numérico fuera del enum');
-//   }
-//   const key = Object.keys(E).find(k => k.toLowerCase() === s.toLowerCase());
-//   if (key) return (E as any)[key];
-//   throw new Error(`Valor "${val}" no pertenece al enum`);
-// }
-
-// // ----------------------------- Helpers de codificación de valores SCV -----------------------------
-// export function encodeScvValor(
-//   tipo: EnTipoDato,
-//   valor: number | string | Buffer,
-// ): Buffer {
-//   if (Buffer.isBuffer(valor)) return valor;
-
-//   switch (tipo) {
-//     case EnTipoDato.uint8: {
-//       const b = Buffer.alloc(1);
-//       b.writeUInt8((Number(valor) >>> 0) & 0xff, 0);
-//       return b;
-//     }
-//     case EnTipoDato.int8: {
-//       const b = Buffer.alloc(1);
-//       b.writeInt8(Number(valor) | 0, 0);
-//       return b;
-//     }
-//     case EnTipoDato.uint16: {
-//       const b = Buffer.alloc(2);
-//       b.writeUInt16LE((Number(valor) >>> 0) & 0xffff, 0);
-//       return b;
-//     }
-//     case EnTipoDato.int16: {
-//       const b = Buffer.alloc(2);
-//       b.writeInt16LE(Number(valor) | 0, 0);
-//       return b;
-//     }
-//     case EnTipoDato.uint32: {
-//       const b = Buffer.alloc(4);
-//       b.writeUInt32LE(Number(valor) >>> 0, 0);
-//       return b;
-//     }
-//     case EnTipoDato.int32: {
-//       const b = Buffer.alloc(4);
-//       b.writeInt32LE(Number(valor) | 0, 0);
-//       return b;
-//     }
-//     case EnTipoDato.float: {
-//       const b = Buffer.alloc(4);
-//       b.writeFloatLE(Number(valor), 0);
-//       return b;
-//     }
-//     case EnTipoDato.string4:
-//     case EnTipoDato.string32:
-//     case EnTipoDato.stringUnicode16:
-//     case EnTipoDato.stringUnicode32:
-//     case EnTipoDato.concatenado: {
-//       // Por simplicidad codificamos strings en UTF-8; si el server requiere Unicode-16, cambia aquí.
-//       return Buffer.from(String(valor), 'utf8');
-//     }
-//     default: {
-//       // Fallback razonable: si nos llega un número lo empaquetamos como uint32; si no, utf8
-//       if (typeof valor === 'number') {
-//         const b = Buffer.alloc(4);
-//         b.writeUInt32LE(valor >>> 0, 0);
-//         return b;
-//       }
-//       return Buffer.from(String(valor), 'utf8');
-//     }
-//   }
-// }

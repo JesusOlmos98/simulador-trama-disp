@@ -18,6 +18,8 @@ import {
   ProgresoActualizacionTxDto,
 } from 'src/dtoLE/tt_sistema.dto';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
+import { getTablaCentralItemCountOld, getTablaItemOld, logTramaCompletaTablaDispositivosOld } from 'src/utils/BE_Old/get/getTablaDispositivos';
+import { getCRCFromFrameOld, getEndOld, getStartOld, getTipoMensajeOld, getTipoTramaOld, getParsedHeaderOld } from 'src/utils/BE_Old/get/getTrama';
 import { PROTO_VERSION_OLD } from 'src/utils/BE_Old/globals/constGlobales';
 import { EnTipoMensajeCentralServidor, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
 import {
@@ -200,6 +202,7 @@ export class TramaController {
     @Query('ff') ff?: string,                                 // fecha fin (DD-MM-YYYY)
   ) {
     // Validación: deben llegar los 4 parámetros, sin “ver”
+
     if (fi === undefined || periodicidadRaw === undefined || tipoRaw === undefined || ff === undefined) { throw new BadRequestException('Debes enviar los cuatro parámetros: fi, periodicidad, tipo y ff.'); }
 
     // Conectamos a equipos NUEVOS (8003) para este endpoint genérico
@@ -520,13 +523,16 @@ export class TramaController {
 
   @Post('tablaDispositivos')
   async tablaDispositivos(@Query('nDispositivos') nDispositivos?: string) {
+
+    await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
+
     let n = parseInt(nDispositivos ?? '10');
     if (isNaN(n) || n === null || n === undefined || n < 1 || n > 20) {
-      josLogger.info(`Número de dispositivos inválido (${nDispositivos}). Usando 10 por defecto.`);
+      josLogger.error(`Número de dispositivos inválido (${nDispositivos}). Usando 10 por defecto.`);
       n = 10;
     }
 
-    josLogger.info(`Enviando tabla de dispositivos con ${n} dispositivos`);
+    josLogger.trace(`Enviando tabla de dispositivos con ${n} dispositivos`);
 
     // Si no se introducen dispositivos serán 10 por defecto.
     const { fin, mas } = this.tcp.crearBuffersTablaDispositivos(n);
@@ -540,8 +546,10 @@ export class TramaController {
         data: mas,
         versionProtocolo: PROTO_VERSION_OLD,
       });
-      josLogger.debug('Enviamos trama MAS de tabla de dispositivos (más de 13 dispositivos en total).');
-      this.tcp.enviarFrameOld(frameMas);
+      josLogger.trace('Enviamos trama MAS de tabla de dispositivos (más de 13 dispositivos en total).');
+      const okMas = this.tcp.enviarFrameOld(frameMas);
+      const bufferMas = Buffer.from((okMas as { bytes: number, hex: string }).hex, 'hex');
+      logTramaCompletaTablaDispositivosOld(bufferMas);
     }
 
     const frameFin = this.tcp.crearFrameOld({
@@ -552,14 +560,14 @@ export class TramaController {
       data: fin,
       versionProtocolo: PROTO_VERSION_OLD,
     });
-    josLogger.debug('Enviamos trama FIN de tabla de dispositivos.');
-    josLogger.debug('\n\n\n');
+    josLogger.trace('Enviamos trama FIN de tabla de dispositivos.');
     const okFin = this.tcp.enviarFrameOld(frameFin);
+    josLogger.trace(`${EnTipoTramaOld[frameFin.tipoTrama]} ${EnTipoMensajeCentralServidor[frameFin.tipoMensaje]}`);
+    const bufferFin = Buffer.from((okFin as { bytes: number, hex: string }).hex, 'hex');
+    logTramaCompletaTablaDispositivosOld(bufferFin);
+
     return okFin;
   }
-
-  // josLogger.info(`✅ Enviando tabla de dispositivos ${i + 1}/${n}`);
-
 
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP

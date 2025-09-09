@@ -119,21 +119,3 @@ export interface EventoCambioEstadoNodoOldDto {
 export interface RtEnviaParametroHistoricoOldDto {
   id: number; // uint8 (identificador eco)
 }
-
-
-
-
-
-
-
-
-
-// Unión de datos posibles (central → servidor, protocolo antiguo)
-// export type DatosCentralServidorOld =
-//   | PresentacionCentralOldDto
-//   | RtPresenciaCentralOldDto
-//   | RtTablaCentralMasOldDto
-//   | RtTablaCentralFinOldDto
-//   | EventoCambioEstadoNodoOldDto
-//   | RtEnviaParametroHistoricoOldDto
-//   | Buffer; // fallback para TMs no modelados todavía

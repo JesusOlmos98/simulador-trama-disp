@@ -1,24 +1,19 @@
 
-//* ----------------------------- Protocolo antiguo (BE) -----------------------------
+//* ----------------------------- Protocolo antiguo (BE/Old) -----------------------------
 
 // Inicio / Fin de trama (idénticos al nuevo)
-export const START_OLD_ARR = [0xcc, 0xaa, 0xaa, 0xaa] as const; // Inicio de trama
-export const END_OLD_ARR   = [0xcc, 0xbb, 0xbb, 0xbb] as const; // Fin de trama
-export const START_OLD = Buffer.from(START_OLD_ARR);
-export const END_OLD   = Buffer.from(END_OLD_ARR);
 
-// Encabezado síncrono (después de START)
-// Estructura: Versión(1) + NodoOrigen(2) + NodoDestino(2) + TipoTrama(1) + TipoMensaje(1) + LenDatos(2)
+export const START_OLD = Buffer.from([0xCC,0xAA,0xAA,0xAA]);
+export const END_OLD   = Buffer.from([0xCC,0xBB,0xBB,0xBB]);
+
 export const HEADER_OFFSET_OLD = START_OLD.length; // 4
-export const HEADER_SIZE_OLD   = 9;               // 1+2+2+1+1+2  (Big-Endian en los campos de 2 bytes)
-
-// Offsets de campos dentro del encabezado (relativos a DATA_OFFSET_BE = 4)
-export const H_VER_OFF_OLD   = 0; // uint8
-export const H_ORIG_OFF_OLD  = 1; // uint16 BE
-export const H_DEST_OFF_OLD  = 3; // uint16 BE
-export const H_TT_OFF_OLD    = 5; // uint8
-export const H_TM_OFF_OLD    = 6; // uint8
-export const H_LEN_OFF_OLD   = 7; // uint16 BE
+export const HEADER_SIZE_OLD   = 9;                // 1+2+2+1+1+2 (BE)
+export const H_VER_OFF_OLD     = 0;  // u8
+export const H_ORIG_OFF_OLD    = 1;  // u16 BE
+export const H_DEST_OFF_OLD    = 3;  // u16 BE
+export const H_TT_OFF_OLD      = 5;  // u8
+export const H_TM_OFF_OLD      = 6;  // u8
+export const H_LEN_OFF_OLD     = 7;  // u16 BE
 
 // Desplazamiento al inicio del payload de datos
 export const DATA_OFFSET_OLD = HEADER_OFFSET_OLD + HEADER_SIZE_OLD; // 13
@@ -106,3 +101,4 @@ export const MAX_VARIABLES_DATOS_DINAMICOS_ESTADISTICOS = MAX_BYTE_DATOS_DINAMIC
 
 /** Dispositivos por trama (FIN o MAS+FIN). */
 export const MAX_ITEMS_PER_FRAME = 13;
+

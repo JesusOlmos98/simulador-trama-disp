@@ -1,10 +1,26 @@
 import { TablaCentralItemOld } from "src/dtoBE/tt_sistemaOld.dto";
-import { getDataSection } from "src/utils/LE/get/getTrama";
 import { EnTipoTramaOld, EnTipoMensajeCentralServidor } from "../globals/enumOld";
-import { getTipoMensajeOld, getTipoTramaOld } from "./getTrama";
-
+import { getCRCFromFrameOld, getDataSectionOld, getEndOld, getParsedHeaderOld, getStartOld, getTipoMensajeOld, getTipoTramaOld } from "./getTrama";
+import { josLogger } from "src/utils/josLogger";
+import { EnTipoEquipo } from "src/utils/LE/globals/enums";
 
 // ---------------------------------------- Payload (MAS/FIN) ----------------------------------------
+
+// ---------------------------------------- Constantes / helpers ----------------------------------------
+const ITEM_TABLA_LEN_OLD = 34; // bytes por item en TM_rt_tabla_central_{mas,fin}
+
+/** Valida que el payload parezca de tabla central (tamaño múltiplo de 34). */
+function isValidTablaPayloadOld(data?: Buffer): data is Buffer {
+  return !!data && data.length > 0 && (data.length % ITEM_TABLA_LEN_OLD) === 0;
+}
+
+/** Decodifica password de 16 bytes (trim de 0x00 al final). */
+function decodePassword16(buf: Buffer): string {
+  let end = buf.length;
+  while (end > 0 && buf[end - 1] === 0x00) end--;
+  return buf.subarray(0, end).toString("utf8");
+}
+
 
 /** Devuelve el payload de una TT_CENTRAL_SERVIDOR / TM_rt_tabla_central_{mas|fin}, o undefined si no cuadra. */
 export function getTablaCentralPayloadOld(frame: Buffer): Buffer | undefined {
@@ -16,7 +32,8 @@ export function getTablaCentralPayloadOld(frame: Buffer): Buffer | undefined {
     tm !== EnTipoMensajeCentralServidor.tmRtTablaCentralFin
   ) return undefined;
 
-  const data = getDataSection(frame);
+  // const data = getDataSection(frame); //! ...
+  const data = getDataSectionOld(frame);
   if (!isValidTablaPayloadOld(data)) return undefined;
   return data;
 }
@@ -161,25 +178,23 @@ export function getTablaItemsOld(frame: Buffer): TablaCentralItemOld[] | undefin
   return out;
 }
 
-
-
-
-
-
-
-
-
-// ---------------------------------------- Constantes / helpers ----------------------------------------
-const ITEM_TABLA_LEN_OLD = 34; // bytes por item en TM_rt_tabla_central_{mas,fin}
-
-/** Valida que el payload parezca de tabla central (tamaño múltiplo de 34). */
-function isValidTablaPayloadOld(data?: Buffer): data is Buffer {
-  return !!data && data.length > 0 && (data.length % ITEM_TABLA_LEN_OLD) === 0;
-}
-
-/** Decodifica password de 16 bytes (trim de 0x00 al final). */
-function decodePassword16(buf: Buffer): string {
-  let end = buf.length;
-  while (end > 0 && buf[end - 1] === 0x00) end--;
-  return buf.subarray(0, end).toString("utf8");
+export function logTramaCompletaTablaDispositivosOld(frame: Buffer): void {
+  josLogger.trace(`DECODIFICAMOS TRAMA EN BYTES:`);
+  josLogger.trace(`Inicio: ${getStartOld(frame).toString('hex')}`);
+  josLogger.trace(`Versión protocolo: ${getParsedHeaderOld(frame).versionProtocolo} `);
+  josLogger.trace(`Nodo origen: ${getParsedHeaderOld(frame).nodoOrigen} `);
+  josLogger.trace(`Nodo destino: ${getParsedHeaderOld(frame).nodoDestino} `);
+  josLogger.trace(`Tipo Trama TT: ${EnTipoTramaOld[getParsedHeaderOld(frame).tipoTrama]} `);
+  josLogger.trace(`Tipo Mensaje TM: ${EnTipoMensajeCentralServidor[getParsedHeaderOld(frame).tipoMensaje]} `);
+  josLogger.trace(`Longitud: ${getParsedHeaderOld(frame).longitud} `);
+  josLogger.trace(`DATA:`);
+  josLogger.trace(`Cantidad de dispositivos: ${getTablaCentralItemCountOld(frame)}`);
+  josLogger.trace(`| MAC              | NODO |EST| TipoDisp | VER |     PASSWORD     | CRC PAR | INFO EST | ALARMA |`);
+  const l = getTablaCentralItemCountOld(frame);
+  for (let i = 0; i < l!; i++) {
+    const item = getTablaItemOld(frame, i);
+    josLogger.trace(`| ${item?.mac.toString('hex')} | ${item?.nodo} | ${item?.estado} | ${EnTipoEquipo[item?.tipoDispositivo!]} | ${item?.version} | ${item?.password.toString()} | ${item?.crcParametros} | ${item?.infoEstado} | ${item?.hayAlarma} |`);
+  }
+  josLogger.trace(`CRC: ${getCRCFromFrameOld(frame)}`);
+  josLogger.trace(`Fin: ${getEndOld(frame).toString('hex')}`);
 }
