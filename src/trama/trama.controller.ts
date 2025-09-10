@@ -1,6 +1,7 @@
 import { Controller, Post, Query, BadRequestException } from '@nestjs/common';
-import { crearTablaCambioEstadoDispositivoOld } from 'src/dtoBE/defaultTramaOld';
+import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoValorOld } from 'src/dtoBE/defaultTramaOld';
 import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
+import { serializarParametroHistoricoOld } from 'src/dtoBE/tt_estadisticosOld.dto';
 import {
   defaultDataTempSonda1,
   defaultDataContadorAgua,
@@ -20,9 +21,10 @@ import {
   ProgresoActualizacionTxDto,
 } from 'src/dtoLE/tt_sistema.dto';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
+import { logTramaParametroHistoricoOld } from 'src/utils/BE_Old/get/getEstadistico';
 import { logTramaCompletaTablaDispositivosOld } from 'src/utils/BE_Old/get/getTablaDispositivos';
 import { PROTO_VERSION_OLD } from 'src/utils/BE_Old/globals/constGlobales';
-import { EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
+import { EnTipoMensajeCentralDispositivo, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
 import { START, END } from 'src/utils/LE/globals/constGlobales';
 import {
   EnTipoTrama,
@@ -544,7 +546,7 @@ export class TramaController {
       const frameMas = this.tcp.crearFrameOld({
         nodoOrigen: 1,
         nodoDestino: 0,
-        tipoTrama: EnTipoTramaOld.ttCentralServidor, // TT_central_servidor (=6)
+        tipoTrama: EnTipoTramaOld.centralServidor, // TT_central_servidor (=6)
         tipoMensaje: EnTipoMensajeCentralServidor.tmRtTablaCentralMas, // (=7)
         data: mas,
         versionProtocolo: PROTO_VERSION_OLD,
@@ -558,7 +560,7 @@ export class TramaController {
     const frameFin = this.tcp.crearFrameOld({
       nodoOrigen: 1,
       nodoDestino: 0,
-      tipoTrama: EnTipoTramaOld.ttCentralServidor, // TT_central_servidor (=6)
+      tipoTrama: EnTipoTramaOld.centralServidor, // TT_central_servidor (=6)
       tipoMensaje: EnTipoMensajeCentralServidor.tmRtTablaCentralFin, // (=8)
       data: fin,
       versionProtocolo: PROTO_VERSION_OLD,
@@ -600,7 +602,7 @@ export class TramaController {
     const frameTablaConDispositivoCambiado = this.tcp.crearFrameOld({
       nodoOrigen: 1,
       nodoDestino: 0,
-      tipoTrama: EnTipoTramaOld.ttCentralServidor, // TT_central_servidor (=6)
+      tipoTrama: EnTipoTramaOld.centralServidor, // TT_central_servidor (=6)
       tipoMensaje: EnTipoMensajeCentralServidor.tmEventoCambioEstadoNodo, // (=8)
       data: data,
       versionProtocolo: PROTO_VERSION_OLD,
@@ -609,6 +611,60 @@ export class TramaController {
     const ok = this.tcp.enviarFrameOld(frameTablaConDispositivoCambiado);
     return ok;
   }
+
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos ----------------------------------------------- TT ESTADISTICOS ---------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+  // jos -------------------------------------------------------------------------------------------------------------------
+
+  @Post('estadisticoValor')
+  /** Se puede introducir por parámetro, opcionalmente: mac, nodo, estado, td (tipoDispositivo), version, hayAlarma */
+  async estadisticoValor(@Query('numServicioNombreEstadis') numServicioNombreEstadis?: string) {
+    
+    await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
+    
+    const estadistico = defaultEstadisticoValorOld;
+
+    // if (numServicioNombreEstadis) {
+    //   const n = parseInt(numServicioNombreEstadis);
+
+
+
+    // }
+
+
+    const data = serializarParametroHistoricoOld(estadistico);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.envioDispositivoFinal, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    logTramaParametroHistoricoOld(bufferFrame);
+    return ok;
+
+  }
+
+
+
+
+
+
+
+
 
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP

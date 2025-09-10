@@ -24,7 +24,7 @@ function decodePassword16(buf: Buffer): string {
 
 /** Devuelve el payload de una TT_CENTRAL_SERVIDOR / TM_rt_tabla_central_{mas|fin}, o undefined si no cuadra. */
 export function getTablaCentralPayloadOld(frame: Buffer): Buffer | undefined {
-  if (getTipoTramaOld(frame) !== EnTipoTramaOld.ttCentralServidor) return undefined;
+  if (getTipoTramaOld(frame) !== EnTipoTramaOld.centralServidor) return undefined;
 
   const tm = getTipoMensajeOld(frame);
   if (

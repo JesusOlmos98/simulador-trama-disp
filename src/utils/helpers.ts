@@ -1,6 +1,7 @@
 import { PresentacionDto } from 'src/dtoLE/tt_sistema.dto';
 import { EnTipoDato } from './LE/globals/enums';
 import { Fecha } from './tiposGlobales';
+import { EnTipoDatoDfAccion } from './BE_Old/globals/enumOld';
 
 // ------------------------------------------- isObject -------------------------------------------
 export function isObject(v: unknown): v is Record<string, unknown> {
@@ -109,9 +110,7 @@ export function packByTipo(v: number, tipo: EnTipoDato): Buffer {
     case EnTipoDato.float:
       return f32LE(v);
     default:
-      throw new Error(
-        `Tipo de valor no soportado en estadístico valor: ${EnTipoDato[tipo]} (${tipo})`,
-      );
+      throw new Error(`Tipo de valor no soportado en estadístico valor: ${EnTipoDato[tipo]} (${tipo})`,);
   }
 }
 
@@ -156,12 +155,17 @@ export function parseDmYToFecha(input: string): Fecha {
 //! --------------------------------------------------------------------------------------------------------------------------------
 //! --------------------------------------------------------------------------------------------------------------------------------
 
-export const u8Old = (n: number) => Buffer.from([n & 0xFF]);
-export const u16BE = (n: number) => {
-  const b = Buffer.allocUnsafe(2);
-  b.writeUInt16BE(n >>> 0, 0);
-  return b;
-};
+// export const u8Old = (n: number) => Buffer.from([n & 0xFF]);
+// export const u16BE = (n: number) => {
+//   const b = Buffer.allocUnsafe(2);
+//   b.writeUInt16BE(n >>> 0, 0);
+//   return b;
+// };
+// export const u32BE = (n: number) => {
+//   const b = Buffer.allocUnsafe(4);
+//   b.writeUInt32BE(n >>> 0, 0);
+//   return b;
+// };
 
 /** Asegura un buffer de exactamente N bytes (trunca o padding con 0x00). */
 export function toFixedBuffer(src: Buffer, size: number): Buffer {
@@ -178,6 +182,107 @@ export function encodePassword16(pwd: string): Buffer {
   const out = Buffer.alloc(16, 0x00);
   raw.subarray(0, 16).copy(out, 0);
   return out;
+}
+
+//done 
+
+export const u8Old = (n: number) => Buffer.from([n & 0xff]);
+export const u16BE = (n: number) => {
+  const b = Buffer.allocUnsafe(2);
+  b.writeUInt16BE((n >>> 0) & 0xffff, 0);
+  return b;
+};
+export const u32BE = (n: number) => {
+  const b = Buffer.allocUnsafe(4);
+  b.writeUInt32BE((n >>> 0) >>> 0, 0);
+  return b;
+};
+export const i32BE = (n: number) => {
+  const b = Buffer.allocUnsafe(4);
+  b.writeInt32BE(n | 0, 0);
+  return b;
+};
+export const f32BE = (x: number) => {
+  const b = Buffer.allocUnsafe(4);
+  b.writeFloatBE(x, 0);
+  return b;
+};
+export const toFixed = (buf: Buffer, size: number) => {
+  if (!buf) return Buffer.alloc(size);
+  if (buf.length === size) return buf;
+  if (buf.length > size) return buf.subarray(0, size);
+  const out = Buffer.alloc(size, 0x00);
+  buf.copy(out, 0);
+  return out;
+};
+
+/** number|bigint -> u64 BE (8 bytes) */
+export function u64FromNumberBE(n: number): Buffer {
+  // OJO: si n > 2^53-1 habrá pérdida en JS; si necesitas más, cambia a BigInt en el DTO
+  let v = BigInt(n >>> 0);
+  // si n es mayor que 2^32, intenta coger también la parte alta (aprox)
+  if (n > 0xffffffff) v = BigInt(n);
+  const out = Buffer.alloc(8);
+  for (let i = 7; i >= 0; i--) {
+    out[i] = Number(v & 0xffn);
+    v >>= 8n;
+  }
+  return out;
+}
+
+/** number|Buffer -> 8 bytes BE */
+export function packMac8BE(mac: number | Buffer): Buffer {
+  if (Buffer.isBuffer(mac)) return toFixed(mac, 8);
+  return u64FromNumberBE(mac);
+}
+
+/** number|Buffer -> 4 bytes BE, según tipoDato (enteros/floats). */
+export function packDatos4BE(tipoDato: EnTipoDatoDfAccion, datos: number | Buffer): Buffer {
+  if (Buffer.isBuffer(datos)) return toFixed(datos, 4);
+
+  switch (tipoDato) {
+    // Estadísticos (enteros)
+    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoUint8:
+    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroUint8:
+      return u32BE(datos & 0xff);
+
+    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoInt8:
+    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroInt8:
+      // Sign-extend a 32 bits
+      return i32BE((datos << 24) >> 24);
+
+    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoUint16:
+    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroUint16:
+      return u32BE(datos & 0xffff);
+
+    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoInt16:
+    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroInt16:
+      return i32BE((datos << 16) >> 16);
+
+    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoUint32:
+    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroUint32:
+      return u32BE(datos >>> 0);
+
+    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoInt32:
+    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroInt32:
+      return i32BE(datos | 0);
+
+    // Floats (0/1/2/3 → tratamos como float32 BE; si necesitas escalados, ajústalo aquí)
+    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat0:
+    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat1:
+    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat2:
+    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat3:
+    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroFloat0:
+    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroFloat1:
+    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroFloat2:
+    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroFloat3:
+      return f32BE(datos);
+
+    // Tipos “tiempo/fecha/string/evento…” NO deberían venir por este campo de 4B como número puro:
+    // si llegan como número, los mandamos como u32 (mejor que fallar en runtime).
+    default:
+      return u32BE(datos >>> 0);
+  }
 }
 
 

@@ -1,5 +1,7 @@
 import { EnTipoEquipo } from "src/utils/LE/globals/enums";
 import { PresentacionCentralOldDto, TablaCentralItemOld } from "./tt_sistemaOld.dto";
+import { ParametroHistoricoOldDto } from "./tt_estadisticosOld.dto";
+import { EnEstadisticosNombres, EnTipoDatoDfAccion } from "src/utils/BE_Old/globals/enumOld";
 
 // Presentación (Omega) – protocolo antiguo (Big Endian)
 export const defaultPresentacionOmegaOld: PresentacionCentralOldDto = {
@@ -36,7 +38,7 @@ export function crearDefaultDispositivoTablaOld(seed: number): TablaCentralItemO
   return dispositivo;
 }
 
-export function crearTablaCambioEstadoDispositivoOld(m: number|bigint, nod: number, est: number, td: number, v: number, alarm: number): TablaCentralItemOld {
+export function crearTablaCambioEstadoDispositivoOld(m: number | bigint, nod: number, est: number, td: number, v: number, alarm: number): TablaCentralItemOld {
 
   // const macBuf = Buffer.alloc(8);
   // macBuf.writeUIntBE(m, 0, 8);
@@ -68,6 +70,19 @@ export function crearTablaCambioEstadoDispositivoOld(m: number|bigint, nod: numb
   }
 
   return dispositivo;
+}
+
+export const defaultEstadisticoValorOld: ParametroHistoricoOldDto = {
+  tipoDato: EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat1,
+  fecha: { dia: 1, mes: 1, anyo: 2023 },
+  mac: 12345678,
+  hora: { hora: 0, min: 0, seg: 0 },
+  identificadorUnicoDentroDelSegundo: 0,
+  identificadorCliente: 0,
+  numeroServicio: EnEstadisticosNombres.tempSonda1MediaHora,
+  datos: 25.55,
+  identificadorCrianzaUnico: 0,
+  diaCrianza: 0
 }
 
 //* -------------------------------------------------------------------------------------------------------------------

@@ -13,35 +13,67 @@ export enum EnDireccionNodosRed {
 }
 
 /** Tipos trama */
+// export enum EnTipoTramaOld {
+//   ttNoConfigurada = 0,
+//   ttConfiguracionRf = 1,
+//   ttCentralDispositivo = 2,
+
+//   ttDispositivoCentral = 3,
+//   ttRtPeticionesCentral = 4,
+//   ttServidorCentral = 5,
+//   ttCentralServidor = 6,
+//   ttConfiguracion = 7, // tipo trama central rf
+//   ttRfCentral = 8,
+//   ttRfDispositivo = 9,
+//   ttDispositivoRf = 10,
+//   ttRfRf = 11,
+//   ttRedLocalDatos = 12,
+
+//   ttOmegaPantallaPlaca = 13, // la central hace de pasarela (transparente)
+//   ttDepuracion = 14,         // la central hace de pasarela (transparente)
+//   ttActualizacionDesdePc = 15,
+//   ttActualizacionDesdePcCom = 16, // actualizar placa de comunicaciones con boot
+//   ttSincronizacionEbus = 17,      // sincronización 485 del EBUS
+//   ttOmegaPantallaPlacaFinal = 18, // pasarela; esperar respuesta finales EBUS
+//   ttOmegaPantallaPlacaFinalLocal = 19, // pasarela local
+//   ttActualizacionDesdePcEbusFinal = 20, // actualizar placas finales
+//   ttSincronizacionComInternos = 21,     // sincronización entre micros (p.ej. CTX DLG)
+
+//   // ? (22) TT_CONTROL_ACCESOS estaba comentado en C; se mantiene el hueco numérico
+
+//   ttServiciosClaveValor = 23,
+//   ttActualizacionServer = 24,
+// }
+
+/** Tipos de trama (OLD) — según documentación */
 export enum EnTipoTramaOld {
-  ttNoConfigurada = 0,
-  ttConfiguracionRf = 1,
-  ttCentralDispositivo = 2,
-  ttDispositivoCentral = 3,
-  ttRtPeticionesCentral = 4,
-  ttServidorCentral = 5,
-  ttCentralServidor = 6,
-  ttConfiguracion = 7, // tipo trama central rf
-  ttRfCentral = 8,
-  ttRfDispositivo = 9,
-  ttDispositivoRf = 10,
-  ttRfRf = 11,
-  ttRedLocalDatos = 12,
+  /** (no aparece en doc; útil para default) */
+  noConfigurada = 0,
 
-  ttOmegaPantallaPlaca = 13, // la central hace de pasarela (transparente)
-  ttDepuracion = 14,         // la central hace de pasarela (transparente)
-  ttActualizacionDesdePc = 15,
-  ttActualizacionDesdePcCom = 16, // actualizar placa de comunicaciones con boot
-  ttSincronizacionEbus = 17,      // sincronización 485 del EBUS
-  ttOmegaPantallaPlacaFinal = 18, // pasarela; esperar respuesta finales EBUS
-  ttOmegaPantallaPlacaFinalLocal = 19, // pasarela local
-  ttActualizacionDesdePcEbusFinal = 20, // actualizar placas finales
-  ttSincronizacionComInternos = 21,     // sincronización entre micros (p.ej. CTX DLG)
-
-  // ? (22) TT_CONTROL_ACCESOS estaba comentado en C; se mantiene el hueco numérico
-
-  ttServiciosClaveValor = 23,
-  ttActualizacionServer = 24,
+  configuracionRf = 1,                 // TT_configuracion_RF
+  centralDispositivo = 2,              // TT_central_dispositivo
+  envioDispositivoFinal = 3,           // TT_envio_dispositivo_final
+  rtPeticionesCentral = 4,             // TT_rt_peticiones_central
+  envioServidor = 5,                   // TT_envio_servidor
+  centralServidor = 6,                 // TT_central_servidor
+  centralRf = 7,                       // TT_central_rf
+  rfCentral = 8,                       // TT_rf_central
+  rfDispositivo = 9,                   // TT_rf_dispositivo
+  dispositivoRf = 10,                  // TT_dispositivo_rf
+  rfRf = 11,                           // TT_rf_rf
+  redLocalDatos = 12,                  // TT_RED_LOCAL_DATOS
+  omegaPantallaPlaca = 13,             // TT_OMEGA_PANTALLA_PLACA
+  depuracion = 14,                     // TT_depuracion
+  actualizacionDesdePc = 15,           // TT_actualizacion_desde_pc
+  actualizacionDesdePcCom = 16,        // TT_actualizacion_desde_pc_COM
+  sincronizacionEbus = 17,             // TT_SINCRONIZACION_EBUS
+  omegaPantallaPlacaFinal = 18,        // TT_OMEGA_PANTALLA_PLACA_FINAL
+  omegaPantallaPlacaFinalLocal = 19,   // TT_OMEGA_PANTALLA_PLACA_FINAL_LOCAL
+  actualizacionDesdePcEbusFinal = 20,  // TT_actualizacion_desde_pc_EBUS_final
+  sincronizacionComInternos = 21,      // TT_SINCRONIZACION_COM_INTERNOS
+  controlAccesos = 22,                 // TT_CONTROL_ACCESOS
+  serviciosClaveValor = 23,            // TT_SERVICIOS_CLAVE_VALOR
+  actualizacionServer = 24,            // TT_actualizacion_server
 }
 
 /** Tipo de trama asíncrona */

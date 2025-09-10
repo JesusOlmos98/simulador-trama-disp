@@ -1,4 +1,4 @@
-import { toFixedBuffer, u16BE, u8, encodePassword16 } from "src/utils/helpers";
+import { toFixedBuffer, u16BE, u8Old, encodePassword16 } from "src/utils/helpers";
 
 //* Datos por tipo de mensaje (central → servidor)
 
@@ -60,7 +60,7 @@ export interface RtTablaCentralFinOldDto {
  *  - 1  byte   INFO_ESTADO (u8)
  *  - 1  byte   HAY_ALARMA (u8)
  */
-export function serializeRtTablaCentralPayloadBE(
+export function serializarRtTablaCentralPayloadOld(
   items: TablaCentralItemOld[],
 ): Buffer {
   const chunks: Buffer[] = [];
@@ -68,18 +68,61 @@ export function serializeRtTablaCentralPayloadBE(
   for (const it of items) {
     const mac = toFixedBuffer(it.mac ?? Buffer.alloc(0), 8);        // 8
     const nodo = u16BE(it.nodo);                                   // 2
-    const estado = u8(it.estado);                                  // 1
-    const tipo = u8(it.tipoDispositivo);                           // 1
+    const estado = u8Old(it.estado);                                  // 1
+    const tipo = u8Old(it.tipoDispositivo);                           // 1
     const version = u16BE(it.version);                             // 2
     const password = encodePassword16(it.password ?? "");          // 16
     const crcPar = u16BE(it.crcParametros ?? 0);                   // 2
-    const info = u8(it.infoEstado ?? 0);                           // 1
-    const alarma = u8(it.hayAlarma ?? 0);                          // 1
+    const info = u8Old(it.infoEstado ?? 0);                           // 1
+    const alarma = u8Old(it.hayAlarma ?? 0);                          // 1
 
     chunks.push(mac, nodo, estado, tipo, version, password, crcPar, info, alarma);
   }
 
   return Buffer.concat(chunks);
+}
+
+/**
+   * Serializa un array de items (layout 34 bytes/ítem) a Buffer en BIG-ENDIAN.
+   * Válido tanto para TM_rt_tabla_central_mas como para TM_rt_tabla_central_fin.
+   */
+export function serializarTablaCentralItemsOld(items: TablaCentralItemOld[]): Buffer {
+  const u8 = (n: number) => Buffer.from([n & 0xff]);
+  const u16BE = (n: number) => {
+    const b = Buffer.allocUnsafe(2);
+    b.writeUInt16BE((n >>> 0) & 0xffff, 0);
+    return b;
+  };
+  const toFixed = (buf: Buffer, size: number) => {
+    if (!buf) return Buffer.alloc(size);
+    if (buf.length === size) return buf;
+    if (buf.length > size) return buf.subarray(0, size);
+    const out = Buffer.alloc(size, 0x00);
+    buf.copy(out, 0);
+    return out;
+  };
+  const encodePwd16 = (s: string) => {
+    const raw = Buffer.from(s ?? "", "utf8");
+    const out = Buffer.alloc(16, 0x00);
+    raw.subarray(0, 16).copy(out, 0);
+    return out;
+  };
+
+  const parts: Buffer[] = [];
+  for (const it of items) {
+    parts.push(
+      toFixed(it.mac, 8),              // MAC (8)
+      u16BE(it.nodo),                  // NODO (2)
+      u8(it.estado),                   // ESTADO (1)
+      u8(it.tipoDispositivo),          // TIPO DISPOSITIVO (1)
+      u16BE(it.version),               // VERSION (2)
+      encodePwd16(it.password),        // PASSWORD (16)
+      u16BE(it.crcParametros ?? 0),    // CRC_PARAMETROS (2)
+      u8(it.infoEstado ?? 0),          // INFO_ESTADO (1)
+      u8(it.hayAlarma ?? 0),           // HAY_ALARMA (1)
+    );
+  }
+  return Buffer.concat(parts);
 }
 
 // ========== (Opcional) Troceo en paquetes de hasta 13 ítems ==========

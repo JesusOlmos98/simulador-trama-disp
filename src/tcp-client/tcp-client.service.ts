@@ -3,7 +3,8 @@ import { EnvConfiguration } from "config/app.config";
 import { Socket } from "node:net";
 import { crearDefaultDispositivoTablaOld, defaultPresentacionOmegaOld } from "src/dtoBE/defaultTramaOld";
 import { FrameOldDto } from "src/dtoBE/frameOld.dto";
-import { PresentacionCentralOldDto, RtPresenciaCentralOldDto, RtTablaCentralFinOldDto, RtTablaCentralMasOldDto, TablaCentralItemOld } from "src/dtoBE/tt_sistemaOld.dto";
+import { ParametroHistoricoOldDto } from "src/dtoBE/tt_estadisticosOld.dto";
+import { PresentacionCentralOldDto, RtPresenciaCentralOldDto, RtTablaCentralFinOldDto, RtTablaCentralMasOldDto, serializarTablaCentralItemsOld, TablaCentralItemOld } from "src/dtoBE/tt_sistemaOld.dto";
 import { defaultDataTempSonda1, defaultDataContadorAgua, defaultDataActividadCalefaccion1, defaultDataEventoInicioCrianza, defaultDataAlarmaTempAlta, defaultDataCambioParametro, defaultPresentacionCTI40 } from "src/dtoLE/defaultTrama";
 import { FrameDto } from "src/dtoLE/frame.dto";
 import { PeticionConsolaDto } from "src/dtoLE/tt_depuracion.dto";
@@ -795,7 +796,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         const frameOld = this.crearFrameOld({
             nodoOrigen: 1,
             nodoDestino: 0,
-            tipoTrama: EnTipoTramaOld.ttCentralServidor, // TT_central_servidor (=6)
+            tipoTrama: EnTipoTramaOld.centralServidor, // TT_central_servidor (=6)
             tipoMensaje: EnTipoMensajeCentralServidor.tmTramaPresentacionCentral, // (=8)
             data,
             versionProtocolo: PROTO_VERSION_OLD,
@@ -812,7 +813,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         const frameOld = this.crearFrameOld({
             nodoOrigen: 1,
             nodoDestino: 0,
-            tipoTrama: EnTipoTramaOld.ttCentralServidor, // TT_central_servidor (=6)
+            tipoTrama: EnTipoTramaOld.centralServidor, // TT_central_servidor (=6)
             tipoMensaje: EnTipoMensajeCentralServidor.tmRtPresenciaCentral, // (=7)
             data,
             versionProtocolo: PROTO_VERSION_OLD,
@@ -867,50 +868,6 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         }
     }
 
-
-    /**
-     * Serializa un array de items (layout 34 bytes/ítem) a Buffer en BIG-ENDIAN.
-     * Válido tanto para TM_rt_tabla_central_mas como para TM_rt_tabla_central_fin.
-     */
-    serializarTablaCentralItemsOld(items: TablaCentralItemOld[]): Buffer {
-        const u8 = (n: number) => Buffer.from([n & 0xff]);
-        const u16BE = (n: number) => {
-            const b = Buffer.allocUnsafe(2);
-            b.writeUInt16BE((n >>> 0) & 0xffff, 0);
-            return b;
-        };
-        const toFixed = (buf: Buffer, size: number) => {
-            if (!buf) return Buffer.alloc(size);
-            if (buf.length === size) return buf;
-            if (buf.length > size) return buf.subarray(0, size);
-            const out = Buffer.alloc(size, 0x00);
-            buf.copy(out, 0);
-            return out;
-        };
-        const encodePwd16 = (s: string) => {
-            const raw = Buffer.from(s ?? "", "utf8");
-            const out = Buffer.alloc(16, 0x00);
-            raw.subarray(0, 16).copy(out, 0);
-            return out;
-        };
-
-        const parts: Buffer[] = [];
-        for (const it of items) {
-            parts.push(
-                toFixed(it.mac, 8),              // MAC (8)
-                u16BE(it.nodo),                  // NODO (2)
-                u8(it.estado),                   // ESTADO (1)
-                u8(it.tipoDispositivo),          // TIPO DISPOSITIVO (1)
-                u16BE(it.version),               // VERSION (2)
-                encodePwd16(it.password),        // PASSWORD (16)
-                u16BE(it.crcParametros ?? 0),    // CRC_PARAMETROS (2)
-                u8(it.infoEstado ?? 0),          // INFO_ESTADO (1)
-                u8(it.hayAlarma ?? 0),           // HAY_ALARMA (1)
-            );
-        }
-        return Buffer.concat(parts);
-    }
-
     /**
      * (Opcional) Conveniencia: crea los DTOs MAS/FIN y devuelve los *payloads*
      * ya serializados en BE para ponerlos directamente en la trama.
@@ -924,8 +881,8 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         mas?: Buffer;
     } {
         const data = this.crearDataTablaDispositivosOld(nDispositivos);
-        const fin = this.serializarTablaCentralItemsOld(data.fin.items);
-        const mas = data.mas ? this.serializarTablaCentralItemsOld(data.mas.items) : undefined;
+        const fin = serializarTablaCentralItemsOld(data.fin.items);
+        const mas = data.mas ? serializarTablaCentralItemsOld(data.mas.items) : undefined;
         if (data.mas) console.table(data.mas.items);
         console.table(data.fin.items);
         
@@ -935,12 +892,30 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     /** Esta función ya devuelve el buffer, es decir, introducimos el dispositivo que ha cambiado, "crea la tabla" y serializa devolviendo el buffer. */
     crearDataTablaDispositivosCambioEstadoOld(disp: TablaCentralItemOld):Buffer {
         const items: TablaCentralItemOld[] = [];
-
         items.push(disp);
-console.log("Dispositivo cambiado:");
-console.table(items);
-console.log(disp)
-        return this.serializarTablaCentralItemsOld(items);
+        return serializarTablaCentralItemsOld(items);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    crearDataEstadisticoValorOld(estadistico: ParametroHistoricoOldDto) {
+
+        
+
+        // const items: TablaCentralItemOld[] = [];
+        // items.push(estadistico);
+        // return serializarTablaCentralItemsOld(items);
     }
     
     // * -------------------------------------------------------------------------------------------------------------------
