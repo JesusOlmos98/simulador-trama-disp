@@ -1,8 +1,8 @@
 import { TablaCentralItemOld } from "src/dtoBE/tt_sistemaOld.dto";
-import { EnTipoTramaOld, EnTipoMensajeCentralServidor } from "../globals/enumOld";
-import { getCRCFromFrameOld, getDataSectionOld, getEndOld, getParsedHeaderOld, getStartOld, getTipoMensajeOld, getTipoTramaOld } from "./getTrama";
 import { josLogger } from "src/utils/josLogger";
 import { EnTipoEquipo } from "src/utils/LE/globals/enums";
+import { EnTipoTramaOld, EnTipoMensajeCentralServidor } from "../globals/enumOld";
+import { getTipoTramaOld, getTipoMensajeOld, getDataSectionOld, getStartOld, getParsedHeaderOld, getCRCFromFrameOld, getEndOld } from "./getTrama";
 
 // ---------------------------------------- Payload (MAS/FIN) ----------------------------------------
 
@@ -29,7 +29,8 @@ export function getTablaCentralPayloadOld(frame: Buffer): Buffer | undefined {
   const tm = getTipoMensajeOld(frame);
   if (
     tm !== EnTipoMensajeCentralServidor.tmRtTablaCentralMas &&
-    tm !== EnTipoMensajeCentralServidor.tmRtTablaCentralFin
+    tm !== EnTipoMensajeCentralServidor.tmRtTablaCentralFin &&
+    tm !== EnTipoMensajeCentralServidor.tmEventoCambioEstadoNodo
   ) return undefined;
 
   // const data = getDataSection(frame); //! ...
@@ -178,6 +179,7 @@ export function getTablaItemsOld(frame: Buffer): TablaCentralItemOld[] | undefin
   return out;
 }
 
+/** Sólo en level Trace de Pino. */
 export function logTramaCompletaTablaDispositivosOld(frame: Buffer): void {
   josLogger.trace(`DECODIFICAMOS TRAMA EN BYTES:`);
   josLogger.trace(`Inicio: ${getStartOld(frame).toString('hex')}`);

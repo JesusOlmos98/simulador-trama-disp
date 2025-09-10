@@ -1,0 +1,1128 @@
+#ifndef __ESTADISTICOS_NOMBRES_H__
+#define __ESTADISTICOS_NOMBRES_H__
+
+//aqui estan numerados todos los estadisticos que se envian al servidor y pantallas
+
+typedef enum
+{
+    ESTADIS_VACIO						=0,
+
+
+	ESTADIS_TEMP_SONDA1_MEDIA_HORA		=1,	/*"Estadística temperatura sonda 1"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA2_MEDIA_HORA		=2,	/*"Estadística temperatura sonda 2"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA3_MEDIA_HORA		=3,	/*"Estadística temperatura sonda 3"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA4_MEDIA_HORA		=4,	/*"Estadística temperatura sonda 4"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA5_MEDIA_HORA		=5,	/*"Estadística temperatura sonda 5"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA6_MEDIA_HORA		=6,	/*"Estadística temperatura sonda 6"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA7_MEDIA_HORA		=7,	/*"Estadística temperatura sonda 7"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA8_MEDIA_HORA		=8,	/*"Estadística temperatura sonda 8"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA9_MEDIA_HORA		=9,	/*"Estadística temperatura sonda 9"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA10_MEDIA_HORA		=10,	/*"Estadística temperatura sonda 10"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA11_MEDIA_HORA		=11,	/*"Estadística temperatura sonda 11"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA12_MEDIA_HORA		=12,	/*"Estadística temperatura sonda 12"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_TEMP_SONDA1_MEDIA_DIA		=15,	/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA2_MEDIA_DIA		=16,	/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA3_MEDIA_DIA		=17,	/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA4_MEDIA_DIA		=18,	/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA5_MEDIA_DIA		=19,	/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA6_MEDIA_DIA		=20,	/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA7_MEDIA_DIA		=21,	/*"stadística temperatura sonda 7"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA8_MEDIA_DIA		=22,	/*"Estadística temperatura sonda 8"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA9_MEDIA_DIA		=23,	/*"Estadística temperatura sonda 9"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA10_MEDIA_DIA		=24,	/*"Estadística temperatura sonda 10"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA11_MEDIA_DIA		=25,	/*"Estadística temperatura sonda 11"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA12_MEDIA_DIA		=26,	/*"Estadística temperatura sonda 12"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+
+
+
+	ESTADIS_CONT1_EVENTOS_TIEMPO_ON_HORA		=30,	/*""*/
+	ESTADIS_CONT1_EVENTOS_TIEMPO_ON_DIA			=31,		/*""*/
+
+	ESTADIS_CONT2_EVENTOS_TIEMPO_ON_HORA		=32,	/*""*/
+	ESTADIS_CONT2_EVENTOS_TIEMPO_ON_DIA			=33,		/*""*/
+
+	ESTADIS_CONT3_EVENTOS_TIEMPO_ON_HORA		=34,	/*""*/
+	ESTADIS_CONT3_EVENTOS_TIEMPO_ON_DIA			=35,		/*""*/
+
+
+
+
+
+	ESTADIS_TEMP_SONDA1_MAX_HORA		=40,	/*"Estadística temperatura sonda 1"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA2_MAX_HORA		=41,	/*"Estadística temperatura sonda 2"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA3_MAX_HORA		=42,	/*"Estadística temperatura sonda 3"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA4_MAX_HORA		=43,	/*"Estadística temperatura sonda 4"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA5_MAX_HORA		=44,	/*"Estadística temperatura sonda 5"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA6_MAX_HORA		=45,	/*"Estadística temperatura sonda 6"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA7_MAX_HORA		=46,	/*"Estadística temperatura sonda 7"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA8_MAX_HORA		=47,	/*"Estadística temperatura sonda 8"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA9_MAX_HORA		=48,	/*"Estadística temperatura sonda 9"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA10_MAX_HORA		=49,	/*"Estadística temperatura sonda 10"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA11_MAX_HORA		=50,	/*"Estadística temperatura sonda 11"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA12_MAX_HORA		=51,	/*"Estadística temperatura sonda 12"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_TEMP_SONDA1_MAX_DIA			=55,	/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA2_MAX_DIA			=56,	/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA3_MAX_DIA			=57,	/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA4_MAX_DIA			=58,	/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA5_MAX_DIA			=59,	/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA6_MAX_DIA			=60,	/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA7_MAX_DIA			=61,	/*"stadística temperatura sonda 7"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA8_MAX_DIA			=62,	/*"Estadística temperatura sonda 8"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA9_MAX_DIA			=63,	/*"Estadística temperatura sonda 9"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA10_MAX_DIA		=64,	/*"Estadística temperatura sonda 10"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA11_MAX_DIA		=65,	/*"Estadística temperatura sonda 11"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA12_MAX_DIA		=66,	/*"Estadística temperatura sonda 12"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+
+
+	ESTADIS_TEMP_SONDA1_MIN_HORA		=71,	/*"Estadística temperatura sonda 1"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA2_MIN_HORA		=72,	/*"Estadística temperatura sonda 2"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA3_MIN_HORA		=73,	/*"Estadística temperatura sonda 3"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA4_MIN_HORA		=74,	/*"Estadística temperatura sonda 4"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA5_MIN_HORA		=75,	/*"Estadística temperatura sonda 5"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA6_MIN_HORA		=76,	/*"Estadística temperatura sonda 6"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA7_MIN_HORA		=77,	/*"Estadística temperatura sonda 7"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA8_MIN_HORA		=78,	/*"Estadística temperatura sonda 8"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA9_MIN_HORA		=79,	/*"Estadística temperatura sonda 9"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA10_MIN_HORA		=80,	/*"Estadística temperatura sonda 10"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA11_MIN_HORA		=81,	/*"Estadística temperatura sonda 11"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA12_MIN_HORA		=82,	/*"Estadística temperatura sonda 12"*/ 											/*MIN_TEXTOS_LINEAS*/
+
+
+	ESTADIS_TEMP_SONDA1_MIN_DIA		=86,	/*""*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA2_MIN_DIA		=87,	/*""*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA3_MIN_DIA		=88,	/*""*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA4_MIN_DIA		=89,	/*""*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA5_MIN_DIA		=90,	/*""*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA6_MIN_DIA		=91,	/*""*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA7_MIN_DIA		=92,	/*"stadística temperatura sonda 7"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA8_MIN_DIA		=93,	/*"Estadística temperatura sonda 8"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA9_MIN_DIA		=94,	/*"Estadística temperatura sonda 9"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA10_MIN_DIA	=95,	/*"Estadística temperatura sonda 10"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA11_MIN_DIA	=96,	/*"Estadística temperatura sonda 11"*/ 											/*MIN_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_SONDA12_MIN_DIA	=97,	/*"Estadística temperatura sonda 12"*/ 											/*MIN_TEXTOS_LINEAS*/
+
+
+
+
+
+
+
+
+	ESTADIS_PERCENTIL_52_BASCULA1						=100,	/*"Percentil 52.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_57_BASCULA1						=101,	/*"Percentil 57.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_62_BASCULA1						=102,	/*"Percentil 62.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_67_BASCULA1						=103,	/*"Percentil 67.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_72_BASCULA1						=104,	/*"Percentil 72.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_77_BASCULA1						=105,	/*"Percentil 77.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_82_BASCULA1						=106,	/*"Percentil 82.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_87_BASCULA1						=107,	/*"Percentil 87.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_92_BASCULA1						=108,	/*"Percentil 92.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_97_BASCULA1						=109,	/*"Percentil 97.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_102_BASCULA1						=110,	/*"Percentil 102.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_107_BASCULA1						=111,	/*"Percentil 107.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_112_BASCULA1						=112,	/*"Percentil 112.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_117_BASCULA1						=113,	/*"Percentil 117.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_122_BASCULA1						=114,	/*"Percentil 122.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_127_BASCULA1						=115,	/*"Percentil 127.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_132_BASCULA1						=116,	/*"Percentil 132.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_137_BASCULA1						=117,	/*"Percentil 137.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_142_BASCULA1						=118,	/*"Percentil 142.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_147_BASCULA1						=119,	/*"Percentil 147.5 báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DESVIACION_TIPICA_BASCULA1					=120,	/*"Desviación tipica báscula 1"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_UNIFORMIDAD_PARVADA_BASCULA1				=121,	/*"Uniformidad parvada báscula 1"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_COEFICIENTE_VARIACION_BASCULA1				=122,	/*"Coeficiente variación báscula 1"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DESVIACION_OBJETIVO_BASCULA1				=123,	/*"Desviación báscula 1"*/														/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_BASCULA1								=124,	/*"Peso báscula 1"*/															/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_MEDIO_BASCULA1							=125,	/*"Peso medio báscula 1"*/														/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_MAX_BASCULA1							=126,	/*"Peso máximo báscula 1"*/														/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_MIN_BASCULA1							=127,	/*"Peso mínimo báscula 1"*/														/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_NUMERO_PESADAS_BASCULA1						=128,	/*"Número de pesadas báscula 1"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_OBJETIVO_BASCULA1						=129,	/*"Peso objetivo báscula 1"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_INCREMENTO_PESO_MEDIO_BASCULA1				=130,	/*"Incremento peso medio báscula 1"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_INCREMENTO_PESO_FIFO_BASCULA1				=131,	/*"Incremento peso fifo báscula 1"*/											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_PERCENTIL_52_BASCULA2						=140,	/*"Percentil 52.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_57_BASCULA2						=141,	/*"Percentil 57.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_62_BASCULA2						=142,	/*"Percentil 62.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_67_BASCULA2						=143,	/*"Percentil 67.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_72_BASCULA2						=144,	/*"Percentil 72.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_77_BASCULA2						=145,	/*"Percentil 77.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_82_BASCULA2						=146,	/*"Percentil 82.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_87_BASCULA2						=147,	/*"Percentil 87.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_92_BASCULA2						=148,	/*"Percentil 92.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_97_BASCULA2						=149,	/*"Percentil 97.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_102_BASCULA2						=150,	/*"Percentil 102.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_107_BASCULA2						=151,	/*"Percentil 107.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_112_BASCULA2						=152,	/*"Percentil 112.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_117_BASCULA2						=153,	/*"Percentil 117.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_122_BASCULA2						=154,	/*"Percentil 122.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_127_BASCULA2						=155,	/*"Percentil 127.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_132_BASCULA2						=156,	/*"Percentil 132.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_137_BASCULA2						=157,	/*"Percentil 137.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_142_BASCULA2						=158,	/*"Percentil 142.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_147_BASCULA2						=159,	/*"Percentil 147.5 báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DESVIACION_TIPICA_BASCULA2					=160,	/*"Desviación tipica báscula 2"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_UNIFORMIDAD_PARVADA_BASCULA2				=161,	/*"Uniformidad parvada báscula 2"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_COEFICIENTE_VARIACION_BASCULA2				=162,	/*"Coeficiente variación báscula 2"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DESVIACION_OBJETIVO_BASCULA2				=163,	/*"Desviación báscula 2"*/														/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_BASCULA2								=164,	/*"Peso báscula 2"*/															/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_MEDIO_BASCULA2							=165,	/*"Peso medio báscula 2"*/														/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_MAX_BASCULA2							=166,	/*"Peso máximo báscula 2"*/														/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_MIN_BASCULA2							=167,	/*"Peso mínimo báscula 2"*/														/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_NUMERO_PESADAS_BASCULA2						=168,	/*"Número de pesadas báscula 2"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_OBJETIVO_BASCULA2						=169,	/*"Peso objetivo báscula 2"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_INCREMENTO_PESO_MEDIO_BASCULA2				=170,	/*"Incremento peso medio báscula 2"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_INCREMENTO_PESO_FIFO_BASCULA2				=171,	/*"Incremento peso fifo báscula 2"*/											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_PERCENTIL_52_BASCULA3						=180,	/*"Percentil 52.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_57_BASCULA3						=181,	/*"Percentil 57.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_62_BASCULA3						=182,	/*"Percentil 62.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_67_BASCULA3						=183,	/*"Percentil 67.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_72_BASCULA3						=184,	/*"Percentil 72.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_77_BASCULA3						=185,	/*"Percentil 77.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_82_BASCULA3						=186,	/*"Percentil 82.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_87_BASCULA3						=187,	/*"Percentil 87.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_92_BASCULA3						=188,	/*"Percentil 92.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_97_BASCULA3						=189,	/*"Percentil 97.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_102_BASCULA3						=190,	/*"Percentil 102.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_107_BASCULA3						=191,	/*"Percentil 107.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_112_BASCULA3						=192,	/*"Percentil 112.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_117_BASCULA3						=193,	/*"Percentil 117.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_122_BASCULA3						=194,	/*"Percentil 122.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_127_BASCULA3						=195,	/*"Percentil 127.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_132_BASCULA3						=196,	/*"Percentil 132.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_137_BASCULA3						=197,	/*"Percentil 137.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_142_BASCULA3						=198,	/*"Percentil 142.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PERCENTIL_147_BASCULA3						=199,	/*"Percentil 147.5 báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DESVIACION_TIPICA_BASCULA3					=200,	/*"Desviación tipica báscula 3"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_UNIFORMIDAD_PARVADA_BASCULA3				=201,	/*"Uniformidad parvada báscula 3"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_COEFICIENTE_VARIACION_BASCULA3				=202,	/*"Coeficiente variación báscula 3"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DESVIACION_OBJETIVO_BASCULA3				=203,	/*"Desviación báscula 3"*/														/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_BASCULA3								=204,	/*"Peso báscula 3"*/															/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_MEDIO_BASCULA3							=205,	/*"Peso medio báscula 3"*/														/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_MAX_BASCULA3							=206,	/*"Peso máximo báscula 3"*/														/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_MIN_BASCULA3							=207,	/*"Peso mínimo báscula 3"*/														/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_NUMERO_PESADAS_BASCULA3						=208,	/*"Número de pesadas báscula 3"*/												/*MAX_TEXOTS_LINEAS*/
+	ESTADIS_PESO_OBJETIVO_BASCULA3						=209,	/*"Peso objetivo báscula 3"*/													/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_INCREMENTO_PESO_MEDIO_BASCULA3				=210,	/*"Incremento peso medio báscula 3"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_INCREMENTO_PESO_FIFO_BASCULA3				=211,	/*"Incremento peso fifo báscula 3"*/											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_PESADA_INDIVIDUAL_BASCULA					=219,	/*"Pesada individual báscula"*/													/*MAX_TEXTOS_LINEAS*/
+
+
+	//SILOS//
+	ESTADIS_CARGA_AUTOMATICA_SILO_1										=220,		/*"Carga automática silo 1"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CARGA_AUTOMATICA_SILO_2										=221,		/*"Carga automática silo 2"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CARGA_AUTOMATICA_SILO_3										=222,		/*"Carga automática silo 3"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CARGA_AUTOMATICA_SILO_4										=223,		/*"Carga automática silo 4"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CARGA_AUTOMATICA_SILO_5										=224,		/*"Carga automática silo 5"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CARGA_AUTOMATICA_SILO_6										=225,		/*"Carga automática silo 6"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CARGA_AUTOMATICA_SILO_7										=226,		/*"Carga automática silo 7"*/											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CARGA_MANUAL_SILO_1											=227,		/*"Carga manual silo 1"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CARGA_MANUAL_SILO_2											=228,		/*"Carga manual silo 2"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CARGA_MANUAL_SILO_3											=229,		/*"Carga manual silo 3"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CARGA_MANUAL_SILO_4											=230,		/*"Carga manual silo 4"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CARGA_MANUAL_SILO_5											=231,		/*"Carga manual silo 5"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CARGA_MANUAL_SILO_6											=232,		/*"Carga manual silo 6"*/												/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CARGA_MANUAL_SILO_7											=233,		/*"Carga manual silo 7"*/												/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CALIBRACION_CON_CARGA_SILO_1   								=234,		/*"Calibración con carga silo 1"*/									    /*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CALIBRACION_CON_CARGA_SILO_2  	 							=235,		/*"Calibración con carga silo 2"*/										/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CALIBRACION_CON_CARGA_SILO_3   								=236,		/*"Calibración con carga silo 3"*/										/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CALIBRACION_CON_CARGA_SILO_4   								=237,		/*"Calibración con carga silo 4"*/										/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CALIBRACION_CON_CARGA_SILO_5   								=238,		/*"Calibración con carga silo 5"*/										/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CALIBRACION_CON_CARGA_SILO_6   								=239,		/*"Calibración con carga silo 6"*/										/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CALIBRACION_CON_CARGA_SILO_7   								=240,		/*"Calibración con carga silo 7"*/										/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONSUMO_HORA_SILO_1											=241,		/*"Consumo por hora silo 1"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_HORA_SILO_2											=242,		/*"Consumo por hora silo 2"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_HORA_SILO_3											=243,		/*"Consumo por hora silo 3"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_HORA_SILO_4											=244,		/*"Consumo por hora silo 4"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_HORA_SILO_5											=245,		/*"Consumo por hora silo 5"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_HORA_SILO_6											=246,		/*"Consumo por hora silo 6"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_HORA_SILO_7											=247,		/*"Consumo por hora silo 7"*/											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONSUMO_DIA_SILO_1				 							=248,		/*"Consumo por día silo 1"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_DIA_SILO_2		 									=249,		/*"Consumo por día silo 2"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_DIA_SILO_3		 									=250,		/*"Consumo por día silo 3"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_DIA_SILO_4		 									=251,		/*"Consumo por día silo 4"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_DIA_SILO_5		 									=252,		/*"Consumo por día silo 5"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_DIA_SILO_6		 									=253,		/*"Consumo por día silo 6"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_DIA_SILO_7		 									=254,		/*"Consumo por día silo 7"*/											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_PESO_HORA_SILO_1											=255,		/*"Consumo por hora silo 1"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_HORA_SILO_2											=256,		/*"Consumo por hora silo 2"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_HORA_SILO_3											=257,		/*"Consumo por hora silo 3"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_HORA_SILO_4											=258,		/*"Consumo por hora silo 4"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_HORA_SILO_5											=259,		/*"Consumo por hora silo 5"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_HORA_SILO_6											=260,		/*"Consumo por hora silo 6"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_HORA_SILO_7											=261,		/*"Consumo por hora silo 7"*/											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_PESO_DIA_SILO_1				 								=262,		/*"Consumo por día silo 1"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_DIA_SILO_2		 										=263,		/*"Consumo por día silo 2"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_DIA_SILO_3		 										=264,		/*"Consumo por día silo 3"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_DIA_SILO_4		 										=265,		/*"Consumo por día silo 4"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_DIA_SILO_5		 										=266,		/*"Consumo por día silo 5"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_DIA_SILO_6		 										=267,		/*"Consumo por día silo 6"*/											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_DIA_SILO_7		 										=268,		/*"Consumo por día silo 7"*/											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_CONSUMO_HORA_TOTAL											=269,		/*"Consumo por hora total silos"*/										/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_DIA_TOTAL											=270,		/*"Consumo por dia total silos"*/										/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_ORDENYO_LECHE_LOTES											=271,
+	ESTADIS_VOLUMEN_DEPOSITO_LECHE_LOTES_DIARIO							=272,
+	ESTADIS_VOLUMEN_DEPOSITO_LECHE_LOTES_HORARIO						=273,
+	ESTADIS_DESCARGAS_LECHE_LOTES										=274,
+	ESTADIS_ORDENYO_LECHE_DEPOSITO_DIARIO								=275,
+	ESTADIS_ORDENYO_LECHE_DEPOSITO_HORARIO								=276,
+	ESTADIS_CANTIDAD_POR_LOTE_DIARIA									=277,
+	ESTADIS_CANTIDAD_TOTAL_LOTES_DIARIA									=278,
+
+
+	ESTADIS_PESO_DIA_SILO_GENERICO_SUSTRACCION							=280,
+	ESTADIS_PESO_HORA_SILO_GENERICO_SUSTRACCION							=281,
+	ESTADIS_CONSUMO_DIA_SILO_GENERICO_SUSTRACCION						=282,
+	ESTADIS_CONSUMO_HORA_SILO_GENERICO_SUSTRACCION						=283,
+	ESTADIS_CONSUMO_TOTAL_DIA_SILO_GENERICO_SUSTRACCION					=284,
+	ESTADIS_CONSUMO_TOTAL_HORA_SILO_GENERICO_SUSTRACCION				=285,
+	ESTADIS_CARGAS_SILO_GENERICO_SUSTRACCION							=286,
+
+	ESTADIS_VOLUMEN_DIA_DEPOSITO_GENERICO_SUSTRACCION					=287,
+	ESTADIS_VOLUMEN_HORA_DEPOSITO_GENERICO_SUSTRACCION					=288,
+	ESTADIS_CONSUMO_DIA_DEPOSITO_GENERICO_SUSTRACCION					=289,
+	ESTADIS_CONSUMO_HORA_DEPOSITO_GENERICO_SUSTRACCION					=290,
+	ESTADIS_CONSUMO_TOTAL_DIA_DEPOSITO_GENERICO_SUSTRACCION				=291,
+	ESTADIS_CONSUMO_TOTAL_HORA_DEPOSITO_GENERICO_SUSTRACCION			=292,
+	ESTADIS_CARGAS_DEPOSITO_GENERICO_SUSTRACCION						=293,
+
+	ESTADIS_PESO_DIA_TOLVA_SUSTRACCION									=294,
+	ESTADIS_PESO_HORA_TOLVA_SUSTRACCION									=295,
+	ESTADIS_CONSUMO_DIA_TOLVA_SUSTRACCION								=296,
+	ESTADIS_CONSUMO_HORA_TOLVA_SUSTRACCION								=297,
+	ESTADIS_CONSUMO_TOTAL_DIA_TOLVA_SUSTRACCION							=298,
+	ESTADIS_CONSUMO_TOTAL_HORA_TOLVA_SUSTRACCION						=299,
+	ESTADIS_CARGAS_TOLVA_SUSTRACCION									=300,
+
+
+
+	ESTADIS_VOLUMEN_DIARIO_DEPOSITO_GENERICO_ADICION					=301,
+	ESTADIS_VOLUMEN_HORARIO_DEPOSITO_GENERICO_ADICION					=302,
+	ESTADIS_CARGAS_DIARIA_DEPOSITO_GENERICO_ADICION						=303,
+	ESTADIS_CARGAS_HORARIA_DEPOSITO_GENERICO_ADICION					=304,
+	ESTADIS_CARGAS_TOTAL_DIA_DEPOSITO_GENERICO_ADICION					=305,
+	ESTADIS_CARGAS_TOTAL_HORA_DEPOSITO_GENERICO_ADICION					=306,
+	ESTADIS_DESCARGAS_DEPOSITO_GENERICO_ADICION							=307,
+
+
+	ESTADIS_PESO_DIARIO_SILO_GENERICO_ADICION							=308,
+	ESTADIS_PESO_HORARIO_SILO_GENERICO_ADICION							=309,
+	ESTADIS_CARGAS_DIARIA_SILO_GENERICO_ADICION							=310,
+	ESTADIS_CARGAS_HORARIA_SILO_GENERICO_ADICION						=311,
+	ESTADIS_CARGAS_TOTAL_DIA_SILO_GENERICO_ADICION						=312,
+	ESTADIS_CARGAS_TOTAL_HORA_SILO_GENERICO_ADICION						=313,
+	ESTADIS_DESCARGAS_SILO_GENERICO_ADICION								=314,
+
+	//Se van a enviar el acumulado de las cargas/descargas de todas las funcionalidades
+
+	//SUSTRACCION_MATERIAL_SOLIDO_PIENSO = 0
+	ESTADIS_CARGAS_ACUMULADO_DIA_SILO_PIENSO							=315,
+	ESTADIS_CARGAS_ACUMULADO_HORA_SILO_PIENSO							=316,
+
+	//SUSTRACCION_MATERIAL_SOLIDO_GENERICO = 1
+	ESTADIS_CARGAS_ACUMULADO_DIA_SILO_GENERICO_SUSTRACCION				=317,
+	ESTADIS_CARGAS_ACUMULADO_HORA_SILO_GENERICO_SUSTRACCION				=318,
+
+	//SUSTRACCION_MATERIAL_SOLIDO_TOLVAS = 2
+	ESTADIS_CARGAS_ACUMULADO_DIA_TOLVA_SUSTRACCION						=319,
+	ESTADIS_CARGAS_ACUMULADO_HORA_TOLVA_SUSTRACCION						=320,
+
+	//SUSTRACCION_MATERIAL_LIQUIDO_GENERICO = 3
+	ESTADIS_CARGAS_ACUMULADO_DIA_DEPOSITO_GENERICO_SUSTRACCION			=321,
+	ESTADIS_CARGAS_ACUMULADO_HORA_DEPOSITO_GENERICO_SUSTRACCION			=322,
+
+	//ADICION_MATERIAL_SOLIDO_GENERICO = 4
+	ESTADIS_DESCARGAS_ACUMULADO_DIA_SILO_GENERICO_ADICION				=323,
+	ESTADIS_DESCARGAS_ACUMULADO_HORA_SILO_GENERICO_ADICION				=324,
+
+	//ADICION_MATERIAL_LIQUIDO_GENERICO = 5
+	ESTADIS_DESCARGAS_ACUMULADO_DIA_DEPOSITO_GENERICO_ADICION			=325,
+	ESTADIS_DESCARGAS_ACUMULADO_HORA_DEPOSITO_GENERICO_ADICION			=326,
+
+	//ADICION_MATERIAL_LIQUIDO_ORDENYO_LOTES = 6
+	ESTADIS_DESCARGAS_ACUMULADO_DIA_LECHE_LOTES							=327,
+	ESTADIS_DESCARGAS_ACUMULADO_HORA_LECHE_LOTES						=328,
+
+	ESTADIS_HUMEDAD_SONDA1_MEDIA_HORA									=329,
+	ESTADIS_HUMEDAD_SONDA2_MEDIA_HORA									=330,
+	ESTADIS_HUMEDAD_SONDA3_MEDIA_HORA									=331,
+	ESTADIS_HUMEDAD_SONDA4_MEDIA_HORA									=332,
+	ESTADIS_HUMEDAD_SONDA5_MEDIA_HORA									=333,
+	ESTADIS_HUMEDAD_SONDA6_MEDIA_HORA									=334,
+
+	ESTADIS_HUMEDAD_SONDA1_MEDIA_DIA									=335,
+	ESTADIS_HUMEDAD_SONDA2_MEDIA_DIA									=336,
+	ESTADIS_HUMEDAD_SONDA3_MEDIA_DIA									=337,
+	ESTADIS_HUMEDAD_SONDA4_MEDIA_DIA									=338,
+	ESTADIS_HUMEDAD_SONDA5_MEDIA_DIA									=339,
+	ESTADIS_HUMEDAD_SONDA6_MEDIA_DIA									=340,
+
+	ESTADIS_HUMEDAD_SONDA1_MAX_HORA										=341,
+	ESTADIS_HUMEDAD_SONDA2_MAX_HORA										=342,
+	ESTADIS_HUMEDAD_SONDA3_MAX_HORA										=343,
+	ESTADIS_HUMEDAD_SONDA4_MAX_HORA										=344,
+	ESTADIS_HUMEDAD_SONDA5_MAX_HORA										=345,
+	ESTADIS_HUMEDAD_SONDA6_MAX_HORA										=346,
+
+	ESTADIS_HUMEDAD_SONDA1_MAX_DIA										=347,
+	ESTADIS_HUMEDAD_SONDA2_MAX_DIA										=348,
+	ESTADIS_HUMEDAD_SONDA3_MAX_DIA										=349,
+	ESTADIS_HUMEDAD_SONDA4_MAX_DIA										=350,
+	ESTADIS_HUMEDAD_SONDA5_MAX_DIA										=351,
+	ESTADIS_HUMEDAD_SONDA6_MAX_DIA										=352,
+
+	ESTADIS_HUMEDAD_SONDA1_MIN_HORA										=353,
+	ESTADIS_HUMEDAD_SONDA2_MIN_HORA										=354,
+	ESTADIS_HUMEDAD_SONDA3_MIN_HORA										=355,
+	ESTADIS_HUMEDAD_SONDA4_MIN_HORA										=356,
+	ESTADIS_HUMEDAD_SONDA5_MIN_HORA										=357,
+	ESTADIS_HUMEDAD_SONDA6_MIN_HORA										=358,
+
+	ESTADIS_HUMEDAD_SONDA1_MIN_DIA										=359,
+	ESTADIS_HUMEDAD_SONDA2_MIN_DIA										=360,
+	ESTADIS_HUMEDAD_SONDA3_MIN_DIA										=370,
+	ESTADIS_HUMEDAD_SONDA4_MIN_DIA										=371,
+	ESTADIS_HUMEDAD_SONDA5_MIN_DIA										=372,
+	ESTADIS_HUMEDAD_SONDA6_MIN_DIA										=373,
+
+
+
+
+
+
+
+
+
+
+
+
+	ESTADIS_TEMP_CONTADOR_AGUA_MEDIA_HORA				=500,
+	ESTADIS_TEMP_CONTADOR_AGUA_MEDIA_DIA				=501,
+	ESTADIS_TEMP_CONTADOR_AGUA_HORA_MAX					=502,
+	ESTADIS_TEMP_CONTADOR_AGUA_HORA_MIN					=503,
+	ESTADIS_TEMP_CONTADOR_AGUA_DIA_MAX					=504,
+	ESTADIS_TEMP_CONTADOR_AGUA_DIA_MIN					=505,
+
+
+	ESTADIS_PH_MEDIA_HORA								=506,
+	ESTADIS_PH_MEDIA_DIA								=507,
+	ESTADIS_PH_HORA_MAX									=508,
+	ESTADIS_PH_HORA_MIN									=509,
+	ESTADIS_PH_DIA_MAX									=510,
+	ESTADIS_PH_DIA_MIN									=511,
+
+
+	ESTADIS_N2O_MEDIA_HORA								=512,
+	ESTADIS_N2O_MEDIA_DIA								=513,
+	ESTADIS_N2O_HORA_MAX								=514,
+	ESTADIS_N2O_HORA_MIN								=515,
+	ESTADIS_N2O_DIA_MAX									=516,
+	ESTADIS_N2O_DIA_MIN									=517,
+
+
+	ESTADIS_VELOCIDAD_VIENTO_EXTERIOR_MEDIA_HORA		=518,
+	ESTADIS_VELOCIDAD_VIENTO_EXTERIOR_MEDIA_DIA			=519,
+	ESTADIS_VELOCIDAD_VIENTO_EXTERIOR_HORA_MAX			=520,
+	ESTADIS_VELOCIDAD_VIENTO_EXTERIOR_HORA_MIN			=521,
+	ESTADIS_VELOCIDAD_VIENTO_EXTERIOR_DIA_MAX			=522,
+	ESTADIS_VELOCIDAD_VIENTO_EXTERIOR_DIA_MIN			=523,
+
+	ESTADIS_DIRECCION_VIENTO_EXTERIOR_MEDIA_HORA		=524,
+	ESTADIS_DIRECCION_VIENTO_EXTERIOR_MEDIA_DIA			=525,
+	ESTADIS_DIRECCION_VIENTO_EXTERIOR_HORA_MAX			=526,
+	ESTADIS_DIRECCION_VIENTO_EXTERIOR_HORA_MIN			=527,
+	ESTADIS_DIRECCION_VIENTO_EXTERIOR_DIA_MAX			=528,
+	ESTADIS_DIRECCION_VIENTO_EXTERIOR_DIA_MIN			=529,
+
+	ESTADIS_RADIACION_SOLAR_EXTERIOR_MEDIA_HORA			=530,
+	ESTADIS_RADIACION_SOLAR_EXTERIOR_MEDIA_DIA			=531,
+	ESTADIS_RADIACION_SOLAR_EXTERIOR_HORA_MAX			=532,
+	ESTADIS_RADIACION_SOLAR_EXTERIOR_HORA_MIN			=533,
+	ESTADIS_RADIACION_SOLAR_EXTERIOR_DIA_MAX			=534,
+	ESTADIS_RADIACION_SOLAR_EXTERIOR_DIA_MIN			=535,
+
+
+	ESTADIS_N_MOVIMIENTOS_VENTANA_1_HORA				=536,
+	ESTADIS_N_MOVIMIENTOS_VENTANA_2_HORA				=537,
+	ESTADIS_N_MOVIMIENTOS_VENTANA_3_HORA				=538,
+	ESTADIS_N_MOVIMIENTOS_VENTANA_4_HORA				=539,
+	ESTADIS_N_MOVIMIENTOS_VENTANA_5_HORA				=540,
+	ESTADIS_N_MOVIMIENTOS_VENTANA_6_HORA				=541,
+
+	ESTADIS_N_MOVIMIENTOS_VENTANA_1_DIA					=542,
+	ESTADIS_N_MOVIMIENTOS_VENTANA_2_DIA					=543,
+	ESTADIS_N_MOVIMIENTOS_VENTANA_3_DIA					=544,
+	ESTADIS_N_MOVIMIENTOS_VENTANA_4_DIA					=545,
+	ESTADIS_N_MOVIMIENTOS_VENTANA_5_DIA					=546,
+	ESTADIS_N_MOVIMIENTOS_VENTANA_6_DIA					=547,
+
+	ESTADIS_ACTIVIDAD_VENTANA_1_HORA					=548,
+	ESTADIS_ACTIVIDAD_VENTANA_2_HORA					=549,
+	ESTADIS_ACTIVIDAD_VENTANA_3_HORA					=550,
+	ESTADIS_ACTIVIDAD_VENTANA_4_HORA					=551,
+	ESTADIS_ACTIVIDAD_VENTANA_5_HORA					=552,
+	ESTADIS_ACTIVIDAD_VENTANA_6_HORA					=553,
+
+	ESTADIS_ACTIVIDAD_VENTANA_1_DIA						=554,
+	ESTADIS_ACTIVIDAD_VENTANA_2_DIA						=555,
+	ESTADIS_ACTIVIDAD_VENTANA_3_DIA						=556,
+	ESTADIS_ACTIVIDAD_VENTANA_4_DIA						=557,
+	ESTADIS_ACTIVIDAD_VENTANA_5_DIA						=558,
+	ESTADIS_ACTIVIDAD_VENTANA_6_DIA						=559,
+
+	ESTADIS_ACTIVIDAD_HUMIDIFICACION_HORA				=560,
+	ESTADIS_ACTIVIDAD_HUMIDIFICACION_DIA				=561,
+
+	ESTADIS_ACTIVIDAD_RECIRCULACION_HORA				=562,
+	ESTADIS_ACTIVIDAD_RECIRCULACION_DIA					=563,
+
+	ESTADIS_N_MOVIMIENTOS_PANTALLA_HORA					=564,
+	ESTADIS_N_MOVIMIENTOS_PANTALLA_DIA					=565,
+
+	ESTADIS_ACTIVIDAD_PANTALLA_HORA						=566,
+	ESTADIS_ACTIVIDAD_PANTALLA_DIA						=567,
+
+	ESTADIS_LLUVIA_SI_NO_HORA							=568,
+	ESTADIS_LLUVIA_SI_NO_DIA							=569,
+
+
+	ESTADIS_POSICION_MEDIA_VENTANA_1_HORA				=570,
+	ESTADIS_POSICION_MEDIA_VENTANA_2_HORA				=571,
+	ESTADIS_POSICION_MEDIA_VENTANA_3_HORA				=572,
+	ESTADIS_POSICION_MEDIA_VENTANA_4_HORA				=573,
+	ESTADIS_POSICION_MEDIA_VENTANA_5_HORA				=574,
+	ESTADIS_POSICION_MEDIA_VENTANA_6_HORA				=575,
+
+	ESTADIS_POSICION_MEDIA_VENTANA_1_DIA				=576,
+	ESTADIS_POSICION_MEDIA_VENTANA_2_DIA				=577,
+	ESTADIS_POSICION_MEDIA_VENTANA_3_DIA				=578,
+	ESTADIS_POSICION_MEDIA_VENTANA_4_DIA				=579,
+	ESTADIS_POSICION_MEDIA_VENTANA_5_DIA				=580,
+	ESTADIS_POSICION_MEDIA_VENTANA_6_DIA				=581,
+
+
+	ESTADIS_POSICION_MEDIA_PANTALLA_HORA				=582,
+	ESTADIS_POSICION_MEDIA_PANTALLA_DIA					=583,
+
+
+
+	ESTADIS_POSICION_MAXIMA_VENTANA_1_HORA				=584,
+	ESTADIS_POSICION_MAXIMA_VENTANA_2_HORA				=585,
+	ESTADIS_POSICION_MAXIMA_VENTANA_3_HORA				=586,
+	ESTADIS_POSICION_MAXIMA_VENTANA_4_HORA				=587,
+	ESTADIS_POSICION_MAXIMA_VENTANA_5_HORA				=588,
+	ESTADIS_POSICION_MAXIMA_VENTANA_6_HORA				=589,
+
+	ESTADIS_POSICION_MAXIMA_VENTANA_1_DIA				=590,
+	ESTADIS_POSICION_MAXIMA_VENTANA_2_DIA				=591,
+	ESTADIS_POSICION_MAXIMA_VENTANA_3_DIA				=592,
+	ESTADIS_POSICION_MAXIMA_VENTANA_4_DIA				=593,
+	ESTADIS_POSICION_MAXIMA_VENTANA_5_DIA				=594,
+	ESTADIS_POSICION_MAXIMA_VENTANA_6_DIA				=595,
+
+
+	ESTADIS_POSICION_MAXIMA_PANTALLA_HORA				=596,
+	ESTADIS_POSICION_MAXIMA_PANTALLA_DIA				=597,
+
+
+	ESTADIS_POSICION_MINIMA_VENTANA_1_HORA				=598,
+	ESTADIS_POSICION_MINIMA_VENTANA_2_HORA				=599,
+	ESTADIS_POSICION_MINIMA_VENTANA_3_HORA				=600,
+	ESTADIS_POSICION_MINIMA_VENTANA_4_HORA				=601,
+	ESTADIS_POSICION_MINIMA_VENTANA_5_HORA				=602,
+	ESTADIS_POSICION_MINIMA_VENTANA_6_HORA				=603,
+
+	ESTADIS_POSICION_MINIMA_VENTANA_1_DIA				=604,
+	ESTADIS_POSICION_MINIMA_VENTANA_2_DIA				=605,
+	ESTADIS_POSICION_MINIMA_VENTANA_3_DIA				=606,
+	ESTADIS_POSICION_MINIMA_VENTANA_4_DIA				=607,
+	ESTADIS_POSICION_MINIMA_VENTANA_5_DIA				=608,
+	ESTADIS_POSICION_MINIMA_VENTANA_6_DIA				=609,
+
+
+	ESTADIS_POSICION_MINIMA_PANTALLA_HORA				=610,
+	ESTADIS_POSICION_MINIMA_PANTALLA_DIA				=611,
+
+
+
+
+
+
+	ESTADIS_TEMP_INTERIOR_MEDIA_HORA		=1848,	/*"Estadística temperatura interior hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_INTERIOR_MEDIA_DIA		=1849,	/*"Estadística temperatura interior día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_INTERIOR_HORA_MAX			=1850,	/*"Estadística temperatura interior hora MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_INTERIOR_HORA_MIN			=1851,	/*"Estadística temperatura interior hora MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_INTERIOR_DIA_MAX			=1852,	/*"Estadística temperatura interior día MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_INTERIOR_DIA_MIN			=1853,	/*"Estadística temperatura interior día MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_TEMP_CONSIGNA_MEDIA_HORA		=1854,	/*"Estadística temperatura consigna hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_CONSIGNA_MEDIA_DIA		=1855,	/*"Estadística temperatura consigna día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_TEMP_EXTERIOR_MEDIA_HORA		=1856,	/*"Estadística temperatura EXTERIOR hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_EXTERIOR_MEDIA_DIA		=1857,	/*"Estadística temperatura EXTERIOR día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_EXTERIOR_HORA_MAX			=1858,	/*"Estadística temperatura EXTERIOR hora MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_EXTERIOR_HORA_MIN			=1859,	/*"Estadística temperatura EXTERIOR hora MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_EXTERIOR_DIA_MAX			=1860,	/*"Estadística temperatura EXTERIOR día MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_TEMP_EXTERIOR_DIA_MIN			=1861,	/*"Estadística temperatura EXTERIOR día MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_HUM_INTERIOR_MEDIA_HORA		=1862,	/*"Estadística humedad interior hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_HUM_INTERIOR_MEDIA_DIA			=1863,	/*"Estadística humedad interior día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_HUM_INTERIOR_HORA_MAX			=1864,	/*"Estadística humedad interior hora MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_HUM_INTERIOR_HORA_MIN			=1865,	/*"Estadística humedad interior hora MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_HUM_INTERIOR_DIA_MAX			=1866,	/*"Estadística humedad interior día MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_HUM_INTERIOR_DIA_MIN			=1867,	/*"Estadística humedad interior día MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_HUM_CONSIGNA_MEDIA_HORA		=1868,	/*"Estadística humedad consigna hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_HUM_CONSIGNA_MEDIA_DIA			=1869,	/*"Estadística humedad consigna día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_HUM_EXTERIOR_MEDIA_HORA		=1870,	/*"Estadística humedad EXTERIOR hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_HUM_EXTERIOR_MEDIA_DIA			=1871,	/*"Estadística humedad EXTERIOR día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_HUM_EXTERIOR_HORA_MAX			=1872,	/*"Estadística humedad EXTERIOR hora MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_HUM_EXTERIOR_HORA_MIN			=1873,	/*"Estadística humedad EXTERIOR hora MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_HUM_EXTERIOR_DIA_MAX			=1874,	/*"Estadística humedad EXTERIOR día MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_HUM_EXTERIOR_DIA_MIN			=1875,	/*"Estadística humedad EXTERIOR día MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+
+	ESTADIS_CO2_INTERIOR_MEDIA_HORA		=1876,	/*"Estadística CO₂ interior hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CO2_INTERIOR_MEDIA_DIA			=1877,	/*"Estadística CO₂ interior día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CO2_INTERIOR_HORA_MAX			=1878,	/*"Estadística CO₂ interior hora MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CO2_INTERIOR_HORA_MIN			=1879,	/*"Estadística CO₂ interior hora MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CO2_INTERIOR_DIA_MAX			=1880,	/*"Estadística CO₂ interior día MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CO2_INTERIOR_DIA_MIN			=1881,	/*"Estadística CO₂ interior día MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_NH3_INTERIOR_MEDIA_HORA		=1882,	/*"Estadística NH₃ interior hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_NH3_INTERIOR_MEDIA_DIA			=1883,	/*"Estadística NH₃ interior día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_NH3_INTERIOR_HORA_MAX			=1884,	/*"Estadística NH₃ interior hora MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_NH3_INTERIOR_HORA_MIN			=1885,	/*"Estadística NH₃ interior hora MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_NH3_INTERIOR_DIA_MAX			=1886,	/*"Estadística NH₃ interior día MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_NH3_INTERIOR_DIA_MIN			=1887,	/*"Estadística NH₃ interior día MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_ACTIVIDAD_CAL1_HORA			=1888,	/*"Actividad hora calefacción 1"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL2_HORA			=1889,	/*"Actividad hora calefacción 2"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL3_HORA			=1890,	/*"Actividad hora calefacción 3"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL4_HORA			=1891,	/*"Actividad hora calefacción 4"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL5_HORA			=1892,	/*"Actividad hora calefacción 5"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL6_HORA			=1893,	/*"Actividad hora calefacción 6"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL7_HORA			=1894,	/*"Actividad hora calefacción 7"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL8_HORA			=1895,	/*"Actividad hora calefacción 8"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_ACTIVIDAD_CAL1_DIA				=1896,	/*"Actividad día calefacción 1"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL2_DIA				=1897,	/*"Actividad día calefacción 2"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL3_DIA				=1898,	/*"Actividad día calefacción 3"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL4_DIA				=1899,	/*"Actividad día calefacción 4"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL5_DIA				=1900,	/*"Actividad día calefacción 5"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL6_DIA				=1901,	/*"Actividad día calefacción 6"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL7_DIA				=1902,	/*"Actividad día calefacción 7"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL8_DIA				=1903,	/*"Actividad día calefacción 8"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+
+	ESTADIS_ACTIVIDAD_CT1_HORA				=1904,	/*"Actividad hora C.Térmico 1"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CT2_HORA				=1905,	/*"Actividad hora C.Térmico 2"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CT3_HORA				=1906,	/*"Actividad hora C.Térmico 3"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CT4_HORA				=1907,	/*"Actividad hora C.Térmico 4"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_ACTIVIDAD_CT1_DIA				=1908,	/*"Actividad día C.Térmico 1"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CT2_DIA				=1909,	/*"Actividad día C.Térmico 2"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CT3_DIA				=1910,	/*"Actividad día C.Térmico 3"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CT4_DIA				=1911,	/*"Actividad día C.Térmico 4"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_ACTIVIDAD_REFRIGERACION_P_HORA	=1912,	/*"Actividad Refrigeración Principal hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_REFRIGERACION_AUX_HORA=1913,	/*"Actividad Refrigeración AUX hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_ACTIVIDAD_REFRIGERACION_P_DIA	=1914,	/*"Actividad Refrigeración Principal día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_REFRIGERACION_AUX_DIA=1915,	/*"Actividad Refrigeración AUX día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_ETAPA_1_HORA					=1916,	/*"Actividad etapa 1 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_2_HORA					=1917,	/*"Actividad etapa 2 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_3_HORA					=1918,	/*"Actividad etapa 3 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_4_HORA					=1919,	/*"Actividad etapa 4 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_5_HORA					=1920,	/*"Actividad etapa 5 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_6_HORA					=1921,	/*"Actividad etapa 6 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_7_HORA					=1922,	/*"Actividad etapa 7 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_8_HORA					=1923,	/*"Actividad etapa 8 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_9_HORA					=1924,	/*"Actividad etapa 9 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_10_HORA					=1925,	/*"Actividad etapa 10 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_11_HORA					=1926,	/*"Actividad etapa 11 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_12_HORA					=1927,	/*"Actividad etapa 12 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_13_HORA					=1928,	/*"Actividad etapa 13 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_14_HORA					=1929,	/*"Actividad etapa 14 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_15_HORA					=1930,	/*"Actividad etapa 15 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_16_HORA					=1931,	/*"Actividad etapa 16 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_17_HORA					=1932,	/*"Actividad etapa 17 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_18_HORA					=1933,	/*"Actividad etapa 18 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_19_HORA					=1934,	/*"Actividad etapa 19 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_20_HORA					=1935,	/*"Actividad etapa 20 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_21_HORA					=1936,	/*"Actividad etapa 21 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_22_HORA					=1937,	/*"Actividad etapa 22 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_23_HORA					=1938,	/*"Actividad etapa 23 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_24_HORA					=1939,	/*"Actividad etapa 24 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_25_HORA					=1940,	/*"Actividad etapa 25 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_26_HORA					=1941,	/*"Actividad etapa 26 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_27_HORA					=1942,	/*"Actividad etapa 27 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_28_HORA					=1943,	/*"Actividad etapa 28 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_29_HORA					=1944,	/*"Actividad etapa 29 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_30_HORA					=1945,	/*"Actividad etapa 30 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_31_HORA					=1946,	/*"Actividad etapa 31 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_32_HORA					=1947,	/*"Actividad etapa 32 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_ETAPA_1_DIA						=1948,	/*"Actividad etapa 1 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_2_DIA						=1949,	/*"Actividad etapa 2 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_3_DIA						=1950,	/*"Actividad etapa 3 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_4_DIA						=1951,	/*"Actividad etapa 4 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_5_DIA						=1952,	/*"Actividad etapa 5 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_6_DIA						=1953,	/*"Actividad etapa 6 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_7_DIA						=1954,	/*"Actividad etapa 7 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_8_DIA						=1955,	/*"Actividad etapa 8 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_9_DIA						=1956,	/*"Actividad etapa 9 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_10_DIA					=1957,	/*"Actividad etapa 10 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_11_DIA					=1958,	/*"Actividad etapa 11 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_12_DIA					=1959,	/*"Actividad etapa 12 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_13_DIA					=1960,	/*"Actividad etapa 13 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_14_DIA					=1961,	/*"Actividad etapa 14 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_15_DIA					=1962,	/*"Actividad etapa 15 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_16_DIA					=1963,	/*"Actividad etapa 16 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_17_DIA					=1964,	/*"Actividad etapa 17 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_18_DIA					=1965,	/*"Actividad etapa 18 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_19_DIA					=1966,	/*"Actividad etapa 19 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_20_DIA					=1967,	/*"Actividad etapa 20 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_21_DIA					=1968,	/*"Actividad etapa 21 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_22_DIA					=1969,	/*"Actividad etapa 22 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_23_DIA					=1970,	/*"Actividad etapa 23 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_24_DIA					=1971,	/*"Actividad etapa 24 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_25_DIA					=1972,	/*"Actividad etapa 25 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_26_DIA					=1973,	/*"Actividad etapa 26 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_27_DIA					=1974,	/*"Actividad etapa 27 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_28_DIA					=1975,	/*"Actividad etapa 28 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_29_DIA					=1976,	/*"Actividad etapa 29 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_30_DIA					=1977,	/*"Actividad etapa 30 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_31_DIA					=1978,	/*"Actividad etapa 31 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_32_DIA					=1979,	/*"Actividad etapa 32 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_ACTIVIDAD_EA_A_HORA			=1980,	/*"Actividad hora entrada aire A1"*/ 	/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_EA_B_HORA			=1981,	/*"Actividad hora entrada aire B1"*/ 	/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_EA_C_HORA			=1982,	/*"Actividad hora entrada aire A2"*/ 	/*MAX_TEXTOS_LINEAS*/	/*V2_2*/ /*"Actividad hora entrada aire T"*/ /*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_EA_D_HORA			=1983,	/*"Actividad hora entrada aire B2"*/ 	/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_EA_E_HORA			=1984,	/*"Actividad hora entrada aire T1"*/ 	/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_EA_T_HORA			=1985,	/*"Actividad hora entrada aire T2"*/ 	/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_ACTIVIDAD_EA_A_DIA				=1986,	/*"Actividad día entrada aire A1"*/ 	/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_EA_B_DIA				=1987,	/*"Actividad día entrada aire B1"*/ 	/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_EA_C_DIA				=1988,	/*"Actividad día entrada aire A2"*/ 	/*MAX_TEXTOS_LINEAS*/ /*V2_2*/ /*"Actividad día entrada aire T"*/ /*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_EA_D_DIA				=1989,	/*"Actividad día entrada aire B2"*/ 	/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_EA_E_DIA				=1990,	/*"Actividad día entrada aire T1"*/ 	/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_EA_T_DIA				=1991,	/*"Actividad día entrada aire T2"*/ 	/*MAX_TEXTOS_LINEAS*/
+
+
+
+
+	ESTADIS_CONTADOR_GENERAL_AGUA_DIA			=2304,		/*"Estadísticas contador general agua día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR_GENERAL_AGUA_HORA			=2305,		/*"Estadísticas contador general agua hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR_LINEA1_AGUA_DIA			=2306,		/*"Estadísticas contador agua línea 1 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR_LINEA1_AGUA_HORA			=2307,		/*"Estadísticas contador agua línea 1 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR_LINEA2_AGUA_DIA			=2308,		/*"Estadísticas contador agua línea 2 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR_LINEA2_AGUA_HORA			=2309,		/*"Estadísticas contador agua línea 2 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR_LINEA3_AGUA_DIA			=2310,		/*"Estadísticas contador agua línea 3 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR_LINEA3_AGUA_HORA			=2311,		/*"Estadísticas contador agua línea 3 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR_LINEA4_AGUA_DIA			=2312,		/*"Estadísticas contador agua línea 4 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR_LINEA4_AGUA_HORA			=2313,		/*"Estadísticas contador agua línea 4 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR_LINEA5_AGUA_DIA			=2314,		/*"Estadísticas contador agua línea 5 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR_LINEA5_AGUA_HORA			=2315,		/*"Estadísticas contador agua línea 5 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR_LINEA6_AGUA_DIA			=2316,		/*"Estadísticas contador agua línea 6 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR_LINEA6_AGUA_HORA			=2317,		/*"Estadísticas contador agua línea 6 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR_LINEA7_AGUA_DIA			=2318,		/*"Estadísticas contador agua línea 7 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR_LINEA7_AGUA_HORA			=2319,		/*"Estadísticas contador agua línea 7 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR_LINEA8_AGUA_DIA			=2320,		/*"Estadísticas contador agua línea 8 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR_LINEA8_AGUA_HORA			=2321,		/*"Estadísticas contador agua línea 8 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_ACTIVIDAD_CAL9_HORA				=2322,	/*"Actividad hora calefacción 9"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL10_HORA				=2323,	/*"Actividad hora calefacción 10"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL11_HORA				=2324,	/*"Actividad hora calefacción 11"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL12_HORA				=2325,	/*"Actividad hora calefacción 12"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_ACTIVIDAD_CAL9_DIA					=2326,	/*"Actividad día calefacción 9"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL10_DIA				=2327,	/*"Actividad día calefacción 10"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL11_DIA				=2328,	/*"Actividad día calefacción 11"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_CAL12_DIA				=2329,	/*"Actividad día calefacción 12"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR_GENERAL_INCREMENTO_DIA_ANTERIOR =2330,		/*"Estadísticas contador agua incremento día anterior"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR_GENERAL_POR_ANIMAL_HORA	=2331,		/*"Estadísticas contador general por animal hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR_GENERAL_POR_ANIMAL_DIA	=2332,		/*"Estadísticas contador general por animal día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+
+	ESTADIS_ETAPA_CRIADERO1_HORA		=2591,				/*"Actividad etapa criadero 1 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_CRIADERO2_HORA		=2592,				/*"Actividad etapa criadero 2 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_S0_HORA				=2593,				/*"Actividad etapa S0 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_NATURAL_HORA			=2594,				/*"Actividad etapa natural hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_ETAPA_CRIADERO1_DIA		=2597,				/*"Actividad etapa criadero 1 DIA"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_CRIADERO2_DIA		=2598,				/*"Actividad etapa criadero 2 DIA"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_S0_DIA				=2599,				/*"Actividad etapa S0 DIA"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ETAPA_NATURAL_DIA			=2600,				/*"Actividad etapa natural DIA"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONSUMO_SILO1_HORA			=2637,		/*"Estadísticas consumo silo 1 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_SILO2_HORA			=2638,		/*"Estadísticas consumo silo 2 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_SILO3_HORA			=2639,		/*"Estadísticas consumo silo 3 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONSUMO_SILO1_DIA			=2640,		/*"Estadísticas consumo silo 1 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_SILO2_DIA			=2641,		/*"Estadísticas consumo silo 2 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_SILO3_DIA			=2642,		/*"Estadísticas consumo silo 3 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_CONSUMO_TOTAL_HORA	=2643,		/*"Estadísticas consumo total hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_TOTAL_DIA	=2644,		/*"Estadísticas consumo total día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+
+	ESTADIS_PESO_BASCULA1_DIA			=2645,		/*"Estadísticas peso báscula 1 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_BASCULA2_DIA			=2646,		/*"Estadísticas peso báscula 2 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_PESO_BASCULA3_DIA			=2647,		/*"Estadísticas peso báscula 3 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_PESO_ANIMAL_DIA	=2648,		/*"Estadísticas peso animal día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_GANANCIA_PESO_DIA				=2649,		/*"Estadística ganancia de peso"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_POR_ANIMAL_DIA		=2650,		/*"Estadística consumo por animal día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_ACUMULADO_CONSUMO_POR_ANIMAL_CRIANZA_DIA		=2651,		/*"Estadística acumulado consumo por animal crianza"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_ACUMULADO_CONSUMO_TOTAL_CRIANZA_DIA			=2652,		/*"Estadística acumulado consumo total crianza"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_VARIACION_CONSUMO_PORCENTA_DIA_ANTERIOR_DIA	=2653,		/*"Estadística variación consumo día anterior (%) "*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_INDICE_CONVERSION_ALIMENTICIA_DIA				=2654,		/*"Estadística índice de conversión alimenticia"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_KG_CARNE_M2_DIA								=2655,		/*"Estadística kg de carne por m²"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_GANANCIA_PESO_MEDIA_DIA						=2656,		/*"Estadística ganancia peso media"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_FACTOR_EFICIENCIA_DIA						=2657,		/*"Estadística factor de eficiencia"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_INDICE_PRODUCCION_DIA						=2658,		/*"Estadística índice producción"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_LITROS_ANIMAL_AGUA_ACUMULADO_CRIANZA_DIA			=2659,		/*"Estadística litros por animal agua crianza"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+	ESTADIS_ACTIVIDAD_EA_A3_HORA			=2913,	/*"Actividad hora entrada aire A3"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_EA_B3_HORA			=2914,	/*"Actividad hora entrada aire B3"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_ACTIVIDAD_EA_A3_DIA				=2918,	/*"Actividad día entrada aire A3"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_EA_B3_DIA				=2919,	/*"Actividad día entrada aire B3"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR1_HORA					=2986,	/*"Contador 1 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR1_DIA					=2987,	/*"Contador 1 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR2_HORA					=2988,	/*"Contador 2 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR2_DIA					=2989,	/*"Contador 2 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR3_HORA					=2990,	/*"Contador 3 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR3_DIA					=2991,	/*"Contador 3 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR4_HORA					=2992,	/*"Contador 4 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR4_DIA					=2993,	/*"Contador 4 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR5_HORA					=2994,	/*"Contador 5 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR5_DIA					=2995,	/*"Contador 5 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONTADOR6_HORA					=2996,	/*"Contador 6 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONTADOR6_DIA					=2997,	/*"Contador 6 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CH4_MEDIA_HORA										=3250,	/*"Estadística CH₄ hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CH4_MEDIA_DIA										=3251,	/*"Estadística CH₄ día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CH4_MEDIA_HORA_MAX							=3255,	/*"Estadística CH₄ hora max"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CH4_MEDIA_DIA_MAX							=3256,	/*"Estadística CH₄ día max"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CH4_MEDIA_HORA_MIN							=3257,	/*"Estadística CH₄ hora min"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CH4_MEDIA_DIA_MIN							=3258,	/*"Estadística CH₄ día min"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+
+	ESTADIS_CONSUMO_ORIGEN1_ALIMENTACION_HORA			=3259,		/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_ORIGEN2_ALIMENTACION_HORA			=3260,		/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_ORIGEN3_ALIMENTACION_HORA			=3261,		/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_ORIGEN4_ALIMENTACION_HORA			=3262,		/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_CONSUMO_ORIGEN1_ALIMENTACION_DIA			=3270,		/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_ORIGEN2_ALIMENTACION_DIA			=3271,		/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_ORIGEN3_ALIMENTACION_DIA			=3272,		/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_CONSUMO_ORIGEN4_ALIMENTACION_DIA			=3273,		/*""*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+
+	ESTADIS_DATALOG_TEMP_SONDA1_MEDIA					=3300,	/*"Estadística temperatura sonda 1"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DATALOG_TEMP_SONDA2_MEDIA					=3301,	/*"Estadística temperatura sonda 2"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DATALOG_TEMP_SONDA3_MEDIA					=3302,	/*"Estadística temperatura sonda 3"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DATALOG_TEMP_SONDA4_MEDIA					=3303,	/*"Estadística temperatura sonda 4"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DATALOG_TEMP_SONDA5_MEDIA					=3304,	/*"Estadística temperatura sonda 5"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DATALOG_TEMP_SONDA6_MEDIA					=3305,	/*"Estadística temperatura sonda 6"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DATALOG_TEMP_SONDA7_MEDIA					=3306,	/*"Estadística temperatura sonda 7"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DATALOG_TEMP_SONDA8_MEDIA					=3307,	/*"Estadística temperatura sonda 8"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DATALOG_TEMP_SONDA9_MEDIA					=3308,	/*"Estadística temperatura sonda 9"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DATALOG_TEMP_SONDA10_MEDIA					=3309,	/*"Estadística temperatura sonda 10"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DATALOG_TEMP_SONDA11_MEDIA					=3310,	/*"Estadística temperatura sonda 11"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_DATALOG_TEMP_SONDA12_MEDIA					=3311,	/*"Estadística temperatura sonda 12"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_DATALOG_TEMP_INTERIOR			=3312,
+	ESTADIS_DATALOG_TEMP_EXTERIOR			=3313,
+
+	ESTADIS_DATALOG_HUMEDAD_INTERIOR		=3314,
+	ESTADIS_DATALOG_HUMEDAD_EXTERIOR		=3315,
+
+	ESTADIS_DATALOG_CO2						=3316,
+	ESTADIS_DATALOG_NH3						=3317,
+
+
+	ESTADIS_ACTIVIDAD_VENTILACION_HORA			=3318,	/*"Actividad ventilacion"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_ACTIVIDAD_VENTILACION_DIA			=3319,	/*"Actividad ventilacion"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_NUMERO_MOVIMIENTOS_HORA_EA_A		=3320,	/*"movimientos hora ea a"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_NUMERO_MOVIMIENTOS_DIA_EA_A			=3321,	/*"movimientos dia ea a"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_NUMERO_MOVIMIENTOS_HORA_EA_B		=3322,	/*"movimientos hora ea b"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_NUMERO_MOVIMIENTOS_DIA_EA_B			=3323,	/*"movimientos dia ea b"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_NUMERO_MOVIMIENTOS_HORA_EA_C		=3324,	/*"movimientos hora ea c"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_NUMERO_MOVIMIENTOS_DIA_EA_C			=3325,	/*"movimientos dia ea c"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_TEMP_EA_A_MEDIA_HORA				=3326,
+	ESTADIS_TEMP_EA_A_MEDIA_DIA					=3327,
+
+	ESTADIS_TEMP_EA_B_MEDIA_HORA				=3328,
+	ESTADIS_TEMP_EA_B_MEDIA_DIA					=3329,
+
+	ESTADIS_TEMP_EA_C_MEDIA_HORA				=3330,
+	ESTADIS_TEMP_EA_C_MEDIA_DIA					=3331,
+
+
+	ESTADIS_TEMP_EA_A_MAX_HORA					=3332,
+	ESTADIS_TEMP_EA_A_MAX_DIA					=3333,
+
+	ESTADIS_TEMP_EA_B_MAX_HORA					=3334,
+	ESTADIS_TEMP_EA_B_MAX_DIA					=3335,
+
+	ESTADIS_TEMP_EA_C_MAX_HORA					=3336,
+	ESTADIS_TEMP_EA_C_MAX_DIA					=3337,
+
+
+	ESTADIS_TEMP_EA_A_MIN_HORA					=3338,
+	ESTADIS_TEMP_EA_A_MIN_DIA					=3339,
+
+	ESTADIS_TEMP_EA_B_MIN_HORA					=3340,
+	ESTADIS_TEMP_EA_B_MIN_DIA					=3341,
+
+	ESTADIS_TEMP_EA_C_MIN_HORA					=3342,
+	ESTADIS_TEMP_EA_C_MIN_DIA					=3343,
+
+
+	ESTADIS_TEMP_VENTILACION_MEDIA_HORA			=3344,
+	ESTADIS_TEMP_VENTILACION_MEDIA_DIA			=3345,
+
+	ESTADIS_TEMP_VENTILACION_MAX_HORA			=3346,
+	ESTADIS_TEMP_VENTILACION_MAX_DIA			=3347,
+
+	ESTADIS_TEMP_VENTILACION_MIN_HORA			=3348,
+	ESTADIS_TEMP_VENTILACION_MIN_DIA			=3349,
+
+
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D1	=3350,		// Total de pienso cargado en el día al dosificador D1
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D2	=3351,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D3	=3352,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D4	=3353,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D5	=3354,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D6	=3355,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D7	=3356,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D8	=3357,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D9	=3358,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D10	=3359,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D11	=3360,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D12	=3361,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D13	=3362,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D14	=3363,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D15	=3364,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_DIA_D16	=3365,
+
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D1		=3366,	// Total de pienso cargado en la crianza al dosificador D1
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D2		=3367,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D3		=3368,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D4		=3369,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D5		=3370,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D6		=3371,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D7		=3372,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D8		=3373,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D9		=3374,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D10	=3375,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D11	=3376,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D12	=3377,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D13	=3378,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D14	=3379,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D15	=3380,
+	ESTADIS_ALIMENTACION_AVANZADA_TOTAL_ACUM_D16	=3381,
+
+	ESTADIS_TEMP_CTERMICO_MEDIA_HORA				=3382,
+	ESTADIS_TEMP_CTERMICO_MEDIA_DIA					=3383,
+
+	ESTADIS_TEMP_CTERMICO_MAX_HORA					=3384,
+	ESTADIS_TEMP_CTERMICO_MAX_DIA					=3385,
+
+	ESTADIS_TEMP_CTERMICO_MIN_HORA					=3386,
+	ESTADIS_TEMP_CTERMICO_MIN_DIA					=3387,
+
+	ESTADIS_CHT_PRUEBAS_HUM_MEDIA_HORA				=3390,
+	ESTADIS_CHT_PRUEBAS_HUM_MAX_HORA				=3391,
+	ESTADIS_CHT_PRUEBAS_HUM_MIN_HORA				=3392,
+
+	ESTADIS_CHT_PRUEBAS_CO2_MEDIA_HORA				=3393,
+	ESTADIS_CHT_PRUEBAS_CO2_MAX_HORA				=3394,
+	ESTADIS_CHT_PRUEBAS_CO2_MIN_HORA				=3395,
+
+
+	ESTADIS_N_MOVIMIENTOS_EA_A_HORA			=3396,
+	ESTADIS_N_MOVIMIENTOS_EA_B_HORA			=3397,
+	ESTADIS_N_MOVIMIENTOS_EA_C_HORA			=3398,
+	ESTADIS_N_MOVIMIENTOS_EA_D_HORA			=3399,
+	ESTADIS_N_MOVIMIENTOS_EA_E_HORA			=3400,
+	ESTADIS_N_MOVIMIENTOS_EA_T_HORA			=3401,
+	ESTADIS_N_MOVIMIENTOS_EA_A3_HORA		=3402,
+	ESTADIS_N_MOVIMIENTOS_EA_B3_HORA		=3403,
+
+	ESTADIS_N_MOVIMIENTOS_EA_A_DIA			=3404,
+	ESTADIS_N_MOVIMIENTOS_EA_B_DIA			=3405,
+	ESTADIS_N_MOVIMIENTOS_EA_C_DIA			=3406,
+	ESTADIS_N_MOVIMIENTOS_EA_D_DIA			=3407,
+	ESTADIS_N_MOVIMIENTOS_EA_E_DIA			=3408,
+	ESTADIS_N_MOVIMIENTOS_EA_T_DIA			=3409,
+	ESTADIS_N_MOVIMIENTOS_EA_A3_DIA			=3410,
+	ESTADIS_N_MOVIMIENTOS_EA_B3_DIA			=3411,
+
+
+	ESTADIS_EVENTOS_EVENTOS_CONTROL_ACCESO	=3412,
+
+
+	ESTADIS_CONSUMO_SILO4_HORA			=3413,
+	ESTADIS_CONSUMO_SILO5_HORA			=3414,
+	ESTADIS_CONSUMO_SILO6_HORA			=3415,
+	ESTADIS_CONSUMO_SILO7_HORA			=3416,
+
+	ESTADIS_CONSUMO_SILO4_DIA			=3417,
+	ESTADIS_CONSUMO_SILO5_DIA			=3418,
+	ESTADIS_CONSUMO_SILO6_DIA			=3419,
+	ESTADIS_CONSUMO_SILO7_DIA			=3420,
+
+	ESTADIS_DATALOG_CH4					=3421,
+	ESTADIS_DATALOG_N2O					=3422,
+	ESTADIS_DATALOG_PH					=3423,
+
+
+	ESTADIS_POCENTAJE_HORA_SILO			=3424,
+	ESTADIS_CARGA_AUTOMATICA_SILO		=3425,
+
+
+	ESTADIS_EVENTOS_MAQUINA_ALIMENTACION	=3426,
+	ESTADIS_ALARMA_GENERICA					=3427,
+	ESTADIS_REGISTRO_GENERICO				=3428,
+
+
+	ESTADIS_EA_A_TEMP_INICIO				=3429,
+	ESTADIS_EA_A_TEMP_DESTINO				=3430,
+	ESTADIS_EA_A_DIRECCION_MOV				=3431,
+	ESTADIS_EA_A_POS_INICIO					=3432,
+	ESTADIS_EA_A_POS_DESTINO				=3433,
+	ESTADIS_EA_A_TIEMPO_MOV					=3434,
+	ESTADIS_EA_A_RAZON_MOV					=3435,
+
+	ESTADIS_EA_B_TEMP_INICIO				=3436,
+	ESTADIS_EA_B_TEMP_DESTINO				=3437,
+	ESTADIS_EA_B_DIRECCION_MOV				=3438,
+	ESTADIS_EA_B_POS_INICIO					=3439,
+	ESTADIS_EA_B_POS_DESTINO				=3440,
+	ESTADIS_EA_B_TIEMPO_MOV					=3441,
+	ESTADIS_EA_B_RAZON_MOV					=3442,
+
+	ESTADIS_EA_C_TEMP_INICIO				=3443,
+	ESTADIS_EA_C_TEMP_DESTINO				=3444,
+	ESTADIS_EA_C_DIRECCION_MOV				=3445,
+	ESTADIS_EA_C_POS_INICIO					=3446,
+	ESTADIS_EA_C_POS_DESTINO				=3447,
+	ESTADIS_EA_C_TIEMPO_MOV					=3448,
+	ESTADIS_EA_C_RAZON_MOV					=3449,
+
+
+
+
+	ESTADIS_EA_A_POS_MEDIA_HORA				=3450,	/*"Estadística POSICION EA A hora MEDIA"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_A_POS_MEDIA_DIA				=3451,	/*"Estadística POSICION EA A día MEDIA"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_A_POS_HORA_MAX				=3452,	/*"Estadística POSICION EA A hora MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_A_POS_HORA_MIN				=3453,	/*"Estadística POSICION EA A hora MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_A_POS_DIA_MAX				=3454,	/*"Estadística POSICION EA A día MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_A_POS_DIA_MIN				=3455,	/*"Estadística POSICION EA A día MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_EA_B_POS_MEDIA_HORA				=3456,	/*"Estadística POSICION EA B hora MEDIA"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_B_POS_MEDIA_DIA				=3457,	/*"Estadística POSICION EA B día MEDIA"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_B_POS_HORA_MAX				=3458,	/*"Estadística POSICION EA B hora MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_B_POS_HORA_MIN				=3459,	/*"Estadística POSICION EA B hora MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_B_POS_DIA_MAX				=3460,	/*"Estadística POSICION EA B día MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_B_POS_DIA_MIN				=3461,	/*"Estadística POSICION EA B día MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_EA_C_POS_MEDIA_HORA				=3462,	/*"Estadística POSICION EA C hora MEDIA"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_C_POS_MEDIA_DIA				=3463,	/*"Estadística POSICION EA C día MEDIA"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_C_POS_HORA_MAX				=3464,	/*"Estadística POSICION EA C hora MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_C_POS_HORA_MIN				=3465,	/*"Estadística POSICION EA C hora MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_C_POS_DIA_MAX				=3466,	/*"Estadística POSICION EA C día MAX"*/ 											/*MAX_TEXTOS_LINEAS*/
+	ESTADIS_EA_C_POS_DIA_MIN				=3467,	/*"Estadística POSICION EA C día MIN"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+
+
+
+	ESTADIS_ACTIVIDAD_REFRIGERACION_AUX_2_HORA=3468,	/*"Actividad Refrigeración AUX 2 hora"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_ACTIVIDAD_REFRIGERACION_AUX_2_DIA=3469,	/*"Actividad Refrigeración AUX 2 día"*/ 											/*MAX_TEXTOS_LINEAS*/
+
+	ESTADIS_POCENTAJE_HORA_SILO_INSTANTANEO			=3470,
+
+
+
+}ENUM_ESTADISTICOS_NOMBRES;
+
+
+
+
+#endif // UNIDADES_COMPAR_PLACA_H

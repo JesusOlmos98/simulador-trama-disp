@@ -838,7 +838,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
      * - Si nDispositivos > 13  -> MAS (13 primeros) + FIN (resto, ≤ 13)
      * - Se asume que nunca habrá más de 26; en tu caso habitual ≤ 20.
      */
-    crearDataTablaDispositivos(nDispositivos: number): {
+    crearDataTablaDispositivosOld(nDispositivos: number): {
         fin: RtTablaCentralFinOldDto;
         mas?: RtTablaCentralMasOldDto;
     } {
@@ -872,7 +872,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
      * Serializa un array de items (layout 34 bytes/ítem) a Buffer en BIG-ENDIAN.
      * Válido tanto para TM_rt_tabla_central_mas como para TM_rt_tabla_central_fin.
      */
-    serializarTablaCentralItemsBE(items: TablaCentralItemOld[]): Buffer {
+    serializarTablaCentralItemsOld(items: TablaCentralItemOld[]): Buffer {
         const u8 = (n: number) => Buffer.from([n & 0xff]);
         const u16BE = (n: number) => {
             const b = Buffer.allocUnsafe(2);
@@ -923,16 +923,26 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         fin: Buffer;
         mas?: Buffer;
     } {
-        const data = this.crearDataTablaDispositivos(nDispositivos);
-        const fin = this.serializarTablaCentralItemsBE(data.fin.items);
-        const mas = data.mas ? this.serializarTablaCentralItemsBE(data.mas.items) : undefined;
+        const data = this.crearDataTablaDispositivosOld(nDispositivos);
+        const fin = this.serializarTablaCentralItemsOld(data.fin.items);
+        const mas = data.mas ? this.serializarTablaCentralItemsOld(data.mas.items) : undefined;
         if (data.mas) console.table(data.mas.items);
         console.table(data.fin.items);
         
         return { fin, mas };
     }
 
+    /** Esta función ya devuelve el buffer, es decir, introducimos el dispositivo que ha cambiado, "crea la tabla" y serializa devolviendo el buffer. */
+    crearDataTablaDispositivosCambioEstadoOld(disp: TablaCentralItemOld):Buffer {
+        const items: TablaCentralItemOld[] = [];
 
+        items.push(disp);
+console.log("Dispositivo cambiado:");
+console.table(items);
+console.log(disp)
+        return this.serializarTablaCentralItemsOld(items);
+    }
+    
     // * -------------------------------------------------------------------------------------------------------------------
     // * -------------------------------------------------------------------------------------------------------------------
     // * -------------------------------------------------------------------------------------------------------------------

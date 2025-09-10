@@ -179,3 +179,25 @@ export function encodePassword16(pwd: string): Buffer {
   raw.subarray(0, 16).copy(out, 0);
   return out;
 }
+
+
+
+
+
+
+
+
+
+export function mac8FromParam(macParam?: string): Buffer {
+  // Acepta: "001a79d30d53d9da", "00:1a:79:d3:0d:53:d9:da", "0x001a79d30d53d9da"
+  let s = (macParam ?? "").trim().toLowerCase();
+  if (s.startsWith("0x")) s = s.slice(2);
+  s = s.replace(/[^0-9a-f]/g, ""); // fuera separadores
+  if (s.length === 0) {
+    // valor por defecto reproducible
+    return Buffer.from("001a790000000000", "hex").subarray(0, 8);
+  }
+  if (s.length > 16) s = s.slice(-16);       // nos quedamos con los 8 bytes menos significativos
+  if (s.length < 16) s = s.padStart(16, "0"); // pad a 8 bytes
+  return Buffer.from(s, "hex");
+}

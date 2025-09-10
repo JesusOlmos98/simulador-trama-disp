@@ -36,6 +36,40 @@ export function crearDefaultDispositivoTablaOld(seed: number): TablaCentralItemO
   return dispositivo;
 }
 
+export function crearTablaCambioEstadoDispositivoOld(m: number|bigint, nod: number, est: number, td: number, v: number, alarm: number): TablaCentralItemOld {
+
+  // const macBuf = Buffer.alloc(8);
+  // macBuf.writeUIntBE(m, 0, 8);
+  const macBuf = Buffer.alloc(8);
+  const macBig = typeof m === "bigint" ? m : BigInt(m >>> 0); // OJO: si te cabe
+  macBuf.writeBigUInt64BE(macBig);
+  const mac = macBuf;
+  const nodo = nod;
+  const estado = est;
+  const tipoDispositivo = td;
+  const version = v; // lo usamos también como seed
+
+  const password = genPassword(v);
+  const crcParametros = genCrcParametros();
+  const infoEstado = genInfoEstado(v);
+
+  const hayAlarma = alarm;
+
+  const dispositivo: TablaCentralItemOld = {
+    mac,
+    nodo,
+    estado,
+    tipoDispositivo,
+    version,
+    password,
+    crcParametros,
+    infoEstado,
+    hayAlarma
+  }
+
+  return dispositivo;
+}
+
 //* -------------------------------------------------------------------------------------------------------------------
 //* -------------------------------------------------------------------------------------------------------------------
 //* ------------------------ Generadores de valores para dispositivos de la tabla (Old) -------------------------------

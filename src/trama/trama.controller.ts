@@ -1,4 +1,6 @@
 import { Controller, Post, Query, BadRequestException } from '@nestjs/common';
+import { crearTablaCambioEstadoDispositivoOld } from 'src/dtoBE/defaultTramaOld';
+import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
 import {
   defaultDataTempSonda1,
   defaultDataContadorAgua,
@@ -18,10 +20,10 @@ import {
   ProgresoActualizacionTxDto,
 } from 'src/dtoLE/tt_sistema.dto';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
-import { getTablaCentralItemCountOld, getTablaItemOld, logTramaCompletaTablaDispositivosOld } from 'src/utils/BE_Old/get/getTablaDispositivos';
-import { getCRCFromFrameOld, getEndOld, getStartOld, getTipoMensajeOld, getTipoTramaOld, getParsedHeaderOld } from 'src/utils/BE_Old/get/getTrama';
+import { logTramaCompletaTablaDispositivosOld } from 'src/utils/BE_Old/get/getTablaDispositivos';
 import { PROTO_VERSION_OLD } from 'src/utils/BE_Old/globals/constGlobales';
-import { EnTipoMensajeCentralServidor, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
+import { EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
+import { START, END } from 'src/utils/LE/globals/constGlobales';
 import {
   EnTipoTrama,
   EnTmSistema,
@@ -33,7 +35,7 @@ import {
   EnEstadisticosControladores,
   EnGtUnidades,
 } from 'src/utils/LE/globals/enums';
-import { parseDmYToFecha } from 'src/utils/helpers';
+import { mac8FromParam, parseDmYToFecha } from 'src/utils/helpers';
 import { josLogger } from 'src/utils/josLogger';
 import { Fecha, Tiempo } from 'src/utils/tiposGlobales';
 
@@ -521,6 +523,7 @@ export class TramaController {
   // jos -------------------------------------------------------------------------------------------------------------------
   // jos -------------------------------------------------------------------------------------------------------------------
 
+  // ------------------------------------------- TABLA DISPOSITIVOS (OLD) -------------------------------------------
   @Post('tablaDispositivos')
   async tablaDispositivos(@Query('nDispositivos') nDispositivos?: string) {
 
@@ -567,6 +570,44 @@ export class TramaController {
     logTramaCompletaTablaDispositivosOld(bufferFin);
 
     return okFin;
+  }
+
+  // ------------------------------------------- TABLA DISPOSITIVOS (OLD) -------------------------------------------
+  @Post('cambioEstadoDispositivo')
+  /** Se puede introducir por parámetro, opcionalmente: mac, nodo, estado, td (tipoDispositivo), version, hayAlarma */
+  async cambioEstadoDispositivo(
+    @Query('mac') mac?: string,                                // fecha inicio (DD-MM-YYYY)
+    @Query('nodo') nodo?: string | number,                     // EnEstadisPeriodicidad
+    @Query('estado') estado?: string | number,                 // EnEstadisticosControladores
+    @Query('td') td?: string,
+    @Query('version') version?: string,
+    @Query('hayAlarma') hayAlarma?: string,
+  ) {
+
+    await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
+
+    // const m = parseInt(mac ?? '12345678');
+    const m = mac?.trim().startsWith("0x") ? BigInt(mac.trim()) : BigInt("0x" + mac8FromParam(mac).toString("hex"));
+    const n = typeof nodo === "string" ? parseInt(nodo) : (nodo ?? 1);
+    const e = typeof estado === "string" ? parseInt(estado) : (estado ?? 1);
+    const t = parseInt(td ?? '1');
+    const v = parseInt(version ?? '1');
+    const a = parseInt(hayAlarma ?? '1');
+    const disp = crearTablaCambioEstadoDispositivoOld(m, n, e, t, v, a);
+    const data = this.tcp.crearDataTablaDispositivosCambioEstadoOld(disp);
+    // const dispositivo = crearTablaCambioEstadoDispositivo(mac, nodo, estado, td, v, hayAlarma);
+
+    const frameTablaConDispositivoCambiado = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.ttCentralServidor, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeCentralServidor.tmEventoCambioEstadoNodo, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frameTablaConDispositivoCambiado);
+    return ok;
   }
 
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
