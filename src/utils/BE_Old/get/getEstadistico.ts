@@ -19,9 +19,15 @@ export function getParametroHistoricoPayloadOld(frame: Buffer): Buffer | undefin
 
 // =================== getters campo a campo ===================
 
-export function getPhTipoDatoOld(frame: Buffer): EnTipoDatoDFAccion | undefined {
-    const p = getParametroHistoricoPayloadOld(frame); if (!p) return undefined;
-    return p.readUInt8(PH_OFF.tipoDato) as EnTipoDatoDFAccion;
+// export function getPhTipoDatoOld(frame: Buffer): EnTipoDatoDFAccion | undefined {
+//     const p = getParametroHistoricoPayloadOld(frame); if (!p) return undefined;
+//     return p.readUInt8(PH_OFF.tipoDato) as EnTipoDatoDFAccion;
+// }
+/** Lee el tipo de dato “old” del payload histórico. */
+export function getPhTipoDatoOld(frame: Buffer): EnTipoDatoOld | undefined {
+    const p = getParametroHistoricoPayloadOld(frame);
+    if (!p) return undefined;
+    return p.readUInt8(PH_OFF.tipoDato) as EnTipoDatoOld;
 }
 
 export function getPhFechaOld(frame: Buffer) {
@@ -61,54 +67,91 @@ export function getPhDatosRawOld(frame: Buffer): Buffer | undefined {
 }
 
 /** Interpreta 'datos' según el tipo DF. Si no reconoce el tipo, devuelve el Buffer crudo (4B). */
+// export function getPhDatosValorOld(frame: Buffer): number | Buffer | undefined {
+//     const p = getParametroHistoricoPayloadOld(frame); if (!p) return undefined;
+//     const tipo = p.readUInt8(PH_OFF.tipoDato) as EnTipoDatoDFAccion;
+//     const raw = p.subarray(PH_OFF.datos, PH_OFF.datos + 4);
+
+//     // Mapeo básico por familias (todas caben en 4B en esta trama)
+//     const asU32 = () => raw.readUInt32BE(0);
+//     const asI32 = () => raw.readInt32BE(0);
+//     const asF32 = () => raw.readFloatBE(0); // Node >=12 soporta readFloatBE
+
+//     switch (tipo) {
+//         // UINT8 / INT8 -> vienen en 4B; devolvemos el LSB con signo si aplica
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint8:
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint8:
+//             return raw.readUInt8(3);
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt8:
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt8:
+//             return raw.readInt8(3);
+
+//         // UINT16 / INT16 -> usamos los 2 LSB
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint16:
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint16:
+//             return raw.readUInt16BE(2);
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt16:
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt16:
+//             return raw.readInt16BE(2);
+
+//         // UINT32 / INT32
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint32:
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint32:
+//             return asU32();
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt32:
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt32:
+//             return asI32();
+
+//         // Floats (usamos float32 BE). Incluye las variantes float0/1/2/3 por si firmware las usa igual.
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat0:
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat1:
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat2:
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat3:
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat0:
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat1:
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat2:
+//         case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat3:
+//             return asF32();
+
+//         // Tiempos/fechas/string/eventos/etc -> no interpretamos aquí: devolvemos los 4B crudos
+//         default:
+//             return raw;
+//     }
+// }
+/** Interpreta 'datos' (4B BE) según EnTipoDatoOld. Si no reconoce el tipo, devuelve el Buffer crudo. */
 export function getPhDatosValorOld(frame: Buffer): number | Buffer | undefined {
-    const p = getParametroHistoricoPayloadOld(frame); if (!p) return undefined;
-    const tipo = p.readUInt8(PH_OFF.tipoDato) as EnTipoDatoDFAccion;
+    const p = getParametroHistoricoPayloadOld(frame);
+    if (!p) return undefined;
+
+    const tipo = p.readUInt8(PH_OFF.tipoDato) as EnTipoDatoOld;
     const raw = p.subarray(PH_OFF.datos, PH_OFF.datos + 4);
 
-    // Mapeo básico por familias (todas caben en 4B en esta trama)
     const asU32 = () => raw.readUInt32BE(0);
     const asI32 = () => raw.readInt32BE(0);
-    const asF32 = () => raw.readFloatBE(0); // Node >=12 soporta readFloatBE
+    const asF32 = () => raw.readFloatBE(0);
 
     switch (tipo) {
-        // UINT8 / INT8 -> vienen en 4B; devolvemos el LSB con signo si aplica
-        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint8:
-        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint8:
-            return raw.readUInt8(3);
-        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt8:
-        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt8:
-            return raw.readInt8(3);
-
-        // UINT16 / INT16 -> usamos los 2 LSB
-        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint16:
-        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint16:
-            return raw.readUInt16BE(2);
-        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt16:
-        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt16:
-            return raw.readInt16BE(2);
-
-        // UINT32 / INT32
-        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint32:
-        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint32:
-            return asU32();
-        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt32:
-        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt32:
-            return asI32();
-
-        // Floats (usamos float32 BE). Incluye las variantes float0/1/2/3 por si firmware las usa igual.
-        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat0:
-        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat1:
-        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat2:
-        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat3:
-        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat0:
-        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat1:
-        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat2:
-        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat3:
+        // Valores “sensores/estadísticos”: normalmente float32
+        case EnTipoDatoOld.datoEstadisticas:
+        case EnTipoDatoOld.cambioParametro:
+        case EnTipoDatoOld.cambioParametroValoresCalculados:
             return asF32();
 
-        // Tiempos/fechas/string/eventos/etc -> no interpretamos aquí: devolvemos los 4B crudos
+        // Cambios de parámetro “calculados”: típicamente float32
+        // return asF32();
+
+        // Cambio de parámetro “normal”: suele ser entero (enum/escala)
+        // return asI32();
+
+        // Eventos/identificadores/contadores: mejor como entero sin signo
+        case EnTipoDatoOld.alarmas:
+        case EnTipoDatoOld.tablaLog:
+        case EnTipoDatoOld.altasBajasRetiradas:
+        case EnTipoDatoOld.inicioFinCrianza:
+            return asU32();
+
         default:
+            // Desconocido: devolvemos el crudo para no inventar interpretación
             return raw;
     }
 }
@@ -178,6 +221,8 @@ export function logTramaParametroHistoricoOld(frame: Buffer): void {
         josLogger.trace(`idUnico:      ${dto.identificadorUnicoDentroDelSegundo}    `);
         switch (dto.tipoDato) {
             case EnTipoDatoOld.datoEstadisticas:
+            case EnTipoDatoOld.cambioParametro:
+            case EnTipoDatoOld.cambioParametroValoresCalculados:
                 josLogger.trace(`idCliente:    ${dto.identificadorCliente}`); //${EnEstadisticosNombres[dto.numeroServicio]}`);
                 break;
             case EnTipoDatoOld.altasBajasRetiradas:
@@ -190,7 +235,7 @@ export function logTramaParametroHistoricoOld(frame: Buffer): void {
                 josLogger.trace(`idCliente:    ${dto.identificadorCliente}`); //${EnEstadisticosNombres[dto.numeroServicio]}`);
                 break;
         }
-        josLogger.trace(`numServicio:  ${dto.tipoDato === EnTipoDatoOld.alarmas ? `${dto.identificadorCliente} (se interprreta según ENUM_textos)` : EnEstadisticosNombres[dto.numeroServicio]}`);
+        josLogger.trace(`numServicio:  ${dto.tipoDato === EnTipoDatoOld.alarmas ? `${dto.identificadorCliente} (se interpreta según ENUM_textos)` : EnEstadisticosNombres[dto.numeroServicio]}`);
         josLogger.trace(`datos:        ${Buffer.isBuffer(dto.datos) ? dto.datos.toString('hex') : dto.datos}`);
         josLogger.trace(`idCrianza:    ${dto.identificadorCrianzaUnico}`);
         josLogger.trace(`diaCrianza:   ${dto.diaCrianza}`);

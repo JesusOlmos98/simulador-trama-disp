@@ -24,7 +24,7 @@ import { TcpClientService } from 'src/tcp-client/tcp-client.service';
 import { logTramaParametroHistoricoOld } from 'src/utils/BE_Old/get/getEstadistico';
 import { logTramaCompletaTablaDispositivosOld } from 'src/utils/BE_Old/get/getTablaDispositivos';
 import { PROTO_VERSION_OLD } from 'src/utils/BE_Old/globals/constGlobales';
-import { EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoMensajeCentralDispositivo, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
+import { EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoOld, EnTipoMensajeCentralDispositivo, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
 import { START, END } from 'src/utils/LE/globals/constGlobales';
 import {
   EnTipoTrama,
@@ -624,7 +624,10 @@ export class TramaController {
 
   @Post('estadisticoValor')
   /** Se puede introducir por parámetro, opcionalmente: mac, nodo, estado, td (tipoDispositivo), version, hayAlarma */
-  async estadisticoValor(@Query('numSer') numSer?: string) {
+  async estadisticoValor(
+    @Query('numSer') numSer?: string,
+    @Query('cambioParametro') cambioParametro?: string
+  ) {
 
     await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
 
@@ -635,6 +638,9 @@ export class TramaController {
       const n = parseInt(numSer);
       estadistico = this.tcp.crearDataEstadisticoValorOld(n);
     }
+
+    // Si se introduce cualquier valor para cambioParametro, se interpreta como cambioParametro en vez de estadístico valor normal.
+    if (cambioParametro !== undefined) estadistico.tipoDato = EnTipoDatoOld.cambioParametro;
 
     const data = serializarParametroHistoricoOld(estadistico);
 
@@ -692,7 +698,7 @@ export class TramaController {
 
   }
 
-    @Post('estadisticoInicioFinOld')
+  @Post('estadisticoInicioFinOld')
   async estadisticoInicioFinOld(@Query('inicioFin') inicioFin?: string) {
 
     await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
@@ -721,7 +727,7 @@ export class TramaController {
     return ok;
   }
 
-      @Post('estadisticoAlarmasOld')
+  @Post('estadisticoAlarmasOld')
   async estadisticoAlarmasOld(@Query('alarma') alarma?: string) {
 
     await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
