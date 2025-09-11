@@ -1,5 +1,5 @@
 import { Controller, Post, Query, BadRequestException } from '@nestjs/common';
-import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoValorOld } from 'src/dtoBE/defaultTramaOld';
+import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld } from 'src/dtoBE/defaultTramaOld';
 import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
 import { serializarParametroHistoricoOld } from 'src/dtoBE/tt_estadisticosOld.dto';
 import {
@@ -24,7 +24,7 @@ import { TcpClientService } from 'src/tcp-client/tcp-client.service';
 import { logTramaParametroHistoricoOld } from 'src/utils/BE_Old/get/getEstadistico';
 import { logTramaCompletaTablaDispositivosOld } from 'src/utils/BE_Old/get/getTablaDispositivos';
 import { PROTO_VERSION_OLD } from 'src/utils/BE_Old/globals/constGlobales';
-import { EnTipoMensajeCentralDispositivo, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
+import { EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoMensajeCentralDispositivo, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
 import { START, END } from 'src/utils/LE/globals/constGlobales';
 import {
   EnTipoTrama,
@@ -624,19 +624,17 @@ export class TramaController {
 
   @Post('estadisticoValor')
   /** Se puede introducir por parámetro, opcionalmente: mac, nodo, estado, td (tipoDispositivo), version, hayAlarma */
-  async estadisticoValor(@Query('numServicioNombreEstadis') numServicioNombreEstadis?: string) {
-    
+  async estadisticoValor(@Query('numSer') numSer?: string) {
+
     await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
-    
-    const estadistico = defaultEstadisticoValorOld;
 
-    // if (numServicioNombreEstadis) {
-    //   const n = parseInt(numServicioNombreEstadis);
+    let estadistico = defaultEstadisticoValorOld;
 
-
-
-    // }
-
+    //done Según el numSer (EnEstadisticosNombres) envía un valor u otro (porcentaje, temperatura, nh3...)
+    if (numSer !== undefined) {
+      const n = parseInt(numSer);
+      estadistico = this.tcp.crearDataEstadisticoValorOld(n);
+    }
 
     const data = serializarParametroHistoricoOld(estadistico);
 
@@ -649,7 +647,43 @@ export class TramaController {
       versionProtocolo: PROTO_VERSION_OLD,
     });
 
-    
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    logTramaParametroHistoricoOld(bufferFrame);
+    return ok;
+  }
+
+  @Post('estadisticoAltasBajasRetiradas')
+  async estadisticoAltasBajasRetiradasOld(@Query('altaBajaRetirada') altaBajaRetirada?: string) {
+
+    await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
+
+    let estadistico = defaultEstadisticoAltasBajasRetiradasCrianzaOld;
+
+    if (altaBajaRetirada !== undefined) {
+      const n = parseInt(altaBajaRetirada);
+      estadistico.identificadorCliente = n === 1
+        ? EnTipoAccionAltasBajasRetiradasCrianzaOld.altaAnadir as number
+        : n === 2
+          ? EnTipoAccionAltasBajasRetiradasCrianzaOld.bajaAnadir as number
+          : n === 3
+            ? EnTipoAccionAltasBajasRetiradasCrianzaOld.retiradaAnadir as number
+            : EnTipoAccionAltasBajasRetiradasCrianzaOld.altaAnadir as number
+        ; // EnTipoAccionAltasBajasRetiradasCrianzaOld
+    }
+
+    // estadistico = this.tcp.crearDataEstadisticoValorOld(n);
+
+    const data = serializarParametroHistoricoOld(estadistico);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.envioDispositivoFinal, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
 
     const ok = this.tcp.enviarFrameOld(frame);
     const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
@@ -658,13 +692,63 @@ export class TramaController {
 
   }
 
+    @Post('estadisticoInicioFinOld')
+  async estadisticoInicioFinOld(@Query('inicioFin') inicioFin?: string) {
 
+    await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
 
+    let estadistico = defaultEstadisticoInicioFinCrianzaOld;
 
+    if (inicioFin !== undefined) {
+      const n = parseInt(inicioFin);
+      estadistico.identificadorCliente = n === 0 ? EnTipoAccionInicioFinCrianzaOld.inicio as number : EnTipoAccionInicioFinCrianzaOld.fin as number;
+    }
 
+    const data = serializarParametroHistoricoOld(estadistico);
 
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.envioDispositivoFinal, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
 
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    logTramaParametroHistoricoOld(bufferFrame);
+    return ok;
+  }
 
+      @Post('estadisticoAlarmasOld')
+  async estadisticoAlarmasOld(@Query('alarma') alarma?: string) {
+
+    await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
+
+    let estadistico = defaultEstadisticoAlarmasOld;
+
+    if (alarma !== undefined) {
+      const n = parseInt(alarma);
+      estadistico.datos = n;
+    }
+
+    const data = serializarParametroHistoricoOld(estadistico);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.envioDispositivoFinal, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    logTramaParametroHistoricoOld(bufferFrame);
+    return ok;
+  }
 
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP

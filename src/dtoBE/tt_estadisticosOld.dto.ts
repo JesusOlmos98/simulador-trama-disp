@@ -1,4 +1,4 @@
-import { EnEstadisticosNombres, EnTipoDatoDfAccion } from "src/utils/BE_Old/globals/enumOld";
+import { EnEstadisticosNombres, EnTipoDatoDFAccion, EnTipoDatoOld } from "src/utils/BE_Old/globals/enumOld";
 import { u8Old, toFixedBuffer, u16BE, u32BE, packDatos4BE, packMac8BE, u8 } from "src/utils/helpers";
 import { Fecha, Tiempo } from "src/utils/tiposGlobales";
 
@@ -18,7 +18,7 @@ import { Fecha, Tiempo } from "src/utils/tiposGlobales";
  */
 export class ParametroHistoricoOldDto {
     /** uint8: catálogo de tipo de dato (OLD). */
-    tipoDato: EnTipoDatoDfAccion; // o tu EnTipoDato existente
+    tipoDato: EnTipoDatoOld; // o tu EnTipoDato existente
 
     /** 3 bytes: día, mes, año(00–99). */
     fecha: Fecha;
@@ -36,7 +36,7 @@ export class ParametroHistoricoOldDto {
     identificadorCliente: number;
 
     /** uint16 BE: número de servicio. */
-    numeroServicio: EnEstadisticosNombres; // EnEstadisticosNombres
+    numeroServicio: number; // EnEstadisticosNombres | vacio | nombreAlarma (ENUM_textos) si tipoDato = alarmas
 
     /**
      * 4 bytes de datos. La interpretación depende de `tipoDato` (p.ej. UINT32, FLOAT, etc.).

@@ -1,7 +1,7 @@
 import { EnTipoEquipo } from "src/utils/LE/globals/enums";
 import { PresentacionCentralOldDto, TablaCentralItemOld } from "./tt_sistemaOld.dto";
 import { ParametroHistoricoOldDto } from "./tt_estadisticosOld.dto";
-import { EnEstadisticosNombres, EnTipoDatoDfAccion } from "src/utils/BE_Old/globals/enumOld";
+import { EnEstadisticosNombres, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld } from "src/utils/BE_Old/globals/enumOld";
 
 // Presentación (Omega) – protocolo antiguo (Big Endian)
 export const defaultPresentacionOmegaOld: PresentacionCentralOldDto = {
@@ -73,7 +73,9 @@ export function crearTablaCambioEstadoDispositivoOld(m: number | bigint, nod: nu
 }
 
 export const defaultEstadisticoValorOld: ParametroHistoricoOldDto = {
-  tipoDato: EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat1,
+  //done El tipoDato usa el enum EnTipoDatoOld, no EnTipoDatoDFAccion
+  //done Segun el tipoDato, se usa un TipoAccion u otro en identificadorCliente
+  tipoDato: EnTipoDatoOld.datoEstadisticas,  // EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat1,
   fecha: { dia: 1, mes: 1, anyo: 2023 },
   mac: 12345678,
   hora: { hora: 0, min: 0, seg: 0 },
@@ -83,7 +85,67 @@ export const defaultEstadisticoValorOld: ParametroHistoricoOldDto = {
   datos: 25.55,
   identificadorCrianzaUnico: 0,
   diaCrianza: 0
+  
 }
+
+export const defaultEstadisticoAltasBajasRetiradasCrianzaOld: ParametroHistoricoOldDto = {
+  tipoDato: EnTipoDatoOld.altasBajasRetiradas,
+  fecha: { dia: 1, mes: 1, anyo: 2023 }, // fecha alta-baja-retirada
+  mac: 12345678,
+  hora: { hora: 0, min: 0, seg: 0 }, // vacío
+  identificadorUnicoDentroDelSegundo: 0,
+  identificadorCliente: EnTipoAccionAltasBajasRetiradasCrianzaOld.altaAnadir, // tipoAccion
+  numeroServicio: 0, // vacío 
+  datos: 20, // nAnimales
+  identificadorCrianzaUnico: 0,
+  diaCrianza: 0 // vacío
+}
+
+export const defaultEstadisticoInicioFinCrianzaOld: ParametroHistoricoOldDto = {
+  tipoDato: EnTipoDatoOld.inicioFinCrianza,
+  fecha: { dia: 1, mes: 1, anyo: 2023 }, 
+  mac: 12345678,
+  hora: { hora: 0, min: 0, seg: 0 }, 
+  identificadorUnicoDentroDelSegundo: 0,
+  identificadorCliente: EnTipoAccionInicioFinCrianzaOld.inicio, // tipoAccion
+  numeroServicio: 0, // vacío
+  datos: 20, // nAnimales
+  identificadorCrianzaUnico: 0,
+  diaCrianza: 12 
+}
+
+export const defaultEstadisticoAlarmasOld: ParametroHistoricoOldDto = {
+  tipoDato: EnTipoDatoOld.alarmas,
+  fecha: { dia: 1, mes: 1, anyo: 2023 }, 
+  mac: 12345678,
+  hora: { hora: 0, min: 0, seg: 0 }, 
+  identificadorUnicoDentroDelSegundo: 0,
+  identificadorCliente: 1, 
+  numeroServicio: 10087, // nombre alarma (ENUM_textos)
+  datos: 1, // 0 o 1
+  identificadorCrianzaUnico: 0,
+  diaCrianza: 0
+}
+
+// TipoDato:  
+  // Dato_Estadisticas: 1 (El que solemos usar de base)
+  // Cambio parámetro : 2 
+  // Alarmas : 3 
+  // Tabla LOG : 4 
+  // Altas  bajas y retiradas : 5   
+    // TipoAccion (en vez de idCliente) (altas, bajas, retiradas):
+      //  0: baja añadir 
+      //  1: alta añadir 
+      //  2: retirada añadir 
+      //  3: baja editando último registro 
+      //  4: alta editando último registro 
+      //  5: retirada editando último registró 
+      //  6: elimina último registro 
+  // Cambio parámetro valores calculados: 6 
+  // Inicio crianza o fin_crianza: 7
+    // TipoAccion (en vez de idCliente) (inicio, fin):
+      // 0: inicio 
+      // 1: fin
 
 //* -------------------------------------------------------------------------------------------------------------------
 //* -------------------------------------------------------------------------------------------------------------------
@@ -174,3 +236,116 @@ function genCrcParametros(): number {
   return 0;
 }
 
+// Tabla predefinida:
+export const defaultTablaPrefabricada: TablaCentralItemOld[] = [
+  {
+    mac: Buffer.from([0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]),
+    nodo: 1,
+    estado: 1,
+    tipoDispositivo: 115,   // p. ej. CTI40
+    version: 0x0101,
+    password: '0000000000000001', // 16 chars
+    crcParametros: 0,
+    infoEstado: 0,
+    hayAlarma: 0,
+  },
+  {
+    mac: Buffer.from([0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x78]),
+    nodo: 2,
+    estado: 0,
+    tipoDispositivo: 140,   // p. ej. OMEGA
+    version: 0x0102,
+    password: '0000000000000002',
+    crcParametros: 0,
+    infoEstado: 1,
+    hayAlarma: 1,
+  },
+  {
+    mac: Buffer.from([0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x79]),
+    nodo: 3,
+    estado: 1,
+    tipoDispositivo: 115,
+    version: 0x0103,
+    password: '0000000000000003',
+    crcParametros: 0,
+    infoEstado: 2,
+    hayAlarma: 0,
+  },
+  {
+    mac: Buffer.from([0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x7A]),
+    nodo: 4,
+    estado: 1,
+    tipoDispositivo: 140,
+    version: 0x0104,
+    password: '0000000000000004',
+    crcParametros: 0,
+    infoEstado: 3,
+    hayAlarma: 1,
+  },
+  {
+    mac: Buffer.from([0x00,0xAA,0xBB,0xCC,0xDD,0xEE,0xF0,0x01]),
+    nodo: 5,
+    estado: 1,
+    tipoDispositivo: 115,
+    version: 0x0201,
+    password: '0000000000000005',
+    crcParametros: 0,
+    infoEstado: 4,
+    hayAlarma: 0,
+  },
+  {
+    mac: Buffer.from([0x00,0xAA,0xBB,0xCC,0xDD,0xEE,0xF0,0x02]),
+    nodo: 6,
+    estado: 1,
+    tipoDispositivo: 140,
+    version: 0x0202,
+    password: '0000000000000006',
+    crcParametros: 0,
+    infoEstado: 5,
+    hayAlarma: 1,
+  },
+  {
+    mac: Buffer.from([0x10,0x20,0x30,0x40,0x50,0x60,0x70,0x80]),
+    nodo: 7,
+    estado: 0,
+    tipoDispositivo: 115,
+    version: 0x0203,
+    password: '0000000000000007',
+    crcParametros: 0,
+    infoEstado: 6,
+    hayAlarma: 0,
+  },
+  {
+    mac: Buffer.from([0x10,0x20,0x30,0x40,0x50,0x60,0x70,0x81]),
+    nodo: 8,
+    estado: 1,
+    tipoDispositivo: 140,
+    version: 0x0204,
+    password: '0000000000000008',
+    crcParametros: 0,
+    infoEstado: 7,
+    hayAlarma: 1,
+  },
+  {
+    mac: Buffer.from([0xDE,0xAD,0xBE,0xEF,0x00,0x00,0x00,0x09]),
+    nodo: 9,
+    estado: 1,
+    tipoDispositivo: 115,
+    version: 0x0301,
+    password: '0000000000000009',
+    crcParametros: 0,
+    infoEstado: 8,
+    hayAlarma: 0,
+  },
+  {
+    mac: Buffer.from([0xDE,0xAD,0xBE,0xEF,0x00,0x00,0x00,0x0A]),
+    nodo: 10,
+    estado: 1,
+    tipoDispositivo: 140,
+    version: 0x0302,
+    password: '0000000000000010',
+    crcParametros: 0,
+    infoEstado: 9,
+    hayAlarma: 1,
+  },
+];

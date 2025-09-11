@@ -1,7 +1,7 @@
 // ========================= Estadístico OLD (TM_envia_parametro_historico) =========================
 
 import { ParametroHistoricoOldDto } from "src/dtoBE/tt_estadisticosOld.dto";
-import { EnTipoTramaOld, EnTipoMensajeDispositivoCentral, EnTipoDatoDfAccion, EnEstadisticosNombres } from "../globals/enumOld";
+import { EnTipoTramaOld, EnTipoMensajeDispositivoCentral, EnTipoDatoDFAccion, EnEstadisticosNombres, EnTipoDatoOld, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld } from "../globals/enumOld";
 import { getTipoTramaOld, getTipoMensajeOld, getDataSectionOld, getParsedHeaderOld, getStartOld, getCRCFromFrameOld, getEndOld } from "./getTrama";
 import { josLogger } from "src/utils/josLogger";
 
@@ -19,9 +19,9 @@ export function getParametroHistoricoPayloadOld(frame: Buffer): Buffer | undefin
 
 // =================== getters campo a campo ===================
 
-export function getPhTipoDatoOld(frame: Buffer): EnTipoDatoDfAccion | undefined {
+export function getPhTipoDatoOld(frame: Buffer): EnTipoDatoDFAccion | undefined {
     const p = getParametroHistoricoPayloadOld(frame); if (!p) return undefined;
-    return p.readUInt8(PH_OFF.tipoDato) as EnTipoDatoDfAccion;
+    return p.readUInt8(PH_OFF.tipoDato) as EnTipoDatoDFAccion;
 }
 
 export function getPhFechaOld(frame: Buffer) {
@@ -63,7 +63,7 @@ export function getPhDatosRawOld(frame: Buffer): Buffer | undefined {
 /** Interpreta 'datos' según el tipo DF. Si no reconoce el tipo, devuelve el Buffer crudo (4B). */
 export function getPhDatosValorOld(frame: Buffer): number | Buffer | undefined {
     const p = getParametroHistoricoPayloadOld(frame); if (!p) return undefined;
-    const tipo = p.readUInt8(PH_OFF.tipoDato) as EnTipoDatoDfAccion;
+    const tipo = p.readUInt8(PH_OFF.tipoDato) as EnTipoDatoDFAccion;
     const raw = p.subarray(PH_OFF.datos, PH_OFF.datos + 4);
 
     // Mapeo básico por familias (todas caben en 4B en esta trama)
@@ -73,38 +73,38 @@ export function getPhDatosValorOld(frame: Buffer): number | Buffer | undefined {
 
     switch (tipo) {
         // UINT8 / INT8 -> vienen en 4B; devolvemos el LSB con signo si aplica
-        case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoUint8:
-        case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroUint8:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint8:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint8:
             return raw.readUInt8(3);
-        case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoInt8:
-        case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroInt8:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt8:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt8:
             return raw.readInt8(3);
 
         // UINT16 / INT16 -> usamos los 2 LSB
-        case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoUint16:
-        case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroUint16:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint16:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint16:
             return raw.readUInt16BE(2);
-        case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoInt16:
-        case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroInt16:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt16:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt16:
             return raw.readInt16BE(2);
 
         // UINT32 / INT32
-        case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoUint32:
-        case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroUint32:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint32:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint32:
             return asU32();
-        case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoInt32:
-        case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroInt32:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt32:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt32:
             return asI32();
 
         // Floats (usamos float32 BE). Incluye las variantes float0/1/2/3 por si firmware las usa igual.
-        case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat0:
-        case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat1:
-        case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat2:
-        case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat3:
-        case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroFloat0:
-        case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroFloat1:
-        case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroFloat2:
-        case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroFloat3:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat0:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat1:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat2:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat3:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat0:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat1:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat2:
+        case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat3:
             return asF32();
 
         // Tiempos/fechas/string/eventos/etc -> no interpretamos aquí: devolvemos los 4B crudos
@@ -128,7 +128,7 @@ export function getPhDiaCrianzaOld(frame: Buffer): number | undefined {
 export function parseParametroHistoricoOld(frame: Buffer): ParametroHistoricoOldDto | undefined {
     const p = getParametroHistoricoPayloadOld(frame); if (!p) return undefined;
 
-    const tipoDato = p.readUInt8(PH_OFF.tipoDato) as EnTipoDatoDfAccion;
+    const tipoDato = p.readUInt8(PH_OFF.tipoDato);
     const fecha = readFecha3(p, PH_OFF.fecha);
     const mac = p.subarray(PH_OFF.mac, PH_OFF.mac + 8); // Buffer crudo (más fiel); si quieres number, conviértelo aparte
     const hora = readHora3(p, PH_OFF.hora);
@@ -160,24 +160,37 @@ export function logTramaParametroHistoricoOld(frame: Buffer): void {
     const p = getParametroHistoricoPayloadOld(frame);
     josLogger.trace(`---------- DECODIFICAMOS TRAMA EN BYTES: ----------`);
     josLogger.trace(`Inicio: ${getStartOld(frame).toString('hex')}`);
-    josLogger.trace(`Versión protocolo: ${getParsedHeaderOld(frame).versionProtocolo} `);
-    josLogger.trace(`Nodo origen: ${getParsedHeaderOld(frame).nodoOrigen} `);
-    josLogger.trace(`Nodo destino: ${getParsedHeaderOld(frame).nodoDestino} `);
-    josLogger.trace(`Tipo Trama TT: ${EnTipoTramaOld[getParsedHeaderOld(frame).tipoTrama]} `);
-    josLogger.trace(`Tipo Mensaje TM: ${EnTipoMensajeDispositivoCentral[getParsedHeaderOld(frame).tipoMensaje]} `);
-    josLogger.trace(`Longitud: ${getParsedHeaderOld(frame).longitud} `);
+    josLogger.trace(`Versión protocolo: ${hdr.versionProtocolo} `);
+    josLogger.trace(`Nodo origen: ${hdr.nodoOrigen} `);
+    josLogger.trace(`Nodo destino: ${hdr.nodoDestino} `);
+    josLogger.trace(`Tipo Trama TT: ${EnTipoTramaOld[hdr.tipoTrama]} `);
+    josLogger.trace(`Tipo Mensaje TM: ${EnTipoMensajeDispositivoCentral[hdr.tipoMensaje]} `);
+    josLogger.trace(`Longitud: ${hdr.longitud} `);
     if (!p) {
         josLogger.trace(`Payload: <incompatible o demasiado corto>`);
     } else {
         const dto = parseParametroHistoricoOld(frame)!;
         josLogger.trace(`---------- DATA: ----------`);
-        josLogger.trace(`tipoDato:     ${EnTipoDatoDfAccion[dto.tipoDato]} (${dto.tipoDato})`);
+        josLogger.trace(`tipoDato:     ${EnTipoDatoOld[dto.tipoDato]} (${dto.tipoDato})`);
         josLogger.trace(`fecha:        ${dto.fecha.dia}-${dto.fecha.mes}-${dto.fecha.anyo}  `);
         josLogger.trace(`hora:         ${dto.hora.hora}:${dto.hora.min}:${dto.hora.seg}`);
         josLogger.trace(`mac:          ${Buffer.isBuffer(dto.mac) ? dto.mac.toString('hex') : dto.mac}`);
         josLogger.trace(`idUnico:      ${dto.identificadorUnicoDentroDelSegundo}    `);
-        josLogger.trace(`idCliente:    ${dto.identificadorCliente}`);
-        josLogger.trace(`numServicio:  ${EnEstadisticosNombres[dto.numeroServicio]}`);
+        switch (dto.tipoDato) {
+            case EnTipoDatoOld.datoEstadisticas:
+                josLogger.trace(`idCliente:    ${dto.identificadorCliente}`); //${EnEstadisticosNombres[dto.numeroServicio]}`);
+                break;
+            case EnTipoDatoOld.altasBajasRetiradas:
+                josLogger.trace(`idCliente:    ${EnTipoAccionAltasBajasRetiradasCrianzaOld[dto.identificadorCliente]}`);
+                break;
+            case EnTipoDatoOld.inicioFinCrianza:
+                josLogger.trace(`idCliente:    ${EnTipoAccionInicioFinCrianzaOld[dto.identificadorCliente]}`);
+                break;
+            default:
+                josLogger.trace(`idCliente:    ${dto.identificadorCliente}`); //${EnEstadisticosNombres[dto.numeroServicio]}`);
+                break;
+        }
+        josLogger.trace(`numServicio:  ${dto.tipoDato === EnTipoDatoOld.alarmas ? `${dto.identificadorCliente} (se interprreta según ENUM_textos)` : EnEstadisticosNombres[dto.numeroServicio]}`);
         josLogger.trace(`datos:        ${Buffer.isBuffer(dto.datos) ? dto.datos.toString('hex') : dto.datos}`);
         josLogger.trace(`idCrianza:    ${dto.identificadorCrianzaUnico}`);
         josLogger.trace(`diaCrianza:   ${dto.diaCrianza}`);
@@ -186,7 +199,6 @@ export function logTramaParametroHistoricoOld(frame: Buffer): void {
     josLogger.trace(`CRC: ${getCRCFromFrameOld(frame)}`);
     josLogger.trace(`Fin: ${getEndOld(frame).toString('hex')}`);
 }
-
 
 //! Helpers
 
@@ -221,3 +233,19 @@ const readHora3 = (b: Buffer, off: number) => ({
     min: b.readUInt8(off + 1),
     seg: b.readUInt8(off + 2),
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -332,7 +332,7 @@ export enum EnGtdetecTrama {
 }
 
 /** DF – Tipo de dato / acción */
-export enum EnTipoDatoDfAccion {
+export enum EnTipoDatoDFAccion {
   tipoDatoAccionDfEstadisticoUint8 = 1,
   tipoDatoAccionDfEstadisticoInt8 = 2,
   tipoDatoAccionDfEstadisticoUint16 = 3,
@@ -1433,4 +1433,30 @@ export enum EnEstadisticosNombres {
 
   // En el original: “POCENTAJE … INSTANTANEO”
   pocentajeHoraSiloInstantaneo = 3470,
+}
+
+// Para envío de estadísticos (históricos)
+export enum EnTipoDatoOld {
+  datoEstadisticas = 1,                 // Estadísticos
+  cambioParametro = 2,                  // Cambio de parámetro
+  alarmas = 3,                          // Alarmas
+  tablaLog = 4,                         // Tabla de LOG
+  altasBajasRetiradas = 5,              // Altas / bajas / retiradas
+  cambioParametroValoresCalculados = 6, // Cambios de parámetros “calculados”
+  inicioFinCrianza = 7,                 // Inicio o fin de crianza
+}
+
+export enum EnTipoAccionAltasBajasRetiradasCrianzaOld {
+  bajaAnadir = 0,
+  altaAnadir = 1,
+  retiradaAnadir = 2,
+  bajaEditandoUltimoRegistro = 3,
+  altaEditandoUltimoRegistro = 4,
+  retiradaEditandoUltimoRegistro = 5,
+  eliminaUltimoRegistro = 6,
+}
+
+export enum EnTipoAccionInicioFinCrianzaOld {
+  inicio,
+  fin
 }

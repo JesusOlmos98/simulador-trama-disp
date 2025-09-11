@@ -1,19 +1,19 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
 import { EnvConfiguration } from "config/app.config";
 import { Socket } from "node:net";
-import { crearDefaultDispositivoTablaOld, defaultPresentacionOmegaOld } from "src/dtoBE/defaultTramaOld";
+import { crearDefaultDispositivoTablaOld, defaultEstadisticoValorOld, defaultPresentacionOmegaOld, defaultTablaPrefabricada } from "src/dtoBE/defaultTramaOld";
 import { FrameOldDto } from "src/dtoBE/frameOld.dto";
 import { ParametroHistoricoOldDto } from "src/dtoBE/tt_estadisticosOld.dto";
-import { PresentacionCentralOldDto, RtPresenciaCentralOldDto, RtTablaCentralFinOldDto, RtTablaCentralMasOldDto, serializarTablaCentralItemsOld, TablaCentralItemOld } from "src/dtoBE/tt_sistemaOld.dto";
+import { PresentacionCentralOldDto, RtTablaCentralFinOldDto, RtTablaCentralMasOldDto, serializarTablaCentralItemsOld, TablaCentralItemOld } from "src/dtoBE/tt_sistemaOld.dto";
 import { defaultDataTempSonda1, defaultDataContadorAgua, defaultDataActividadCalefaccion1, defaultDataEventoInicioCrianza, defaultDataAlarmaTempAlta, defaultDataCambioParametro, defaultPresentacionCTI40 } from "src/dtoLE/defaultTrama";
 import { FrameDto } from "src/dtoLE/frame.dto";
 import { PeticionConsolaDto } from "src/dtoLE/tt_depuracion.dto";
 import { EnviaEstadisticoDto } from "src/dtoLE/tt_estadisticos.dto";
 import { PresentacionDto, EstadoDispositivoTxDto, ConfigFinalTxDto, UrlDescargaOtaTxDto, ProgresoActualizacionTxDto } from "src/dtoLE/tt_sistema.dto";
 import { DEF_MAX_DATOS_TRAMA, MAX_ITEMS_PER_FRAME, PROTO_VERSION_OLD } from "src/utils/BE_Old/globals/constGlobales";
-import { EnTipoTramaOld, EnTipoMensajeCentralServidor } from "src/utils/BE_Old/globals/enumOld";
+import { EnTipoTramaOld, EnTipoMensajeCentralServidor, EnEstadisticosNombres } from "src/utils/BE_Old/globals/enumOld";
 import { crc16IBM } from "src/utils/crc";
-import { hexDump } from "src/utils/helpers";
+import { hexDump, valorSimuladoPorNombre } from "src/utils/helpers";
 import { josLogger } from "src/utils/josLogger";
 import { getTipoTrama, getTipoMensaje, getDataSection } from "src/utils/LE/get/getTrama";
 import { ACK_TTL_MS, PROTO_VERSION, MAX_DATA_BYTES, START, END, ACK_TIMEOUT_MS } from "src/utils/LE/globals/constGlobales";
@@ -356,7 +356,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         } = params;
 
         // Límite clásico del campo datos (ajusta al nombre de tus constantes si difiere)
-        if (typeof DEF_MAX_DATOS_TRAMA === 'number' && data.length > DEF_MAX_DATOS_TRAMA) {throw new Error(`El cuerpo supera ${DEF_MAX_DATOS_TRAMA} bytes`);}
+        if (typeof DEF_MAX_DATOS_TRAMA === 'number' && data.length > DEF_MAX_DATOS_TRAMA) { throw new Error(`El cuerpo supera ${DEF_MAX_DATOS_TRAMA} bytes`); }
 
         const frame: FrameOldDto = {
             inicioTrama: START,         // mismos delimitadores que en nuevo
@@ -560,21 +560,40 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     }
 
     /** TM_rt_presencia_central (old) — BE, 8 bytes por nodo */
-    createDataPresenciaOld(p: RtPresenciaCentralOldDto): Buffer {
-        const nodos = p?.nodos ?? [];
-        if (nodos.length === 0) return Buffer.alloc(0);
+    crearDataPresenciaOld(/*tabla: RtPresenciaCentralOldDto*/): Buffer {
+        //! La central envía una trama con el CRC de la tabla y TODOS los items {direccionNodo, crcParametros, crcAlarmas} por dipositivo que existan.
+        // ? En el método antiguo se envían todos los CRC se envían todos los parámetros 
+        // ? indicados. En el método nuevo solo se va a enviar el CRC de tabla. 
+        //! Supongo entonces que no se envían items, únicamente el CRC_tabla
 
-        const data = Buffer.alloc(8 * nodos.length);
-        let o = 0;
+        // const nodos = p?.nodos ?? [];
+        // if (nodos.length === 0) return Buffer.alloc(0);
 
-        for (const n of nodos) {
-            data.writeUInt16BE((n.crcTabla ?? 0) & 0xffff, o); o += 2; // 16b CRC tabla
-            data.writeUInt16BE((n.direccionNodo ?? 0) & 0xffff, o); o += 2; // 16b dirección nodo
-            data.writeUInt16BE((n.crcParametros ?? 0) & 0xffff, o); o += 2; // 16b CRC parámetros (0 si no se usa)
-            data.writeUInt16BE((n.crcAlarmas ?? 0) & 0xffff, o); o += 2; // 16b CRC alarmas
-        }
+        // const data = Buffer.alloc(8 * nodos.length);
+        // let o = 0;
 
+        // for (const n of nodos) {
+        //     data.writeUInt16BE((n.crcTabla ?? 0) & 0xffff, o); o += 2; // 16b CRC tabla
+        //     data.writeUInt16BE((n.direccionNodo ?? 0) & 0xffff, o); o += 2; // 16b dirección nodo
+        //     data.writeUInt16BE((n.crcParametros ?? 0) & 0xffff, o); o += 2; // 16b CRC parámetros (0 si no se usa)
+        //     data.writeUInt16BE((n.crcAlarmas ?? 0) & 0xffff, o); o += 2; // 16b CRC alarmas
+        // }
+
+        // return data;
+
+        //jos Recibimos tabla, calculamos CRC y enviamos
+        const tabla = serializarTablaCentralItemsOld(defaultTablaPrefabricada);
+        const crc = crc16IBM(tabla);
+        
+        const data = Buffer.alloc(2);
+        data.writeUInt16BE(crc & 0xffff, 0); // 16 bits BE según doc
         return data;
+        // const crcTabla = (tabla as any)?.crcTabla ?? tabla?.nodos?.[0]?.crcTabla;
+        
+        // if (typeof crcTabla !== 'number') {
+            //     josLogger.warn('⚠️ Presencia: no se proporcionó crcTabla → no se envía trama.');
+            //     return Buffer.alloc(0);
+            // }
     }
 
     /** TM_SISTEMA_TX_ESTADO_DISPOSITIVO */
@@ -808,7 +827,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     // Presencia (central -> servidor) — protocolo antiguo (BE)    
     async handlerPresenciaOld(): Promise<boolean | { bytes: number; hex: string }> {
         // Si quieres enviar nodos reales, pásalos aquí. Con [] se envía payload vacío.
-        const data = this.createDataPresenciaOld({ nodos: [] });
+        const data = this.crearDataPresenciaOld(); // { nodos: [] }
 
         const frameOld = this.crearFrameOld({
             nodoOrigen: 1,
@@ -885,12 +904,12 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         const mas = data.mas ? serializarTablaCentralItemsOld(data.mas.items) : undefined;
         if (data.mas) console.table(data.mas.items);
         console.table(data.fin.items);
-        
+
         return { fin, mas };
     }
 
     /** Esta función ya devuelve el buffer, es decir, introducimos el dispositivo que ha cambiado, "crea la tabla" y serializa devolviendo el buffer. */
-    crearDataTablaDispositivosCambioEstadoOld(disp: TablaCentralItemOld):Buffer {
+    crearDataTablaDispositivosCambioEstadoOld(disp: TablaCentralItemOld): Buffer {
         const items: TablaCentralItemOld[] = [];
         items.push(disp);
         return serializarTablaCentralItemsOld(items);
@@ -909,15 +928,19 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
 
 
 
-    crearDataEstadisticoValorOld(estadistico: ParametroHistoricoOldDto) {
+    crearDataEstadisticoValorOld(estadisticoNombre: number): ParametroHistoricoOldDto {
 
-        
+        const estadistico = defaultEstadisticoValorOld;
 
-        // const items: TablaCentralItemOld[] = [];
-        // items.push(estadistico);
-        // return serializarTablaCentralItemsOld(items);
+        estadistico.numeroServicio = estadisticoNombre;
+
+        josLogger.trace(`Estadístico ${EnEstadisticosNombres[estadisticoNombre]} enviado.`);
+
+        estadistico.datos = valorSimuladoPorNombre(estadisticoNombre);
+
+        return estadistico;
     }
-    
+
     // * -------------------------------------------------------------------------------------------------------------------
     // * -------------------------------------------------------------------------------------------------------------------
     // * -------------------------------------------------------------------------------------------------------------------

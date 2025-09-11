@@ -1,7 +1,7 @@
 import { PresentacionDto } from 'src/dtoLE/tt_sistema.dto';
 import { EnTipoDato } from './LE/globals/enums';
 import { Fecha } from './tiposGlobales';
-import { EnTipoDatoDfAccion } from './BE_Old/globals/enumOld';
+import { EnEstadisticosNombres, EnTipoDatoDFAccion, EnTipoDatoOld } from './BE_Old/globals/enumOld';
 
 // ------------------------------------------- isObject -------------------------------------------
 export function isObject(v: unknown): v is Record<string, unknown> {
@@ -237,61 +237,76 @@ export function packMac8BE(mac: number | Buffer): Buffer {
 }
 
 /** number|Buffer -> 4 bytes BE, según tipoDato (enteros/floats). */
-export function packDatos4BE(tipoDato: EnTipoDatoDfAccion, datos: number | Buffer): Buffer {
+// export function packDatos4BE(tipoDato: EnTipoDatoDFAccion, datos: number | Buffer): Buffer {
+//   if (Buffer.isBuffer(datos)) return toFixed(datos, 4);
+
+//   switch (tipoDato) {
+//     // Estadísticos (enteros)
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint8:
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint8:
+//       return u32BE(datos & 0xff);
+
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt8:
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt8:
+//       // Sign-extend a 32 bits
+//       return i32BE((datos << 24) >> 24);
+
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint16:
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint16:
+//       return u32BE(datos & 0xffff);
+
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt16:
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt16:
+//       return i32BE((datos << 16) >> 16);
+
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint32:
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint32:
+//       return u32BE(datos >>> 0);
+
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt32:
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt32:
+//       return i32BE(datos | 0);
+
+//     // Floats (0/1/2/3 → tratamos como float32 BE; si necesitas escalados, ajústalo aquí)
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat0:
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat1:
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat2:
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat3:
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat0:
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat1:
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat2:
+//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat3:
+//       return f32BE(datos);
+
+//     // Tipos “tiempo/fecha/string/evento…” NO deberían venir por este campo de 4B como número puro:
+//     // si llegan como número, los mandamos como u32 (mejor que fallar en runtime).
+//     default:
+//       return u32BE(datos >>> 0);
+//   }
+// }
+
+/** number|Buffer -> 4 bytes BE, mapeando por EnTipoDatoOld. */
+export function packDatos4BE(tipoDato: EnTipoDatoOld, datos: number | Buffer): Buffer {
   if (Buffer.isBuffer(datos)) return toFixed(datos, 4);
 
   switch (tipoDato) {
-    // Estadísticos (enteros)
-    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoUint8:
-    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroUint8:
-      return u32BE(datos & 0xff);
-
-    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoInt8:
-    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroInt8:
-      // Sign-extend a 32 bits
-      return i32BE((datos << 24) >> 24);
-
-    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoUint16:
-    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroUint16:
-      return u32BE(datos & 0xffff);
-
-    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoInt16:
-    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroInt16:
-      return i32BE((datos << 16) >> 16);
-
-    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoUint32:
-    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroUint32:
-      return u32BE(datos >>> 0);
-
-    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoInt32:
-    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroInt32:
-      return i32BE(datos | 0);
-
-    // Floats (0/1/2/3 → tratamos como float32 BE; si necesitas escalados, ajústalo aquí)
-    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat0:
-    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat1:
-    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat2:
-    case EnTipoDatoDfAccion.tipoDatoAccionDfEstadisticoFloat3:
-    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroFloat0:
-    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroFloat1:
-    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroFloat2:
-    case EnTipoDatoDfAccion.tipoDatoAccionDfCambioParametroFloat3:
+    // Valores de métricas y parámetros: enviamos como float32 BE
+    case EnTipoDatoOld.datoEstadisticas:
+    case EnTipoDatoOld.cambioParametro:
+    case EnTipoDatoOld.cambioParametroValoresCalculados:
       return f32BE(datos);
 
-    // Tipos “tiempo/fecha/string/evento…” NO deberían venir por este campo de 4B como número puro:
-    // si llegan como número, los mandamos como u32 (mejor que fallar en runtime).
+    // IDs, contadores, códigos de evento/alarma/log: enviamos como uint32 BE
+    case EnTipoDatoOld.alarmas:
+    case EnTipoDatoOld.tablaLog:
+    case EnTipoDatoOld.altasBajasRetiradas:
+    case EnTipoDatoOld.inicioFinCrianza:
+      return u32BE(datos >>> 0);
+
     default:
       return u32BE(datos >>> 0);
   }
 }
-
-
-
-
-
-
-
-
 
 export function mac8FromParam(macParam?: string): Buffer {
   // Acepta: "001a79d30d53d9da", "00:1a:79:d3:0d:53:d9:da", "0x001a79d30d53d9da"
@@ -305,4 +320,57 @@ export function mac8FromParam(macParam?: string): Buffer {
   if (s.length > 16) s = s.slice(-16);       // nos quedamos con los 8 bytes menos significativos
   if (s.length < 16) s = s.padStart(16, "0"); // pad a 8 bytes
   return Buffer.from(s, "hex");
+}
+
+
+
+
+
+
+
+
+
+
+export function rngInt(min: number, max: number): number {
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
+
+export function rngFloat(min: number, max: number, decimals = 2): number {
+  const p = 10 ** decimals;
+  // +Number.EPSILON para que el extremo superior sea alcanzable tras el redondeo
+  const n = min + Math.random() * (max - min + Number.EPSILON);
+  return Math.round(n * p) / p;
+}
+
+/** Devuelve un valor simulado acorde al nombre del estadístico. Ejemplo: Si contiene la palabra "temp" devuelve un valor entre 22 y 32. */
+export function valorSimuladoPorNombre(estadisticoNombre: EnEstadisticosNombres): number {
+  const key = EnEstadisticosNombres[estadisticoNombre] ?? "";
+
+  // Reglas por palabra clave (orden importa: la primera que coincida gana)
+  // Puedes añadir o ajustar patrones sin tocar lógica.
+  const rules: Array<[RegExp, () => number]> = [
+    // Temperatura
+    [/(^|_)temp|temperatura|sonda/, () => rngFloat(22, 32)],
+    // Humedad relativa
+    [/humedad|hr/, () => rngInt(40, 60)],
+    // CO2 (ppm)
+    [/co2/, () => rngInt(400, 999)],
+    // NH3 (ppm)
+    [/nh3|amoniaco|amon[ií]aco/, () => rngInt(0, 25)],
+    // Actividad (segundos): si contiene 'dia' usamos 0–86400; si 'hora' 0–3600
+    [/(actividad|etapa|actividad_)/, () => key.includes("dia") ? rngInt(0, 86400) : rngInt(0, 3600)],
+    // Contadores (agua/energía)
+    [/contador|litro|kwh|energia|energ[ií]a/, () => rngFloat(10_000, 500_000)],
+    // Consumo (kg)
+    [/consumo|carga(s)?(_|$)|descarga(s)?/, () => rngFloat(50, 800)],
+    // Peso (kg)
+    [/peso|bascula|b[aá]scula|animal/, () => rngFloat(20, 130)],
+  ];
+
+  for (const [re, gen] of rules) {
+    if (re.test(key)) return gen();
+  }
+
+  // Fallback por si no coincide nada: temp
+  return rngInt(15, 35);
 }

@@ -1,5 +1,5 @@
 import { END_OLD, START_OLD } from "src/utils/BE_Old/globals/constGlobales";
-import { PresentacionCentralOldDto, RtPresenciaCentralOldDto, RtTablaCentralMasOldDto, RtTablaCentralFinOldDto, EventoCambioEstadoNodoOldDto, RtEnviaParametroHistoricoOldDto } from "./tt_sistemaOld.dto";
+import { PresentacionCentralOldDto, RtTablaCentralMasOldDto, RtTablaCentralFinOldDto, EventoCambioEstadoNodoOldDto, RtEnviaParametroHistoricoOldDto } from "./tt_sistemaOld.dto";
 
 // ---------------- Frame completo ----------------
 export class FrameOldDto {
@@ -14,7 +14,7 @@ export class FrameOldDto {
   longitud: number; // bytes del campo `datos` solamente
 
   // Datos
-  datos: PresentacionCentralOldDto | RtPresenciaCentralOldDto | RtTablaCentralMasOldDto | RtTablaCentralFinOldDto | EventoCambioEstadoNodoOldDto | RtEnviaParametroHistoricoOldDto | Buffer;
+  datos: PresentacionCentralOldDto  | RtTablaCentralMasOldDto | RtTablaCentralFinOldDto | EventoCambioEstadoNodoOldDto | RtEnviaParametroHistoricoOldDto | Buffer;
 
   // CRC: 1 byte (LSB de CRC16 estándar sobre cabecera+datos)
   crc: number;

@@ -13,17 +13,17 @@ export interface PresentacionCentralOldDto {
 }
 
 // ---------- 5.2.1 TM_rt_presencia_central ----------
-export interface PresenciaNodoCrcOld {
-  crcTabla: number;        // uint16 BE
-  direccionNodo: number;   // uint16 BE
-  crcParametros: number;   // uint16 BE (antiguo: se envía 0 si no se usa)
-  crcAlarmas: number;      // uint16 BE
-}
+// export interface PresenciaNodoCrcOld {
+//   crcTabla: number;        // uint16 BE
+//   direccionNodo: number;   // uint16 BE
+//   crcParametros: number;   // uint16 BE (antiguo: se envía 0 si no se usa)
+//   crcAlarmas: number;      // uint16 BE
+// }
 
-export interface RtPresenciaCentralOldDto {
-  // Repetido N veces (8 bytes por nodo en el método antiguo)
-  nodos: PresenciaNodoCrcOld[];
-}
+// export interface RtPresenciaCentralOldDto {
+//   // Repetido N veces (8 bytes por nodo en el método antiguo)
+//   nodos: PresenciaNodoCrcOld[];
+// }
 
 // ---------- 5.2.3 TM_rt_tabla_central_mas / _fin ----------
 export interface TablaCentralItemOld {
