@@ -1,7 +1,8 @@
 import { Controller, Post, Query, BadRequestException } from '@nestjs/common';
-import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld } from 'src/dtoBE/defaultTramaOld';
+import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld, defaultParametroHistoricoValorOmegaDf } from 'src/dtoBE/defaultTramaOld';
 import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
 import { serializarParametroHistoricoOld } from 'src/dtoBE/tt_estadisticosOld.dto';
+import { serializarParametroHistoricoValorOmegaDf } from 'src/dtoBE/tt_estadisticosOldDF.dto';
 import {
   defaultDataTempSonda1,
   defaultDataContadorAgua,
@@ -21,10 +22,10 @@ import {
   ProgresoActualizacionTxDto,
 } from 'src/dtoLE/tt_sistema.dto';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
-import { logTramaParametroHistoricoOld } from 'src/utils/BE_Old/get/getEstadistico';
+import { logTramaParametroHistoricoOld, logTramaParametroHistoricoOmegaDf } from 'src/utils/BE_Old/get/getEstadistico';
 import { logTramaCompletaTablaDispositivosOld } from 'src/utils/BE_Old/get/getTablaDispositivos';
 import { PROTO_VERSION_OLD } from 'src/utils/BE_Old/globals/constGlobales';
-import { EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoOld, EnTipoMensajeCentralDispositivo, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
+import { EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld, EnTipoMensajeCentralDispositivo, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
 import { START, END } from 'src/utils/LE/globals/constGlobales';
 import {
   EnTipoTrama,
@@ -49,10 +50,14 @@ export class TramaController {
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
+  // * -------------------------------------------- EQUIPOS NUEVOS (ST) --------------------------------------------------
+  // * -------------------------------------------------------------------------------------------------------------------
+  // * -------------------------------------------------------------------------------------------------------------------
+  // * -------------------------------------------------------------------------------------------------------------------
+  // * -------------------------------------------------------------------------------------------------------------------
+
+  // * -------------------------------------------------------------------------------------------------------------------
   // * ----------------------------------------------- TT SISTEMAS -------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
   // ------------------------------------------- PRESENTACION -------------------------------------------
@@ -62,7 +67,7 @@ export class TramaController {
   @Post('presentacion')
   async presentacion(@Query('ver') ver?: string) {
     const usePort = ver === '0' ? 8002 : 8003;
-    await this.tcp.switchTargetAndEnsureConnected({ port: usePort });
+    await this.tcp.cambiarPuerto({ port: usePort });
 
     if (ver === '0') {                     // 8002 Antiguos
       this.tcp.handlerPresentacionOld();
@@ -78,7 +83,7 @@ export class TramaController {
   @Post('presencia')
   async presencia(@Query('ver') ver?: string) {
     const usePort = ver === '0' ? 8002 : 8003;
-    await this.tcp.switchTargetAndEnsureConnected({ port: usePort });
+    await this.tcp.cambiarPuerto({ port: usePort });
     // let enviarFrame: boolean | { bytes: number; hex: string; } = false;
 
     if (ver === '0') { // 8002 Antiguos
@@ -92,7 +97,7 @@ export class TramaController {
   @Post('estadoDispositivo')
   async estadoDispositivo(@Query('ver') ver?: string) {
     const usePort = ver === '0' ? 8002 : 8003;
-    await this.tcp.switchTargetAndEnsureConnected({ port: usePort });
+    await this.tcp.cambiarPuerto({ port: usePort });
     let enviarFrame: boolean | { bytes: number; hex: string; } = false;
 
     // Datos de ejemplo
@@ -189,13 +194,7 @@ export class TramaController {
   }
 
   // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
   // * ----------------------------------------------- TT ESTADISTICOS ---------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
   @Post('estadisticos')
@@ -210,7 +209,7 @@ export class TramaController {
     if (fi === undefined || periodicidadRaw === undefined || tipoRaw === undefined || ff === undefined) { throw new BadRequestException('Debes enviar los cuatro parámetros: fi, periodicidad, tipo y ff.'); }
 
     // Conectamos a equipos NUEVOS (8003) para este endpoint genérico
-    await this.tcp.switchTargetAndEnsureConnected({ port: 8003 });
+    await this.tcp.cambiarPuerto({ port: 8003 });
 
     const periodicidad = typeof periodicidadRaw === "string" ? parseInt(periodicidadRaw) : periodicidadRaw; //coerceEnum(periodicidadRaw!, EnEstadisPeriodicidad);
     const tipo = typeof tipoRaw === "string" ? parseInt(tipoRaw) : tipoRaw; //coerceEnum(tipoRaw!, EnEstadisticosControladores);
@@ -487,49 +486,21 @@ export class TramaController {
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
-  // * ----------------------------------------------- TT DEPURACION -----------------------------------------------------
+  // * ----------------------------------- EQUIPOS VIEJOS (Old/BE TipoDato TipoAccion) -----------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
-  // ------------------------------------------- DEPURACIÓN: PETICIÓN CONSOLA -------------------------------------------
-  @Post('depuracion/peticionConsola')
-  async depuracionPeticionConsola() {
-    // Ejemplo de datos
-    const dto: PeticionConsolaDto = {
-      identificadorCliente: 1,
-    };
-
-    const data = this.tcp.serializarDepuracionPeticionConsola(dto);
-    const frame = this.tcp.crearFrame({
-      nodoOrigen: 1,
-      nodoDestino: 0,
-      tipoTrama: EnTipoTrama.depuracion, // TT_DEPURACION
-      tipoMensaje: EnTmDepuracion.peticionConsola, // 1
-      data,
-    }) as FrameDto;
-
-    const ok = this.tcp.enviarFrame(frame);
-    josLogger.info('Enviamos DEPURACION PETICION CONSOLA');
-    return !!ok && ok;
-  }
-
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos ----------------------------------------------- TT SISTEMAS -------------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
+  // * -------------------------------------------------------------------------------------------------------------------
+  // * ----------------------------------------------- TT SISTEMAS -------------------------------------------------------
+  // * -------------------------------------------------------------------------------------------------------------------
 
   // ------------------------------------------- TABLA DISPOSITIVOS (OLD) -------------------------------------------
   @Post('tablaDispositivos')
   async tablaDispositivos(@Query('nDispositivos') nDispositivos?: string) {
 
-    await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
     let n = parseInt(nDispositivos ?? '10');
     if (isNaN(n) || n === null || n === undefined || n < 1 || n > 20) {
@@ -586,7 +557,7 @@ export class TramaController {
     @Query('hayAlarma') hayAlarma?: string,
   ) {
 
-    await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
     // const m = parseInt(mac ?? '12345678');
     const m = mac?.trim().startsWith("0x") ? BigInt(mac.trim()) : BigInt("0x" + mac8FromParam(mac).toString("hex"));
@@ -612,30 +583,25 @@ export class TramaController {
     return ok;
   }
 
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos ----------------------------------------------- TT ESTADISTICOS ---------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
-  // jos -------------------------------------------------------------------------------------------------------------------
+  // * -------------------------------------------------------------------------------------------------------------------
+  // * ----------------------------------------------- TT ESTADISTICOS ---------------------------------------------------
+  // * -------------------------------------------------------------------------------------------------------------------
+  // * Estadísticos con TipoDato y TipoAccion, no DF Omega.
 
   @Post('estadisticoValor')
   /** Se puede introducir por parámetro, opcionalmente: mac, nodo, estado, td (tipoDispositivo), version, hayAlarma */
   async estadisticoValor(
-    @Query('numSer') numSer?: string,
+    @Query('nombreEstadistico') nombreEstadistico?: string,
     @Query('cambioParametro') cambioParametro?: string
   ) {
 
-    await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
     let estadistico = defaultEstadisticoValorOld;
 
     //done Según el numSer (EnEstadisticosNombres) envía un valor u otro (porcentaje, temperatura, nh3...)
-    if (numSer !== undefined) {
-      const n = parseInt(numSer);
+    if (nombreEstadistico !== undefined) {
+      const n = parseInt(nombreEstadistico);
       estadistico = this.tcp.crearDataEstadisticoValorOld(n);
     }
 
@@ -662,7 +628,7 @@ export class TramaController {
   @Post('estadisticoAltasBajasRetiradas')
   async estadisticoAltasBajasRetiradasOld(@Query('altaBajaRetirada') altaBajaRetirada?: string) {
 
-    await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
     let estadistico = defaultEstadisticoAltasBajasRetiradasCrianzaOld;
 
@@ -701,7 +667,7 @@ export class TramaController {
   @Post('estadisticoInicioFinOld')
   async estadisticoInicioFinOld(@Query('inicioFin') inicioFin?: string) {
 
-    await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
     let estadistico = defaultEstadisticoInicioFinCrianzaOld;
 
@@ -730,7 +696,7 @@ export class TramaController {
   @Post('estadisticoAlarmasOld')
   async estadisticoAlarmasOld(@Query('alarma') alarma?: string) {
 
-    await this.tcp.switchTargetAndEnsureConnected({ port: 8002 });
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
     let estadistico = defaultEstadisticoAlarmasOld;
 
@@ -756,187 +722,50 @@ export class TramaController {
     return ok;
   }
 
-  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-
-  // ------------------------------------------- DEPURACIÓN: RT PETICIÓN CONSOLA -------------------------------------------
-  // @Post("depuracion/rtPeticionConsola")
-  // async depuracionRtPeticionConsola() {
-  //   // Ejemplo de datos
-  //   const dto: RtPeticionConsolaDto = {
-  //     identificadorCliente: 1,
-  //     datos: "Comando ejecutado correctamente", // resto del payload en UTF-8
-  //   };
-
-  //   const data = this.tcp.serializarDepuracionRtPeticionConsola(dto);
-  //   const frame = this.tcp.crearFrame({
-  //     nodoOrigen: 1,
-  //     nodoDestino: 0,
-  //     tipoTrama: EnTipoTrama.depuracion,               // TT_DEPURACION
-  //     tipoMensaje: EnTmDepuracion.rtPeticionConsola,   // 2
-  //     data,
-  //   });
-
-  //   const ok = this.tcp.enviarFrame(frame);
-  //   josLogger.info("Enviamos DEPURACION RT PETICION CONSOLA");
-  //   return !!ok && ok;
-  // }
-
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
-  // * ----------------------------------------------- TT ACTUALIZACION_SERVER -------------------------------------------
+  // * ----------------------------------- EQUIPOS VIEJOS (Old/BE EnTipoDatoDFAccion) ------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
   // * -------------------------------------------------------------------------------------------------------------------
+  // * ----------------------------------------------- TT ESTADISTICOS ---------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * ----------------------------------------------- TT SERVICIOS_CLAVE_VALOR ------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
+  // * Estadísticos con EnTipoDatoDFAccion OMEGA.
 
-  //! WIP: Servicios Clave Valor
-  // ------------------------------------------- SCV: PETICION SERVIDOR → FINAL -------------------------------------------
-  // @Post("scv/peticionServidorFinal")
-  // async scvPeticionServidorFinal() {
-  //   const dto = {
-  //     uidEnvioTrama: 42,         // u16
-  //     servicio: 50010,           // u16 (ejemplo; 50000+ suelen ser comunes)
-  //     // tipo lo fija el serializador a 'peticion'
-  //     claves: [
-  //       { clave: 50001, tipo: EnTipoDato.uint16, valor: 123 },         // p.ej. idLote
-  //       { clave: 50002, tipo: EnTipoDato.float,  valor: 25.3 },        // p.ej. tempObjetivo
-  //     ],
-  //   } as const;
+  @Post('estadisticoValorOmegaDf')
+  async estadisticoValorOmegaDf(
+    @Query('nombreEstadistico') nombreEstadistico?: string,
+    @Query('cambioParametro') cambioParametro?: string
+  ) {
 
-  //   const data = this.tcp.serializarScvPeticionServidorFinal(dto);
-  //   const frame = this.tcp.crearFrame({
-  //     nodoOrigen: 1,
-  //     nodoDestino: 0,
-  //     tipoTrama: EnTipoTrama.serviciosClaveValor,                  // TT_SCV
-  //     tipoMensaje: EnTmServiciosClaveValor.peticionServidorFinal,  // 0
-  //     data,
-  //   });
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
-  //   const ok = this.tcp.enviarFrame(frame);
-  //   josLogger.info("Enviamos SCV PETICION SERVIDOR → FINAL");
-  //   return !!ok && ok;
-  // }
+    let estadistico = defaultParametroHistoricoValorOmegaDf;
 
-  // // ------------------------------------------- SCV: RT PETICION SERVIDOR → FINAL -------------------------------------------
-  // @Post("scv/rtPeticionServidorFinal")
-  // async scvRtPeticionServidorFinal() {
-  //   const dto = {
-  //     uidEnvioTrama: 42,
-  //     servicio: 50010,
-  //     claves: [
-  //       { clave: 50001, tipo: EnTipoDato.uint16, valor: 123 },         // eco/resultado
-  //       { clave: 50002, tipo: EnTipoDato.float,  valor: 25.3 },
-  //     ],
-  //   } as const;
+    if (nombreEstadistico !== undefined) estadistico.nombreVariable = parseInt(nombreEstadistico);
+    if (cambioParametro !== undefined) estadistico.tipoDato = EnTipoDatoDFAccion.cambioParametroFloat1; // Por defecto es estadisticoFloat1
 
-  //   const data = this.tcp.serializarScvRtPeticionServidorFinal(dto);
-  //   const frame = this.tcp.crearFrame({
-  //     nodoOrigen: 1,
-  //     nodoDestino: 0,
-  //     tipoTrama: EnTipoTrama.serviciosClaveValor,
-  //     tipoMensaje: EnTmServiciosClaveValor.rtPeticionServidorFinal,     // 1
-  //     data,
-  //   });
+    const data = serializarParametroHistoricoValorOmegaDf(estadistico);
 
-  //   const ok = this.tcp.enviarFrame(frame);
-  //   josLogger.info("Enviamos SCV RT PETICION SERVIDOR → FINAL");
-  //   return !!ok && ok;
-  // }
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
 
-  // // ------------------------------------------- SCV: PETICION FINAL → SERVIDOR -------------------------------------------
-  // @Post("scv/peticionFinalServidor")
-  // async scvPeticionFinalServidor() {
-  //   const dto = {
-  //     uidEnvioTrama: 7,
-  //     servicio: 50020,
-  //     claves: [
-  //       { clave: 50005, tipo: EnTipoDato.uint32, valor: 987654 },      // p.ej. idCrianza
-  //       { clave: 50006, tipo: EnTipoDato.string32, valor: "OK TEST" }, // string en UTF-8
-  //     ],
-  //   } as const;
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    // logTramaParametroHistoricoOld(bufferFrame);
+    logTramaParametroHistoricoOmegaDf(bufferFrame);
+    return ok;
+  }
 
-  //   const data = this.tcp.serializarScvPeticionFinalServidor(dto);
-  //   const frame = this.tcp.crearFrame({
-  //     nodoOrigen: 1,
-  //     nodoDestino: 0,
-  //     tipoTrama: EnTipoTrama.serviciosClaveValor,
-  //     tipoMensaje: EnTmServiciosClaveValor.peticionFinalServidor,       // 2
-  //     data,
-  //   });
-
-  //   const ok = this.tcp.enviarFrame(frame);
-  //   josLogger.info("Enviamos SCV PETICION FINAL → SERVIDOR");
-  //   return !!ok && ok;
-  // }
-
-  // ------------------------------------------- SCV: RT PETICION FINAL → SERVIDOR -------------------------------------------
-  // @Post("scv/rtPeticionFinalServidor")
-  // async scvRtPeticionFinalServidor() {
-
-  //     // uidEnvioTrama: number;          // uint16
-  //     // servicio: number;               // uint16
-  //     // tipo: EnScvTipo;                // uint8 (peticion|respuesta)
-  //     // claves: ScvPar[];               // N_claves = claves.length
-
-  //   const dto: ScvDto = {
-  //     uidEnvioTrama: 7,
-  //     servicio: 50020,
-  //     claves: [
-  //       { clave: 50005, tipo: EnTipoDato.uint32, valor: 987654 },       // eco/resultado
-  //       { clave: 50006, tipo: EnTipoDato.string32, valor: "ACK" },
-  //     ],
-  //   } as const;
-
-  //   const data = this.tcp.serializarScvRtPeticionFinalServidor(dto);
-  //   const frame = this.tcp.crearFrame({
-  //     nodoOrigen: 1,
-  //     nodoDestino: 0,
-  //     tipoTrama: EnTipoTrama.serviciosClaveValor,
-  //     tipoMensaje: EnTmServiciosClaveValor.rtPeticionFinalServidor,     // 3
-  //     data,
-  //   });
-
-  //   const ok = this.tcp.enviarFrame(frame);
-  //   josLogger.info("Enviamos SCV RT PETICION FINAL → SERVIDOR");
-  //   return !!ok && ok;
-  // }
-
-  //! Métricas para pruebas.
-  // trama.controller.ts
-  // @Post('metricas')
-  // async metricas(@Body() body?: any) {
-  //   josLogger.info('Enviamos METRICAS');
-
-  //   const seq = Number(body?.seq ?? 0);       // opcional en body
-  //   const nodoOrg = 1;
-  //   const nodoDest = 0;
-
-  //   const data = this.tcp.crearDataMetricas(seq);
-  //   const frame = this.tcp.crearFrame({
-  //     nodoOrigen: nodoOrg,
-  //     nodoDestino: nodoDest,
-  //     tipoTrama: EnTipoTrama.estadisticos,             // TT_SISTEMA
-  //     tipoMensaje: EnTmEstadisticos.enviaEstadistico,      // TM_SISTEMA_TX_METRICAS (elige un código libre)
-  //     data,
-  //   });
-
-  //   const enviarFrame = this.tcp.enviarFrame(frame);
-  //   return enviarFrame || false;
-  // }
 }

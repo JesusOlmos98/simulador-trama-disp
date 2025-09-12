@@ -2,6 +2,7 @@ import { EnTipoEquipo } from "src/utils/LE/globals/enums";
 import { PresentacionCentralOldDto, TablaCentralItemOld } from "./tt_sistemaOld.dto";
 import { ParametroHistoricoOldDto } from "./tt_estadisticosOld.dto";
 import { EnEstadisticosNombres, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld } from "src/utils/BE_Old/globals/enumOld";
+import { ParametroHistoricoValorOmegaDfDto } from "./tt_estadisticosOldDF.dto";
 
 // Presentación (Omega) – protocolo antiguo (Big Endian)
 export const defaultPresentacionOmegaOld: PresentacionCentralOldDto = {
@@ -146,6 +147,24 @@ export const defaultEstadisticoAlarmasOld: ParametroHistoricoOldDto = {
     // TipoAccion (en vez de idCliente) (inicio, fin):
       // 0: inicio 
       // 1: fin
+
+//? EnTipoDatoDFAccion
+
+export const defaultParametroHistoricoValorOmegaDf: ParametroHistoricoValorOmegaDfDto = {
+  mac: 12345678, // 8B MAC del equipo (ejemplo típico XBee de 64 bits)
+  tipoDato: EnTipoDatoDFAccion.estadisticoFloat1,                     // ejemplo: valor DF como float (32 bits)
+  fecha: { dia: 1, mes: 1, anyo: 2023 }, // fecha de la muestra
+  hora: { hora: 0, min: 0, seg: 0 }, // hora de la muestra
+  identificadorUnicoDentroDelSegundo: 0, // si hay varias tramas en el mismo segundo
+  identificadorCliente: 1, // 2B: id cliente / explotación
+  nombreVariable: EnEstadisticosNombres.tempSonda6MaxDia, // 2B: código de variable (p.ej. "temperatura ambiente" en tu ENUM)
+  valorVariable: 28.45, // 4B float: 25 °C leídos de una sonda de temperatura
+  identificadorCrianzaUnico: 0, // 4B: 0 = sin crianza asociada
+  variable1DiaCrianza: 0, // 2B int16: día de crianza (0 si no aplica)
+  variable1_2: 0, // 2B auxiliar (reservado / no aplica)
+  variable2: 0, // 4B auxiliar (reservado / no aplica)
+  variable3: 0, // 4B auxiliar (reservado / no aplica)
+};
 
 //* -------------------------------------------------------------------------------------------------------------------
 //* -------------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
-import { EnEstadisticosNombres, EnTipoDatoDFAccion, EnTipoDatoOld } from "src/utils/BE_Old/globals/enumOld";
-import { u8Old, toFixedBuffer, u16BE, u32BE, packDatos4BE, packMac8BE, u8 } from "src/utils/helpers";
+import {  EnTipoDatoOld } from "src/utils/BE_Old/globals/enumOld";
+import { u8Old, u16BE, u32BE, packDatos4BE, packMac8BE, u8 } from "src/utils/helpers";
 import { Fecha, Tiempo } from "src/utils/tiposGlobales";
 
 /**

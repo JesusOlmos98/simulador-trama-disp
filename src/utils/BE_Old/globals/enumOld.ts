@@ -331,74 +331,6 @@ export enum EnGtdetecTrama {
   gtdetecStTramaSimple = 2,
 }
 
-/** DF – Tipo de dato / acción */
-export enum EnTipoDatoDFAccion {
-  tipoDatoAccionDfEstadisticoUint8 = 1,
-  tipoDatoAccionDfEstadisticoInt8 = 2,
-  tipoDatoAccionDfEstadisticoUint16 = 3,
-  tipoDatoAccionDfEstadisticoInt16 = 4,
-  tipoDatoAccionDfEstadisticoUint32 = 5,
-  tipoDatoAccionDfEstadisticoInt32 = 6,
-  tipoDatoAccionDfEstadisticoFloat1 = 7,
-  tipoDatoAccionDfEstadisticoFloat2 = 8,
-  tipoDatoAccionDfEstadisticoFloat3 = 9,
-
-  tipoDatoAccionDfCambioParametroUint8 = 10,
-  tipoDatoAccionDfCambioParametroInt8 = 11,
-  tipoDatoAccionDfCambioParametroUint16 = 12,
-  tipoDatoAccionDfCambioParametroInt16 = 13,
-  tipoDatoAccionDfCambioParametroUint32 = 14,
-  tipoDatoAccionDfCambioParametroInt32 = 15,
-  tipoDatoAccionDfCambioParametroFloat1 = 16,
-  tipoDatoAccionDfCambioParametroFloat2 = 17,
-  tipoDatoAccionDfCambioParametroFloat3 = 18,
-
-  tipoDatoAccionDfAlarmas = 19,
-
-  tipoDatoAccionDfCambioParametroTiempo = 20,
-  tipoDatoAccionDfCambioParametroTiempoHm = 21,
-  tipoDatoAccionDfCambioParametroTiempoMs = 22,
-  tipoDatoAccionDfCambioParametroFecha = 23,
-
-  tipoDatoAccionDfEstadisticoTiempo = 24,
-  tipoDatoAccionDfEstadisticoTiempoHm = 25,
-  tipoDatoAccionDfEstadisticoTiempoMs = 26,
-  tipoDatoAccionDfEstadisticoFecha = 27,
-
-  tipoDatoAccionDfEstadisticoString = 28,
-  tipoDatoAccionDfCambioParametroString = 29,
-
-  tipoDatoAccionDfInicioCrianza = 30,
-  tipoDatoAccionDfFinCrianza = 31,
-
-  tipoDatoAccionAltasBajas = 32,   // contine altas/bajas/retiradas/eliminar
-  tipoDatoAccionWarning = 33,      // warnings
-  tipoDatoAccionEntradaAnimales = 34,
-
-  tipoDatoAccionDfCambioParametroTexto = 35,
-  tipoDatoAccionCambioParametroSincronizacion = 36,
-
-  tipoDatoAccionDfEstadisticoFloat0 = 37,
-  tipoDatoAccionDfCambioParametroFloat0 = 38,
-
-  tipoDatoAccionDatosEbusFinales = 39,
-  tipoDatoAccionDebugString = 40,
-
-  // pila DataFlash: no se envía a pantallas/servidor
-  tipoDatoAccionPdDatoCompuestoInicio = 41,
-  tipoDatoAccionPdDatoCompuesto = 42,
-
-  // eventos/cambios concatenados
-  tipoDatoAccionEventoConcatenado = 43,
-  tipoDatoAccionCambioParametroConcatenado = 44,
-
-  // método unificado para eventos (sustituye WARNING / ALARMAS)
-  tipoDatoAccionEvento = 45,
-
-  // estadístico genérico (rellenado desde aplicación)
-  tipoDatoAccionEstadisticoGenerico = 46,
-}
-
 /** Tipos de evento de introducción (bitmask) */
 export enum EnTipoEventoIntroduccion {
   introduccionAlarmasGeneral = 0x00000001,
@@ -406,31 +338,31 @@ export enum EnTipoEventoIntroduccion {
   introduccionDosificacion = 0x00000004,
 }
 
-/** Eventos/Estadísticos – Tipo */
-export enum EnEventosEstadisTipo {
-  alarmas = 0,
-  warning = 1,
-  evento = 2,
-}
+// /** Eventos/Estadísticos – Tipo */
+// export enum EnEventosEstadisTipo {
+//   alarmas = 0,
+//   warning = 1,
+//   evento = 2,
+// }
 
-/** Eventos/Estadísticos – Familia */
-export enum EnEventosEstadisFamilia {
-  noDefinido = 0,
-  alimentacion = 1,        // Esta familia es para los eventos de la alimentación avanzada
-  alimentacionSimple = 2,
-}
+// /** Eventos/Estadísticos – Familia */
+// export enum EnEventosEstadisFamilia {
+//   noDefinido = 0,
+//   alimentacion = 1,        // Esta familia es para los eventos de la alimentación avanzada
+//   alimentacionSimple = 2,
+// }
 
-/** Eventos/Estadísticos – Subfamilia */
-export enum EnEventosEstadisSubfamilia {
-  noDefinido = 0,
-}
+// /** Eventos/Estadísticos – Subfamilia */
+// export enum EnEventosEstadisSubfamilia {
+//   noDefinido = 0,
+// }
 
-/** Eventos/Estadísticos – Propiedades (bitmask) */
-export enum EnEventosEstadisPropiedades {
-  noDefinido = 0x0000,
-  accionEventoOn = 0x0001,   // si el bit0=1 el evento está conectado; si 0, desconectado
-  eventoSonoro = 0x0002,     // si es alarma/warning y bit1=1 indica que es sonoro
-}
+// /** Eventos/Estadísticos – Propiedades (bitmask) */
+// export enum EnEventosEstadisPropiedades {
+//   noDefinido = 0x0000,
+//   accionEventoOn = 0x0001,   // si el bit0=1 el evento está conectado; si 0, desconectado
+//   eventoSonoro = 0x0002,     // si es alarma/warning y bit1=1 indica que es sonoro
+// }
 
 export enum EnEstadisticosNombres {
   vacio = 0,
@@ -1459,4 +1391,158 @@ export enum EnTipoAccionAltasBajasRetiradasCrianzaOld {
 export enum EnTipoAccionInicioFinCrianzaOld {
   inicio,
   fin
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/** DF – Tipo de dato / acción */
+export enum EnTipoDatoDFAccion {
+  // Estadísticos (numéricos)
+  estadisticoUint8 = 1,
+  estadisticoInt8 = 2,
+  estadisticoUint16 = 3,
+  estadisticoInt16 = 4,
+  estadisticoUint32 = 5,
+  estadisticoInt32 = 6,
+  estadisticoFloat1 = 7,
+  estadisticoFloat2 = 8,
+  estadisticoFloat3 = 9,
+
+  // Cambios de parámetro (numéricos)
+  cambioParametroUint8 = 10,
+  cambioParametroInt8 = 11,
+  cambioParametroUint16 = 12,
+  cambioParametroInt16 = 13,
+  cambioParametroUint32 = 14,
+  cambioParametroInt32 = 15,
+  cambioParametroFloat1 = 16,
+  cambioParametroFloat2 = 17,
+  cambioParametroFloat3 = 18,
+
+  // Alarmas / eventos simples
+  alarmas = 19,
+
+  // Cambios de parámetro (tiempos/fecha)
+  cambioParametroTiempo = 20,
+  cambioParametroTiempoHM = 21,
+  cambioParametroTiempoMS = 22,
+  cambioParametroFecha = 23,
+
+  // Estadísticos (tiempos/fecha)
+  estadisticoTiempo = 24,
+  estadisticoTiempoHM = 25,
+  estadisticoTiempoMS = 26,
+  estadisticoFecha = 27,
+
+  // Cadenas
+  estadisticoString = 28,
+  cambioParametroString = 29,
+
+  // Ciclos de crianza
+  inicioCrianza = 30,
+  finCrianza = 31,
+
+  // Altas/bajas/retiradas y otros
+  altasBajas = 32,
+  warning = 33,
+  entradaAnimales = 34,
+  cambioParametroTexto = 35,
+  cambioParametroSincronizacion = 36,
+
+  // Flotantes especiales
+  estadisticoFloat0 = 37,
+  cambioParametroFloat0 = 38,
+
+  // EBUS y depuración
+  datosEbusFinales = 39,
+  debugString = 40,
+
+  // DataFlash: datos compuestos (no se envían a pantallas/servidor)
+  pdDatoCompuestoInicio = 41,
+  pdDatoCompuesto = 42,
+
+  // Concatenados y eventos modernos
+  eventoConcatenado = 43,
+  cambioParametroConcatenado = 44,
+  evento = 45,
+
+  // Genérico
+  estadisticoGenerico = 46,
+
+  // Reservado para micros ST (siempre 47)
+  reservadoSt = 47,
+}
+
+
+
+
+
+
+// === Tipos de evento (alarma / warning / evento) ===
+export enum EnEventosEstadisTipo {
+  alarmas = 0,
+  warning = 1,
+  evento = 2,
+}
+
+// === Familias de eventos ===
+export enum EnEventosEstadisFamilia {
+  noDefinido = 0,
+  alimentacion = 1,          // Alimentación avanzada
+  alimentacionSimple = 2,
+}
+
+// === Subfamilias de eventos ===
+export enum EnEventosEstadisSubfamilia {
+  noDefinido = 0,
+}
+
+// === Propiedades de eventos (FLAGS: usar con operaciones bit a bit) ===
+export enum EnEventosEstadisPropiedades {
+  noDefinido = 0x0000,
+  accionEventoOn = 0x0001,  // 1 = evento ON (activo), 0 = OFF
+  eventoSonoro = 0x0002,    // 1 = sonoro, 0 = no sonoro
+}
+// Ejemplo de uso: (props & EnEventosEstadisPropiedades.accionEventoOn) !== 0
+
+// === Tipo de animal en crianza ===
+export enum EnCrianzaTipoAnimal {
+  mixtos = 0,
+  soloMachos = 1,
+  soloHembras = 2,
+  machoHembraSeparado = 3,
+  max = 4,
+}
+
+// === Acciones de alta/baja/retirada en crianza ===
+export enum EnCrianzaAltaBajaAccion {
+  baja = 0,
+  alta = 1,
+  retirada = 2,
+  eliminarUltimoRegistro = 3,
+  eliminarTodosRegistros = 4,
 }

@@ -63,7 +63,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
 
     //done Función para manejar el cambio de puerto dinámico (segun el valor de "ver" en los endpoints)
     /** Cambia host/puerto si hace falta y garantiza conexión abierta y usable. */
-    async switchTargetAndEnsureConnected(opts: { host?: string; port?: number }) {
+    async cambiarPuerto(opts: { host?: string; port?: number }) {
         const host = opts.host ?? this.defaultHost;
         const port = opts.port ?? this.defaultPort;
 
@@ -915,29 +915,12 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         return serializarTablaCentralItemsOld(items);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /** Según el nombre (EnEstadisticosNombres) que le pasemos por parámetro nos da el objeto del estadístico con un valor adecuado (temp, hum, co2, nh3, etc.). */
     crearDataEstadisticoValorOld(estadisticoNombre: number): ParametroHistoricoOldDto {
-
         const estadistico = defaultEstadisticoValorOld;
-
         estadistico.numeroServicio = estadisticoNombre;
-
         josLogger.trace(`Estadístico ${EnEstadisticosNombres[estadisticoNombre]} enviado.`);
-
         estadistico.datos = valorSimuladoPorNombre(estadisticoNombre);
-
         return estadistico;
     }
 
@@ -958,11 +941,11 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     //   data.writeUInt16LE((p.identificadorCliente ?? 0) & 0xFFFF, 0);
     //   return data;
     // }
-    serializarDepuracionPeticionConsola(p: PeticionConsolaDto) {
-        const data = Buffer.alloc(4);
-        data.writeUInt32LE((p.identificadorCliente ?? 0) >>> 0, 0);
-        return data;
-    }
+    // serializarDepuracionPeticionConsola(p: PeticionConsolaDto) {
+    //     const data = Buffer.alloc(4);
+    //     data.writeUInt32LE((p.identificadorCliente ?? 0) >>> 0, 0);
+    //     return data;
+    // }
 
     //! En principio supongo que esto sería respuesta del propio servidor.
     // -------------------------------------------------- TM_DEPURACION_rt_peticion_consola --------------------------------------------------

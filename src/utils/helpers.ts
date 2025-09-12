@@ -236,55 +236,6 @@ export function packMac8BE(mac: number | Buffer): Buffer {
   return u64FromNumberBE(mac);
 }
 
-/** number|Buffer -> 4 bytes BE, según tipoDato (enteros/floats). */
-// export function packDatos4BE(tipoDato: EnTipoDatoDFAccion, datos: number | Buffer): Buffer {
-//   if (Buffer.isBuffer(datos)) return toFixed(datos, 4);
-
-//   switch (tipoDato) {
-//     // Estadísticos (enteros)
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint8:
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint8:
-//       return u32BE(datos & 0xff);
-
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt8:
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt8:
-//       // Sign-extend a 32 bits
-//       return i32BE((datos << 24) >> 24);
-
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint16:
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint16:
-//       return u32BE(datos & 0xffff);
-
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt16:
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt16:
-//       return i32BE((datos << 16) >> 16);
-
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoUint32:
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroUint32:
-//       return u32BE(datos >>> 0);
-
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoInt32:
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroInt32:
-//       return i32BE(datos | 0);
-
-//     // Floats (0/1/2/3 → tratamos como float32 BE; si necesitas escalados, ajústalo aquí)
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat0:
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat1:
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat2:
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfEstadisticoFloat3:
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat0:
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat1:
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat2:
-//     case EnTipoDatoDFAccion.tipoDatoAccionDfCambioParametroFloat3:
-//       return f32BE(datos);
-
-//     // Tipos “tiempo/fecha/string/evento…” NO deberían venir por este campo de 4B como número puro:
-//     // si llegan como número, los mandamos como u32 (mejor que fallar en runtime).
-//     default:
-//       return u32BE(datos >>> 0);
-//   }
-// }
-
 /** number|Buffer -> 4 bytes BE, mapeando por EnTipoDatoOld. */
 export function packDatos4BE(tipoDato: EnTipoDatoOld, datos: number | Buffer): Buffer {
   if (Buffer.isBuffer(datos)) return toFixed(datos, 4);
@@ -374,3 +325,87 @@ export function valorSimuladoPorNombre(estadisticoNombre: EnEstadisticosNombres)
   // Fallback por si no coincide nada: temp
   return rngInt(15, 35);
 }
+
+
+
+
+
+
+
+
+
+/**
+ * Empaqueta 4B BE para el valor DF según tipo (estadístico/cambio parámetro DF).
+ * Si 'valor' ya es Buffer, se normaliza a 4B.
+ * Mapea:
+ *  - uint8/int8/uint16/int16/uint32/int32 → enteros
+ *  - float1/float2/float3 → float32 (sin escalar aquí; si necesitas escala, aplícala antes)
+ */
+export function packValorDf4BE(tipo: EnTipoDatoDFAccion, valor: number | Buffer): Buffer {
+  if (Buffer.isBuffer(valor)) {
+    if (valor.length === 4) return valor;
+    // normaliza a 4B (recorta o rellena con 0 al frente)
+    const b = Buffer.alloc(4);
+    if (valor.length >= 4) {
+      valor.subarray(valor.length - 4).copy(b); // últimos 4 bytes
+    } else {
+      // coloca al final (big-endian friendly)
+      valor.copy(b, 4 - valor.length);
+    }
+    return b;
+  }
+
+  const b = Buffer.alloc(4);
+  const n = Number(valor);
+
+  switch (tipo) {
+    // --- Estadístico DF: enteros ---
+    case EnTipoDatoDFAccion.estadisticoUint8:
+      b.writeUInt32BE(n & 0xff, 0); return b;
+    case EnTipoDatoDFAccion.estadisticoInt8:
+      b.writeInt32BE((n << 24) >> 24, 0); return b;
+
+    case EnTipoDatoDFAccion.estadisticoUint16:
+      b.writeUInt32BE(n & 0xffff, 0); return b;
+    case EnTipoDatoDFAccion.estadisticoInt16:
+      b.writeInt32BE((n << 16) >> 16, 0); return b;
+
+    case EnTipoDatoDFAccion.estadisticoUint32:
+      b.writeUInt32BE(n >>> 0, 0); return b;
+    case EnTipoDatoDFAccion.estadisticoInt32:
+      b.writeInt32BE(n | 0, 0); return b;
+
+    // --- Estadístico DF: floats (usamos float32 BE)
+    case EnTipoDatoDFAccion.estadisticoFloat1:
+    case EnTipoDatoDFAccion.estadisticoFloat2:
+    case EnTipoDatoDFAccion.estadisticoFloat3:
+      b.writeFloatBE(n, 0); return b;
+
+    // --- Cambio de parámetro DF: mismos tamaños base ---
+    case EnTipoDatoDFAccion.cambioParametroUint8:
+      b.writeUInt32BE(n & 0xff, 0); return b;
+    case EnTipoDatoDFAccion.cambioParametroInt8:
+      b.writeInt32BE((n << 24) >> 24, 0); return b;
+
+    case EnTipoDatoDFAccion.cambioParametroUint16:
+      b.writeUInt32BE(n & 0xffff, 0); return b;
+    case EnTipoDatoDFAccion.cambioParametroInt16:
+      b.writeInt32BE((n << 16) >> 16, 0); return b;
+
+    case EnTipoDatoDFAccion.cambioParametroUint32:
+      b.writeUInt32BE(n >>> 0, 0); return b;
+    case EnTipoDatoDFAccion.cambioParametroInt32:
+      b.writeInt32BE(n | 0, 0); return b;
+
+    case EnTipoDatoDFAccion.cambioParametroFloat1:
+    case EnTipoDatoDFAccion.cambioParametroFloat2:
+    case EnTipoDatoDFAccion.cambioParametroFloat3:
+      b.writeFloatBE(n, 0); return b;
+
+    // Tipos tiempo/fecha/string/etc. no deberían venir aquí como number:
+    // si llegan como número, los empaquetamos como u32 BE.
+    default:
+      b.writeUInt32BE(n >>> 0, 0); return b;
+  }
+}
+
