@@ -1,8 +1,8 @@
 import { Controller, Post, Query, BadRequestException } from '@nestjs/common';
-import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld, defaultParametroHistoricoValorOmegaDf } from 'src/dtoBE/defaultTramaOld';
+import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld, defaultParametroHistoricoAlarmaOmegaDf, defaultParametroHistoricoOmegaEventoAlarma, defaultParametroHistoricoOmegaEventoNormal, defaultParametroHistoricoOmegaEventoWarning } from 'src/dtoBE/defaultTramaOld';
 import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
 import { serializarParametroHistoricoOld } from 'src/dtoBE/tt_estadisticosOld.dto';
-import { serializarParametroHistoricoValorOmegaDf } from 'src/dtoBE/tt_estadisticosOldDF.dto';
+import { serializarParametroHistoricoEventoOmegaDf, serializarParametroHistoricoValorOmegaDf } from 'src/dtoBE/tt_estadisticosOldDF.dto';
 import {
   defaultDataTempSonda1,
   defaultDataContadorAgua,
@@ -745,7 +745,7 @@ export class TramaController {
 
     await this.tcp.cambiarPuerto({ port: 8002 });
 
-    let estadistico = defaultParametroHistoricoValorOmegaDf;
+    let estadistico = defaultParametroHistoricoAlarmaOmegaDf;
 
     if (nombreEstadistico !== undefined) estadistico.nombreVariable = parseInt(nombreEstadistico);
     if (cambioParametro !== undefined) estadistico.tipoDato = EnTipoDatoDFAccion.cambioParametroFloat1; // Por defecto es estadisticoFloat1
@@ -767,5 +767,80 @@ export class TramaController {
     logTramaParametroHistoricoOmegaDf(bufferFrame);
     return ok;
   }
+
+  @Post('estadisticoAlarmaOmegaDf')
+  async estadisticoAlarmaOmegaDf(
+    // @Query('nombreEstadistico') nombreEstadistico?: string,
+    @Query('warning') warning?: string
+  ) {
+
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let estadistico = defaultParametroHistoricoAlarmaOmegaDf;
+
+    // if (nombreEstadistico !== undefined) estadistico.nombreVariable = parseInt(nombreEstadistico);
+    if (warning !== undefined) estadistico.tipoDato = EnTipoDatoDFAccion.warning; // Por defecto es estadisticoFloat1
+
+    const data = serializarParametroHistoricoValorOmegaDf(estadistico);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    logTramaParametroHistoricoOmegaDf(bufferFrame);
+    return ok;
+  }
+
+  @Post('estadisticoEventoOmegaDf')
+  async estadisticoEventoOmegaDf(
+    // @Query('nombreEstadistico') nombreEstadistico?: string,
+    @Query('e0a1w2') e0a1w2?: string
+  ) {
+
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let estadistico = defaultParametroHistoricoOmegaEventoNormal;
+
+    if (e0a1w2 !== undefined) {
+      const n = parseInt(e0a1w2);
+      if (n === 1) estadistico = defaultParametroHistoricoOmegaEventoAlarma;
+      else if (n === 2) estadistico = defaultParametroHistoricoOmegaEventoWarning;
+    }
+
+    const data = serializarParametroHistoricoEventoOmegaDf(estadistico);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    logTramaParametroHistoricoOmegaDf(bufferFrame);
+    return ok;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

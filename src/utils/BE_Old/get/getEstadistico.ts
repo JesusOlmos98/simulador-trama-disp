@@ -1,7 +1,7 @@
 // ========================= Estadístico OLD (TM_envia_parametro_historico) =========================
 
 import { ParametroHistoricoOldDto } from "src/dtoBE/tt_estadisticosOld.dto";
-import { EnTipoTramaOld, EnTipoMensajeDispositivoCentral, EnEstadisticosNombres, EnTipoDatoOld, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion } from "../globals/enumOld";
+import { EnTipoTramaOld, EnTipoMensajeDispositivoCentral, EnEstadisticosNombres, EnTipoDatoOld, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnEventosEstadisFamilia, EnEventosEstadisPropiedades, EnEventosEstadisSubfamilia, EnEventosEstadisTipo } from "../globals/enumOld";
 import { getTipoTramaOld, getTipoMensajeOld, getDataSectionOld, getParsedHeaderOld, getStartOld, getCRCFromFrameOld, getEndOld } from "./getTrama";
 import { josLogger } from "src/utils/josLogger";
 import { ParametroHistoricoValorOmegaDfDto } from "src/dtoBE/tt_estadisticosOldDF.dto";
@@ -245,8 +245,9 @@ const readHora3 = (b: Buffer, off: number) => ({
 // ? -------------------------------------------------------------------------------------------------------------------
 // ? Estadísticos con EnTipoDatoDFAccion OMEGA.
 
-
-
+// jos -----------------------------------------------------------
+// jos Para estadisticos valores, cambio parametros y alarmas.
+// jos -----------------------------------------------------------
 /** Devuelve el payload DF (40B) de un frame si es TT_omegaPantallaPlaca + TM_envia_parametro_historico (o undefined). */
 export function getParametroHistoricoPayloadOmegaDf(frame: Buffer): Buffer | undefined {
     // TT y TM que corresponden al estadístico Omega DF
@@ -535,3 +536,239 @@ const readHora3Df = (b: Buffer, off: number) => ({
     min: b.readUInt8(off + 1),
     seg: b.readUInt8(off + 2),
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// jos -----------------------------------------------------------
+// jos Para estadisticos evento (eventos, alarmas, warnings).
+// jos -----------------------------------------------------------
+
+// =================== Payload EVENTO (Omega) ===================
+
+/** Offsets (40B) del payload EVENTO (BE en multibyte; fecha/hora en 3B dd/mm/yy y hh/mm/ss) */
+const PH_EVT_OFF = {
+  mac: 0,                              // +8  -> 8
+  tipoDato: 8,                         // +1  -> 9
+  idUnico: 9,                          // +1  -> 10
+  versionEstructura: 10,               // +1  -> 11
+  tipo: 11,                            // +1  -> 12
+  familia: 12,                         // +2  -> 14 (BE)
+  subfamilia: 14,                      // +1  -> 15
+  reserva1: 15,                        // +1  -> 16
+  propiedades: 16,                     // +2  -> 18 (BE)
+  fecha: 18,                           // +3  -> 21
+  hora: 21,                            // +3  -> 24
+  nombreVariable: 24,                  // +2  -> 26 (BE)
+  diaCrianza: 26,                      // +2  -> 28 (int16 BE)
+  idCrianza: 28,                       // +4  -> 32 (BE)
+  reserva: 32,                         // +8  -> 40
+} as const;
+
+const PH_EVT_TOTAL_LEN = 40;
+
+const ensurePayloadEvento = (buf?: Buffer): Buffer | undefined =>
+  buf && buf.length >= PH_EVT_TOTAL_LEN ? buf : undefined;
+
+const readFecha3Evt = (b: Buffer, off: number) => ({
+  dia: b.readUInt8(off),
+  mes: b.readUInt8(off + 1),
+  anyo: 2000 + (b.readUInt8(off + 2) % 100),
+});
+
+const readHora3Evt = (b: Buffer, off: number) => ({
+  hora: b.readUInt8(off),
+  min: b.readUInt8(off + 1),
+  seg: b.readUInt8(off + 2),
+});
+
+/** Devuelve el payload EVENTO (40B) si TT=omegaPantallaPlaca y TM=tmEnviaParametroHistorico. */
+export function getParametroHistoricoPayloadOmegaEvento(frame: Buffer): Buffer | undefined {
+  if (getTipoTramaOld(frame) !== EnTipoTramaOld.omegaPantallaPlaca) return undefined;
+  if (getTipoMensajeOld(frame) !== EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico) return undefined;
+  const data = getDataSectionOld(frame);
+  return ensurePayloadEvento(data);
+}
+
+// =================== getters campo a campo (EVENTO) ===================
+
+export function getPhEventoTipoDato(frame: Buffer): EnTipoDatoDFAccion | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return p.readUInt8(PH_EVT_OFF.tipoDato) as EnTipoDatoDFAccion;
+}
+
+export function getPhEventoMacRaw(frame: Buffer): Buffer | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return p.subarray(PH_EVT_OFF.mac, PH_EVT_OFF.mac + 8);
+}
+
+/** MAC como bigint (0..2^64-1). */
+export function getPhEventoMacBigInt(frame: Buffer): bigint | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  if (typeof (p as Buffer).readBigUInt64BE === 'function') {
+    return p.readBigUInt64BE(PH_EVT_OFF.mac);
+  }
+  // Fallback manual (compatible sin usar `any`)
+  let v = 0n;
+  for (let i = 0; i < 8; i++) v = (v << 8n) | BigInt(p[PH_EVT_OFF.mac + i]);
+  return v;
+}
+
+/** MAC como number si es seguro (<= 2^53-1); si no, undefined. */
+export function getPhEventoMacNumber(frame: Buffer): number | undefined {
+  const v = getPhEventoMacBigInt(frame);
+  if (v === undefined) return undefined;
+  return v <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(v) : undefined;
+}
+
+export function getPhEventoIdUnico(frame: Buffer): number | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return p.readUInt8(PH_EVT_OFF.idUnico);
+}
+
+export function getPhEventoVersionEstructura(frame: Buffer): number | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return p.readUInt8(PH_EVT_OFF.versionEstructura);
+}
+
+export function getPhEventoTipo(frame: Buffer): EnEventosEstadisTipo | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return p.readUInt8(PH_EVT_OFF.tipo) as EnEventosEstadisTipo;
+}
+
+export function getPhEventoFamilia(frame: Buffer): EnEventosEstadisFamilia | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return p.readUInt16BE(PH_EVT_OFF.familia) as EnEventosEstadisFamilia;
+}
+
+export function getPhEventoSubfamilia(frame: Buffer): EnEventosEstadisSubfamilia | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return p.readUInt8(PH_EVT_OFF.subfamilia) as EnEventosEstadisSubfamilia;
+}
+
+export function getPhEventoReserva1(frame: Buffer): number | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return p.readUInt8(PH_EVT_OFF.reserva1);
+}
+
+export function getPhEventoPropiedades(frame: Buffer): EnEventosEstadisPropiedades | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return p.readUInt16BE(PH_EVT_OFF.propiedades) as EnEventosEstadisPropiedades;
+}
+
+export function getPhEventoFecha(frame: Buffer) {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return readFecha3Evt(p, PH_EVT_OFF.fecha);
+}
+
+export function getPhEventoHora(frame: Buffer) {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return readHora3Evt(p, PH_EVT_OFF.hora);
+}
+
+export function getPhEventoNombreVariable(frame: Buffer): number | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return p.readUInt16BE(PH_EVT_OFF.nombreVariable);
+}
+
+export function getPhEventoDiaCrianza(frame: Buffer): number | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return p.readInt16BE(PH_EVT_OFF.diaCrianza);
+}
+
+export function getPhEventoIdentificadorCrianzaUnico(frame: Buffer): number | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return p.readUInt32BE(PH_EVT_OFF.idCrianza);
+}
+
+export function getPhEventoReservaRaw(frame: Buffer): Buffer | undefined {
+  const p = getParametroHistoricoPayloadOmegaEvento(frame); if (!p) return undefined;
+  return p.subarray(PH_EVT_OFF.reserva, PH_EVT_OFF.reserva + 8);
+}
+
+export function logTramaParametroHistoricoEventoOmegaDf(frame: Buffer): void {
+  const hdr = getParsedHeaderOld(frame);
+  const p = getParametroHistoricoPayloadOmegaEvento(frame);
+
+  josLogger.trace(`---------- DECODIFICAMOS TRAMA EN BYTES: ----------`);
+  josLogger.trace(`Inicio: ${getStartOld(frame).toString('hex')}`);
+  josLogger.trace(`Versión protocolo: ${hdr.versionProtocolo} `);
+  josLogger.trace(`Nodo origen: ${hdr.nodoOrigen} `);
+  josLogger.trace(`Nodo destino: ${hdr.nodoDestino} `);
+  josLogger.trace(`Tipo Trama TT: ${EnTipoTramaOld[hdr.tipoTrama]} `);
+  josLogger.trace(`Tipo Mensaje TM: ${EnTipoMensajeDispositivoCentral[hdr.tipoMensaje]} `);
+  josLogger.trace(`Longitud: ${hdr.longitud} `);
+
+  josLogger.trace(`---------- ↓ DATA (EVENTO) ↓ ----------`);
+  if (!p) {
+    josLogger.trace(`Payload: <incompatible o demasiado corto>`);
+  } else {
+    // Construimos dto vía getters de EVENTO
+    const macBuf = getPhEventoMacRaw(frame)!;
+    const tipoDato = getPhEventoTipoDato(frame)!;
+    const idUnico = getPhEventoIdUnico(frame)!;
+    const verStruct = getPhEventoVersionEstructura(frame)!;
+    const tipo = getPhEventoTipo(frame)!;
+    const familia = getPhEventoFamilia(frame)!;
+    const subfamilia = getPhEventoSubfamilia(frame)!;
+    const reserva1 = getPhEventoReserva1(frame)!;
+    const propiedades = getPhEventoPropiedades(frame)!;
+    const fecha = getPhEventoFecha(frame)!;
+    const hora = getPhEventoHora(frame)!;
+    const nombreVariable = getPhEventoNombreVariable(frame)!;
+    const diaCrianza = getPhEventoDiaCrianza(frame)!;
+    const idCrianza = getPhEventoIdentificadorCrianzaUnico(frame)!;
+    const reserva = getPhEventoReservaRaw(frame)!;
+
+    const propHex = propiedades.toString(16).padStart(4, '0');
+
+    josLogger.trace(`len(payload): ${p.length}`);
+    josLogger.trace(`mac:            ${macBuf.toString('hex')}`);
+    josLogger.trace(`tipoDato:       ${EnTipoDatoDFAccion[tipoDato]} (${tipoDato})`);
+    josLogger.trace(`idUnico:        ${idUnico}`);
+    josLogger.trace(`verEstructura:  ${verStruct}`);
+    josLogger.trace(`tipoEvento:     ${EnEventosEstadisTipo[tipo]} (${tipo})`);
+    josLogger.trace(`familia:        ${EnEventosEstadisFamilia[familia]} (${familia})`);
+    josLogger.trace(`subfamilia:     ${EnEventosEstadisSubfamilia[subfamilia]} (${subfamilia})`);
+    josLogger.trace(`reserva1:       ${reserva1}`);
+    josLogger.trace(`propiedades:    0x${propHex} (${propiedades})`);
+    josLogger.trace(`fecha:          ${fecha.dia}-${fecha.mes}-${fecha.anyo}`);
+    josLogger.trace(`hora:           ${hora.hora}:${hora.min}:${hora.seg}`);
+    josLogger.trace(`nombreVar:      ${EnEstadisticosNombres[nombreVariable]} (${nombreVariable})`);
+    josLogger.trace(`diaCrianza:     ${diaCrianza}`);
+    josLogger.trace(`idCrianza:      ${idCrianza}`);
+    josLogger.trace(`reserva[8]:     ${reserva.toString('hex')}`);
+  }
+  josLogger.trace(`---------- ↑ DATA (EVENTO) ↑ ----------`);
+  josLogger.trace(`CRC: ${getCRCFromFrameOld(frame)}`);
+  josLogger.trace(`Fin: ${getEndOld(frame).toString('hex')}`);
+}

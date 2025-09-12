@@ -1,10 +1,9 @@
 import { EnEventosEstadisFamilia, EnEventosEstadisPropiedades, EnEventosEstadisSubfamilia, EnEventosEstadisTipo, EnTipoDatoDFAccion } from "src/utils/BE_Old/globals/enumOld";
 import { packValorDf4BE } from "src/utils/helpers";
-import { EnAlarmaEstado } from "src/utils/LE/globals/enums";
 import { Fecha, Tiempo } from "src/utils/tiposGlobales";
 
 // ---------------------------------------- ParametroHistoricoOmegaDfDto ----------------------------------------
-/** Estadístico de valor o cambio parámetro. Payload de TM_envia_historico (caso: estadístico DF). */
+/** Estadístico de valor o cambio parámetro o alarma/warning. Payload de TM_envia_historico (caso: estadístico DF). */
 export interface ParametroHistoricoValorOmegaDfDto {
   /** 8 bytes: MAC del equipo (crudo). */
   mac: number | Buffer;
@@ -163,64 +162,11 @@ export function serializarParametroHistoricoValorOmegaDf(
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ---------------------------------------- ParametroHistoricoOmegaAlarmaWarningDto ----------------------------------------
-/** 5.9.6.2 — TM_envia_historico: ALARMAS / WARNING */
-export interface ParametroHistoricoOmegaAlarmaWarningDto {
-  /** 8 bytes: MAC del equipo (crudo). */
-  mac: Buffer;
-  /** 1 byte: tipo de dato DF (debería ser ‘alarmas’ o ‘warning’). */
-  tipoDato: EnTipoDatoDFAccion;
-  /** 3 bytes: fecha. */
-  fecha: Fecha;
-  /** 3 bytes: hora. */
-  hora: Tiempo;
-  /** 1 byte: identificador único dentro del segundo actual. */
-  identificadorUnicoDentroDelSegundo: number;
-  /** 2 bytes: identificador de cliente. */
-  identificadorCliente: number;
-  /** 2 bytes: nombre de la variable (alarma). */
-  nombreVariable: number;
-  /**
-   * 4 bytes: acción de la alarma (ON/OFF).
-   * Normalmente mapeable a EnAlarmaEstado (off=0, on=1).
-   * Si prefieres el crudo, usa Buffer.
-   */
-  valorVariable: EnAlarmaEstado | number | Buffer;
-  /** 4 bytes: identificador único de crianza (0 si no aplica). */
-  identificadorCrianzaUnico: number;
-  /** 2 bytes (int16): día de crianza. */
-  variable1DiaCrianza: number;
-  /** 2 bytes: campo auxiliar (variable1_2). */
-  variable1_2: number;
-  /** 4 bytes: campo auxiliar (variable2). */
-  variable2: number;
-  /** 4 bytes: campo auxiliar (variable3). */
-  variable3: number;
-}
-
 // ---------------------------------------- ParametroHistoricoOmegaEventoDto ----------------------------------------
 /** 5.9.6.3 — TM_envia_historico: EVENTO */
 export interface ParametroHistoricoOmegaEventoDto {
   /** 8 bytes: MAC del equipo (crudo). */
-  mac: Buffer;
+  mac: number | Buffer;
   /** 1 byte: tipo de dato (debería indicar “evento”). */
   tipoDato: EnTipoDatoDFAccion;
   /** 1 byte: identificador único dentro del segundo actual. */
@@ -250,6 +196,156 @@ export interface ParametroHistoricoOmegaEventoDto {
   /** 8 bytes: zona reservada. */
   reserva: Buffer; // length = 8
 }
+
+/**
+ * Serializa la “data” de TM_envia_historico (EVENTO) a Buffer (BE).
+ * Layout (40 B):
+ *  8B  mac
+ *  1B  tipoDato
+ *  1B  identificadorUnicoDentroDelSegundo
+ *  1B  versionEstructura
+ *  1B  tipo
+ *  2B  familia                           (BE)
+ *  1B  subfamilia
+ *  1B  reserva1
+ *  2B  propiedades                       (BE)
+ *  3B  fecha (dd, mm, yy)
+ *  3B  hora  (hh, mm, ss)
+ *  2B  nombreVariable                    (BE)
+ *  2B  diaCrianza (int16)                (BE)
+ *  4B  identificadorCrianzaUnico         (BE)
+ *  8B  reserva
+ */
+export function serializarParametroHistoricoEventoOmegaDf(
+  d: ParametroHistoricoOmegaEventoDto
+): Buffer {
+  const out = Buffer.alloc(40);
+  let offset = 0;
+
+  // --- 8B MAC
+  // if (!Buffer.isBuffer(d.mac) || d.mac.length !== 8) {
+  //   throw new Error('MAC inválida: se espera Buffer de 8 bytes');
+  // }
+  // d.mac.copy(out, o); o += 8;
+
+  const macAny = d.mac as unknown as number | bigint | Buffer;
+
+  if (typeof macAny === 'number' || typeof macAny === 'bigint') {
+    let macBig = typeof macAny === 'bigint' ? macAny : BigInt(macAny);
+
+    // Validación de rango 0..2^64-1
+    if (macBig < 0n || macBig > 0xFFFF_FFFF_FFFF_FFFFn) {
+      throw new Error('MAC inválida: fuera de rango (0..2^64-1)');
+    }
+
+    // Si tu Node soporta writeBigUInt64BE, úsalo; si no, fallback manual
+    if (typeof (out as any).writeBigUInt64BE === 'function') {
+      (out as any).writeBigUInt64BE(macBig, offset);
+    } else {
+      // Fallback: escribir BigInt byte a byte en BE
+      for (let i = 7; i >= 0; i--) {
+        out[offset + i] = Number(macBig & 0xFFn);
+        macBig >>= 8n;
+      }
+    }
+    offset += 8;
+
+  } else if (Buffer.isBuffer(macAny)) {
+    if (macAny.length !== 8) {
+      throw new Error('MAC inválida: se espera Buffer de 8 bytes');
+    }
+    macAny.copy(out, offset); offset += 8;
+
+  } else {
+    throw new Error('MAC inválida: se espera number|bigint o Buffer de 8 bytes');
+  }
+
+
+
+
+  // --- 1B tipoDato
+  out.writeUInt8((d.tipoDato as number) & 0xff, offset++);
+
+  // --- 1B identificador único dentro del segundo
+  out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, offset++);
+
+  // --- 1B versión estructura
+  out.writeUInt8(d.versionEstructura & 0xff, offset++);
+
+  // --- 1B tipo (ENUM_EVENTOS_ESTADIS_TIPO)
+  out.writeUInt8((d.tipo as number) & 0xff, offset++);
+
+  // --- 2B familia (BE)
+  out.writeUInt16BE((d.familia as number) & 0xffff, offset); offset += 2;
+
+  // --- 1B subfamilia
+  out.writeUInt8((d.subfamilia as number) & 0xff, offset++);
+
+  // --- 1B reserva1
+  out.writeUInt8(d.reserva1 & 0xff, offset++);
+
+  // --- 2B propiedades (bitmask, BE)
+  out.writeUInt16BE((d.propiedades as number) & 0xffff, offset); offset += 2;
+
+  // --- 3B fecha (dd, mm, yy)
+  {
+    const yy = (d.fecha.anyo ?? 0) % 100;
+    out.writeUInt8(d.fecha.dia & 0xff, offset++);
+    out.writeUInt8(d.fecha.mes & 0xff, offset++);
+    out.writeUInt8(yy & 0xff, offset++);
+  }
+
+  // --- 3B hora (hh, mm, ss)
+  out.writeUInt8(d.hora.hora & 0xff, offset++);
+  out.writeUInt8(d.hora.min & 0xff, offset++);
+  out.writeUInt8(d.hora.seg & 0xff, offset++);
+
+  // --- 2B nombreVariable (BE)
+  out.writeUInt16BE(d.nombreVariable & 0xffff, offset); offset += 2;
+
+  // --- 2B diaCrianza (int16, BE)
+  out.writeInt16BE(d.diaCrianza | 0, offset); offset += 2;
+
+  // --- 4B identificadorCrianzaUnico (BE)
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, offset); offset += 4;
+
+  // --- 8B reserva
+  if (!Buffer.isBuffer(d.reserva) || d.reserva.length !== 8) {
+    throw new Error('Reserva inválida: se espera Buffer de 8 bytes');
+  }
+  d.reserva.copy(out, offset); offset += 8;
+
+  // Seguridad: o debe ser 40
+  // if (o !== 40) throw new Error(`Longitud inesperada al serializar (o=${o})`);
+  return out;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ---------------------------------------- ParametroHistoricoOmegaEventoConcatenadoDto ----------------------------------------
 /** 5.9.6.4 — TM_envia_historico: EVENTO_CONCATENADO */

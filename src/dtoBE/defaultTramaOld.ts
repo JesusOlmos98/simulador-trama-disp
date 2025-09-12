@@ -1,8 +1,9 @@
 import { EnTipoEquipo } from "src/utils/LE/globals/enums";
 import { PresentacionCentralOldDto, TablaCentralItemOld } from "./tt_sistemaOld.dto";
 import { ParametroHistoricoOldDto } from "./tt_estadisticosOld.dto";
-import { EnEstadisticosNombres, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld } from "src/utils/BE_Old/globals/enumOld";
-import { ParametroHistoricoValorOmegaDfDto } from "./tt_estadisticosOldDF.dto";
+import { EnEstadisticosNombres, EnEventosEstadisFamilia, EnEventosEstadisPropiedades, EnEventosEstadisSubfamilia, EnEventosEstadisTipo, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld } from "src/utils/BE_Old/globals/enumOld";
+import { ParametroHistoricoOmegaEventoDto, ParametroHistoricoValorOmegaDfDto } from "./tt_estadisticosOldDF.dto";
+import { EnTextos } from "src/utils/enumTextos";
 
 // Presentación (Omega) – protocolo antiguo (Big Endian)
 export const defaultPresentacionOmegaOld: PresentacionCentralOldDto = {
@@ -86,7 +87,7 @@ export const defaultEstadisticoValorOld: ParametroHistoricoOldDto = {
   datos: 25.55,
   identificadorCrianzaUnico: 0,
   diaCrianza: 0
-  
+
 }
 
 export const defaultEstadisticoAltasBajasRetiradasCrianzaOld: ParametroHistoricoOldDto = {
@@ -104,24 +105,24 @@ export const defaultEstadisticoAltasBajasRetiradasCrianzaOld: ParametroHistorico
 
 export const defaultEstadisticoInicioFinCrianzaOld: ParametroHistoricoOldDto = {
   tipoDato: EnTipoDatoOld.inicioFinCrianza,
-  fecha: { dia: 1, mes: 1, anyo: 2023 }, 
+  fecha: { dia: 1, mes: 1, anyo: 2023 },
   mac: 12345678,
-  hora: { hora: 0, min: 0, seg: 0 }, 
+  hora: { hora: 0, min: 0, seg: 0 },
   identificadorUnicoDentroDelSegundo: 0,
   identificadorCliente: EnTipoAccionInicioFinCrianzaOld.inicio, // tipoAccion
   numeroServicio: 0, // vacío
   datos: 20, // nAnimales
   identificadorCrianzaUnico: 0,
-  diaCrianza: 12 
+  diaCrianza: 12
 }
 
 export const defaultEstadisticoAlarmasOld: ParametroHistoricoOldDto = {
   tipoDato: EnTipoDatoOld.alarmas,
-  fecha: { dia: 1, mes: 1, anyo: 2023 }, 
+  fecha: { dia: 1, mes: 1, anyo: 2023 },
   mac: 12345678,
-  hora: { hora: 0, min: 0, seg: 0 }, 
+  hora: { hora: 0, min: 0, seg: 0 },
   identificadorUnicoDentroDelSegundo: 0,
-  identificadorCliente: 1, 
+  identificadorCliente: 1,
   numeroServicio: 10087, // nombre alarma (ENUM_textos)
   datos: 1, // 0 o 1
   identificadorCrianzaUnico: 0,
@@ -129,42 +130,100 @@ export const defaultEstadisticoAlarmasOld: ParametroHistoricoOldDto = {
 }
 
 // TipoDato:  
-  // Dato_Estadisticas: 1 (El que solemos usar de base)
-  // Cambio parámetro : 2 
-  // Alarmas : 3 
-  // Tabla LOG : 4 
-  // Altas  bajas y retiradas : 5   
-    // TipoAccion (en vez de idCliente) (altas, bajas, retiradas):
-      //  0: baja añadir 
-      //  1: alta añadir 
-      //  2: retirada añadir 
-      //  3: baja editando último registro 
-      //  4: alta editando último registro 
-      //  5: retirada editando último registró 
-      //  6: elimina último registro 
-  // Cambio parámetro valores calculados: 6 
-  // Inicio crianza o fin_crianza: 7
-    // TipoAccion (en vez de idCliente) (inicio, fin):
-      // 0: inicio 
-      // 1: fin
+// Dato_Estadisticas: 1 (El que solemos usar de base)
+// Cambio parámetro : 2 
+// Alarmas : 3 
+// Tabla LOG : 4 
+// Altas  bajas y retiradas : 5   
+// TipoAccion (en vez de idCliente) (altas, bajas, retiradas):
+//  0: baja añadir 
+//  1: alta añadir 
+//  2: retirada añadir 
+//  3: baja editando último registro 
+//  4: alta editando último registro 
+//  5: retirada editando último registró 
+//  6: elimina último registro 
+// Cambio parámetro valores calculados: 6 
+// Inicio crianza o fin_crianza: 7
+// TipoAccion (en vez de idCliente) (inicio, fin):
+// 0: inicio 
+// 1: fin
 
 //? EnTipoDatoDFAccion
 
+/** Objeto de ejemplo para enviar una temperatura (OmegaDf). */
 export const defaultParametroHistoricoValorOmegaDf: ParametroHistoricoValorOmegaDfDto = {
-  mac: 12345678, // 8B MAC del equipo (ejemplo típico XBee de 64 bits)
-  tipoDato: EnTipoDatoDFAccion.estadisticoFloat1,                     // ejemplo: valor DF como float (32 bits)
-  fecha: { dia: 1, mes: 1, anyo: 2023 }, // fecha de la muestra
-  hora: { hora: 0, min: 0, seg: 0 }, // hora de la muestra
-  identificadorUnicoDentroDelSegundo: 0, // si hay varias tramas en el mismo segundo
-  identificadorCliente: 1, // 2B: id cliente / explotación
+  mac: 12345678,                                          // 8B MAC del equipo (ejemplo típico XBee de 64 bits)
+  tipoDato: EnTipoDatoDFAccion.estadisticoFloat1,         // ejemplo: valor DF como float (32 bits)
+  fecha: { dia: 1, mes: 1, anyo: 2023 },                  // fecha de la muestra
+  hora: { hora: 0, min: 0, seg: 0 },                      // hora de la muestra
+  identificadorUnicoDentroDelSegundo: 0,                  // si hay varias tramas en el mismo segundo
+  identificadorCliente: 1,                                // 2B: id cliente / explotación
   nombreVariable: EnEstadisticosNombres.tempSonda6MaxDia, // 2B: código de variable (p.ej. "temperatura ambiente" en tu ENUM)
-  valorVariable: 28.45, // 4B float: 25 °C leídos de una sonda de temperatura
-  identificadorCrianzaUnico: 0, // 4B: 0 = sin crianza asociada
-  variable1DiaCrianza: 0, // 2B int16: día de crianza (0 si no aplica)
-  variable1_2: 0, // 2B auxiliar (reservado / no aplica)
-  variable2: 0, // 4B auxiliar (reservado / no aplica)
-  variable3: 0, // 4B auxiliar (reservado / no aplica)
+  valorVariable: 28.45,                                   // 4B float: 25 °C leídos de una sonda de temperatura
+  identificadorCrianzaUnico: 0,                           // 4B: 0 = sin crianza asociada
+  variable1DiaCrianza: 0,                                 // 2B int16: día de crianza (0 si no aplica)
+  variable1_2: 0,                                         // 2B auxiliar (reservado / no aplica)
+  variable2: 0,                                           // 4B auxiliar (reservado / no aplica)
+  variable3: 0,                                           // 4B auxiliar (reservado / no aplica)
 };
+
+/** Objeto para enviar estadístico alarma o warning (OmegaDf). */
+export const defaultParametroHistoricoAlarmaOmegaDf: ParametroHistoricoValorOmegaDfDto = {
+  mac: 12345678,                                          // 8B MAC del equipo (ejemplo típico XBee de 64 bits)
+  tipoDato: EnTipoDatoDFAccion.alarmas,                   // ejemplo: valor DF como float (32 bits)
+  fecha: { dia: 1, mes: 1, anyo: 2023 },                  // fecha de la muestra
+  hora: { hora: 0, min: 0, seg: 0 },                      // hora de la muestra
+  identificadorUnicoDentroDelSegundo: 0,                  // si hay varias tramas en el mismo segundo
+  identificadorCliente: 1,                                // 2B: id cliente / explotación
+  nombreVariable: EnEstadisticosNombres.alarmaGenerica,   // 2B: código de variable (p.ej. "temperatura ambiente" en tu ENUM)
+  valorVariable: 1,                                       // 4B float: 25 °C leídos de una sonda de temperatura
+  identificadorCrianzaUnico: 0,                           // 4B: 0 = sin crianza asociada
+  variable1DiaCrianza: 0,                                 // 2B int16: día de crianza (0 si no aplica)
+  variable1_2: 0,                                         // 2B auxiliar (reservado / no aplica)
+  variable2: 0,                                           // 4B auxiliar (reservado / no aplica)
+  variable3: 0,                                           // 4B auxiliar (reservado / no aplica)
+};
+
+
+
+/** Objeto de ejemplo para enviar un EVENTO (Omega). */
+export const defaultParametroHistoricoOmegaEventoNormal: ParametroHistoricoOmegaEventoDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]), // 8B MAC del equipo (ejemplo típico 64 bits)
+  tipoDato: EnTipoDatoDFAccion.evento,                                 // tipo de dato DF = EVENTO (45)
+  identificadorUnicoDentroDelSegundo: 0,                               // si hay varias tramas en el mismo segundo
+  versionEstructura: 1,                                                // versión de la estructura de evento
+  tipo: EnEventosEstadisTipo.evento,                                   // 0=alarmas,1=warning,2=evento → elegimos EVENTO
+  familia: EnEventosEstadisFamilia.alimentacion,                       // p.ej. familia Alimentación Avanzada
+  subfamilia: EnEventosEstadisSubfamilia.noDefinido,                   // sin subfamilia específica
+  reserva1: 0,                                                         // reservado (0 por defecto)
+  propiedades: (
+    EnEventosEstadisPropiedades.accionEventoOn |                       // bit0=1 → evento activo/ON
+    EnEventosEstadisPropiedades.eventoSonoro                           // bit1=1 → sonoro
+  ) as EnEventosEstadisPropiedades,
+  fecha: { dia: 1, mes: 1, anyo: 2023 },                               // fecha del evento
+  hora: { hora: 0, min: 0, seg: 0 },                                   // hora del evento
+  nombreVariable: EnEstadisticosNombres.eventosEventosControlAcceso,              // variable asociada al evento (ejemplo)
+  diaCrianza: 12,                                                      // día de crianza (int16)
+  identificadorCrianzaUnico: 0,                                        // 0 si no hay crianza asociada
+  reserva: Buffer.alloc(8, 0x00),                                      // 8B reservados (relleno a cero)
+};
+
+export const defaultParametroHistoricoOmegaEventoAlarma: ParametroHistoricoOmegaEventoDto = {
+  ...defaultParametroHistoricoOmegaEventoNormal,
+  tipo: EnEventosEstadisTipo.alarmas,
+  propiedades: EnEventosEstadisPropiedades.eventoSonoro,
+  nombreVariable: EnTextos.textAlarmaSonda1MediaHora,
+};
+
+export const defaultParametroHistoricoOmegaEventoWarning: ParametroHistoricoOmegaEventoDto = {
+  ...defaultParametroHistoricoOmegaEventoNormal,
+  tipo: EnEventosEstadisTipo.warning,
+  propiedades: EnEventosEstadisPropiedades.accionEventoOn,
+  nombreVariable: EnTextos.textAlarmaSonda1MediaHora,
+};
+
+
 
 //* -------------------------------------------------------------------------------------------------------------------
 //* -------------------------------------------------------------------------------------------------------------------
@@ -257,114 +316,14 @@ function genCrcParametros(): number {
 
 // Tabla predefinida:
 export const defaultTablaPrefabricada: TablaCentralItemOld[] = [
-  {
-    mac: Buffer.from([0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]),
-    nodo: 1,
-    estado: 1,
-    tipoDispositivo: 115,   // p. ej. CTI40
-    version: 0x0101,
-    password: '0000000000000001', // 16 chars
-    crcParametros: 0,
-    infoEstado: 0,
-    hayAlarma: 0,
-  },
-  {
-    mac: Buffer.from([0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x78]),
-    nodo: 2,
-    estado: 0,
-    tipoDispositivo: 140,   // p. ej. OMEGA
-    version: 0x0102,
-    password: '0000000000000002',
-    crcParametros: 0,
-    infoEstado: 1,
-    hayAlarma: 1,
-  },
-  {
-    mac: Buffer.from([0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x79]),
-    nodo: 3,
-    estado: 1,
-    tipoDispositivo: 115,
-    version: 0x0103,
-    password: '0000000000000003',
-    crcParametros: 0,
-    infoEstado: 2,
-    hayAlarma: 0,
-  },
-  {
-    mac: Buffer.from([0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x7A]),
-    nodo: 4,
-    estado: 1,
-    tipoDispositivo: 140,
-    version: 0x0104,
-    password: '0000000000000004',
-    crcParametros: 0,
-    infoEstado: 3,
-    hayAlarma: 1,
-  },
-  {
-    mac: Buffer.from([0x00,0xAA,0xBB,0xCC,0xDD,0xEE,0xF0,0x01]),
-    nodo: 5,
-    estado: 1,
-    tipoDispositivo: 115,
-    version: 0x0201,
-    password: '0000000000000005',
-    crcParametros: 0,
-    infoEstado: 4,
-    hayAlarma: 0,
-  },
-  {
-    mac: Buffer.from([0x00,0xAA,0xBB,0xCC,0xDD,0xEE,0xF0,0x02]),
-    nodo: 6,
-    estado: 1,
-    tipoDispositivo: 140,
-    version: 0x0202,
-    password: '0000000000000006',
-    crcParametros: 0,
-    infoEstado: 5,
-    hayAlarma: 1,
-  },
-  {
-    mac: Buffer.from([0x10,0x20,0x30,0x40,0x50,0x60,0x70,0x80]),
-    nodo: 7,
-    estado: 0,
-    tipoDispositivo: 115,
-    version: 0x0203,
-    password: '0000000000000007',
-    crcParametros: 0,
-    infoEstado: 6,
-    hayAlarma: 0,
-  },
-  {
-    mac: Buffer.from([0x10,0x20,0x30,0x40,0x50,0x60,0x70,0x81]),
-    nodo: 8,
-    estado: 1,
-    tipoDispositivo: 140,
-    version: 0x0204,
-    password: '0000000000000008',
-    crcParametros: 0,
-    infoEstado: 7,
-    hayAlarma: 1,
-  },
-  {
-    mac: Buffer.from([0xDE,0xAD,0xBE,0xEF,0x00,0x00,0x00,0x09]),
-    nodo: 9,
-    estado: 1,
-    tipoDispositivo: 115,
-    version: 0x0301,
-    password: '0000000000000009',
-    crcParametros: 0,
-    infoEstado: 8,
-    hayAlarma: 0,
-  },
-  {
-    mac: Buffer.from([0xDE,0xAD,0xBE,0xEF,0x00,0x00,0x00,0x0A]),
-    nodo: 10,
-    estado: 1,
-    tipoDispositivo: 140,
-    version: 0x0302,
-    password: '0000000000000010',
-    crcParametros: 0,
-    infoEstado: 9,
-    hayAlarma: 1,
-  },
+  { mac: Buffer.from([0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77]), nodo: 1, estado: 1, tipoDispositivo: 115, version: 0x0101, password: '0000000000000001', crcParametros: 0, infoEstado: 0, hayAlarma: 0 },
+  { mac: Buffer.from([0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x78]), nodo: 2, estado: 0, tipoDispositivo: 140, version: 0x0102, password: '0000000000000002', crcParametros: 0, infoEstado: 1, hayAlarma: 1 },
+  { mac: Buffer.from([0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x79]), nodo: 3, estado: 1, tipoDispositivo: 115, version: 0x0103, password: '0000000000000003', crcParametros: 0, infoEstado: 2, hayAlarma: 0 },
+  { mac: Buffer.from([0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x7A]), nodo: 4, estado: 1, tipoDispositivo: 140, version: 0x0104, password: '0000000000000004', crcParametros: 0, infoEstado: 3, hayAlarma: 1 },
+  { mac: Buffer.from([0x00, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xF0, 0x01]), nodo: 5, estado: 1, tipoDispositivo: 115, version: 0x0201, password: '0000000000000005', crcParametros: 0, infoEstado: 4, hayAlarma: 0 },
+  { mac: Buffer.from([0x00, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xF0, 0x02]), nodo: 6, estado: 1, tipoDispositivo: 140, version: 0x0202, password: '0000000000000006', crcParametros: 0, infoEstado: 5, hayAlarma: 1 },
+  { mac: Buffer.from([0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, 0x80]), nodo: 7, estado: 0, tipoDispositivo: 115, version: 0x0203, password: '0000000000000007', crcParametros: 0, infoEstado: 6, hayAlarma: 0 },
+  { mac: Buffer.from([0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, 0x81]), nodo: 8, estado: 1, tipoDispositivo: 140, version: 0x0204, password: '0000000000000008', crcParametros: 0, infoEstado: 7, hayAlarma: 1 },
+  { mac: Buffer.from([0xDE, 0xAD, 0xBE, 0xEF, 0x00, 0x00, 0x00, 0x09]), nodo: 9, estado: 1, tipoDispositivo: 115, version: 0x0301, password: '0000000000000009', crcParametros: 0, infoEstado: 8, hayAlarma: 0 },
+  { mac: Buffer.from([0xDE, 0xAD, 0xBE, 0xEF, 0x00, 0x00, 0x00, 0x0A]), nodo: 10, estado: 1, tipoDispositivo: 140, version: 0x0302, password: '0000000000000010', crcParametros: 0, infoEstado: 9, hayAlarma: 1 },
 ];
