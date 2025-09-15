@@ -104,14 +104,7 @@ export enum EnTextos {
 
 
 
-
-
-
-
-
-
-
-    textCurvaCalefaccion = 91,
+  textCurvaCalefaccion = 91,
   textInfluenciaAmbiente = 92,
   textSondas = 93,
   textSonda = 94,
@@ -177,13 +170,6 @@ export enum EnTextos {
 
 
 
-
-
-
-
-
-
-
   textIdioma = 154,
   textEspanol = 155,
   textIngles = 156,
@@ -233,19 +219,6 @@ export enum EnTextos {
   textHumedad1 = 200,
   textHumedad2 = 201,
   textTipo = 202,
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -355,21 +328,7 @@ export enum EnTextos {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    textReleAutoNc = 306,
+  textReleAutoNc = 306,
   textReleAutoNa = 307,
   textReleManualNa = 308,
   textRetardo = 309,
@@ -463,7 +422,7 @@ export enum EnTextos {
   textCorreccionVentilacionMinima = 397,
   textCorreccionRango = 398,
   textTemperaturaExterior = 399,
-  textCorreccionVentilacionActual = 400,
+  textCorreccionVActual = 400,
   textOffsetHumedadExterior = 401,
   textHumedadExterior = 402,
   textHumedadInterior = 403,
@@ -481,250 +440,194 @@ export enum EnTextos {
   textEtapas = 415,
   textInfluenciaActual = 416,
   textPosicionCalculada = 417,
-  textCorreccionTemperaturaExterior = 418,
+  textCorreccionTempExterior = 418,
   textTablaVentilacion = 419,
   textPosicionEntradaAire = 420,
   textVentilacionInicio = 421,
   textVentilacionFin = 422,
 
 
+
   textInicioCorreccion = 423,
-textFinCorreccion = 424,
-textHayAlarmas = 425,
-textNoHayExpConect = 426,
-textSeleccionado = 427,
-textInfluenciaVentilacionMinima = 428,
-textInfluenciaVentilacionCalculada = 429,
-textVentilacionMinimaCorregida = 430,
-textVentilacionCalculada = 431,
-textControlVentilacion = 432,
-textEscalon = 433,
-textTabla = 434,
-textEaA = 435,
-textEaB = 436,
-textEaC = 437,
-textEaD = 438,
-textEaE = 439,
-textEaT = 440,
-textEspacio = 441,
-textEliminarFila = 442,
-textNo = 443,
-textSi = 444,
-textMas = 445,
-textLlamando = 446,
-textLlamadaEnCurso = 447,
-textLlamadaEntrante = 448,
-textLlamadaEntranteEnCurso = 449,
-textVMin = 450,
-textVMax = 451,
-textMinEaA = 452,
-textMinEaB = 453,
-textMinEaC = 454,
-textMinEaD = 455,
-textMinEaE = 456,
-textMinEaT = 457,
-textDepre = 458,
-textIlumMax = 459,
-textVentilador0 = 460,
-textVentilador1 = 461,
-textVentilador2 = 462,
-textVentilador3 = 463,
-textVentilador4 = 464,
-textVentilador5 = 465,
-textVentilador6 = 466,
-textVentilador7 = 467,
-textVentilador8 = 468,
-textVentilador9 = 469,
-textVentilador10 = 470,
-textVentilador11 = 471,
-textVentilador12 = 472,
-textVentilador13 = 473,
-textVentilador14 = 474,
-textVentilador15 = 475,
-textVentilador16 = 476,
-textVentilador17 = 477,
-textVentilador18 = 478,
-textVentilador19 = 479,
-textVentilador20 = 480,
-textVentilador21 = 481,
-textVentilador22 = 482,
-textVentilador23 = 483,
-textVentilador24 = 484,
-textVentilador25 = 485,
-textVentilador26 = 486,
-textVentilador27 = 487,
-textVentilador28 = 488,
-textVentilador29 = 489,
-textVentilador30 = 490,
-textVentilador31 = 491,
-textVentilador32 = 492,
+  textFinCorreccion = 424,
+  textHayAlarmas = 425,
+  textNoHayExpConect = 426,
+  textSeleccionado = 427,
+  textInfluenciaVentilacionMinima = 428,
+  textInfluenciaVentilacionCalculada = 429,
+  textVentilacionMinimaCorregida = 430,
+  textVentilacionCalculada = 431,
+  textControlVentilacion = 432,
+  textEscalon = 433,
+  textTabla = 434,
+  textEaA = 435,
+  textEaB = 436,
+  textEaC = 437,
+  textEaD = 438,
+  textEaE = 439,
+  textEaT = 440,
+  textEspacio = 441,
+  textEliminarFila = 442,
+  textNo = 443,
+  textSi = 444,
+  textMas = 445,
+  textLlamando = 446,
+  textLlamadaEnCurso = 447,
+  textLlamadaEntrante = 448,
+  textLlamadaEntranteEnCurso = 449,
+  textVMin = 450,
+  textVMax = 451,
+  textMinEaA = 452,
+  textMinEaB = 453,
+  textMinEaC = 454,
+  textMinEaD = 455,
+  textMinEaE = 456,
+  textMinEaT = 457,
+  textDepre = 458,
+  textIlumMax = 459,
+  textVentilador0 = 460,
+  textVentilador1 = 461,
+  textVentilador2 = 462,
+  textVentilador3 = 463,
+  textVentilador4 = 464,
+  textVentilador5 = 465,
+  textVentilador6 = 466,
+  textVentilador7 = 467,
+  textVentilador8 = 468,
+  textVentilador9 = 469,
+  textVentilador10 = 470,
+  textVentilador11 = 471,
+  textVentilador12 = 472,
+  textVentilador13 = 473,
+  textVentilador14 = 474,
+  textVentilador15 = 475,
+  textVentilador16 = 476,
+  textVentilador17 = 477,
+  textVentilador18 = 478,
+  textVentilador19 = 479,
+  textVentilador20 = 480,
+  textVentilador21 = 481,
+  textVentilador22 = 482,
+  textVentilador23 = 483,
+  textVentilador24 = 484,
+  textVentilador25 = 485,
+  textVentilador26 = 486,
+  textVentilador27 = 487,
+  textVentilador28 = 488,
+  textVentilador29 = 489,
+  textVentilador30 = 490,
+  textVentilador31 = 491,
+  textVentilador32 = 492,
 
 
 
-
-
-
-
-
-
-
-
-
-
-textEntradaAnalogica1 = 493,
-textEntradaAnalogica2 = 494,
-textMinimoAlarma = 495,
-textMaximoAlarma = 496,
-textAlarmaAi1 = 497,
-textAlarmaAi2 = 498,
-textHume = 499,
-textTamano = 500,
-text010Inicio = 501,
-text010Fin = 502,
-textCicloMax = 503,
-textCicloMin = 504,
-textReles = 505,
-textSondasTemperatura = 506,
-textObjetoAsignado = 507,
-textGradosCentigrados = 508,
-textReloj1 = 509,
-textReloj2 = 510,
-textAlimentacion = 511,
-textAgua = 512,
-textIluminacion1 = 513,
-textIluminacion2 = 514,
-textEstado = 515,
-textIntervalo = 516,
-textRepeticion = 517,
-textDiaInicio = 518,
-textDiaFin = 519,
-textPrograma = 520,
-textDiaCrianza = 521,
-textLunes = 522,
-textMartes = 523,
-textMiercoles = 524,
-textJueves = 525,
-textViernes = 526,
-textSabado = 527,
-textDomingo = 528,
-textPrograma1 = 529,
-textPrograma2 = 530,
-textPrograma3 = 531,
-textPrograma4 = 532,
-textPrograma5 = 533,
-textPrograma6 = 534,
-textPrograma7 = 535,
-textPrograma8 = 536,
-textPrograma9 = 537,
-textPrograma10 = 538,
-textPrograma11 = 539,
-textPrograma12 = 540,
-textPrograma13 = 541,
-textPrograma14 = 542,
-textPrograma15 = 543,
-textPrograma16 = 544,
-textPrograma17 = 545,
-textPrograma18 = 546,
-textDiaSemana = 547,
-textSombreo = 548,
-textEnergia = 549,
-textOscurecimiento = 550,
-textInicioPeriodo = 551,
-textFinPeriodo = 552,
-textCerrarPorTemperaturaExterior = 553,
-textRadiacionSolar = 554,
-textCierrePantalla = 555,
-textEtapaCalefaccion = 556,
-textEtapaRefrigeracion = 557,
-textEtapaHumidificacion = 558,
-textEtapaDeshumidificacion = 559,
-textGh25 = 560,
-textAlarmaMotorA1Extremo = 561,
-textAlarmaMotorB1Extremo = 562,
-textAlarmaMotorA1FcInvertido = 563,
-textAlarmaMotorB1FcInvertido = 564,
-textAlarmaMotorA1SentidoInvertido = 565,
-textAlarmaMotorB1SentidoInvertido = 566,
-textAlarmaMotorA1Atasco = 567,
-textAlarmaMotorB1Atasco = 568,
-textMotorConsumoSinPienso = 569,
-textMotorConsumoExcesivo = 570,
-textMotorConsumoAtasco = 571,
-textArchivosNoEncontrados = 572,
-textArchivo = 573,
-textAlarmasSondas = 574,
-textMinimoTemperatura1 = 575,
-textMaximoTemperatura1 = 576,
-textMinimoTemperatura2 = 577,
-textMaximoTemperatura2 = 578,
-textExpansiones = 579,
-textExpansion1 = 580,
-textExpansion2 = 581,
-textExpansion3 = 582,
-textAlarma7 = 583,
-textAlarma8 = 584,
-textAlarmaFalloConexion = 585,
-textFalloConexion = 586,
-textEntradasAnalogicas = 587,
-textTiempoArmadoGeneral = 588,
-textArmado = 589,
-textDesarmado = 590,
-textBateriaBaja = 591,
-textBateriaConectada = 592,
-textBateriaDesconectada = 593,
-textVersionPreproduccion = 594,
-textVersionSoporte = 595,
-textClaveDescarga = 596,
-textVersionProduccion = 597,
-textCfmInferiorGrupoAnterior = 598,
-textNoHayTelefonosDefinidos = 599,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  textEntradaAnalogica1 = 493,
+  textEntradaAnalogica2 = 494,
+  textMinimoAlarma = 495,
+  textMaximoAlarma = 496,
+  textAlarmaAi1 = 497,
+  textAlarmaAi2 = 498,
+  textHume = 499,
+  textTamano = 500,
+  text010Inicio = 501,
+  text010Fin = 502,
+  textCicloMax = 503,
+  textCicloMin = 504,
+  textReles = 505,
+  textSondasTemperatura = 506,
+  textObjetoAsignado = 507,
+  textGradosCentigrados = 508,
+  textReloj1 = 509,
+  textReloj2 = 510,
+  textAlimentacion = 511,
+  textAgua = 512,
+  textIluminacion1 = 513,
+  textIluminacion2 = 514,
+  textEstado = 515,
+  textIntervalo = 516,
+  textRepeticion = 517,
+  textDiaInicio = 518,
+  textDiaFin = 519,
+  textPrograma = 520,
+  textDiaCrianza = 521,
+  textLunes = 522,
+  textMartes = 523,
+  textMiercoles = 524,
+  textJueves = 525,
+  textViernes = 526,
+  textSabado = 527,
+  textDomingo = 528,
+  textPrograma1 = 529,
+  textPrograma2 = 530,
+  textPrograma3 = 531,
+  textPrograma4 = 532,
+  textPrograma5 = 533,
+  textPrograma6 = 534,
+  textPrograma7 = 535,
+  textPrograma8 = 536,
+  textPrograma9 = 537,
+  textPrograma10 = 538,
+  textPrograma11 = 539,
+  textPrograma12 = 540,
+  textPrograma13 = 541,
+  textPrograma14 = 542,
+  textPrograma15 = 543,
+  textPrograma16 = 544,
+  textPrograma17 = 545,
+  textPrograma18 = 546,
+  textDiaSemana = 547,
+  textSombreo = 548,
+  textEnergia = 549,
+  textOscurecimiento = 550,
+  textInicioPeriodo = 551,
+  textFinPeriodo = 552,
+  textCerrarPorTemperaturaExterior = 553,
+  textRadiacionSolar = 554,
+  textCierrePantalla = 555,
+  textEtapaCalefaccion = 556,
+  textEtapaRefrigeracion = 557,
+  textEtapaHumidificacion = 558,
+  textEtapaDeshumidificacion = 559,
+  textGh25 = 560,
+  textAlarmaMotorA1Extremo = 561,
+  textAlarmaMotorB1Extremo = 562,
+  textAlarmaMotorA1FcInvertido = 563,
+  textAlarmaMotorB1FcInvertido = 564,
+  textAlarmaMotorA1SentidoInvertido = 565,
+  textAlarmaMotorB1SentidoInvertido = 566,
+  textAlarmaMotorA1Atasco = 567,
+  textAlarmaMotorB1Atasco = 568,
+  textMotorConsumoSinPienso = 569,
+  textMotorConsumoExcesivo = 570,
+  textMotorConsumoAtasco = 571,
+  textArchivosNoEncontrados = 572,
+  textArchivo = 573,
+  textAlarmasSondas = 574,
+  textMinimoTemperatura1 = 575,
+  textMaximoTemperatura1 = 576,
+  textMinimoTemperatura2 = 577,
+  textMaximoTemperatura2 = 578,
+  textExpansiones = 579,
+  textExpansion1 = 580,
+  textExpansion2 = 581,
+  textExpansion3 = 582,
+  textAlarma7 = 583,
+  textAlarma8 = 584,
+  textAlarmaFalloConexion = 585,
+  textFalloConexion = 586,
+  textEntradasAnalogicas = 587,
+  textTiempoArmadoGeneral = 588,
+  textArmado = 589,
+  textDesarmado = 590,
+  textBateriaBaja = 591,
+  textBateriaConectada = 592,
+  textBateriaDesconectada = 593,
+  textVersionPreproduccion = 594,
+  textVersionSoporte = 595,
+  textClaveDescarga = 596,
+  textVersionProduccion = 597,
+  textCfmInferiorGrupoAnterior = 598,
+  textNoHayTelefonosDefinidos = 599,
 
 
 
@@ -859,41 +762,6 @@ textNoHayTelefonosDefinidos = 599,
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textCfmKInicio = 728,
   textCfmKFin = 729,
   textTablaCfmPorAnimal = 730,
@@ -979,3676 +847,3368 @@ textNoHayTelefonosDefinidos = 599,
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   textRegulada = 810,
-textOnOff = 811,
-textReleAlimentacion = 812,
-textReleAgua = 813,
-textReleReloj1 = 814,
-textReleReloj2 = 815,
-textReleIluminacion1L1 = 816,
-textReleIluminacion1L2 = 817,
-textReleIluminacion1L3 = 818,
-textReleIluminacion2L1 = 819,
-textReleIluminacion2L2 = 820,
-textReleIluminacion2L3 = 821,
-textCorreccionNh3 = 822,
-textCorreccionCo2 = 823,
-textT1R1 = 824,
-textT1R2 = 825,
-textT1R3 = 826,
-textT1R4 = 827,
-textT1R5 = 828,
-textT1R6 = 829,
-textT1R7 = 830,
-textT1R8 = 831,
-textT1R9 = 832,
-textT1R10 = 833,
-textT1R11 = 834,
-textT1R12 = 835,
-textT1R13 = 836,
-textT1R14 = 837,
-textT1R15 = 838,
-textT1R16 = 839,
-textT2R1 = 840,
-textT2R2 = 841,
-textT2R3 = 842,
-textT2R4 = 843,
-textT2R5 = 844,
-textT2R6 = 845,
-textT2R7 = 846,
-textT2R8 = 847,
-textT2R9 = 848,
-textT2R10 = 849,
-textT2R11 = 850,
-textT2R12 = 851,
-textT2R13 = 852,
-textT2R14 = 853,
-textT2R15 = 854,
-textT2R16 = 855,
-textT3R1 = 856,
-textT3R2 = 857,
-textT3R3 = 858,
-textT3R4 = 859,
-textT3R5 = 860,
-textT3R6 = 861,
-textT3R7 = 862,
-textT3R8 = 863,
-textT3R9 = 864,
-textT3R10 = 865,
-textT3R11 = 866,
-textT3R12 = 867,
-textT3R13 = 868,
-textT3R14 = 869,
-textT3R15 = 870,
-textT3R16 = 871,
-textT4R1 = 872,
-textT4R2 = 873,
-textT4R3 = 874,
-textT4R4 = 875,
-textT4R5 = 876,
-textT4R6 = 877,
-textT4R7 = 878,
-textT4R8 = 879,
-textT4R9 = 880,
-textT4R10 = 881,
-textT4R11 = 882,
-textT4R12 = 883,
-textT4R13 = 884,
-textT4R14 = 885,
-textT4R15 = 886,
-textT4R16 = 887,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textInfluenciaSensacionTermicaRefrigeracion = 888,
-textConectarRefrigeracion = 889,
-textT1Te1 = 890,
-textT1Te2 = 891,
-textT1Te3 = 892,
-textT1Te4 = 893,
-textT1Te5 = 894,
-textT1Te6 = 895,
-textT2Te1 = 896,
-textT2Te2 = 897,
-textT2Te3 = 898,
-textT2Te4 = 899,
-textT2Te5 = 900,
-textT2Te6 = 901,
-textT1Ai1 = 902,
-textT1Ai2 = 903,
-textT1Ai3 = 904,
-textT1Ai4 = 905,
-textT1Ai5 = 906,
-textT1Ai6 = 907,
-textT2Ai1 = 908,
-textT2Ai2 = 909,
-textT2Ai3 = 910,
-textT2Ai4 = 911,
-textT2Ai5 = 912,
-textT2Ai6 = 913,
-textT1Di1 = 914,
-textT1Di2 = 915,
-textT1Di3 = 916,
-textT1Di4 = 917,
-textT1Di5 = 918,
-textT1Di6 = 919,
-textT2Di1 = 920,
-textT2Di2 = 921,
-textT2Di3 = 922,
-textT2Di4 = 923,
-textT2Di5 = 924,
-textT2Di6 = 925,
-textT1Ao1 = 926,
-textT1Ao2 = 927,
-textT1Ao3 = 928,
-textT1Ao4 = 929,
-textT1Ao5 = 930,
-textT1Ao6 = 931,
-textT2Ao1 = 932,
-textT2Ao2 = 933,
-textT2Ao3 = 934,
-textT2Ao4 = 935,
-textT2Ao5 = 936,
-textT2Ao6 = 937,
-textEtapa1 = 940,
-textEtapa2 = 941,
-textEtapa3 = 942,
-textEtapa4 = 943,
-textEtapa5 = 944,
-textEtapa6 = 945,
-textEtapa7 = 946,
-textEtapa8 = 947,
-textEtapa9 = 948,
-textEtapa10 = 949,
-textEtapa11 = 950,
-textEtapa12 = 951,
-textEtapa13 = 952,
-textEtapa14 = 953,
-textEtapa15 = 954,
-textEtapa16 = 955,
-textEtapa17 = 956,
-textEtapa18 = 957,
-textEtapa19 = 958,
-textEtapa20 = 959,
-textEtapa21 = 960,
-textEtapa22 = 961,
-textEtapa23 = 962,
-textEtapa24 = 963,
-textEtapa25 = 964,
-textEtapa26 = 965,
-textEtapa27 = 966,
-textEtapa28 = 967,
-textEtapa29 = 968,
-textEtapa30 = 969,
-textEtapa31 = 970,
-textEtapa32 = 971,
-
-
-
-
-
-
-
-
-
-
-
-textNVentiladoresFijos = 972,
-textNVentiladoresTemporizados = 973,
-textVentiladoresEstaticos = 974,
-textRefrigRangoTemporizacion = 975,
-textConfiguracionVentiladores = 976,
-textSalida010A = 977,
-textSalida010B = 978,
-textSalida010C = 979,
-textSalida010D = 980,
-textSalida010E = 981,
-textSalida010F = 982,
-textSalida010G = 983,
-textSalida010H = 984,
-textTemporizaSal010A = 985,
-textTemporizaSal010B = 986,
-textTemporizaSal010C = 987,
-textTemporizaSal010D = 988,
-textCalefHisteresis = 989,
-textCalefModoTemporizacion = 990,
-textCalefTiempoCicloParo = 991,
-textCalefTiempoCiclominimoMarcha = 992,
-textCalefRangoTemporizacion = 993,
-textRangoCalefaccion = 994,
-textInicioSalida010A = 995,
-textInicioSalida010B = 996,
-textInicioSalida010C = 997,
-textInicioSalida010D = 998,
-textTemporizaSal010Vent = 999,
-textCaudalAireVent1 = 1000,
-textCaudalAireVent2 = 1001,
-textReleAsignadoVentPartida = 1002,
-textReleAlarma = 1003,
-textBluetooth = 1004,
-textFinSalida010A = 1005,
-textFinSalida010B = 1006,
-textFinSalida010C = 1007,
-textFinSalida010D = 1008,
-textMotorALento = 1009,
-textMotorBLento = 1010,
-textMaxMovimientoEaA = 1011,
-textMaxMovimientoEaB = 1012,
-textTiempoEsperaTrasMaxMovimientoEaA = 1013,
-textTiempoEsperaTrasMaxMovimientoEaB = 1014,
-textControlEntradaAireA = 1015,
-textControlEntradaAireB = 1016,
-textControlEntradaAireC = 1017,
-textControlEntradaAireD = 1018,
-textControlEntradaAireE = 1019,
-textControlEntradaAireT = 1020,
-textControlEntradaAireA3 = 1021,
-textControlEntradaAireB3 = 1022,
-textControlTemperaturaExterior = 1023,
-textControlTemperaturaExteriorTempDeseada = 1024,
-textInicioEaA = 1025,
-textInicioEaB = 1026,
-textInicioEaC = 1027,
-textInicioEaD = 1028,
-textInicioEaE = 1029,
-textInicioEaT = 1030,
-textFinEaA = 1031,
-textFinEaB = 1032,
-textFinEaC = 1033,
-textFinEaD = 1034,
-textFinEaE = 1035,
-textFinEaT = 1036,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textControlTemperaturaExteriorHisteresis = 1037,
-textInfluenciaHumedadHisteresis = 1038,
-textInfluenciaHumedadValorActiva = 1039,
-textTempo = 1040,
-text010A = 1041,
-text010B = 1042,
-text010C = 1043,
-text010D = 1044,
-textOpcionPrincipal12 = 1045,
-textPotenciometro2Hilos = 1046,
-textPotenciometro3Hilos = 1047,
-textAdelantar = 1048,
-textRetrasar = 1049,
-textSondas1 = 1050,
-textSondas2 = 1051,
-textSondas3 = 1052,
-textSondas4 = 1053,
-textSondas5 = 1054,
-textSondas6 = 1055,
-textSondas7 = 1056,
-textSondas8 = 1057,
-textSondas9 = 1058,
-textSondas10 = 1059,
-textSondas11 = 1060,
-textSondas12 = 1061,
-textSondas13 = 1062,
-textSondas14 = 1063,
-textSondas15 = 1064,
-text0PorCiento = 1065,
-text1PorCiento = 1066,
-text10PorCiento = 1067,
-text20PorCiento = 1068,
-text30PorCiento = 1069,
-text40PorCiento = 1070,
-text50PorCiento = 1071,
-text60PorCiento = 1072,
-text70PorCiento = 1073,
-text80PorCiento = 1074,
-text90PorCiento = 1075,
-text100PorCiento = 1076,
-textAlarma9 = 1077,
-textTiempoRetrasoEntradasDeAireMenosM3 = 1078,
-textTiempoRetrasoEntradasDeAireMasM3 = 1079,
-textSalida0101 = 1080,
-textSalida0102 = 1081,
-textSalida0103 = 1082,
-textSalida0104 = 1083,
-textSalida0105 = 1084,
-textSalida0106 = 1085,
-textSalida0107 = 1086,
-textSalida0108 = 1087,
-textSalida0109 = 1088,
-textSalida01010 = 1089,
-textSalida01011 = 1090,
-textSalida01012 = 1091,
-textMantenerCorreccionEnRefrigeracion = 1092,
-textCancelarActualizacion = 1093,
-textExpd = 1094,
-textExpa = 1095,
-textTurcoIdioma = 1096,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textEntrada0101 = 1100,
-textEntrada0102 = 1101,
-textEntrada0103 = 1102,
-textEntrada0104 = 1103,
-textEntrada0105 = 1104,
-textEntrada0106 = 1105,
-textEntrada0107 = 1106,
-textEntrada0108 = 1107,
-textEntrada0109 = 1108,
-textEntrada01010 = 1109,
-textEntrada01011 = 1110,
-textEntrada01012 = 1111,
-textUnidosNoDistribuidos = 1120,
-textUnidosDistribuidos = 1121,
-textIncrementalNoDistribuido = 1122,
-textIncrementalDistribuido = 1123,
-textTodosSeTemporizan = 1124,
-textTempC = 1125,
-textControlTemperatura = 1126,
-textControl = 1127,
-textInfluenciasControlTemperatura = 1128,
-textAlta = 1129,
-textBaja = 1130,
-textSalida010I = 1131,
-textSalida010J = 1132,
-textA1 = 1133,
-textA2 = 1134,
-textA3 = 1135,
-textA4 = 1136,
-textA5 = 1137,
-textA6 = 1138,
-textA7 = 1139,
-textMensajeNoEditarLocalEdit1 = 1140,
-textA8 = 1141,
-textAi1 = 1142,
-textAi2 = 1143,
-textTransicion = 1144,
-textTipoEtapa = 1145,
-textReleApertura = 1146,
-textReleCierre = 1147,
-textHisteresisDesconexion = 1148,
-textTiempoApertura = 1149,
-textTiempoCierre = 1150,
-textMargenConexion = 1151,
-textVentilacionMinimaCalculada = 1152,
-textVentilacionMinimoEjecutable = 1153,
-textVentilacionMinimaAbsoluta = 1154,
-textAceptar = 1155,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textMensajeNoEditarOtraEdit1 = 1157,
-textTc5 = 1158,
-textExpa1 = 1159,
-textExpa2 = 1160,
-textMensajeVersionPlacaActualizada1 = 1161,
-textExpd1 = 1162,
-textExpd2 = 1163,
-textExpd3 = 1164,
-textAlarmaOn = 1165,
-textMensajeVentilacionMinimosEjecutar1 = 1166,
-textAlarmaOff = 1167,
-textElevacionApertura7 = 1168,
-textElevacionApertura8 = 1169,
-textMensajeVentilacionMinimosInfluenciada1 = 1180,
-textVentilacionMaximaCalculada = 1190,
-textVentilacionMaximaEjecutable = 1191,
-textVentilacionMaximaAbsoluta = 1192,
-textOrdenPosicionesTemporizados = 1193,
-textModoTemporizacion = 1194,
-textInicioEntradaAireA = 1195,
-textInicioEntradaAireB = 1196,
-textInicioEntradaAireC = 1197,
-textInicioEntradaAireD = 1198,
-textInicioEntradaAireE = 1199,
-textInicioEntradaAireT = 1200,
-textFinEntradaAireA = 1201,
-textFinEntradaAireB = 1202,
-textFinEntradaAireC = 1203,
-textFinEntradaAireD = 1204,
-textFinEntradaAireE = 1205,
-textFinEntradaAireT = 1206,
-textFinEntradaAireA3 = 1207,
-textFinEntradaAireB3 = 1208,
-
-
-
-
-
-
-
-
-
-
-
-
-textMensajeConfirmacionCambioModoVent1 = 1210,
-textS1T = 1220,
-textS2T = 1221,
-textS3T = 1222,
-textS4T = 1223,
-textS5T = 1224,
-textS6T = 1225,
-textS7T = 1226,
-textS8T = 1227,
-textS9T = 1228,
-textS10T = 1229,
-textS11T = 1230,
-textS12T = 1231,
-textS13T = 1232,
-textS14T = 1233,
-textS15T = 1234,
-textS16T = 1235,
-textS17T = 1236,
-textS18T = 1237,
-textS19T = 1238,
-textS20B = 1239,
-textS21T = 1240,
-textS22T = 1241,
-textS23T = 1242,
-textS24T = 1243,
-textS25T = 1244,
-textS26T = 1245,
-textS27T = 1246,
-textS28T = 1247,
-textS29T = 1248,
-textS30T = 1249,
-textS31T = 1250,
-textS32T = 1251,
-textVentilacionS0 = 1253,
-textHisteresisS0Dinamica = 1254,
-textConfiguracionEtapa = 1255,
-textVentiladoresDistintosKm3 = 1256,
-textTotalVentilacionCalculada = 1257,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textMensajeVentCalCorregidaMinMax1 = 1258,
-textFijosTempoMenorQueConfigurados = 1259,
-textMensajeTotalVentModificada1 = 1264,
-textVentilacionNaturalYS0 = 1272,
-textAjustesCurvas = 1273,
-textVerano = 1274,
-textInvierno = 1275,
-textInicioCrianza = 1276,
-textEntradaAnimales = 1277,
-textMensajeNAnimalesInicio1 = 1278,
-textMensajeNAnimalesInicioNew1 = 1286,
-textComprobandoActualizacion = 1287,
-textNumeroAnimalesIniciales = 1294,
-textTodaLaNave = 1295,
-textPrecalentamientoNave = 1296,
-textNaveVacia = 1297,
-textNave = 1298,
-textSondasCriadero = 1299,
-textVentilacionCriadero1 = 1300,
-textVentilacionCriadero2 = 1301,
-textRangoCriadero1 = 1302,
-textRangoCriadero2 = 1303,
-textVentilacionTodaLaNave = 1304,
-textControlPorCrianza = 1305,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textIluminacionReleA = 1306,
-textIluminacionReleB = 1307,
-textIluminacionReleC = 1308,
-textAmanecer1 = 1309,
-textAmanecer2 = 1310,
-textIluminacion = 1311,
-textActualizarEquipo = 1312,
-textVersionBoot = 1313,
-textVersionEquipo = 1314,
-textOmega = 1315,
-textSigma = 1316,
-textV4 = 1317,
-textAlpha = 1318,
-textV2 = 1319,
-textCti80 = 1320,
-textCti70 = 1321,
-textCti40 = 1322,
-textCti41 = 1323,
-textMensajeNoEditFechaCrinazaOn = 1324,
-textUsbNoEncontrado = 1329,
-textFicherosNoEncontrados = 1330,
-textErrorCompatibilidad = 1331,
-textVersionBootloader = 1332,
-textActualizandoApp = 1333,
-textNoSePuedeCompletar = 1334,
-textInserteUsbConUltimaVersion = 1335,
-textFicherosNoValidos = 1336,
-textDescargueUltimaVersion = 1337,
-textALaMemoriaUsb = 1338,
-textIniciandoApp = 1339,
-textActualizandoFw = 1340,
-textNoSePuedeActualizar = 1341,
-textReiniciandoEquipo = 1342,
-textQActualizarQ = 1343,
-textElEquipoSeReiniciara = 1344,
-textNecesitaCopiar = 1345,
-textDeLaUltimaVersion = 1346,
-textFicherosVersionAnterior = 1347,
-textVersionPlaca = 1348,
-textVersionUsb = 1349,
-textFalloComunicacion = 1350,
-textNecesarioActualziar = 1351,
-textError = 1352,
-textVersionUvi = 1353,
-textNoCompatibleConEquipo = 1354,
-textVentilacionTunel = 1355,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textOffsetNatural = 1356,
-textOffsetSalidaNatural = 1357,
-textControlPorTiempo = 1358,
-textDiaCrianzaInicio = 1359,
-textDiaCrianzaFin = 1360,
-textDiaHoraInicio = 1361,
-textDiaHoraFin = 1362,
-textCondicionAusenciaViento = 1363,
-textCondicionVientoFuerte = 1364,
-textTemperaturaExteriorMenorQue = 1365,
-textTemperaturaExteriorMayorQue = 1366,
-textMensajeVentNaturalTempExtMenorQue = 1367,
-textMensajeVentNaturalTempExtMayorQue = 1372,
-textMensajeVentNaturalVelociVientoMenorQue = 1377,
-textMensajeVentNaturalVelociVientoMayorQue = 1382,
-textVelocidadVientoMenorQue = 1387,
-textVelocidadVientoMayorQue = 1388,
-textTiempoPasarEtapaNaturalANatural = 1389,
-textEtapaNatural = 1392,
-textPosicionEaZonaNatural = 1393,
-textEtapaInicioTunel = 1394,
-textOffsetEntradaTunel = 1395,
-textNoEntraTunelSiEdadAnimalMenorQue = 1396,
-textHisteresisSalidaTunel = 1398,
-textTiempoMinimoPermaneceTunel = 1399,
-textInfluenciaDiaAnimal = 1400,
-textHisteresisTiempoEtapaSiguiente = 1401,
-textHisteresisTiempoEtapaAnterior = 1402,
-textTiempoTransicion = 1403,
-textMensTiempoEsperaVentilacion1Tunel = 1404,
-textNoTenemosVentiladoresConfigurados = 1410,
-textTipoNave = 1411,
-textCombiTunel = 1412,
-textTunelPuro = 1413,
-textTransversal = 1414,
-textTunelDoble = 1415,
-textMensSiElTunelEmpiezaEnEtapa1NoOffset = 1416,
-textResetClaveConfiguracion = 1417,
-textEquipoDesbloqueado = 1418,
-textAltoParedesLaterales = 1419,
-textModoDelMotor = 1421,
-textLdb = 1422,
-textControlDirecto = 1423,
-textReleAbrir = 1424,
-textReleCerrar = 1425,
-textFinalCarreraOpen = 1426,
-textFinalCarreraClose = 1427,
-textEntradaPotenciometro = 1428,
-textEntradasDigitales = 1429,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textMotorDirectoD1 = 1430,
-textMotorDirectoD2 = 1431,
-textMotorDirectoD3 = 1432,
-textMotorDirectoD4 = 1433,
-textMotorDirectoD5 = 1434,
-textMotorDirectoD6 = 1435,
-textMotorDirectoD7 = 1436,
-textMotorDirectoD8 = 1437,
-textConfigMotoresDirectos = 1438,
-textMotorA1 = 1439,
-textMotorB1 = 1440,
-textMotorC1 = 1441,
-textMotorD1 = 1442,
-textMotorT1 = 1443,
-textMotorA2 = 1444,
-textMotorB2 = 1445,
-textMotorC2 = 1446,
-textMotorD2 = 1447,
-textMotorT2 = 1448,
-textMotorA3 = 1449,
-textMotorB3 = 1450,
-textMotorC3 = 1451,
-textMotorD3 = 1452,
-textMotorT3 = 1453,
-textMotorDirecto = 1454,
-textCalibracion = 1455,
-textMotorNoConectado = 1456,
-textDispositivosLdb = 1457,
-textNodo = 1458,
-textMotorLdbL1 = 1459,
-textMotorLdbL2 = 1460,
-textMotorLdbL3 = 1461,
-textMotorLdbL4 = 1462,
-textMotorLdbL5 = 1463,
-textMotorLdbL6 = 1464,
-textMotorLdbL7 = 1465,
-textMotorLdbL8 = 1466,
-textMotorLdb = 1467,
-textAgitadores = 1468,
-textCiclico = 1469,
-textDiferenciaSondas = 1470,
-textAgitadoresAjustes = 1471,
-textEjecutaSiAnimalMayorQue = 1472,
-textModoCiclico = 1473,
-textModoDiferenciaSondas = 1474,
-textModoTemperaturas = 1475,
-textPeriodo = 1476,
-textDiferenciaTemperatura = 1477,
-textTiempoFuncionamientoMaximo = 1478,
-textPeriodoMinimoRepeticion = 1479,
-textActivadas = 1480,
-textDesconectadas = 1481,
-textComunicaconesExteriores = 1482,
-textComunicaconesEntreEquipos = 1483,
-textCambiarClave = 1484,
-textMac = 1485,
-textNumeroEquipo = 1486,
-textTablaDispositivosLocal = 1487,
-textDispositivos = 1488,
-textNumero = 1489,
-textSilo = 1490,
-textBascula1 = 1491,
-textBascula2 = 1492,
-textBascula3 = 1493,
-textResetTotal = 1494,
-textResetearEquipo = 1495,
-textNc = 1496,
-textNa = 1497,
-textHisteresisAlarmaTemperatura = 1498,
-textHisteresisAlarmaDiferencia = 1499,
-textHisteresisAlarmaRelativa = 1500,
-textHisteresisAlarmaHumedad = 1501,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textSondasAlarmaDiferencia = 1502,
-textHisteresisAlarmaCo2 = 1503,
-textHisteresisAlarmaNh3 = 1504,
-textAlarmasInstantaneas = 1505,
-textHistoricoAlarmas = 1506,
-textAlarmasTemperatura = 1507,
-textAlarmasHumedad = 1508,
-textCo2Maximo = 1509,
-textNh3Maximo = 1510,
-textFecha = 1511,
-textAlarmaDiferenciaMinima = 1512,
-textAlarmaDiferenciaMaxima = 1513,
-textContadorAgua = 1514,
-textDosificacion = 1515,
-textContadorGeneral = 1516,
-textContador1 = 1517,
-textContador2 = 1518,
-textContador3 = 1519,
-textContador4 = 1520,
-textContador5 = 1521,
-textContador6 = 1522,
-textContador7 = 1523,
-textContador8 = 1524,
-textLitrosPorPulso = 1525,
-textAlarmasVigilancia = 1526,
-textResumenGrafico = 1527,
-textDosificacionAgua = 1528,
-textDesconectada = 1529,
-textConectada = 1530,
-textSimple = 1531,
-textCurvaAgua = 1533,
-textAlarmaContadorGeneral = 1534,
-textAlarmaContadorLineas18 = 1535,
-textMinimoContador = 1536,
-textTiempoDerrameAgua = 1537,
-textTiempoCuentaLitros = 1538,
-textContadorDerrameAgua = 1539,
-textCalefaccion1 = 1540,
-textCalefaccion2 = 1541,
-textCalefaccion3 = 1542,
-textCalefaccion4 = 1543,
-textCalefaccion5 = 1544,
-textCalefaccion6 = 1545,
-textCalefaccion7 = 1546,
-textCalefaccion8 = 1547,
-textCalefaccion9 = 1548,
-textCalefaccion10 = 1549,
-textCalefaccion11 = 1550,
-textCalefaccion12 = 1551,
-textIntervaloValidacion = 1552,
-textRele2 = 1553,
-textOffsetRele2 = 1554,
-textInfluenciaSensacionTermica = 1555,
-textSemana = 1556,
-textSemana1 = 1557,
-textSemana2 = 1558,
-textSemana3 = 1559,
-textSemana4 = 1560,
-textSemana5 = 1561,
-textSemana6 = 1562,
-textSemana7 = 1563,
-textSemana8 = 1564,
-textSemana9 = 1565,
-textSemana10 = 1566,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textOrigenesPienso = 1567,
-textDestinosPienso = 1568,
-textProgramasElevacionLineas = 1569,
-textProgramasIluminacion = 1570,
-textTolvaMezcladora = 1571,
-textRecetas = 1572,
-textOrigen1 = 1573,
-textOrigen2 = 1574,
-textOrigen3 = 1575,
-textOrigen4 = 1576,
-textTolvaIntermediaPulso = 1577,
-textTolvaIntermediaCelulaCarga = 1578,
-textControlCantidadPiensoPor = 1579,
-textTiempoMedicion = 1580,
-textKgPesados = 1581,
-textIniciarCalibracion = 1582,
-textCapacidadMaxima = 1583,
-textDestino1 = 1584,
-textDestino2 = 1585,
-textDestino3 = 1586,
-textDestino4 = 1587,
-textDestino5 = 1588,
-textDestino6 = 1589,
-textDestino7 = 1590,
-textDestino8 = 1591,
-textModoDosificacion = 1592,
-textTolvaIntermedia = 1593,
-textDirecto = 1594,
-textIluminacionControlada = 1595,
-textDosificacionDirecta = 1596,
-textTiempoVaciadoTolva = 1597,
-textEntradaTolvaVacia = 1598,
-textEntradaLineaLlena = 1599,
-textReleActivacionLinea = 1600,
-textTiempoSubida = 1601,
-textTiempoBajada = 1602,
-textReleSubir = 1603,
-textReleBajar = 1604,
-textTiempoApagaLucesAntes = 1605,
-textTiempoEnciendeLucesDespues = 1606,
-textTolvaMezcladora1 = 1607,
-textTolvaMezcladora2 = 1608,
-textReceta1 = 1609,
-textReceta2 = 1610,
-textReceta3 = 1611,
-textSilos = 1612,
-textRegistroConsumo = 1613,
-textConsumo = 1614,
-textCargas = 1615,
-textConsumoGeneral = 1616,
-textConsumoPorDestino = 1617,
-textManual = 1618,
-textAutomatica = 1619,
-textDosificacionAlarmas = 1620,
-textPorConsumoMinimo = 1621,
-textDerrame = 1622,
-textVariacionPorcentajeConsumo = 1623,
-textCantidadPienso = 1624,
-textOrigen = 1625,
-textDestino = 1626,
-textDiario = 1627,
-textKgPorAnimal = 1628,
-textInicio = 1629,
-textFin = 1630,
-textCalculo = 1631,
-textAuto = 1632,
-textVigilarAPartirDelDia = 1633,
-textTiempoVigilancia = 1634,
-textCantidadMinima = 1635,
-textCantidadMaxima = 1636,
-textAvisoSiIncrementoMayorQue = 1637,
-textAvisoSiIncrementoMenorQue = 1638,
-textProduccionActual = 1639,
-textHistoricoProduccion = 1640,
-textEquipo = 1641,
-textContadorElectrico = 1642,
-textMultiplicador = 1643,
-textUnidad = 1644,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textGramo = 1645,
-textKgramo = 1646,
-textLitros = 1647,
-textWatio = 1648,
-textFogger = 1649,
-textTablaSalidaAnalogica = 1650,
-textIluminacionPorcen = 1651,
-textVoltajeSal010 = 1652,
-textDestellos = 1653,
-textUtilizarSensorLuz = 1654,
-textDuracionDestellos = 1655,
-textEjecutarAPartirDelDia = 1656,
-textSensorDeLuz = 1657,
-textMixtos = 1658,
-textDiferenciaGenero = 1659,
-textTipoAnimales = 1660,
-textNumeroAnimalesMachos = 1661,
-textNumeroAnimalesHembras = 1662,
-textHumedad = 1663,
-textCo2 = 1664,
-textNh3 = 1665,
-textPorAnimal = 1666,
-textActividad = 1667,
-textAnchoNave = 1668,
-textLargoNave = 1669,
-textAltoNave = 1670,
-textAnchoLateralA = 1671,
-textAltoLateralA = 1672,
-textAnchoLateralB = 1673,
-textAltoLateralB = 1674,
-textNEntradasLateralA = 1675,
-textNEntradasLateralB = 1676,
-textBasculas = 1677,
-textPanelControlGeneral = 1678,
-textMotores = 1679,
-textEstadoOn = 1680,
-textEstadoOff = 1681,
-textReleNoAsignado = 1682,
-textElementosNoAsignados = 1683,
-textS0Minima = 1684,
-textNatural = 1685,
-textPasoTunelRegulada = 1686,
-textPasoReguladaTunel = 1687,
-textVentilacionMinS0 = 1688,
-textVentilacionMinNatural = 1689,
-textVentilacionPasoReguladaTunel = 1690,
-textVentilacionPasoTunelRegulada = 1691,
-textSinSonda = 1692,
-text0100ppm = 1693,
-text0200ppm = 1694,
-text05000ppm = 1695,
-text010000ppm = 1696,
-textEntradas010 = 1697,
-textTarjeta1Sonda1 = 1698,
-textTarjeta1Sonda2 = 1699,
-textTarjeta1Sonda3 = 1700,
-textTarjeta1Sonda4 = 1701,
-textTarjeta1Sonda5 = 1702,
-textTarjeta1Sonda6 = 1703,
-textTarjeta2Sonda1 = 1704,
-textTarjeta2Sonda2 = 1705,
-textTarjeta2Sonda3 = 1706,
-textTarjeta2Sonda4 = 1707,
-textTarjeta2Sonda5 = 1708,
-textTarjeta2Sonda6 = 1709,
-text1 = 1710,
-text2 = 1711,
-text3 = 1712,
-text4 = 1713,
-text5 = 1714,
-text6 = 1715,
-text7 = 1716,
-text8 = 1717,
-text9 = 1718,
-
-
-
-
-textHumedadInterior1 = 1719,
-textHumedadInterior2 = 1720,
-textVisualizacionSondas = 1721,
-textEliminarSonda = 1722,
-textPosicionSonda = 1723,
-textFijos = 1724,
-textEstaticos = 1725,
-textTemporizados = 1726,
-textDiferenciaEntreExteriorYDeseada = 1727,
-textMensajeHumedadInterior = 1728,
-textCorreccionUsuario = 1729,
-textOffsetVentilacionMinima = 1730,
-textOffsetVentilacionMaxima = 1731,
-textEdadAnimal = 1732,
-textPosicionEdadAnimalMenorIgual = 1733,
-textPosicionEdadAnimalMayor = 1734,
-textCondicionesDeFuncionamiento = 1735,
-textCondicionCo2Alto = 1736,
-textCondicionNh3Alto = 1737,
-textCondicionHumedadAlta = 1738,
-textOffsetCo2ConClimaRecinto = 1739,
-textOffsetNh3ConClimaRecinto = 1740,
-textMensajeCo2SuperiorANoVentiNatu = 1741,
-textMensajeNh3SuperiorANoVentiNatu = 1744,
-textMensajeHumedadSuperiorANoVentiNatu = 1747,
-textMensajeCo2SuperiorANoVentiS0 = 1750,
-textMensajeNh3SuperiorANoVentiS0 = 1753,
-textMensajeHumedadSuperiorANoVentiS0 = 1756,
-textOffsetHumedadConClimaRecinto = 1759,
-textCondicionTemperaturaExteriorBaja = 1760,
-textCondicionTemperaturaExteriorAlta = 1761,
-textMensajeS0ControlTiempo = 1762,
-textNivelCo2DeControl = 1766,
-textNivelNh3DeControl = 1767,
-textMensajeOffsetNatural = 1768,
-textMensajeRangoNatural = 1771,
-textMensajeOffsetSalidaNatural = 1775,
-textMensajeTiempoEnaturalANatural = 1782,
-textEntradaTolvaLlena = 1783,
-textEntradaAireTunel = 1784,
-textPorcentajeTransicion = 1785,
-textTiempoEsperaMaximo = 1786,
-textTransicionReguladaTunel = 1787,
-textMensEntradaAireTunel = 1788,
-textMensEsperaPorcentajeMovimientoEntrada = 1791,
-textMensEsperaTiempoMaximoTransicion = 1794,
-textMensTipoTransicionTunel = 1800,
-textMachosYHembrasSeparados = 1810,
-textSoloMachos = 1811,
-textSoloHembras = 1812,
-textTablaMixtos = 1813,
-textTablaMachos = 1814,
-textTablaHembras = 1815,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textEstadisticasCrianzaActual = 1816,
-textEstadisticasUltimosRegistros = 1817,
-textEstadisticasCrianzasAnteriores = 1818,
-textEstadisticasEstadisticas = 1819,
-textEstadisticasVistaPorDias = 1820,
-textEstadisticasDet = 1821,
-textGraficasDiaDeCrianza = 1822,
-textGraficasTiempoDeActividad = 1823,
-textEstadisticasTemperaturas = 1824,
-textEstadisticasTemperaturaConsigna = 1825,
-textEstadisticasTaExt = 1826,
-textEstadisticasTaInt = 1827,
-textEstadisticasTaExtMinMax = 1828,
-textEstadisticasTaExtMax = 1829,
-textEstadisticasTaIntMinMax = 1830,
-textEstadisticasTaIntMax = 1831,
-textPorcentajeBajas = 1832,
-textMachos = 1833,
-textHembras = 1834,
-textAccion = 1835,
-textRetirada = 1836,
-textEliminarUltimoRegistro = 1837,
-textAddRegistro = 1838,
-textEliminarTodosLosRegistros = 1839,
-textMensajeNoSePuedeIntroducirRegistros = 1840,
-textCrianzaFinalizada = 1841,
-textAddRegistroAlta = 1842,
-textAddRegistroBaja = 1843,
-textAddRegistroRetirada = 1844,
-textMsjHisteresisEntradaAireInfluRefri = 1845,
-textEstadisticoTempInteriorMediaHora = 1848,
-textEstadisticoTempInteriorMediaDia = 1849,
-textEstadisticoTempInteriorHoraMax = 1850,
-textEstadisticoTempInteriorHoraMin = 1851,
-textEstadisticoTempInteriorDiaMax = 1852,
-textEstadisticoTempInteriorDiaMin = 1853,
-textEstadisticoTempConsignaMediaHora = 1854,
-textEstadisticoTempConsignaMediaDia = 1855,
-textEstadisticoTempExteriorMediaHora = 1856,
-textEstadisticoTempExteriorMediaDia = 1857,
-textEstadisticoTempExteriorHoraMax = 1858,
-textEstadisticoTempExteriorHoraMin = 1859,
-textEstadisticoTempExteriorDiaMax = 1860,
-textEstadisticoTempExteriorDiaMin = 1861,
-textEstadisticoHumInteriorMediaHora = 1862,
-textEstadisticoHumInteriorMediaDia = 1863,
-textEstadisticoHumInteriorHoraMax = 1864,
-textEstadisticoHumInteriorHoraMin = 1865,
-textEstadisticoHumInteriorDiaMax = 1866,
-textEstadisticoHumInteriorDiaMin = 1867,
-textEstadisticoHumConsignaMediaHora = 1868,
-textEstadisticoHumConsignaMediaDia = 1869,
-textEstadisticoHumExteriorMediaHora = 1870,
-textEstadisticoHumExteriorMediaDia = 1871,
-textEstadisticoHumExteriorHoraMax = 1872,
-textEstadisticoHumExteriorHoraMin = 1873,
-textEstadisticoHumExteriorDiaMax = 1874,
-textEstadisticoHumExteriorDiaMin = 1875,
-textEstadisticoCo2InteriorMediaHora = 1876,
-textEstadisticoCo2InteriorMediaDia = 1877,
-textEstadisticoCo2InteriorHoraMax = 1878,
-textEstadisticoCo2InteriorHoraMin = 1879,
-textEstadisticoCo2InteriorDiaMax = 1880,
-textEstadisticoCo2InteriorDiaMin = 1881,
-textEstadisticoNh3InteriorMediaHora = 1882,
-textEstadisticoNh3InteriorMediaDia = 1883,
-textEstadisticoNh3InteriorHoraMax = 1884,
-textEstadisticoNh3InteriorHoraMin = 1885,
-textEstadisticoNh3InteriorDiaMax = 1886,
-textEstadisticoNh3InteriorDiaMin = 1887,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textEstadisticoActividadCal1Hora = 1888,
-textEstadisticoActividadCal2Hora = 1889,
-textEstadisticoActividadCal3Hora = 1890,
-textEstadisticoActividadCal4Hora = 1891,
-textEstadisticoActividadCal5Hora = 1892,
-textEstadisticoActividadCal6Hora = 1893,
-textEstadisticoActividadCal7Hora = 1894,
-textEstadisticoActividadCal8Hora = 1895,
-textEstadisticoActividadCal1Dia = 1896,
-textEstadisticoActividadCal2Dia = 1897,
-textEstadisticoActividadCal3Dia = 1898,
-textEstadisticoActividadCal4Dia = 1899,
-textEstadisticoActividadCal5Dia = 1900,
-textEstadisticoActividadCal6Dia = 1901,
-textEstadisticoActividadCal7Dia = 1902,
-textEstadisticoActividadCal8Dia = 1903,
-textEstadisticoActividadCt1Hora = 1904,
-textEstadisticoActividadCt2Hora = 1905,
-textEstadisticoActividadCt3Hora = 1906,
-textEstadisticoActividadCt4Hora = 1907,
-textEstadisticoActividadCt1Dia = 1908,
-textEstadisticoActividadCt2Dia = 1909,
-textEstadisticoActividadCt3Dia = 1910,
-textEstadisticoActividadCt4Dia = 1911,
-textEstadisticoActividadRefrigeracionPHora = 1912,
-textEstadisticoActividadRefrigeracionAuxHora = 1913,
-textEstadisticoActividadRefrigeracionPDia = 1914,
-textEstadisticoActividadRefrigeracionAuxDia = 1915,
-textEstadisticoEtapa1Hora = 1916,
-textEstadisticoEtapa2Hora = 1917,
-textEstadisticoEtapa3Hora = 1918,
-textEstadisticoEtapa4Hora = 1919,
-textEstadisticoEtapa5Hora = 1920,
-textEstadisticoEtapa6Hora = 1921,
-textEstadisticoEtapa7Hora = 1922,
-textEstadisticoEtapa8Hora = 1923,
-textEstadisticoEtapa9Hora = 1924,
-textEstadisticoEtapa10Hora = 1925,
-textEstadisticoEtapa11Hora = 1926,
-textEstadisticoEtapa12Hora = 1927,
-textEstadisticoEtapa13Hora = 1928,
-textEstadisticoEtapa14Hora = 1929,
-textEstadisticoEtapa15Hora = 1930,
-textEstadisticoEtapa16Hora = 1931,
-textEstadisticoEtapa17Hora = 1932,
-textEstadisticoEtapa18Hora = 1933,
-textEstadisticoEtapa19Hora = 1934,
-textEstadisticoEtapa20Hora = 1935,
-textEstadisticoEtapa21Hora = 1936,
-textEstadisticoEtapa22Hora = 1937,
-textEstadisticoEtapa23Hora = 1938,
-textEstadisticoEtapa24Hora = 1939,
-textEstadisticoEtapa25Hora = 1940,
-textEstadisticoEtapa26Hora = 1941,
-textEstadisticoEtapa27Hora = 1942,
-textEstadisticoEtapa28Hora = 1943,
-textEstadisticoEtapa29Hora = 1944,
-textEstadisticoEtapa30Hora = 1945,
-textEstadisticoEtapa31Hora = 1946,
-textEstadisticoEtapa32Hora = 1947,
-textEstadisticoEtapa1Dia = 1948,
-textEstadisticoEtapa2Dia = 1949,
-textEstadisticoEtapa3Dia = 1950,
-textEstadisticoEtapa4Dia = 1951,
-textEstadisticoEtapa5Dia = 1952,
-textEstadisticoEtapa6Dia = 1953,
-textEstadisticoEtapa7Dia = 1954,
-textEstadisticoEtapa8Dia = 1955,
-textEstadisticoEtapa9Dia = 1956,
-textEstadisticoEtapa10Dia = 1957,
-textEstadisticoEtapa11Dia = 1958,
-textEstadisticoEtapa12Dia = 1959,
-textEstadisticoEtapa13Dia = 1960,
-textEstadisticoEtapa14Dia = 1961,
-textEstadisticoEtapa15Dia = 1962,
-textEstadisticoEtapa16Dia = 1963,
-textEstadisticoEtapa17Dia = 1964,
-textEstadisticoEtapa18Dia = 1965,
-textEstadisticoEtapa19Dia = 1966,
-textEstadisticoEtapa20Dia = 1967,
-textEstadisticoEtapa21Dia = 1968,
-textEstadisticoEtapa22Dia = 1969,
-textEstadisticoEtapa23Dia = 1970,
-textEstadisticoEtapa24Dia = 1971,
-textEstadisticoEtapa25Dia = 1972,
-textEstadisticoEtapa26Dia = 1973,
-textEstadisticoEtapa27Dia = 1974,
-textEstadisticoEtapa28Dia = 1975,
-textEstadisticoEtapa29Dia = 1976,
-textEstadisticoEtapa30Dia = 1977,
-textEstadisticoEtapa31Dia = 1978,
-textEstadisticoEtapa32Dia = 1979,
-textEstadisticoActividadEaAHora = 1980,
-textEstadisticoActividadEaBHora = 1981,
-textEstadisticoActividadEaCHora = 1982,
-textEstadisticoActividadEaDHora = 1983,
-textEstadisticoActividadEaEHora = 1984,
-textEstadisticoActividadEaTHora = 1985,
-textEstadisticoActividadEaADia = 1986,
-textEstadisticoActividadEaBDia = 1987,
-textEstadisticoActividadEaCDia = 1988,
-textEstadisticoActividadEaDDia = 1989,
-textEstadisticoActividadEaEDia = 1990,
-textEstadisticoActividadEaTDia = 1991,
-textResetPilaLocal = 1992,
-textMantenimiento = 1993,
-textCambiaHora = 1994,
-textCambiaFecha = 1995,
-textAceleraCambioHoraCadaMinuto = 1996,
-textMantenimientoOk = 1997,
-textPilaComunicaciones = 1998,
-textNAnimalesMixtosInicio = 1999,
-textNAnimalesMixtosFin = 2000,
-textFechaFin = 2001,
-textNAnimalesMachosInicio = 2002,
-textNAnimalesMachosFin = 2003,
-textNAnimalesHembrasInicio = 2004,
-textNAnimalesHembrasFin = 2005,
-textInfluenciaMaximosAlarmasTemperatura = 2006,
-textIncrementoRelativaYDiferenciaMaximas = 2007,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textEquipoOff = 2008,
-textEquipoOn = 2009,
-textAlarmasOnOff = 2010,
-textEstadoSondasTemperatura = 2011,
-textHistoricoCambioParametros = 2012,
-textHistoricoWarning = 2013,
-textWarningActuales = 2014,
-textDiaAnimal = 2015,
-textMensajeNumeroAnimales0 = 2016,
-textMensajeSiAnimales0PodraIntroducirDespues = 2017,
-textMensajeConDiasNegativosNoAnimales = 2018,
-textMensajeEjecutaNaturalSiSeEncuentraEnElRango = 2019,
-textMaximo = 2020,
-textMinimo = 2021,
-textIdCrianza = 2022,
-textReferencia = 2023,
-textDescripcion = 2024,
-textValor = 2025,
-textEstadisticasHrConsigna = 2026,
-textEstadisticasHrExt = 2027,
-textEstadisticasHrInt = 2028,
-textEstadisticasHrExtMinMax = 2029,
-textEstadisticasHrExtMax = 2030,
-textEstadisticasHrIntMinMax = 2031,
-textEstadisticasHrIntMax = 2032,
-textEstadisticasCo2Ppm = 2033,
-textEstadisticasAmoniacoPpm = 2034,
-textPrincipal = 2035,
-textAuxiliar = 2036,
-textEstadisticasEntradasAire = 2037,
-textEstadisticasContactosTermicos = 2038,
-textEstadisticasDetalleDia = 2039,
-textEstadisticasHoraCont = 2040,
-textGraficasTemperaturaC = 2041,
-textGraficasHumedadPerc = 2042,
-textGraficasTiempoDeActividadM = 2043,
-textGraficasTiempoDeActividadH = 2044,
-textMedia = 2045,
-textEstadisticasTaConsigna = 2046,
-textCerrar = 2047,
-textVentiladorConSalida010NoPermitido = 2048,
-textSalida010NoAsignadaVentiladorGrupo = 2049,
-textTemporiza = 2050,
-textMensajeTemporizaSal010Ventila = 2051,
-textReduccion1EtapaEdadAnimal = 2052,
-textReduccion1EtapaPorTempExterior = 2053,
-textMensajePorfavorEspereReseteandoEquipo = 2054,
-textLGrande = 2055,
-textMMediano = 2056,
-textSPequenyo = 2057,
-textWarningOnOff = 2058,
-textPotenciometroFc = 2059,
-textPotenciometroSinFc = 2060,
-textTiempoFc = 2061,
-textTiempoSinFc = 2062,
-textTipoMotor = 2063,
-textMensajeCambioTipoMotor = 2064,
-text0 = 2065,
-textAbrir = 2066,
-textNoConfigurado = 2067,
-textNoCalibrado = 2068,
-textCalibrado = 2069,
-textResetCalibracion = 2070,
-textMensajeEquipoCalNoCambiaConfig = 2071,
-textMensajeFaltaAsignarElementoParaCali = 2072,
-textIniciaAutocalibracion = 2073,
-textGuardarPosDeCerrado = 2074,
-textGuardarPosDeAbierto = 2075,
-textCuentaPotenciometro = 2076,
-textCrianzaNoActiva = 2077,
-textNoHayCrianzasAnteriores = 2078,
-textPagina = 2079,
-textGrafico24hTemperatura = 2080,
-textGrafico24hHumedad = 2081,
-textPosicionCerrado = 2082,
-textPosicionAbierto = 2083,
-textPosicionGuardada = 2084,
-textGuardarPosicion = 2085,
-textMensPosGuardadaTieneResetCalibracion = 2086,
-textMovimientosRecalibracion = 2087,
-textCalibraCerrando = 2088,
-textCalibraAbriendo = 2089,
-textMensTiempoGuardadoTieneResetCalibracion = 2090,
-textAutocalibracionEnCurso = 2103,
-textMensEquipoCalibradoResetCalibracion = 2104,
-textPotenciometroEnUnExtremo = 2105,
-textPotenciometroLlegandoExtremoInferior = 2106,
-textPotenciometroLlegandoExtremoSuperior = 2107,
-textMuevaPotenciometro = 2108,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textCurvaRangoDeTemperatura = 2109,
-textSinEtapasConfiguradas = 2110,
-textTodoNada = 2111,
-textDual = 2112,
-textVelocidadAlta = 2113,
-textVelocidadBaja = 2114,
-textCurvaClimatica = 2115,
-textResetPilaComunicaciones = 2116,
-textResetPilaServidor = 2117,
-textKoreano = 2118,
-textTaiwanes = 2119,
-textMedidasVentanas = 2120,
-textAltoVentanasA = 2121,
-textAltoVentanasB = 2122,
-textAltoVentanasC = 2123,
-textAltoVentanasD = 2124,
-textAltoVentanasE = 2125,
-textAltoVentanasT = 2126,
-textAltoVentanasA3 = 2127,
-textAltoVentanasB3 = 2128,
-textAnchoVentanasA = 2130,
-textAnchoVentanasB = 2131,
-textAnchoVentanasC = 2132,
-textAnchoVentanasD = 2133,
-textAnchoVentanasE = 2134,
-textAnchoVentanasT = 2135,
-textAnchoVentanasA3 = 2136,
-textAnchoVentanasB3 = 2137,
-textNumeroVentanasA = 2138,
-textNumeroVentanasB = 2139,
-textNumeroVentanasC = 2140,
-textNumeroVentanasD = 2141,
-textNumeroVentanasE = 2142,
-textNumeroVentanasT = 2143,
-textNumeroVentanasA3 = 2144,
-textNumeroVentanasB3 = 2145,
-textCorreccionMaximaSobreCalculada = 2148,
-textMensaCorreccionMaximaSobreCalculada = 2149,
-textPorcentajeMovimientoVentana = 2150,
-textMensaPorcentajeMovimientoVentana = 2151,
-textPorcentajeTiempoMovimientoVentana = 2152,
-textMensaTiempoMovimientoVentana = 2153,
-textTiempoRespuestaDepresiometro = 2154,
-textMensaTiempoRespuestaDepresiometro = 2155,
-textTiempoAdelantoEntradasDeAire = 2156,
-textMensaTiempoAdelantoEntradasDeAire = 2157,
-textDepresionDeseadaTunel = 2158,
-textDepresionActual = 2159,
-textDiasDeCrianza = 2160,
-textAnimales = 2161,
-textIniciales = 2162,
-textFinales = 2163,
-textMortalidad = 2164,
-textConsumos = 2165,
-textElectricidad = 2166,
-textPienso = 2167,
-textTotales = 2168,
-textGas = 2169,
-textPesos = 2170,
-textMedio = 2171,
-textGananciaMediaDiaria = 2172,
-textIndiceDeTransformacion = 2173,
-textFactorDeEficiencia = 2174,
-textMortalidadTotal = 2175,
-textKgCarneXM2 = 2176,
-textPorcentajeMortalidad = 2177,
-textEntradas = 2178,
-textRetiradas = 2179,
-textNumAnimales = 2180,
-textPesoEnBascula = 2181,
-textPesoEnMatadero = 2182,
-textDetalle = 2183,
-textConsumoTotal = 2184,
-textConsumoPorAnimal = 2185,
-textPesoBascula1 = 2186,
-textPesoBascula2 = 2187,
-textPesoBascula3 = 2188,
-textPesoMedioBasculas = 2189,
-textTempInterior = 2190,
-textTempExterior = 2191,
-textTempConsigna = 2192,
-textConsumoDeAguaDia = 2193,
-textTempIntMaxima = 2194,
-textTempIntMinima = 2195,
-textTempExtMaxima = 2196,
-textTempExtMinima = 2197,
-textHrInterior = 2198,
-textHrExterior = 2199,
-textHrConsigna = 2200,
-textHrIntMaxima = 2201,
-textHrIntMinima = 2202,
-textHrExtMaxima = 2203,
-textHrExtMinima = 2204,
-textCt1 = 2205,
-textCt2 = 2206,
-textCt3 = 2207,
-textCt4 = 2208,
-textConsumoDePienso = 2215,
-textConsumoDeAgua = 2216,
-textPeso = 2217,
-textContactosTermicos = 2218,
-textEntradasDeAire = 2219,
-textResumen = 2220,
-textAltasYBajas = 2221,
-textViento = 2226,
-textProgramaActual = 2227,
-textTemperaturaInterior = 2228,
-textPesoMedio = 2229,
-textTotalDisponible = 2230,
-textNumeroPesadas = 2231,
-textTotalHoy = 2232,
-textTotalAyer = 2233,
-textPesoMedioTotal = 2234,
-textDepresionDeseadaRegulada = 2235,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textDepreRegulada = 2236,
-textDepreTunel = 2237,
-textCorreccionMaximaSobreCalculadaCerrando = 2238,
-textOffsetDepresionDeseadaRegulada = 2239,
-textOffsetDepresionDeseadaTunel = 2240,
-textPorcentajeTiempoMovimientoVentanaA = 2241,
-textPorcentajeTiempoMovimientoVentanaB = 2242,
-textPorcentajeTiempoMovimientoVentanaC = 2243,
-textPorcentajeTiempoMovimientoVentanaD = 2244,
-textPorcentajeTiempoMovimientoVentanaE = 2245,
-textPorcentajeTiempoMovimientoVentanaT = 2246,
-textIntervaloDepresionCorrecta = 2247,
-textMensaIntervaloDepresionCorrecta = 2248,
-textTiempoAdelantoEntradasDeAireMenosM3 = 2249,
-textMensaTiempoAdelantoEntradasDeAireMenosm3 = 2250,
-textWarningOnOffDepresionDeseada = 2251,
-textAjustesWarning = 2252,
-textTiempoMaxNoAlcanzaDepresionDeseada = 2253,
-textT1Te1Desasignada = 2254,
-textT1Te2Desasignada = 2255,
-textT1Te3Desasignada = 2256,
-textT1Te4Desasignada = 2257,
-textT1Te5Desasignada = 2258,
-textT1Te6Desasignada = 2259,
-textT2Te1Desasignada = 2260,
-textT2Te2Desasignada = 2261,
-textT2Te3Desasignada = 2262,
-textT2Te4Desasignada = 2263,
-textT2Te5Desasignada = 2264,
-textT2Te6Desasignada = 2265,
-textReleGeneral = 2266,
-textReleLinea18 = 2267,
-textDecimasDeLitro = 2268,
-textDecimasDeGalon = 2269,
-textReleLinea = 2270,
-textCentesimasDeLitro = 2272,
-textCentesimasDeGalon = 2273,
-textMilesimasDeLitro = 2276,
-textMilesimasDeGalon = 2277,
-textUnidadesLitros = 2280,
-textUnidadesGalon = 2281,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textUnidades = 2284,
-textLiquidos = 2285,
-textCantidadPorPulso = 2286,
-textCantidadMaximaLitros = 2287,
-textCantidadMaximaGalones = 2288,
-textContadorGeneralDiaActual = 2291,
-textLitrosDia = 2292,
-textGalonesDia = 2293,
-textIncrementoPorcentaje = 2296,
-textPorAnimalLitros = 2297,
-textPorAnimalGalones = 2298,
-textContadorLineasDiaActual = 2301,
-textEstadisticasContadorLineas = 2302,
-textEstadisticasContadorGeneral = 2303,
-textEstadisticoContadorGeneralAguaDia = 2304,
-textEstadisticoContadorGeneralAguaHora = 2305,
-textEstadisticoContadorLinea1AguaDia = 2306,
-textEstadisticoContadorLinea1AguaHora = 2307,
-textEstadisticoContadorLinea2AguaDia = 2308,
-textEstadisticoContadorLinea2AguaHora = 2309,
-textEstadisticoContadorLinea3AguaDia = 2310,
-textEstadisticoContadorLinea3AguaHora = 2311,
-textEstadisticoContadorLinea4AguaDia = 2312,
-textEstadisticoContadorLinea4AguaHora = 2313,
-textEstadisticoContadorLinea5AguaDia = 2314,
-textEstadisticoContadorLinea5AguaHora = 2315,
-textEstadisticoContadorLinea6AguaDia = 2316,
-textEstadisticoContadorLinea6AguaHora = 2317,
-textEstadisticoContadorLinea7AguaDia = 2318,
-textEstadisticoContadorLinea7AguaHora = 2319,
-textEstadisticoContadorLinea8AguaDia = 2320,
-textEstadisticoContadorLinea8AguaHora = 2321,
-textEstadisticoActividadCal9Hora = 2322,
-textEstadisticoActividadCal10Hora = 2323,
-textEstadisticoActividadCal11Hora = 2324,
-textEstadisticoActividadCal12Hora = 2325,
-textEstadisticoActividadCal9Dia = 2326,
-textEstadisticoActividadCal10Dia = 2327,
-textEstadisticoActividadCal11Dia = 2328,
-textEstadisticoActividadCal12Dia = 2329,
-textEstadisticoContadorGeneralIncrementoDiaAnterior = 2330,
-textEstadisticoContadorGeneralPorAnimalHora = 2331,
-textEstadisticoContadorGeneralPorAnimalDia = 2332,
-textNoDosificando = 2333,
-textCantidadDosificada = 2334,
-textAlarmasVigilanciaAgua = 2335,
-textInciarDispositivo = 2336,
-textClaveConfiguracion = 2337,
-textClaveEdicion = 2338,
-textNumeroPesadasPw1 = 2339,
-textNumeroPesadasPw2 = 2340,
-textNumeroPesadasPw3 = 2341,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textPesoPw1 = 2342,
-textPesoPw2 = 2343,
-textPesoPw3 = 2344,
-textUniformidadPw1 = 2345,
-textUniformidadPw2 = 2346,
-textUniformidadPw3 = 2347,
-textDesviacionPw1 = 2348,
-textDesviacionPw2 = 2349,
-textDesviacionPw3 = 2350,
-textCapacidadSilo1 = 2351,
-textCapacidadSilo2 = 2352,
-textCapacidadSilo3 = 2353,
-textInfluenciaTemperaturaExteriorBajaVentilacion = 2354,
-textInfluenciaTemperaturaExteriorAltaVentilacion = 2355,
-textVentilacionInfluenciaHumedadInterior = 2356,
-textVentilacionInfluenciaRefrigeracion = 2357,
-textVentilacionInfluenciaCo2 = 2358,
-textVentilacionInfluenciaNh3 = 2359,
-textVentilacionInfluenciaNocturna = 2360,
-textHisteresisInfluenciaHumedadInterior = 2361,
-textInicioInfluenciaHumedadInterior = 2362,
-textEntradaAireAInfluenciaTemperaturaExteriorBaja = 2363,
-textEntradaAireBInfluenciaTemperaturaExteriorBaja = 2364,
-textEntradaAireCInfluenciaTemperaturaExteriorBaja = 2365,
-textEntradaAireDInfluenciaTemperaturaExteriorBaja = 2366,
-textEntradaAireEInfluenciaTemperaturaExteriorBaja = 2367,
-textEntradaAireTInfluenciaTemperaturaExteriorBaja = 2368,
-textEntradaAireA3InfluenciaTemperaturaExteriorBaja = 2369,
-textEntradaAireAInfluenciaNh3 = 2370,
-textEntradaAireBInfluenciaNh3 = 2371,
-textEntradaAireCInfluenciaNh3 = 2372,
-textEntradaAireDInfluenciaNh3 = 2373,
-textEntradaAireEInfluenciaNh3 = 2374,
-textEntradaAireTInfluenciaNh3 = 2375,
-textEntradaAireA3InfluenciaNh3 = 2376,
-textEntradaAireB3InfluenciaNh3 = 2377,
-textEntradaAireAInfluenciaCo2 = 2378,
-textEntradaAireBInfluenciaCo2 = 2379,
-textEntradaAireCInfluenciaCo2 = 2380,
-textEntradaAireDInfluenciaCo2 = 2381,
-textEntradaAireEInfluenciaCo2 = 2382,
-textEntradaAireTInfluenciaCo2 = 2383,
-textEntradaAireA3InfluenciaCo2 = 2384,
-textEntradaAireB3InfluenciaCo2 = 2385,
-textEntradaAireAInfluenciaRefrigeracion = 2386,
-textEntradaAireBInfluenciaRefrigeracion = 2387,
-textEntradaAireCInfluenciaRefrigeracion = 2388,
-textEntradaAireDInfluenciaRefrigeracion = 2389,
-textEntradaAireEInfluenciaRefrigeracion = 2390,
-textEntradaAireTInfluenciaRefrigeracion = 2391,
-textEntradaAireA3InfluenciaRefrigeracion = 2392,
-textContactoTermico1Temporizacion = 2393,
-textContactoTermico2Temporizacion = 2394,
-textContactoTermico3Temporizacion = 2395,
-textContactoTermico4Temporizacion = 2396,
-textOffsetTemperaturaRefrigeracion = 2397,
-textTemperaturaDeseadaRefrigeracion = 2398,
-textModificado = 2400,
-textOpcion = 2401,
-textBloquear = 2402,
-textBloqueado = 2403,
-textDiaActual = 2404,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textReloj1Programa1 = 2405,
-textReloj1Programa2 = 2406,
-textReloj1Programa3 = 2407,
-textReloj1Programa4 = 2408,
-textReloj1Programa5 = 2409,
-textReloj2Programa1 = 2413,
-textReloj2Programa2 = 2414,
-textReloj2Programa3 = 2415,
-textReloj2Programa4 = 2416,
-textReloj2Programa5 = 2417,
-textImportacionExportacion = 2420,
-textPantalla = 2421,
-textExportFileExists = 2422,
-textExportNoSeDetectaUsb = 2423,
-textExportando = 2424,
-textImportando = 2425,
-textNoSePuedeEliminarElArchivo = 2426,
-textImportar = 2427,
-textExportar = 2428,
-textImportarExportarConfiguracionEquipo = 2429,
-textSeleccioneDeLaLista = 2430,
-textIniciarImportacion = 2431,
-textIniciarExportacion = 2432,
-textExporteInserteMemoriaUsb = 2433,
-textNombreDelFichero = 2434,
-textCancelar = 2435,
-textSobrescribir = 2436,
-textExportacionCompletada = 2437,
-textExportacionEnCurso = 2438,
-textImportacionCompletada = 2439,
-textImportacionEnCurso = 2440,
-textImportacionRealizadaConExito = 2441,
-textLaImportacionNoSePuedeCancelar = 2442,
-textNoSeEncuentranDirectorios = 2443,
-textNoSePuedeCrearDirectorio = 2444,
-textHisteresisRele2 = 2445,
-textMensajeOffsetRele2Cal = 2446,
-textHumidificar = 2447,
-textDeshumidificar = 2448,
-textHumedadDeConexion = 2449,
-textEstadoProgrma = 2450,
-textIluminacionAjustes = 2451,
-textIluminacionDestellos = 2452,
-textEstadoPunto = 2453,
-textIluminacionPunto1 = 2454,
-textIluminacionPunto2 = 2455,
-textIluminacionPunto3 = 2456,
-textIluminacionPunto4 = 2457,
-textIluminacionPunto5 = 2458,
-textIluminacionPunto6 = 2459,
-textIluminacionPunto7 = 2460,
-textIluminacionPunto8 = 2461,
-textIluminacionPunto9 = 2462,
-textIluminacionPunto10 = 2463,
-textIluminacionPunto11 = 2464,
-textIluminacionPunto12 = 2465,
-textIluminacionPunto13 = 2466,
-textIluminacionPunto14 = 2467,
-textIluminacionSinPunto = 2468,
-textM3EtapaAnteriorFin = 2475,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textDosificacionAguaPunto1 = 2476,
-textDosificacionAguaPunto2 = 2477,
-textDosificacionAguaPunto3 = 2478,
-textDosificacionAguaPunto4 = 2479,
-textDosificacionAguaPunto5 = 2480,
-textDosificacionAguaPunto6 = 2481,
-textDosificacionAguaPunto7 = 2482,
-textDosificacionAguaPunto8 = 2483,
-textDosificacionAguaPunto9 = 2484,
-textDosificacionAguaPunto10 = 2485,
-textDosificacionAguaPunto11 = 2486,
-textDosificacionAguaPunto12 = 2487,
-textDosificacionAguaPunto13 = 2488,
-textDosificacionAguaPunto14 = 2489,
-textCfmKEtapaAnteriorFin = 2490,
-textAlarmaVigilanciaContadorDeAgua = 2496,
-textPosicion = 2497,
-textEntradasDeAireNoConectadas = 2498,
-textInfluenciaIluminacion = 2499,
-textVentilacionInfluenciaIluminacion = 2500,
-textEliminarTodasLasEtapasDeVentilacion = 2501,
-textEsperaEjecutarVentilacionTunel = 2502,
-textAdelantoEjecutarVentanasTunel = 2503,
-textEsperaEjecutarVentilacionRegulada = 2504,
-textAdelantoEjecutarVentanasRegulada = 2505,
-textEntradaAireTunel1 = 2506,
-textEntradaAireTunel2 = 2507,
-textEntradaAireTunel3 = 2508,
-textEntradaAireTunel4 = 2509,
-textMensEsperaEjecutarVentilacion = 2514,
-textMensAdelantoEjecutarVentanas = 2515,
-textPorFecha = 2516,
-textTablaRangosTemperatura = 2517,
-textNumeroDeEtapas = 2518,
-textMensaInfoOffsetTempRangoConectadoCurvaRango = 2519,
-textMensaHoraPunto = 2520,
-textMensaNumeroEtapas = 2521,
-textRetireElJumper = 2522,
-textGraficoAyudaZoom = 2523,
-textGraficoAyudaZoomManual = 2524,
-textGraficoAyudaPaginas = 2525,
-textGraficoAyudaInfo = 2526,
-textGraficoAyudaLeyenda = 2527,
-textMensajeActivaTestReles = 2528,
-textReleActivar = 2529,
-textNVentiladoresRotatoriosAl100 = 2530,
-textRotatoriosTempoMenorQueConfigurados = 2531,
-textRotatoriosAl100 = 2532,
-textEstadoRefrigeracionPorInfluenciaHumedad = 2533,
-textEstadoRefrigeracionPorInfluenciaDelDiaCrianza = 2534,
-textEstadoRefrigeracionDespuesDeLasInfluencias = 2535,
-textEstadoRefrigeracionPorTemperatura = 2536,
-textNumeroVentanasA1Criadero1 = 2538,
-textNumeroVentanasB1Criadero1 = 2539,
-textNumeroVentanasA2Criadero1 = 2540,
-textNumeroVentanasB2Criadero1 = 2541,
-textNumeroVentanasT1Criadero1 = 2542,
-textNumeroVentanasT2Criadero1 = 2543,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textNumeroVentanasA1Criadero2 = 2544,
-textNumeroVentanasB1Criadero2 = 2545,
-textNumeroVentanasA2Criadero2 = 2546,
-textNumeroVentanasB2Criadero2 = 2547,
-textNumeroVentanasT1Criadero2 = 2548,
-textNumeroVentanasT2Criadero2 = 2549,
-textT1Di1V2 = 2550,
-textT1Di2V2 = 2551,
-textT1Di3V2 = 2552,
-textT1Di4V2 = 2553,
-textT1Di5V2 = 2554,
-textT1Di6V2 = 2555,
-textT1Di7V2 = 2556,
-textT1Di8V2 = 2557,
-textT2Di1V2 = 2558,
-textT2Di2V2 = 2559,
-textT2Di3V2 = 2560,
-textT2Di4V2 = 2561,
-textT2Di5V2 = 2562,
-textT2Di6V2 = 2563,
-textT2Di7V2 = 2564,
-textT2Di8V2 = 2565,
-textTarjetasEquipo = 2566,
-textTarjetaAn1 = 2567,
-textTarjetaAn2 = 2568,
-textTarjetaDg1 = 2571,
-textTarjetaDg2 = 2572,
-textTarjetaRl1 = 2575,
-textTarjetaRl2 = 2576,
-textTarjetaRl3 = 2577,
-textTarjetaRl4 = 2578,
-textTarjetaCom1 = 2582,
-textMensaMinimoTiempoOff = 2585,
-textMensaCiloMinimo = 2586,
-textTestSalida010 = 2587,
-textEeprom = 2588,
-textOk = 2589,
-textDataFlash = 2590,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textEstadisticoEtapaCriadero1Hora = 2591,
-textEstadisticoEtapaCriadero2Hora = 2592,
-textEstadisticoEtapaS0Hora = 2593,
-textEstadisticoEtapaNaturalHora = 2594,
-textMensCambioModoEstadoNave = 2595,
-textMensTestRelesActivado = 2596,
-textEstadisticoEtapaCriadero1Dia = 2597,
-textEstadisticoEtapaCriadero2Dia = 2598,
-textEstadisticoEtapaS0Dia = 2599,
-textEstadisticoEtapaNaturalDia = 2600,
-textEquipoCpu = 2601,
-textRefrigeracionPorEtapas = 2602,
-textRotatorio = 2603,
-textOffsetEtapas = 2604,
-textOffsetEtapa1 = 2605,
-textOffsetEtapa2 = 2606,
-textOffsetEtapa3 = 2607,
-textOffsetEtapa4 = 2608,
-textMultietapaModo = 2613,
-textReleEtapa1 = 2614,
-textReleEtapa2 = 2615,
-textReleEtapa3 = 2616,
-textReleEtapa4 = 2617,
-textReleAuxCo2 = 2621,
-textMensHisteresisTiempo = 2622,
-textMensModoRefrigeracionPorEtapas = 2623,
-textMensModoRefrigeracionSimplePorEtapas = 2624,
-textNumeroEtapasConectadas = 2625,
-textIluminacionAmanecer1 = 2626,
-textIluminacionAmanecer2 = 2627,
-textVentilacionSalida010 = 2628,
-textCondicionesVentilacionNatural = 2629,
-textCondicionesVentilacionTunel = 2630,
-textCondicionesVentilacionS0 = 2631,
-textCondicionS0Co2Alto = 2632,
-textCondicionS0Nh3Alto = 2633,
-textCondicionS0HumedadAlta = 2634,
-textControlPorTiempoS0 = 2635,
-textVentilacionAvanzado = 2636,
-textEstadisticoConsumoSilo1Hora = 2637,
-textEstadisticoConsumoSilo2Hora = 2638,
-textEstadisticoConsumoSilo3Hora = 2639,
-textEstadisticoConsumoSilo1Dia = 2640,
-textEstadisticoConsumoSilo2Dia = 2641,
-textEstadisticoConsumoSilo3Dia = 2642,
-textEstadisticoConsumoTotalHora = 2643,
-textEstadisticoConsumoTotalDia = 2644,
-textEstadisticoPesoBascula1Dia = 2645,
-textEstadisticoPesoBascula2Dia = 2646,
-textEstadisticoPesoBascula3Dia = 2647,
-textEstadisticoPesoAnimalDia = 2648,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textEstadisticoGananciaPesoDia = 2649,
-textEstadisticoConsumoPorAnimalDia = 2650,
-textEstadisticoAcumuladoConsumoPorAnimalCrianzaDia = 2651,
-textEstadisticoAcumuladoConsumoTotalCrianzaDia = 2652,
-textEstadisticoVariacionConsumoPorcentaDiaAnteriorDia = 2653,
-textEstadisticoIndiceConversionAlimenticiaDia = 2654,
-textEstadisticoKgCarneM2Dia = 2655,
-textEstadisticoGananciaPesoMediaDia = 2656,
-textEstadisticoFactorEficienciaDia = 2657,
-textEstadisticoIndiceProduccionDia = 2658,
-textEstadisticoLitrosAnimalAguaAcumuladoCrianzaDia = 2659,
-textMensInfluenciaIluminacion = 2660,
-textMensVentInfluenciaCo2 = 2661,
-textTarjetaContactores = 2662,
-textAccionMotorA = 2663,
-textMotorAAbrir = 2664,
-textMotorACerrar = 2665,
-textMotorBAbrir = 2666,
-textMotorBCerrar = 2667,
-textMotorCAbrir = 2668,
-textMotorCCerrar = 2669,
-textMotorDAbrir = 2670,
-textMotorDCerrar = 2671,
-textCt1 = 2672,
-textCt2 = 2673,
-textCt3 = 2674,
-textCt4 = 2675,
-textNoHayDatos = 2676,
-textActualizandoModuloComs = 2677,
-textNoSePuedeActualzarModComs = 2678,
-textCal1 = 2679,
-textCal2 = 2680,
-textCal3 = 2681,
-textCal4 = 2682,
-textCal5 = 2683,
-textCal6 = 2684,
-textCal7 = 2685,
-textCal8 = 2686,
-textCal9 = 2687,
-textCal10 = 2688,
-textCal11 = 2689,
-textCal12 = 2690,
-textSigma2 = 2691,
-textAlpha2 = 2692,
-textLeyendoUsb = 2693,
-textPorFavorEspereUsb = 2694,
-textClaveRequeridaParaEdicion = 2695,
-textClaveRequeridaParaNavegacion = 2696,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textAddPunto = 2697,
-textEliminarPuntoCurvaClimatica = 2698,
-textEliminarPuntoCurvaRangoTemperatura = 2699,
-textFalloElectrico = 2700,
-textSeleccionaIdioma = 2701,
-textM3 = 2702,
-textTablaM3PorAnimal = 2703,
-textM3PorAnimal = 2704,
-textOffsetMaxLateralA = 2705,
-textMaxLateralA = 2706,
-textOffsetMaxLateralB = 2707,
-textMaxLateralB = 2708,
-textOffsetMaxLateralC = 2709,
-textMaxLateralC = 2710,
-textOffsetMaxLateralD = 2711,
-textMaxLateralD = 2712,
-textOffsetMaxLateralE = 2713,
-textMaxLateralE = 2714,
-textOffsetMaxTecho = 2715,
-textMaxTecho = 2716,
-textMaxEaA = 2717,
-textMaxEaB = 2718,
-textMaxEaC = 2719,
-textMaxEaD = 2720,
-textMaxEaE = 2721,
-textMaxEaT = 2722,
-textVentilacionInfluenciaHoraria = 2723,
-textInfluenciaHoraria = 2724,
-textCurvaAlarmaTemperatura = 2725,
-textRelativaMax = 2726,
-textRelativaMin = 2727,
-textMensaValorEnCurvaModificarEnCurva = 2728,
-textMensaAlarmaTemperaturaDiferencia = 2729,
-textMensaAlarmaTemperaturaRelativa = 2730,
-textOffsetCo2 = 2731,
-textCurvaCo2Nh3Control = 2732,
-textOffsetNh3 = 2733,
-textOffsetTemperaturaCalefacciones = 2734,
-textListaTemperaturaOffsetCalefacciones = 2735,
-textCurvaOffsetCalefacciones = 2736,
-textEliminarPuntoCurvaOffsetCalefacciones = 2737,
-textEliminarPuntoCurvaAlarmasRelativas = 2738,
-textEliminarPuntoCurvaCo2Nh3 = 2739,
-textInfluenciaCalefacciones = 2740,
-textTiempoEsperaEvaluarCondiciones = 2741,
-textOffsetMaximoSobreTemperaturaDeseada = 2742,
-textMensajeInfluenciaCalefaccion = 2743,
-textMensaVentNaturalYInfluCalefacConectado = 2744,
-textMensaVentiInfluCalefacTiempoEsperaEvaluar = 2745,
-textMensaVentiInfluCalefacOffsetMaximoSobreTemperaturaDeseada = 2746,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textRefrigeracionInfluenciaHoraria = 2747,
-textRefrigeracionInfluenciaIluminacion = 2748,
-textCurvaRefrigeracion = 2749,
-textCurvaRefrigeracionActivaParametros = 2750,
-textHumedadMaxima = 2751,
-textDesconectaRefrigeracion = 2752,
-textHumedadMax = 2753,
-textNEtapas = 2754,
-textOffsetC = 2755,
-textRefriOff = 2756,
-textEliminarPuntoCurvaRefrigeracion = 2757,
-textInfluenciaHorariaHoraInicio = 2758,
-textInfluenciaHorariaHoraFin = 2759,
-textRefrigeracionPorEtapasNEtapas = 2760,
-textOffsetRefrigeracion = 2761,
-textMensaValorEnCurvaModificarEnCurvaRefrigeracion = 2762,
-textEstadoRefrigeracionInfluenciaIluminacion = 2763,
-textEstadoRefrigeracionInfluenciaHoraria = 2764,
-textInfluenciaHumedad = 2765,
-textHumedadConsigna = 2766,
-textMensaInfluenciaHorariaRefrigeracion = 2767,
-textMensaInfluenciaIluminacionRefrigeracion = 2768,
-textMensaInfluenciaHumedadRefrigeracion = 2769,
-textIluminacionExteriorPrograma1 = 2770,
-textIluminacionExteriorPrograma2 = 2771,
-textIluminacionExterior = 2772,
-textReleIluminacionExterior = 2773,
-textCorreccionTempInterior = 2774,
-textInfluenciaTemperaturaInterior = 2775,
-textEntradasAireInfluenciaTemperaturaInterior = 2776,
-textSondasSeccionReferencia = 2777,
-textSondasSeccionCorregir = 2778,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textNoCorregir = 2779,
-textCorregir = 2780,
-textDiferencialTemperaturaSecciones = 2781,
-textCorreccionMaxima = 2782,
-textRealizarCorreccionEnLaZonaTunel = 2783,
-textTemperaturaSeccionReferencia = 2784,
-textTemperaturaSeccionCorregir = 2785,
-textCorreccionActualEntradasDeAire = 2786,
-textEntradasDeAireCorregir = 2787,
-textMensaEaInfluenciaTempInterior = 2788,
-textMensaEaInfluenciaTempInteriorZonaTunel = 2789,
-textMensaEaInfluenciaTempInteriorEntradasAireCorregir = 2790,
-textInfluenciaEntradaAire = 2791,
-textCalculoTeorico = 2792,
-textMensaDebugDepreCalculoTeorico = 2793,
-textMensaDebugDepreCalculoCorregidoMaxMin = 2794,
-textTotalAcumulado = 2795,
-textTotalPorAnimal = 2796,
-textPorcentajeIncremento = 2797,
-textTotal = 2798,
-textAcumKgPorAnimal = 2799,
-textAcumLPorAnimal = 2800,
-textLitrosPorAnimal = 2801,
-textTotalAgua = 2802,
-textTotalPienso = 2803,
-textAcumuladosPorAnimal = 2804,
-textTotalAcumuladoPienso = 2805,
-textAguaYPienso = 2806,
-textInterior = 2807,
-textExterior = 2808,
-textVentilacionInfluenciaTemperaturaInteriorBaja = 2809,
-textDiferenciaDeConexionInfluencia = 2810,
-textRangoCorreccion = 2811,
-textMensaInfluTempInterior = 2812,
-textTemperaturaInteriorMinusculas = 2813,
-textRelesAuxiliares = 2814,
-textReleA = 2815,
-textReleB = 2816,
-textReleC = 2817,
-textReleD = 2818,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textVentilacionRelesAuxiliares = 2819,
-textSinRelesAsignados = 2820,
-textMensaReleAuxVentila = 2821,
-textMensaReleAuxVentilaEtpas = 2822,
-textSeguridadElectrica = 2823,
-textSeguridadElectricaCriadero1 = 2824,
-textSeguridadElectricaCriadero2 = 2825,
-textSeguridadElectricaTodaLaNave = 2826,
-textTemperaturaConsigna = 2827,
-textCorreccionTemperaturaExterior = 2828,
-textPorcentajeVentilacionAnimalMenor = 2829,
-textPorcentajeVentilacionAnimalMayor = 2830,
-textSeguridadElectricaAjustes = 2831,
-textHisteresisInfluenciaTemperaturaExterior = 2832,
-textTiempoEsperaCambioFalloElectrico = 2833,
-textMensaSeguridadElectrica = 2834,
-textMensaSeguridadElectricaEdadAnimal = 2835,
-textMensaSeguridadElectricaInfluTempExte = 2836,
-textPorcentajeVentilacionCalculado = 2837,
-textMensaSeguridadElectricaTiempoEspera = 2838,
-textDetectado = 2839,
-textNoDetectado = 2840,
-textPosicionCriadero1 = 2841,
-textPosicionCriadero2 = 2842,
-textPosicionTodaLaNave = 2843,
-textAlimentacionGallinasCamperas = 2844,
-textAlimentacionPunto1 = 2845,
-textAlimentacionPunto2 = 2846,
-textAlimentacionPunto3 = 2847,
-textAlimentacionPunto4 = 2848,
-textAlimentacionPunto5 = 2849,
-textAlimentacionPunto6 = 2850,
-textAlimentacionPunto7 = 2851,
-textAlimentacionSimple = 2852,
-textAlimentacionReleA = 2860,
-textAlimentacionReleB = 2861,
-textAlimentacionReleC = 2862,
-textAlimentacionReleD = 2863,
-textAlimentacionReleE = 2864,
-textInfluenciaSeguridadElectrica = 2865,
-textN = 2866,
-textResetConfiguracion = 2867,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textEntradaAireA3 = 2868,
-textEntradaAireB3 = 2869,
-textInicioEntradaAireA3 = 2874,
-textInicioEntradaAireB3 = 2875,
-textLineaPrincipal = 2876,
-textLineaSecundaria = 2877,
-textTiempoMaximoLlenado = 2878,
-textEntradaAireB3InfluenciaTemperaturaExteriorBaja = 2879,
-textEntradaAireB3InfluenciaRefrigeracion = 2884,
-textNumeroVentanasA3Criadero1 = 2888,
-textNumeroVentanasB3Criadero1 = 2889,
-textNumeroVentanasA3Criadero2 = 2894,
-textNumeroVentanasB3Criadero2 = 2895,
-textPorcentajeTiempoMovimientoVentanaA3 = 2900,
-textPorcentajeTiempoMovimientoVentanaB3 = 2901,
-textEaA3 = 2904,
-textEaB3 = 2905,
-textMinEaA3 = 2908,
-textMinEaB3 = 2909,
-textEstadisticoActividadEaA3Hora = 2913,
-textEstadisticoActividadEaB3Hora = 2914,
-textEstadisticoActividadEaA3Dia = 2918,
-textEstadisticoActividadEaB3Dia = 2919,
-textOffsetMaxLateralA3 = 2923,
-textMaxLateralA3 = 2924,
-textOffsetMaxLateralB3 = 2925,
-textMaxLateralB3 = 2926,
-textMaxEaA3 = 2930,
-textMaxEaB3 = 2931,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textOffsetMinLateralA3 = 2935,
-textMinLateralA3 = 2936,
-textOffsetMinLateralB3 = 2940,
-textMinLateralB3 = 2941,
-textModoSalida010 = 2945,
-textLateralIzquierdo1 = 2946,
-textLateralIzquierdo2 = 2947,
-textLateralIzquierdo3 = 2948,
-textLateralDerecho1 = 2949,
-textLateralDerecho2 = 2950,
-textLateralDerecho3 = 2951,
-textFondo1 = 2952,
-textFondo2 = 2953,
-textTecho1 = 2954,
-textTecho2 = 2955,
-textTecho3 = 2956,
-textContadorPienso = 2960,
-textOrigenPienso = 2961,
-textSilo1 = 2962,
-textSilo2 = 2963,
-textSilo3 = 2964,
-textTiempoCuentaPienso = 2965,
-textPiensoConsumidoEnElTiempo = 2966,
-textMensOrigenPienso = 2967,
-textContadorPorTiempo = 2968,
-textMensTiempoCuentaPienso = 2969,
-textCuentaPorHora = 2970,
-textMensTiempoEntradaPiensoTiempo = 2971,
-textContadorPiensoDiaActual = 2972,
-textKgDia = 2973,
-textKgDiaSilo1 = 2977,
-textKgDiaSilo2 = 2981,
-textKgDiaSilo3 = 2985,
-textEstadisticoContador1Hora = 2986,
-textEstadisticoContador1Dia = 2987,
-textEstadisticoContador2Hora = 2988,
-textEstadisticoContador2Dia = 2989,
-textEstadisticoContador3Hora = 2990,
-textEstadisticoContador3Dia = 2991,
-textEstadisticoContador4Hora = 2992,
-textEstadisticoContador4Dia = 2993,
-textEstadisticoContador5Hora = 2994,
-textEstadisticoContador5Dia = 2995,
-textEstadisticoContador6Hora = 2996,
-textEstadisticoContador6Dia = 2997,
-textContador1Otros = 3015,
-textContador1ElectricoPrincipal = 3016,
-textContador1ElectricoSecundario = 3017,
-textContador1Gas = 3018,
-textContador1Medicamentos = 3019,
-textContador2Otros = 3035,
-textContador2ElectricoPrincipal = 3036,
-textContador2ElectricoSecundario = 3037,
-textContador2Gas = 3038,
-textContador2Medicamentos = 3039,
-
-
-
-
-
-
-
-
-
-
-
-
-textContador3Otros = 3055,
-textContador3ElectricoPrincipal = 3056,
-textContador3ElectricoSecundario = 3057,
-textContador3Gas = 3058,
-textContador3Medicamentos = 3059,
-textContador4Otros = 3075,
-textContador4ElectricoPrincipal = 3076,
-textContador4ElectricoSecundario = 3077,
-textContador4Gas = 3078,
-textContador4Medicamentos = 3079,
-textContador5Otros = 3095,
-textContador5ElectricoPrincipal = 3096,
-textContador5ElectricoSecundario = 3097,
-textContador5Gas = 3098,
-textContador5Medicamentos = 3099,
-textContador6Otros = 3115,
-textContador6ElectricoPrincipal = 3116,
-textContador6ElectricoSecundario = 3117,
-textContador6Gas = 3118,
-textContador6Medicamentos = 3119,
-textKilovatio = 3160,
-textMililitros = 3161,
-textOtros = 3162,
-textElectricoPrincipal = 3163,
-textElectricoSecundario = 3164,
-textGas2 = 3165,
-textMedicamentos = 3166,
-textTipoContador = 3176,
-textMensMultiplicadorContadores = 3177,
-textValorPorPulso = 3178,
-textContadorDiaActual = 3179,
-textHoras = 3180,
-textContadorNumeracion1 = 3181,
-textContadorNumeracion2 = 3182,
-textContadorNumeracion3 = 3183,
-textContadorNumeracion4 = 3184,
-textContadorNumeracion5 = 3185,
-textContadorNumeracion6 = 3186,
-textContadoresDiaActual = 3196,
-textHoraActual = 3197,
-textNumeroDecimalesMostrar = 3198,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textEntradasDeAireAjustes = 3199,
-textCierreEntradasDeAirePorParoDeLaVentilacion = 3200,
-textM32 = 3201,
-textCorreccionAbsolutaVActual = 3202,
-textAutomatico = 3203,
-textManualOn = 3204,
-textManualOff = 3205,
-textCantidadPiensoKg = 3206,
-textErrorIntervaloSolapado = 3207,
-textPiensoDosificado = 3208,
-textPiensoDosificar = 3209,
-textControlDeLaVariacionDelPeso = 3210,
-textMensajeVariacionDelPeso = 3211,
-textPesoMinimoDosificarSilo = 3212,
-textMensajePesoMinimoDosificarSilo = 3213,
-textTolvaEbus = 3214,
-textConectadoBoot = 3215,
-textMensaNoConectadoClimaRecinto = 3216,
-textConfirmarImportacion = 3217,
-textTipoDeDispositivo = 3218,
-textErrorDiferenteDispositivo = 3219,
-textDispositivoEnBoot = 3220,
-textNoSePuedeActualizarAUnaVersionAnterior = 3221,
-textNoSeEncuentraLaCarpetaCtiEnElUsb = 3222,
-textNoSeEncuentraElFicheroUdtDeActualizacion = 3223,
-textDebeCrearUnaCarpetaCtiEnLaRaizEtc = 3224,
-textActualizacionCompletadaConExito = 3225,
-textActualizacionFallida = 3226,
-textReintentar = 3227,
-textIniciandoActualizacion = 3228,
-textMemoriaDeSistemaBaja = 3229,
-textSeHaPerdidoLaConexionEtcEbus = 3230,
-
-
-
-
-
-
-
-
-
-
-textActivada = 3231,
-textRecomendableActualizar = 3232,
-textActualizarEquipoParaFuncionar = 3233,
-textTarar = 3234,
-textIniciarTara = 3235,
-textTara = 3236,
-textTaraOk = 3237,
-textTarando = 3238,
-textErrorPesoInestable = 3239,
-textNoTarado = 3240,
-textNumeroCelulas = 3241,
-textOffsetCero = 3242,
-textEstabilidadDelPeso = 3243,
-textPesoMaximoCelulas = 3244,
-textCelula1FueraDeRango = 3245,
-textCelula2FueraDeRango = 3246,
-textCelula3FueraDeRango = 3247,
-textCelula4FueraDeRango = 3248,
-textSondaCh4 = 3249,
-textEstadisticoCh4MediaHora = 3250,
-textEstadisticoCh4MediaDia = 3251,
-textCh4 = 3254,
-textEstadisticoCh4MediaHoraMax = 3255,
-textEstadisticoCh4MediaDiaMax = 3256,
-textEstadisticoCh4MediaHoraMin = 3257,
-textEstadisticoCh4MediaDiaMin = 3258,
-textAlimentacionPorCantidadMaxima = 3259,
-textNumeroRepartos = 3260,
-textTablaRepartos = 3261,
-textAlimentacionPorCantidadTablaRepartos = 3262,
-textReleLlenado = 3263,
-textReleAvanceReparto = 3264,
-textReleRetrocesoReparto = 3265,
-textTiempoAvanceReparto = 3266,
-textTiempoRetrocesoReparto = 3267,
-textProgramaPorCantidad = 3268,
-textLlenadoPorCantidad = 3269,
-textFinalizar = 3270,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textOrigenReleA = 3271,
-textOrigenReleB = 3272,
-textOrigenReleC = 3273,
-textOrigenReleD = 3274,
-textOrigenReleE = 3275,
-textOrigenReleF = 3276,
-textOrigenReleG = 3277,
-textOrigenReleH = 3278,
-textOrigenReleI = 3279,
-textControlAux1 = 3280,
-textControlAux2 = 3281,
-textControlAux3 = 3282,
-textControlAux4 = 3283,
-textControlAux5 = 3284,
-textControlAux6 = 3285,
-textControlAux7 = 3286,
-textControlAux8 = 3287,
-textOffsetTiempo = 3295,
-textMasMenos = 3296,
-textNuevoOffset = 3297,
-textEliminaUltimoOffset = 3298,
-textControlAux = 3299,
-textFinalizarPrograma = 3300,
-textAdvertenciaSiCantidadNoAlcanzada = 3301,
-textAlimentacionSimpleControlAux = 3302,
-textModoControlAuxYPrincipalIguales = 3303,
-textMensModoControlAuxYPrincipalIguales = 3304,
-textTiempoControlAuxYPrincipalIguales = 3305,
-textMensTiempoControlAuxYPrincipalIguales = 3306,
-textReleAvance = 3307,
-textTiempoEncendidoReleAvance = 3308,
-textReleRetroceso = 3309,
-textTiempoEncendidoReleRetroceso = 3310,
-textAlimentacionSimplePrograma = 3311,
-textMensAlimentacionSimpleFinalizar = 3312,
-textMensAdvertenciaCantidadNoDosificada = 3313,
-textMensOrigen = 3314,
-textSiloConCelulaCarga = 3315,
-textWifi = 3316,
-textModem = 3317,
-
-
-
-
-
-textEscaneaRedes = 3318,
-textDatosMoviles = 3319,
-textApnManual = 3320,
-textApnAuto = 3321,
-textOperadorMovil = 3322,
-textCobertura = 3323,
-textConectando = 3324,
-textEstadoSim = 3325,
-textCodigoPin = 3326,
-textCodigoPuk = 3327,
-textCodigoPuk2 = 3328,
-textQuitarCodigoPin = 3329,
-textApn = 3330,
-textUsuario = 3331,
-textTipoConexion = 3332,
-textAsistenteNuevaConexion = 3334,
-textEscaneando = 3335,
-text0RedesEncontradas = 3336,
-textRed = 3337,
-textConectar = 3338,
-textSeguridad = 3339,
-textWpa = 3340,
-textWpa2 = 3341,
-textGprs = 3342,
-textEdge = 3343,
-textHsdpa = 3344,
-textHsdpaMas = 3345,
-text4G = 3346,
-textErrorClave = 3347,
-textConectandoServidor = 3348,
-textEstadoConexion = 3349,
-textIpActual = 3350,
-textPuertaEnlace = 3351,
-textReconexionesServidor = 3352,
-textByteEnviados = 3353,
-textByteRecibidos = 3354,
-textResetEstadisticas = 3355,
-textSigma2 = 3356,
-textV42 = 3357,
-textAlpha2 = 3358,
-textV22 = 3359,
-textDlg = 3360,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textCh4Maximo = 3361,
-textHumedadMinima = 3362,
-textSondasClimaRecinto = 3363,
-textHisteresisAlarmaCh4 = 3364,
-textHisteresisAlarmaHumedad2 = 3365,
-textMensaVelocidadCanConfiguradaFisicamente = 3366,
-textIsbxEbus = 3367,
-textMensaNoSeHaPodidoCompletarLaImportacion = 3368,
-textWep = 3369,
-textEventos = 3370,
-textNombre = 3371,
-textEntradaActivaPor = 3372,
-textContadoresEventos = 3373,
-textAlarmaEntradaDigital = 3374,
-textAlarmaEntradaDigital1 = 3375,
-textAlarmaEntradaDigital2 = 3376,
-textAlarmaEntradaDigital3 = 3377,
-textEntradaA = 3378,
-textEntradaB = 3379,
-textHumedadA = 3380,
-textHumedadB = 3381,
-textSondaPh = 3382,
-textHisteresisAlarmaPh = 3383,
-textPhMinimo = 3384,
-textPhMaximo = 3385,
-textProduccion = 3386,
-textProduccionFinalizada = 3387,
-textIniciaProduccion = 3388,
-textFinalizaProduccion = 3389,
-textInicioProduccion = 3390,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textMaximoSonda1 = 3391,
-textMaximoSonda2 = 3392,
-textMaximoSonda3 = 3393,
-textMaximoSonda4 = 3394,
-textMaximoSonda5 = 3395,
-textMinimoSonda1 = 3405,
-textMinimoSonda2 = 3406,
-textMinimoSonda3 = 3407,
-textMinimoSonda4 = 3408,
-textMinimoSonda5 = 3409,
-textAlarmaTemperaturaRecinto = 3420,
-textAlarmaTemperaturaSonda1 = 3421,
-textAlarmaTemperaturaSonda2 = 3422,
-textAlarmaTemperaturaSonda3 = 3423,
-textAlarmaTemperaturaSonda4 = 3424,
-textAlarmaTemperaturaSonda5 = 3425,
-textKgHora = 3426,
-textDataloger = 3427,
-textIniciaDataloger = 3428,
-text5Min = 3429,
-text10Min = 3430,
-text15Min = 3431,
-text20Min = 3432,
-text30Min = 3433,
-textAlimentacionReleF = 3434,
-textAlimentacionReleG = 3435,
-textControlAuxPorCantidad = 3436,
-textControlAuxPorTiempo = 3437,
-textTiempoConectadoReleControlAux = 3438,
-textEstadoRele = 3439,
-textIluminacionReleD = 3440,
-textIluminacionReleE = 3441,
-textIluminacionReleF = 3442,
-textIluminacionReleG = 3443,
-textIluminacionReleH = 3444,
-textDiaNoche1 = 3460,
-textDiaNoche2 = 3461,
-textDiaNoche3 = 3462,
-textDiaNoche4 = 3463,
-textDiaNoche5 = 3464,
-
-
-
-
-
-
-
-
-textModoSalida010A = 3465,
-textModoSalida010B = 3466,
-textModoSalida010C = 3467,
-textModoSalida010D = 3468,
-textModoSalida010E = 3469,
-textPublico = 3470,
-textPrivado = 3471,
-textServidor = 3472,
-textResetComunicaciones = 3473,
-textDiaNoche6 = 3474,
-textDiaNoche7 = 3475,
-textDiaNoche8 = 3476,
-textIncluirEnElConsumoTotal = 3477,
-textTotalKg = 3478,
-textFwDeActualizacionNoEncontrado = 3480,
-textEsperandoRespuestaDelEquipo = 3481,
-textEquipoNoReconocido = 3482,
-textElEquipoSeActualizara = 3483,
-textElEquipoYaTieneLaUltimaVersionEtc = 3484,
-textEquipoSinBootloaderEtc = 3485,
-textNoSePuedeActualizarPorModelo = 3486,
-textEquipoNoDetectado = 3487,
-textActualizando = 3488,
-textActualizado = 3489,
-textActualizandoFwDeCom = 3490,
-textBbddReseteada = 3491,
-
-
-
-
-
-
-
-
-
-
-textTablas = 3500,
-textTablaPeso = 3501,
-textTablaCorreccion = 3502,
-textMargenPeso = 3503,
-textModoTablaAuto = 3504,
-textModoAuto = 3505,
-textModoTabla = 3506,
-textTiempoEstabilidad = 3507,
-textReferenciaPeso = 3508,
-textReferenciaInicioAuto = 3509,
-textActivarCorreccion = 3510,
-textResetPesadas = 3511,
-textRestaurarTablaPesosFabrica = 3513,
-textRestaurarTablaCorreccionesFabrica = 3515,
-textCelulaFueraRango = 3516,
-textCelulaDesconectada = 3517,
-textCelulaOk = 3518,
-textEstabilizando = 3519,
-textColocarPesoPatron = 3520,
-textCalibrandoEspere = 3521,
-textCalibracionFinalizada = 3522,
-textPesoPatron = 3523,
-textBascula = 3524,
-textTablaActiva = 3525,
-textConfigTablas = 3526,
-textDeshalitada = 3527,
-textConfigBasculas = 3528,
-textFechaHora = 3529,
-textNumPesadas = 3530,
-textErrorCelula = 3531,
-textAlarma = 3532,
-textVersionBascula1 = 3533,
-textVersionBascula2 = 3534,
-textVersionBascula3 = 3535,
-textB1 = 3536,
-textB2 = 3537,
-textB3 = 3538,
-textNoDisponible = 3539,
-textBasculaManual = 3540,
-textResetVisor = 3541,
-textResetBascula = 3542,
-textAsistente = 3543,
-textSeHaPerdidoLaConexion = 3544,
-textConElDispositivoEbus = 3545,
-textPulseOkParaVolver = 3546,
-textALaPantallaPrincipal = 3547,
-textIncorrecta = 3548,
-textUniformidad = 3549,
-textCoeficienteVariacion = 3550,
-textDesviacionTipica = 3551,
-textDesviacion = 3552,
-textPesoObjetivo = 3553,
-textPesadas = 3554,
-textDesconectadoAbreviado = 3555,
-textCrianzaNoIniciada = 3556,
-textResetAdc = 3557,
-textErrorCelulaBascula1 = 3560,
-textErrorCelulaBascula2 = 3561,
-textErrorCelulaBascula3 = 3562,
-textDesconexionBascula1 = 3565,
-textDesconexionBascula2 = 3566,
-textDesconexionBascula3 = 3567,
-
-
-
-
-
-
-
-
-
-
-
-textSondaHumedad1Nc = 3636,
-textSondaHumedad2Nc = 3637,
-textHumedad1Maxima = 3638,
-textHumedad2Maxima = 3639,
-textHumedad1Minima = 3640,
-textHumedad2Minima = 3641,
-textHumedadInteriorMinima = 3642,
-textHumedadExteriorMinima = 3643,
-textHumedadInteriorMaxima = 3644,
-textHumedadExteriorMaxima = 3645,
-textHisteresisHumedadInterior = 3646,
-textHisteresisHumedadExterior = 3647,
-textHisteresisHumedad1 = 3648,
-textHisteresisHumedad2 = 3649,
-textAlimentacionReleH = 3650,
-textAlimentacionReleI = 3651,
-textAlimentacionReleJ = 3652,
-textOrigenReleJ = 3653,
-textJ = 3654,
-textReloj3 = 3655,
-textReleReloj3 = 3656,
-textPs100Ebus = 3657,
-textAlarmaVigilanciaContadorPienso = 3658,
-textIntervaloMinimo = 3659,
-textContadorDerrame = 3660,
-textIntervaloDerrame = 3661,
-textIntervalosEsperaVentiladores = 3662,
-textVentiladoresSimultaneos = 3663,
-textArranqueProgresivoVentiladores = 3664,
-textMsjReleVigilancia = 3665,
-textMsjDesconexionAlarmaVigilancia = 3668,
-textMovimientoPorTramos = 3669,
-textMsjVigilanciaMinimo = 3671,
-textMsjVigilanciaDerrame = 3672,
-textTiempoMovimiento = 3673,
-textTiempoAperturaCierre = 3674,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textC01 = 3675,
-textC02 = 3676,
-textC03 = 3677,
-textC04 = 3678,
-textC05 = 3679,
-textC06 = 3680,
-textC07 = 3681,
-textC08 = 3682,
-textC09 = 3683,
-textC10 = 3684,
-textC11 = 3685,
-textC12 = 3686,
-textC13 = 3687,
-textC14 = 3688,
-textC15 = 3689,
-textC16 = 3690,
-textC17 = 3691,
-textC18 = 3692,
-textC19 = 3693,
-textC20 = 3694,
-textC21 = 3695,
-textC22 = 3696,
-textC23 = 3697,
-textC24 = 3698,
-textC25 = 3699,
-textC26 = 3700,
-textC27 = 3701,
-textC28 = 3702,
-textC29 = 3703,
-textC30 = 3704,
-textC31 = 3705,
-textC32 = 3706,
-textC33 = 3707,
-textC34 = 3708,
-textC35 = 3709,
-textC36 = 3710,
-textC37 = 3711,
-textC38 = 3712,
-textC39 = 3713,
-textC40 = 3714,
-textC41 = 3715,
-textC42 = 3716,
-textC43 = 3717,
-textC44 = 3718,
-textC45 = 3719,
-textC46 = 3720,
-textC47 = 3721,
-textC48 = 3722,
-textC49 = 3723,
-textC50 = 3724,
-textC51 = 3725,
-textC52 = 3726,
-textC53 = 3727,
-textC54 = 3728,
-textC55 = 3729,
-textC56 = 3730,
-textC57 = 3731,
-textC58 = 3732,
-textC59 = 3733,
-textC60 = 3734,
-textC61 = 3735,
-textC62 = 3736,
-textC63 = 3737,
-textC64 = 3738,
-textC65 = 3739,
-textC66 = 3740,
-textC67 = 3741,
-textC68 = 3742,
-textC69 = 3743,
-textC70 = 3744,
-textC71 = 3745,
-textC72 = 3746,
-textC73 = 3747,
-textC74 = 3748,
-textC75 = 3749,
-textC76 = 3750,
-textC77 = 3751,
-textC78 = 3752,
-textC79 = 3753,
-textC80 = 3754,
-textC81 = 3755,
-textC82 = 3756,
-textC83 = 3757,
-textC84 = 3758,
-textC85 = 3759,
-textC86 = 3760,
-textC87 = 3761,
-textC88 = 3762,
-textC89 = 3763,
-textC90 = 3764,
-textC91 = 3765,
-textC92 = 3766,
-textC93 = 3767,
-textC94 = 3768,
-textC95 = 3769,
-textC96 = 3770,
-textC97 = 3771,
-textC98 = 3772,
-textC99 = 3773,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textVx1 = 3774,
-textVx3 = 3775,
-textTiempoEsperaCambioReanudadoElectrico = 3776,
-textMensaSeguridadElectricaTiempoEsperaReanudado = 3777,
-textIniciarCalibracionEaA = 3778,
-textIniciarCalibracionEaB = 3779,
-textIniciarCalibracionEaC = 3780,
-textModoCalibracionEaA = 3781,
-textModoCalibracionEaB = 3782,
-textModoCalibracionEaC = 3783,
-textDeteccionFalloElectrico = 3787,
-textPosicionFalloElectricoEaA = 3788,
-textPosicionFalloElectricoEaB = 3789,
-textPosicionFalloElectricoEaC = 3790,
-textSondasAsignEaA = 3792,
-textSondasAsignEaB = 3793,
-textSondasAsignEaC = 3794,
-textSondasAsignVent = 3795,
-textSondasAsignCt = 3796,
-textSonda1 = 3797,
-textCorreccionTemperatura1 = 3798,
-textSonda2 = 3799,
-textCorreccionTemperatura2 = 3800,
-textVentHisteresis = 3801,
-textVentModoTemporizacion = 3802,
-textVentTiempoCicloParo = 3803,
-textVentTiempoCiclominimoMarcha = 3804,
-textVentRangoTemporizacion = 3805,
-textCtHisteresis = 3806,
-textCtModo = 3807,
-textCtModoTemporizacion = 3808,
-textCtTiempoCicloParo = 3809,
-textCtTiempoCiclominimoMarcha = 3810,
-textCtRangoTemporizacion = 3811,
-textClaveComunicaciones = 3813,
-textAnyo = 3814,
-textMes = 3815,
-textMinuto = 3816,
-textPorcMinMovimientoVentanas = 3817,
-textPorcMovimientoInmedVentanas = 3818,
-textTiempoEsperaMovimientoVentanas = 3819,
-textVersionPlacav2 = 3820,
-textEaireA = 3821,
-textEaireB = 3822,
-textEaireC = 3823,
-textAperturaMinima = 3824,
-textAperturaMaxima = 3825,
-textRangoTemperatura = 3826,
-textTemperaturaActual = 3827,
-textNPulsosActual = 3828,
-textErrorNoDetectaFccEaA = 3829,
-textErrorNoDetectaFccEaB = 3830,
-textErrorNoDetectaFccEaC = 3831,
-textErrorNoDetectaFcoEaA = 3832,
-textErrorNoDetectaFcoEaB = 3833,
-textErrorNoDetectaFcoEaC = 3834,
-textErrorAtascoEaA = 3835,
-textErrorAtascoEaB = 3836,
-textErrorAtascoEaC = 3837,
-textErrorSonda1 = 3838,
-textErrorSonda2 = 3839,
-textEquipoEaANoCalibrado = 3840,
-textEquipoEaBNoCalibrado = 3841,
-textEquipoEaCNoCalibrado = 3842,
-textNoSeleccionarPosicion = 3843,
-textSeleccionarPosicionInicial = 3844,
-textSeleccionarPosicionFinal = 3845,
-textPosicionInicialSeleccionada = 3846,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textDesactivado = 3847,
-textSondasTemperatura1Y2 = 3848,
-textSinModo = 3849,
-textModoTodoNada = 3850,
-textModoProgresiva = 3851,
-textC47C49 = 3852,
-textC41C43 = 3853,
-textC44C45 = 3854,
-textContolPorIlumincacion = 3855,
-textMsjControlIluminacion = 3856,
-textPorKilosDeCarne = 3857,
-textMsjCambioModoCalculoPorAnimalKg = 3858,
-textM3hKg = 3859,
-textCurvaDepresiometro = 3860,
-textTemperaturaCorreccion1 = 3861,
-textCorreccion1 = 3862,
-textTemperaturaCorreccion2 = 3863,
-textCorreccion2 = 3864,
-textInfluenciaTemperaturaExteriorBajaDepresiometro = 3865,
-textSinInternet = 3866,
-textErrorWlan = 3867,
-textInfluenciaDepresionRegulada = 3868,
-textInfluenciaDepresionTunel = 3869,
-textDepresionDeseadaReguladaPa = 3870,
-textDepresionDeseadaTunelPa = 3871,
-textDepresiometroManual = 3872,
-textMsjModoDepresiometro = 3873,
-textMsjDepresiometroManual = 3874,
-textMsjInfluenciaTemperaturaEsteriorBajaTramos = 3875,
-textMsjArranqueProgresivoVentilaciores = 3876,
-textTestAlarmas = 3877,
-textIniciar = 3878,
-textTiempoDeTest = 3879,
-textAlarmaConectadaActualmente = 3880,
-textAnemometroVeleta = 3881,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textEntradaAnemometro = 3882,
-textEntradaVeleta = 3883,
-textVelocidad = 3884,
-textDireccionViento = 3885,
-textNoSonora = 3886,
-textSonora = 3887,
-textTodasLasAlarmas = 3890,
-textAlarmasSondasTemperatura = 3891,
-textTemperaturaRelativa = 3892,
-textCalefaccionSinSondas = 3893,
-textContactoTermicoSinSondas = 3894,
-textEntradaAireSinSondas = 3895,
-textRefrigeracionSinSondas = 3896,
-textPh = 3897,
-textAlarmasMotoresDirectos = 3898,
-textIntentos = 3899,
-textProcesando = 3900,
-textChtEbus = 3901,
-textVdi = 3902,
-textNumeroPadre = 3903,
-textPw1 = 3904,
-textPw2 = 3905,
-textPw3 = 3906,
-textCrianzaSincronizada = 3907,
-textLimpiarWarning = 3908,
-textDosificacionAlimento = 3909,
-textMsjAdvertenciasSonorasNoSonoras = 3910,
-textMrt20Ebus = 3911,
-textSondas010 = 3912,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textLinea6 = 3913,
-textEsperandoSensorLlenado = 3914,
-textLineasSecundariasActivadas = 3915,
-textAlimentacionAvanzada = 3920,
-textRepeticiones = 3921,
-textSiguientePrograma = 3922,
-textDosificadores = 3923,
-textLineas = 3924,
-textRutas = 3925,
-textDosificador1 = 3926,
-textDosificador2 = 3927,
-textDosificador3 = 3928,
-textDosificador4 = 3929,
-textDosificador5 = 3930,
-textDosificador6 = 3931,
-textDosificador7 = 3932,
-textDosificador8 = 3933,
-textDosificador9 = 3934,
-textDosificador10 = 3935,
-textDosificador11 = 3936,
-textDosificador12 = 3937,
-textDosificador13 = 3938,
-textDosificador14 = 3939,
-textDosificador15 = 3940,
-textDosificador16 = 3941,
-textSensorLleno = 3942,
-textSensorVacio = 3943,
-textRuta = 3944,
-textDistancia = 3945,
-textLinea1 = 3946,
-textLinea2 = 3947,
-textLinea3 = 3948,
-textLinea4 = 3949,
-textLinea5 = 3950,
-textSensor = 3951,
-textRuta1 = 3952,
-textRuta2 = 3953,
-textRuta3 = 3954,
-textRuta4 = 3955,
-textRuta5 = 3956,
-textRuta6 = 3957,
-textDosificadores1 = 3958,
-textDosificadores2 = 3959,
-textDosificadores3 = 3960,
-textDosificadores4 = 3961,
-textReceta4 = 3962,
-textReceta5 = 3963,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textReceta6 = 3964,
-textPorcentajePienso1 = 3965,
-textPorcentajePienso2 = 3966,
-textPorcentajePienso3 = 3967,
-textPorcentajePienso4 = 3968,
-textReceta = 3969,
-textPiensoUnico = 3970,
-textAlimentacionAvanzadaPrograma = 3971,
-textListaDosificadores = 3972,
-textDosificador = 3973,
-textPienso1 = 3974,
-textPienso2 = 3975,
-textPienso3 = 3976,
-textPienso4 = 3977,
-textLongitud = 3978,
-textOrden = 3979,
-textControl1 = 3980,
-textControl2 = 3981,
-textControl3 = 3982,
-textControl4 = 3983,
-textControl5 = 3984,
-textDespuesDisificarActivarRele = 3985,
-textAntesDisificarActivarRele = 3986,
-textNoAsignada = 3987,
-textLinea = 3988,
-textPiensos = 3989,
-textTiempoActivacionRele = 3990,
-textAnyadirDosificador = 3991,
-textEliminarUltimoDosificador = 3992,
-textMenos = 3995,
-textProgramado = 3997,
-textOptimizado = 3998,
-textOrdenDistribuidores = 3999,
-textVelocidadPienso = 4000,
-textNoSeHaAsigandoElReleDeAvance = 4001,
-textLaLongitudDeLaLineaTieneQueSerMayorQue0 = 4002,
-textRutaSinNingunaLineaActiva = 4003,
-textNoPuedeHaber2RutasIguales = 4004,
-textNoSeHaAsignadoLaRuta = 4005,
-textNoSeHaAsignadoLaLinea = 4006,
-textNoSeHaAsignadoElReleDeApertura = 4007,
-textPosicionDosificadorFueraLinea = 4008,
-textDosificadorMismaPosicion = 4009,
-textD1 = 4010,
-textD2 = 4011,
-textD3 = 4012,
-textD4 = 4013,
-textD5 = 4014,
-textD6 = 4015,
-textD7 = 4016,
-textD8 = 4017,
-textD9 = 4018,
-textD10 = 4019,
-textD11 = 4020,
-textD12 = 4021,
-textD13 = 4022,
-textD14 = 4023,
-textD15 = 4024,
-textD16 = 4025,
-textNoSeHaAsignadoElOrigen = 4026,
-textNoSeHaAsignadoElRele = 4027,
-textLaSumaDePorcentajesNoEs100 = 4028,
-textNoSeHaAsignadoElReleDeCierre = 4029,
-textNoSeHaAsignadoElPienso = 4030,
-textNoSeHaAsignadoLaReceta = 4031,
-textNoSeHaEstablecidoLaCantidadDePienso = 4032,
-textNoSeHaAsignadoElDestino = 4033,
-textNoSeHaEstablecidoElIntervaloDeLasRepeticiones = 4034,
-textNoSeHaEstablecidoElNumeroDeRepeticiones = 4035,
-textLaLineaAsignadaNoPerteneceALaRuta = 4036,
-textNoSeHaEstablecidoLaVelocidadDistribucion = 4037,
-textNoSeHaAsignadoElReleDeControl = 4038,
-textNoSeHaEstablecidoElTiempoDelControl = 4039,
-textOrigenYLineaUnRele = 4040,
-textProgreso = 4041,
-textDiarias = 4042,
-textAcumuladas = 4043,
-textPiensoDosificadoKg = 4044,
-textConsumoDePiensoPorDosificador = 4045,
-textPesoActual = 4046,
-textNoHayNingunProgramaActivo = 4047,
-textResetProgramas = 4048,
-textTiempoAdelantaMovimientoVentanas = 4049,
-
-
-
-
-
-
-
-
-textC48C50 = 4050,
-textAjusteSondasTemperatura = 4051,
-textCambioTemporizacion = 4052,
-textSoloVentilacionNatural = 4053,
-textMensajeEjecutaNaturalSiempre = 4054,
-textSensorDeCompuertaCerradaNoAsignado = 4055,
-textSensorDeTolvaDistribucionLlenaNoAsignado = 4056,
-textSensorDeTolvaDistribucionVaciaNoAsignado = 4057,
-textNoSeHaDefinidoLaCapacidadMaxima = 4058,
-textNoSeHaTaradoLaTolva = 4059,
-textHayAlgunErrorEnElOrigen = 4060,
-textEsperandoInicio = 4061,
-textEsperandoRepeticion1De3 = 4062,
-textEsperandoRepeticion2De3 = 4063,
-textEsperandoRepeticion3De3 = 4064,
-textRegistroEventos = 4065,
-textUsoCpuAlto = 4066,
-textSensorTolvaPesajeLlena = 4067,
-textSensorTolvaDistribucionVacia = 4068,
-textSensorTolvaDistribucionLlena = 4069,
-textSensorCompuertaPesajeCerrada = 4070,
-textVersionAnterior = 4071,
-textPantallaSinConexion = 4072,
-textComSinConexion = 4073,
-textInfluenciaAumentoVentilacionPorCalefaccion = 4074,
-textInfluenciasCalefacciones = 4075,
-textMsjInfluenciasCalefacciones = 4076,
-textVigilanciaAlimentacionPorConsumo = 4077,
-textEntradaDigital = 4078,
-textContadorActivoSiEntrada = 4079,
-textAbierta = 4080,
-textCerrada = 4081,
-textVigilanciaAlimentacionPorTiempoActivo = 4082,
-textTiempoMaximoActivo = 4083,
-textMsjAlarmasVigilanciaPorTiempoActivo = 4084,
-textAlarmaVigilanciaAlimentacion = 4085,
-textDetectada = 4086,
-textNoDetectada = 4087,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-textPuntoSinProgramasActivos = 4088,
-textListaDeProgramasActivos = 4089,
-textCal = 4090,
-textGrXAnimal = 4091,
-textVal = 4092,
-textProgres = 4093,
-textProgramasActivos = 4094,
-textHerramientas = 4095,
-textProgresividad = 4096,
-textDosificacionManual = 4097,
-textEjecutarDosificacion = 4098,
-textTiempoAperturaDosificador = 4099,
-textTiempoCierreDosificador = 4100,
-textAntesDisificarAbrirDosificadores = 4101,
-textEjecutarProgramaAhora = 4102,
-textFinalizarDosificacionActual = 4103,
-textUltimaDosificacionInterrumpida = 4104,
-textPiensoRestanteEnDosificador = 4105,
-textCompletarDosificacion = 4106,
-textContadorPorPulso = 4107,
-textNoHaySiguientePuntoDeProgresividad = 4108,
-textNoHayActivoProgramaDeProgresividad = 4109,
-textErrorEnLaReceta = 4110,
-textErrorEnLasLineas = 4111,
-textErrorEnLosDosificadores = 4112,
-textErrorEnLosPiensos = 4113,
-textErrorEnLasRutas = 4114,
-textErrorEnLaTolvaIntermedia = 4115,
-textErrorEnLaListaDeDosificadores = 4116,
-textErrorEnLaConElControl = 4117,
-textPorcMovimientoAdelantaVentanas = 4118,
-textConservaBaterias = 4119,
-textResetProtBaterias = 4120,
-textResetearEaA = 4121,
-textResetearEaB = 4122,
-textResetearEaC = 4123,
-textAlarmaEepromCorruptaMotorA = 4124,
-textAlarmaEepromCorruptaMotorB = 4125,
-textAlarmaEepromCorruptaMotorC = 4126,
-textAlarmaEepromValoresPorDefectoMotorA = 4127,
-textAlarmaEepromValoresPorDefectoMotorB = 4128,
-textAlarmaEepromValoresPorDefectoMotorC = 4129,
-textAlarmaFalloComunicacionEaA = 4130,
-textAlarmaFalloComunicacionEaB = 4131,
-textAlarmaFalloComunicacionEaC = 4132,
-text01000Ppm = 4133,
+  textOnOff = 811,
+  textReleAlimentacion = 812,
+  textReleAgua = 813,
+  textReleReloj1 = 814,
+  textReleReloj2 = 815,
+  textReleIluminacion1L1 = 816,
+  textReleIluminacion1L2 = 817,
+  textReleIluminacion1L3 = 818,
+  textReleIluminacion2L1 = 819,
+  textReleIluminacion2L2 = 820,
+  textReleIluminacion2L3 = 821,
+  textCorreccionNh3 = 822,
+  textCorreccionCo2 = 823,
+  textT1R1 = 824,
+  textT1R2 = 825,
+  textT1R3 = 826,
+  textT1R4 = 827,
+  textT1R5 = 828,
+  textT1R6 = 829,
+  textT1R7 = 830,
+  textT1R8 = 831,
+  textT1R9 = 832,
+  textT1R10 = 833,
+  textT1R11 = 834,
+  textT1R12 = 835,
+  textT1R13 = 836,
+  textT1R14 = 837,
+  textT1R15 = 838,
+  textT1R16 = 839,
+  textT2R1 = 840,
+  textT2R2 = 841,
+  textT2R3 = 842,
+  textT2R4 = 843,
+  textT2R5 = 844,
+  textT2R6 = 845,
+  textT2R7 = 846,
+  textT2R8 = 847,
+  textT2R9 = 848,
+  textT2R10 = 849,
+  textT2R11 = 850,
+  textT2R12 = 851,
+  textT2R13 = 852,
+  textT2R14 = 853,
+  textT2R15 = 854,
+  textT2R16 = 855,
+  textT3R1 = 856,
+  textT3R2 = 857,
+  textT3R3 = 858,
+  textT3R4 = 859,
+  textT3R5 = 860,
+  textT3R6 = 861,
+  textT3R7 = 862,
+  textT3R8 = 863,
+  textT3R9 = 864,
+  textT3R10 = 865,
+  textT3R11 = 866,
+  textT3R12 = 867,
+  textT3R13 = 868,
+  textT3R14 = 869,
+  textT3R15 = 870,
+  textT3R16 = 871,
+  textT4R1 = 872,
+  textT4R2 = 873,
+  textT4R3 = 874,
+  textT4R4 = 875,
+  textT4R5 = 876,
+  textT4R6 = 877,
+  textT4R7 = 878,
+  textT4R8 = 879,
+  textT4R9 = 880,
+  textT4R10 = 881,
+  textT4R11 = 882,
+  textT4R12 = 883,
+  textT4R13 = 884,
+  textT4R14 = 885,
+  textT4R15 = 886,
+  textT4R16 = 887,
+
+
+
+  textInfluenciaSensacionTermicaRefrigeracion = 888,
+  textConectarRefrigeracion = 889,
+  textT1Te1 = 890,
+  textT1Te2 = 891,
+  textT1Te3 = 892,
+  textT1Te4 = 893,
+  textT1Te5 = 894,
+  textT1Te6 = 895,
+  textT2Te1 = 896,
+  textT2Te2 = 897,
+  textT2Te3 = 898,
+  textT2Te4 = 899,
+  textT2Te5 = 900,
+  textT2Te6 = 901,
+  textT1Ai1 = 902,
+  textT1Ai2 = 903,
+  textT1Ai3 = 904,
+  textT1Ai4 = 905,
+  textT1Ai5 = 906,
+  textT1Ai6 = 907,
+  textT2Ai1 = 908,
+  textT2Ai2 = 909,
+  textT2Ai3 = 910,
+  textT2Ai4 = 911,
+  textT2Ai5 = 912,
+  textT2Ai6 = 913,
+  textT1Di1 = 914,
+  textT1Di2 = 915,
+  textT1Di3 = 916,
+  textT1Di4 = 917,
+  textT1Di5 = 918,
+  textT1Di6 = 919,
+  textT2Di1 = 920,
+  textT2Di2 = 921,
+  textT2Di3 = 922,
+  textT2Di4 = 923,
+  textT2Di5 = 924,
+  textT2Di6 = 925,
+  textT1Ao1 = 926,
+  textT1Ao2 = 927,
+  textT1Ao3 = 928,
+  textT1Ao4 = 929,
+  textT1Ao5 = 930,
+  textT1Ao6 = 931,
+  textT2Ao1 = 932,
+  textT2Ao2 = 933,
+  textT2Ao3 = 934,
+  textT2Ao4 = 935,
+  textT2Ao5 = 936,
+  textT2Ao6 = 937,
+  textEtapa1 = 940,
+  textEtapa2 = 941,
+  textEtapa3 = 942,
+  textEtapa4 = 943,
+  textEtapa5 = 944,
+  textEtapa6 = 945,
+  textEtapa7 = 946,
+  textEtapa8 = 947,
+  textEtapa9 = 948,
+  textEtapa10 = 949,
+  textEtapa11 = 950,
+  textEtapa12 = 951,
+  textEtapa13 = 952,
+  textEtapa14 = 953,
+  textEtapa15 = 954,
+  textEtapa16 = 955,
+  textEtapa17 = 956,
+  textEtapa18 = 957,
+  textEtapa19 = 958,
+  textEtapa20 = 959,
+  textEtapa21 = 960,
+  textEtapa22 = 961,
+  textEtapa23 = 962,
+  textEtapa24 = 963,
+  textEtapa25 = 964,
+  textEtapa26 = 965,
+  textEtapa27 = 966,
+  textEtapa28 = 967,
+  textEtapa29 = 968,
+  textEtapa30 = 969,
+  textEtapa31 = 970,
+  textEtapa32 = 971,
+
+
+
+  textNVentiladoresFijos = 972,
+  textNVentiladoresTemporizados = 973,
+  textVentiladoresEstaticos = 974,
+  textRefrigRangoTemporizacion = 975,
+  textConfiguracionVentiladores = 976,
+  textSalida010A = 977,
+  textSalida010B = 978,
+  textSalida010C = 979,
+  textSalida010D = 980,
+  textSalida010E = 981,
+  textSalida010F = 982,
+  textSalida010G = 983,
+  textSalida010H = 984,
+  textTemporizaSal010A = 985,
+  textTemporizaSal010B = 986,
+  textTemporizaSal010C = 987,
+  textTemporizaSal010D = 988,
+  textCalefHisteresis = 989,
+  textCalefModoTemporizacion = 990,
+  textCalefTiempoCicloParo = 991,
+  textCalefTiempoCiclominimoMarcha = 992,
+  textCalefRangoTemporizacion = 993,
+  textRangoCalefaccion = 994,
+  textInicioSalida010A = 995,
+  textInicioSalida010B = 996,
+  textInicioSalida010C = 997,
+  textInicioSalida010D = 998,
+  textTemporizaSal010Vent = 999,
+  textCaudalAireVent1 = 1000,
+  textCaudalAireVent2 = 1001,
+  textReleAsignadoVentPartida = 1002,
+  textReleAlarma = 1003,
+  textBluetooth = 1004,
+  textFinSalida010A = 1005,
+  textFinSalida010B = 1006,
+  textFinSalida010C = 1007,
+  textFinSalida010D = 1008,
+  textMotorALento = 1009,
+  textMotorBLento = 1010,
+  textMaxMovimientoEaA = 1011,
+  textMaxMovimientoEaB = 1012,
+  textTiempoEsperaTrasMaxMovimientoEaA = 1013,
+  textTiempoEsperaTrasMaxMovimientoEaB = 1014,
+  textControlEntradaAireA = 1015,
+  textControlEntradaAireB = 1016,
+  textControlEntradaAireC = 1017,
+  textControlEntradaAireD = 1018,
+  textControlEntradaAireE = 1019,
+  textControlEntradaAireT = 1020,
+  textControlEntradaAireA3 = 1021,
+  textControlEntradaAireB3 = 1022,
+  textControlTemperaturaExterior = 1023,
+  textControlTemperaturaExteriorTempDeseada = 1024,
+  textInicioEaA = 1025,
+  textInicioEaB = 1026,
+  textInicioEaC = 1027,
+  textInicioEaD = 1028,
+  textInicioEaE = 1029,
+  textInicioEaT = 1030,
+  textFinEaA = 1031,
+  textFinEaB = 1032,
+  textFinEaC = 1033,
+  textFinEaD = 1034,
+  textFinEaE = 1035,
+  textFinEaT = 1036,
+
+
+
+  textControlTemperaturaExteriorHisteresis = 1037,
+  textInfluenciaHumedadHisteresis = 1038,
+  textInfluenciaHumedadValorActiva = 1039,
+  textTempo = 1040,
+  text010A = 1041,
+  text010B = 1042,
+  text010C = 1043,
+  text010D = 1044,
+  textOpcionPrincipal12 = 1045,
+  textPotenciometro2Hilos = 1046,
+  textPotenciometro3Hilos = 1047,
+  textAdelantar = 1048,
+  textRetrasar = 1049,
+  textSondas1 = 1050,
+  textSondas2 = 1051,
+  textSondas3 = 1052,
+  textSondas4 = 1053,
+  textSondas5 = 1054,
+  textSondas6 = 1055,
+  textSondas7 = 1056,
+  textSondas8 = 1057,
+  textSondas9 = 1058,
+  textSondas10 = 1059,
+  textSondas11 = 1060,
+  textSondas12 = 1061,
+  textSondas13 = 1062,
+  textSondas14 = 1063,
+  textSondas15 = 1064,
+  text0PorCiento = 1065,
+  text1PorCiento = 1066,
+  text10PorCiento = 1067,
+  text20PorCiento = 1068,
+  text30PorCiento = 1069,
+  text40PorCiento = 1070,
+  text50PorCiento = 1071,
+  text60PorCiento = 1072,
+  text70PorCiento = 1073,
+  text80PorCiento = 1074,
+  text90PorCiento = 1075,
+  text100PorCiento = 1076,
+  textAlarma9 = 1077,
+  textTiempoRetrasoEntradasDeAireMenosM3 = 1078,
+  textTiempoRetrasoEntradasDeAireMasM3 = 1079,
+  textSalida0101 = 1080,
+  textSalida0102 = 1081,
+  textSalida0103 = 1082,
+  textSalida0104 = 1083,
+  textSalida0105 = 1084,
+  textSalida0106 = 1085,
+  textSalida0107 = 1086,
+  textSalida0108 = 1087,
+  textSalida0109 = 1088,
+  textSalida01010 = 1089,
+  textSalida01011 = 1090,
+  textSalida01012 = 1091,
+  textMantenerCorreccionEnRefrigeracion = 1092,
+  textCancelarActualizacion = 1093,
+  textExpd = 1094,
+  textExpa = 1095,
+  textTurcoIdioma = 1096,
+
+
+
+  textEntrada0101 = 1100,
+  textEntrada0102 = 1101,
+  textEntrada0103 = 1102,
+  textEntrada0104 = 1103,
+  textEntrada0105 = 1104,
+  textEntrada0106 = 1105,
+  textEntrada0107 = 1106,
+  textEntrada0108 = 1107,
+  textEntrada0109 = 1108,
+  textEntrada01010 = 1109,
+  textEntrada01011 = 1110,
+  textEntrada01012 = 1111,
+  textUnidosNoDistribuidos = 1120,
+  textUnidosDistribuidos = 1121,
+  textIncrementalNoDistribuido = 1122,
+  textIncrementalDistribuido = 1123,
+  textTodosSeTemporizan = 1124,
+  textTempC = 1125,
+  textControlTemperatura = 1126,
+  textControl = 1127,
+  textInfluenciasControlTemperatura = 1128,
+  textAlta = 1129,
+  textBaja = 1130,
+  textSalida010I = 1131,
+  textSalida010J = 1132,
+  textA1 = 1133,
+  textA2 = 1134,
+  textA3 = 1135,
+  textA4 = 1136,
+  textA5 = 1137,
+  textA6 = 1138,
+  textA7 = 1139,
+  textMensajeNoEditarLocalEdit1 = 1140,
+  textA8 = 1141,
+  textAi1 = 1142,
+  textAi2 = 1143,
+  textTransicion = 1144,
+  textTipoEtapa = 1145,
+  textReleApertura = 1146,
+  textReleCierre = 1147,
+  textHisteresisDesconexion = 1148,
+  textTiempoApertura = 1149,
+  textTiempoCierre = 1150,
+  textMargenConexion = 1151,
+  textVentilacionMinimaCalculada = 1152,
+  textVentilacionMinimoEjecutable = 1153,
+  textVentilacionMinimaAbsoluta = 1154,
+  textAceptar = 1155,
+
+
+
+  textMensajeNoEditarOtraEdit1 = 1157,
+  textTc5 = 1158,
+  textExpa1 = 1159,
+  textExpa2 = 1160,
+  textMensajeVersionPlacaActualizada1 = 1161,
+  textExpd1 = 1162,
+  textExpd2 = 1163,
+  textExpd3 = 1164,
+  textAlarmaOn = 1165,
+  textMensajeVentilacionMinimosEjecutar1 = 1166,
+  textAlarmaOff = 1167,
+  textElevacionApertura7 = 1168,
+  textElevacionApertura8 = 1169,
+  textMensajeVentilacionMinimosInfluenciada1 = 1180,
+  textVentilacionMaximaCalculada = 1190,
+  textVentilacionMaximaEjecutable = 1191,
+  textVentilacionMaximaAbsoluta = 1192,
+  textOrdenPosicionesTemporizados = 1193,
+  textModoTemporizacion = 1194,
+  textInicioEntradaAireA = 1195,
+  textInicioEntradaAireB = 1196,
+  textInicioEntradaAireC = 1197,
+  textInicioEntradaAireD = 1198,
+  textInicioEntradaAireE = 1199,
+  textInicioEntradaAireT = 1200,
+  textFinEntradaAireA = 1201,
+  textFinEntradaAireB = 1202,
+  textFinEntradaAireC = 1203,
+  textFinEntradaAireD = 1204,
+  textFinEntradaAireE = 1205,
+  textFinEntradaAireT = 1206,
+  textFinEntradaAireA3 = 1207,
+  textFinEntradaAireB3 = 1208,
+
+
+
+  textMensajeConfirmacionCambioModoVent1 = 1210,
+  textS1T = 1220,
+  textS2T = 1221,
+  textS3T = 1222,
+  textS4T = 1223,
+  textS5T = 1224,
+  textS6T = 1225,
+  textS7T = 1226,
+  textS8T = 1227,
+  textS9T = 1228,
+  textS10T = 1229,
+  textS11T = 1230,
+  textS12T = 1231,
+  textS13T = 1232,
+  textS14T = 1233,
+  textS15T = 1234,
+  textS16T = 1235,
+  textS17T = 1236,
+  textS18T = 1237,
+  textS19T = 1238,
+  textS20B = 1239,
+  textS21T = 1240,
+  textS22T = 1241,
+  textS23T = 1242,
+  textS24T = 1243,
+  textS25T = 1244,
+  textS26T = 1245,
+  textS27T = 1246,
+  textS28T = 1247,
+  textS29T = 1248,
+  textS30T = 1249,
+  textS31T = 1250,
+  textS32T = 1251,
+  textVentilacionS0 = 1253,
+  textHisteresisS0Dinamica = 1254,
+  textConfiguracionEtapa = 1255,
+  textVentiladoresDistintosKm3 = 1256,
+  textTotalVentilacionCalculada = 1257,
+
+
+
+  textMensajeVentCalCorregidaMinMax1 = 1258,
+  textFijosTempoMenorQueConfigurados = 1259,
+  textMensajeTotalVentModificada1 = 1264,
+  textVentilacionNaturalYS0 = 1272,
+  textAjustesCurvas = 1273,
+  textVerano = 1274,
+  textInvierno = 1275,
+  textInicioCrianza = 1276,
+  textEntradaAnimales = 1277,
+  textMensajeNAnimalesInicio1 = 1278,
+  textMensajeNAnimalesInicioNew1 = 1286,
+  textComprobandoActualizacion = 1287,
+  textNumeroAnimalesIniciales = 1294,
+  textTodaLaNave = 1295,
+  textPrecalentamientoNave = 1296,
+  textNaveVacia = 1297,
+  textNave = 1298,
+  textSondasCriadero = 1299,
+  textVentilacionCriadero1 = 1300,
+  textVentilacionCriadero2 = 1301,
+  textRangoCriadero1 = 1302,
+  textRangoCriadero2 = 1303,
+  textVentilacionTodaLaNave = 1304,
+  textControlPorCrianza = 1305,
+
+
+
+  textIluminacionReleA = 1306,
+  textIluminacionReleB = 1307,
+  textIluminacionReleC = 1308,
+  textAmanecer1 = 1309,
+  textAmanecer2 = 1310,
+  textIluminacion = 1311,
+  textActualizarEquipo = 1312,
+  textVersionBoot = 1313,
+  textVersionEquipo = 1314,
+  textOmega = 1315,
+  textSigma = 1316,
+  textV4 = 1317,
+  textAlpha = 1318,
+  textV2 = 1319,
+  textCti80 = 1320,
+  textCti70 = 1321,
+  textCti40 = 1322,
+  textCti41 = 1323,
+  textMensajeNoEditFechaCrinazaOn = 1324,
+  textUsbNoEncontrado = 1329,
+  textFicherosNoEncontrados = 1330,
+  textErrorCompatibilidad = 1331,
+  textVersionBootloader = 1332,
+  textActualizandoApp = 1333,
+  textNoSePuedeCompletar = 1334,
+  textInserteUsbConUltimaVersion = 1335,
+  textFicherosNoValidos = 1336,
+  textDescargueUltimaVersion = 1337,
+  textALaMemoriaUsb = 1338,
+  textIniciandoApp = 1339,
+  textActualizandoFw = 1340,
+  textNoSePuedeActualizar = 1341,
+  textReiniciandoEquipo = 1342,
+  textQActualizarQ = 1343,
+  textElEquipoSeReiniciara = 1344,
+  textNecesitaCopiar = 1345,
+  textDeLaUltimaVersion = 1346,
+  textFicherosVersionAnterior = 1347,
+  textVersionPlaca = 1348,
+  textVersionUsb = 1349,
+  textFalloComunicacion = 1350,
+  textNecesarioActualziar = 1351,
+  textError = 1352,
+  textVersionUvi = 1353,
+  textNoCompatibleConEquipo = 1354,
+  textVentilacionTunel = 1355,
+
+
+
+  textOffsetNatural = 1356,
+  textOffsetSalidaNatural = 1357,
+  textControlPorTiempo = 1358,
+  textDiaCrianzaInicio = 1359,
+  textDiaCrianzaFin = 1360,
+  textDiaHoraInicio = 1361,
+  textDiaHoraFin = 1362,
+  textCondicionAusenciaViento = 1363,
+  textCondicionVientoFuerte = 1364,
+  textTemperaturaExteriorMenorQue = 1365,
+  textTemperaturaExteriorMayorQue = 1366,
+  textMensajeVentNaturalTempExtMenorQue = 1367,
+  textMensajeVentNaturalTempExtMayorQue = 1372,
+  textMensajeVentNaturalVelociVientoMenorQue = 1377,
+  textMensajeVentNaturalVelociVientoMayorQue = 1382,
+  textVelocidadVientoMenorQue = 1387,
+  textVelocidadVientoMayorQue = 1388,
+  textTiempoPasarEtapaNaturalANatural = 1389,
+  textEtapaNatural = 1392,
+  textPosicionEaZonaNatural = 1393,
+  textEtapaInicioTunel = 1394,
+  textOffsetEntradaTunel = 1395,
+  textNoEntraTunelSiEdadAnimalMenorQue = 1396,
+  textHisteresisSalidaTunel = 1398,
+  textTiempoMinimoPermaneceTunel = 1399,
+  textInfluenciaDiaAnimal = 1400,
+  textHisteresisTiempoEtapaSiguiente = 1401,
+  textHisteresisTiempoEtapaAnterior = 1402,
+  textTiempoTransicion = 1403,
+  textMensTiempoEsperaVentilacion1Tunel = 1404,
+  textNoTenemosVentiladoresConfigurados = 1410,
+  textTipoNave = 1411,
+  textCombiTunel = 1412,
+  textTunelPuro = 1413,
+  textTransversal = 1414,
+  textTunelDoble = 1415,
+  textMensSiElTunelEmpiezaEnEtapa1NoOffset = 1416,
+  textResetClaveConfiguracion = 1417,
+  textEquipoDesbloqueado = 1418,
+  textAltoParedesLaterales = 1419,
+  textModoDelMotor = 1421,
+  textLdb = 1422,
+  textControlDirecto = 1423,
+  textReleAbrir = 1424,
+  textReleCerrar = 1425,
+  textFinalCarreraOpen = 1426,
+  textFinalCarreraClose = 1427,
+  textEntradaPotenciometro = 1428,
+  textEntradasDigitales = 1429,
+
+
+
+  textMotorDirectoD1 = 1430,
+  textMotorDirectoD2 = 1431,
+  textMotorDirectoD3 = 1432,
+  textMotorDirectoD4 = 1433,
+  textMotorDirectoD5 = 1434,
+  textMotorDirectoD6 = 1435,
+  textMotorDirectoD7 = 1436,
+  textMotorDirectoD8 = 1437,
+  textConfigMotoresDirectos = 1438,
+  textMotorA1 = 1439,
+  textMotorB1 = 1440,
+  textMotorC1 = 1441,
+  textMotorD1 = 1442,
+  textMotorT1 = 1443,
+  textMotorA2 = 1444,
+  textMotorB2 = 1445,
+  textMotorC2 = 1446,
+  textMotorD2 = 1447,
+  textMotorT2 = 1448,
+  textMotorA3 = 1449,
+  textMotorB3 = 1450,
+  textMotorC3 = 1451,
+  textMotorD3 = 1452,
+  textMotorT3 = 1453,
+  textMotorDirecto = 1454,
+  textCalibracion = 1455,
+  textMotorNoConectado = 1456,
+  textDispositivosLdb = 1457,
+  textNodo = 1458,
+  textMotorLdbL1 = 1459,
+  textMotorLdbL2 = 1460,
+  textMotorLdbL3 = 1461,
+  textMotorLdbL4 = 1462,
+  textMotorLdbL5 = 1463,
+  textMotorLdbL6 = 1464,
+  textMotorLdbL7 = 1465,
+  textMotorLdbL8 = 1466,
+  textMotorLdb = 1467,
+  textAgitadores = 1468,
+  textCiclico = 1469,
+  textDiferenciaSondas = 1470,
+  textAgitadoresAjustes = 1471,
+  textEjecutaSiAnimalMayorQue = 1472,
+  textModoCiclico = 1473,
+  textModoDiferenciaSondas = 1474,
+  textModoTemperaturas = 1475,
+  textPeriodo = 1476,
+  textDiferenciaTemperatura = 1477,
+  textTiempoFuncionamientoMaximo = 1478,
+  textPeriodoMinimoRepeticion = 1479,
+  textActivadas = 1480,
+  textDesconectadas = 1481,
+  textComunicaconesExteriores = 1482,
+  textComunicaconesEntreEquipos = 1483,
+  textCambiarClave = 1484,
+  textMac = 1485,
+  textNumeroEquipo = 1486,
+  textTablaDispositivosLocal = 1487,
+  textDispositivos = 1488,
+  textNumero = 1489,
+  textSilo = 1490,
+  textBascula1 = 1491,
+  textBascula2 = 1492,
+  textBascula3 = 1493,
+  textResetTotal = 1494,
+  textResetearEquipo = 1495,
+  textNc = 1496,
+  textNa = 1497,
+  textHisteresisAlarmaTemperatura = 1498,
+  textHisteresisAlarmaDiferencia = 1499,
+  textHisteresisAlarmaRelativa = 1500,
+  textHisteresisAlarmaHumedad = 1501,
+
+
+
+  textSondasAlarmaDiferencia = 1502,
+  textHisteresisAlarmaCo2 = 1503,
+  textHisteresisAlarmaNh3 = 1504,
+  textAlarmasInstantaneas = 1505,
+  textHistoricoAlarmas = 1506,
+  textAlarmasTemperatura = 1507,
+  textAlarmasHumedad = 1508,
+  textCo2Maximo = 1509,
+  textNh3Maximo = 1510,
+  textFecha = 1511,
+  textAlarmaDiferenciaMinima = 1512,
+  textAlarmaDiferenciaMaxima = 1513,
+  textContadorAgua = 1514,
+  textDosificacion = 1515,
+  textContadorGeneral = 1516,
+  textContador1 = 1517,
+  textContador2 = 1518,
+  textContador3 = 1519,
+  textContador4 = 1520,
+  textContador5 = 1521,
+  textContador6 = 1522,
+  textContador7 = 1523,
+  textContador8 = 1524,
+  textLitrosPorPulso = 1525,
+  textAlarmasVigilancia = 1526,
+  textResumenGrafico = 1527,
+  textDosificacionAgua = 1528,
+  textDesconectada = 1529,
+  textConectada = 1530,
+  textSimple = 1531,
+  textCurvaAgua = 1533,
+  textAlarmaContadorGeneral = 1534,
+  textAlarmaContadorLineas18 = 1535,
+  textMinimoContador = 1536,
+  textTiempoDerrameAgua = 1537,
+  textTiempoCuentaLitros = 1538,
+  textContadorDerrameAgua = 1539,
+  textCalefaccion1 = 1540,
+  textCalefaccion2 = 1541,
+  textCalefaccion3 = 1542,
+  textCalefaccion4 = 1543,
+  textCalefaccion5 = 1544,
+  textCalefaccion6 = 1545,
+  textCalefaccion7 = 1546,
+  textCalefaccion8 = 1547,
+  textCalefaccion9 = 1548,
+  textCalefaccion10 = 1549,
+  textCalefaccion11 = 1550,
+  textCalefaccion12 = 1551,
+  textIntervaloValidacion = 1552,
+  textRele2 = 1553,
+  textOffsetRele2 = 1554,
+  textInfluenciaSensacionTermica = 1555,
+  textSemana = 1556,
+  textSemana1 = 1557,
+  textSemana2 = 1558,
+  textSemana3 = 1559,
+  textSemana4 = 1560,
+  textSemana5 = 1561,
+  textSemana6 = 1562,
+  textSemana7 = 1563,
+  textSemana8 = 1564,
+  textSemana9 = 1565,
+  textSemana10 = 1566,
+
+
+
+  textOrigenesPienso = 1567,
+  textDestinosPienso = 1568,
+  textProgramasElevacionLineas = 1569,
+  textProgramasIluminacion = 1570,
+  textTolvaMezcladora = 1571,
+  textRecetas = 1572,
+  textOrigen1 = 1573,
+  textOrigen2 = 1574,
+  textOrigen3 = 1575,
+  textOrigen4 = 1576,
+  textTolvaIntermediaPulso = 1577,
+  textTolvaIntermediaCelulaCarga = 1578,
+  textControlCantidadPiensoPor = 1579,
+  textTiempoMedicion = 1580,
+  textKgPesados = 1581,
+  textIniciarCalibracion = 1582,
+  textCapacidadMaxima = 1583,
+  textDestino1 = 1584,
+  textDestino2 = 1585,
+  textDestino3 = 1586,
+  textDestino4 = 1587,
+  textDestino5 = 1588,
+  textDestino6 = 1589,
+  textDestino7 = 1590,
+  textDestino8 = 1591,
+  textModoDosificacion = 1592,
+  textTolvaIntermedia = 1593,
+  textDirecto = 1594,
+  textIluminacionControlada = 1595,
+  textDosificacionDirecta = 1596,
+  textTiempoVaciadoTolva = 1597,
+  textEntradaTolvaVacia = 1598,
+  textEntradaLineaLlena = 1599,
+  textReleActivacionLinea = 1600,
+  textTiempoSubida = 1601,
+  textTiempoBajada = 1602,
+  textReleSubir = 1603,
+  textReleBajar = 1604,
+  textTiempoApagaLucesAntes = 1605,
+  textTiempoEnciendeLucesDespues = 1606,
+  textTolvaMezcladora1 = 1607,
+  textTolvaMezcladora2 = 1608,
+  textReceta1 = 1609,
+  textReceta2 = 1610,
+  textReceta3 = 1611,
+  textSilos = 1612,
+  textRegistroConsumo = 1613,
+  textConsumo = 1614,
+  textCargas = 1615,
+  textConsumoGeneral = 1616,
+  textConsumoPorDestino = 1617,
+  textManual = 1618,
+  textAutomatica = 1619,
+  textDosificacionAlarmas = 1620,
+  textPorConsumoMinimo = 1621,
+  textDerrame = 1622,
+  textVariacionPorcentajeConsumo = 1623,
+  textCantidadPienso = 1624,
+  textOrigen = 1625,
+  textDestino = 1626,
+  textDiario = 1627,
+  textKgPorAnimal = 1628,
+  textInicio = 1629,
+  textFin = 1630,
+  textCalculo = 1631,
+  textAuto = 1632,
+  textVigilarAPartirDelDia = 1633,
+  textTiempoVigilancia = 1634,
+  textCantidadMinima = 1635,
+  textCantidadMaxima = 1636,
+  textAvisoSiIncrementoMayorQue = 1637,
+  textAvisoSiIncrementoMenorQue = 1638,
+  textProduccionActual = 1639,
+  textHistoricoProduccion = 1640,
+  textEquipo = 1641,
+  textContadorElectrico = 1642,
+  textMultiplicador = 1643,
+  textUnidad = 1644,
+
+
+
+  textGramo = 1645,
+  textKgramo = 1646,
+  textLitros = 1647,
+  textWatio = 1648,
+  textFogger = 1649,
+  textTablaSalidaAnalogica = 1650,
+  textIluminacionPorcen = 1651,
+  textVoltajeSal010 = 1652,
+  textDestellos = 1653,
+  textUtilizarSensorLuz = 1654,
+  textDuracionDestellos = 1655,
+  textEjecutarAPartirDelDia = 1656,
+  textSensorDeLuz = 1657,
+  textMixtos = 1658,
+  textDiferenciaGenero = 1659,
+  textTipoAnimales = 1660,
+  textNumeroAnimalesMachos = 1661,
+  textNumeroAnimalesHembras = 1662,
+  textHumedad = 1663,
+  textCo2 = 1664,
+  textNh3 = 1665,
+  textPorAnimal = 1666,
+  textActividad = 1667,
+  textAnchoNave = 1668,
+  textLargoNave = 1669,
+  textAltoNave = 1670,
+  textAnchoLateralA = 1671,
+  textAltoLateralA = 1672,
+  textAnchoLateralB = 1673,
+  textAltoLateralB = 1674,
+  textNEntradasLateralA = 1675,
+  textNEntradasLateralB = 1676,
+  textBasculas = 1677,
+  textPanelControlGeneral = 1678,
+  textMotores = 1679,
+  textEstadoOn = 1680,
+  textEstadoOff = 1681,
+  textReleNoAsignado = 1682,
+  textElementosNoAsignados = 1683,
+  textS0Minima = 1684,
+  textNatural = 1685,
+  textPasoTunelRegulada = 1686,
+  textPasoReguladaTunel = 1687,
+  textVentilacionMinS0 = 1688,
+  textVentilacionMinNatural = 1689,
+  textVentilacionPasoReguladaTunel = 1690,
+  textVentilacionPasoTunelRegulada = 1691,
+  textSinSonda = 1692,
+  text0100ppm = 1693,
+  text0200ppm = 1694,
+  text05000ppm = 1695,
+  text010000ppm = 1696,
+  textEntradas010 = 1697,
+  textTarjeta1Sonda1 = 1698,
+  textTarjeta1Sonda2 = 1699,
+  textTarjeta1Sonda3 = 1700,
+  textTarjeta1Sonda4 = 1701,
+  textTarjeta1Sonda5 = 1702,
+  textTarjeta1Sonda6 = 1703,
+  textTarjeta2Sonda1 = 1704,
+  textTarjeta2Sonda2 = 1705,
+  textTarjeta2Sonda3 = 1706,
+  textTarjeta2Sonda4 = 1707,
+  textTarjeta2Sonda5 = 1708,
+  textTarjeta2Sonda6 = 1709,
+  text1 = 1710,
+  text2 = 1711,
+  text3 = 1712,
+  text4 = 1713,
+  text5 = 1714,
+  text6 = 1715,
+  text7 = 1716,
+  text8 = 1717,
+  text9 = 1718,
+
+
+
+  textHumedadInterior1 = 1719,
+  textHumedadInterior2 = 1720,
+  textVisualizacionSondas = 1721,
+  textEliminarSonda = 1722,
+  textPosicionSonda = 1723,
+  textFijos = 1724,
+  textEstaticos = 1725,
+  textTemporizados = 1726,
+  textDiferenciaEntreExteriorYDeseada = 1727,
+  textMensajeHumedadInterior = 1728,
+  textCorreccionUsuario = 1729,
+  textOffsetVentilacionMinima = 1730,
+  textOffsetVentilacionMaxima = 1731,
+  textEdadAnimal = 1732,
+  textPosicionEdadAnimalMenorIgual = 1733,
+  textPosicionEdadAnimalMayor = 1734,
+  textCondicionesDeFuncionamiento = 1735,
+  textCondicionCo2Alto = 1736,
+  textCondicionNh3Alto = 1737,
+  textCondicionHumedadAlta = 1738,
+  textOffsetCo2ConClimaRecinto = 1739,
+  textOffsetNh3ConClimaRecinto = 1740,
+  textMensajeCo2SuperiorANoVentiNatu = 1741,
+  textMensajeNh3SuperiorANoVentiNatu = 1744,
+  textMensajeHumedadSuperiorANoVentiNatu = 1747,
+  textMensajeCo2SuperiorANoVentiS0 = 1750,
+  textMensajeNh3SuperiorANoVentiS0 = 1753,
+  textMensajeHumedadSuperiorANoVentiS0 = 1756,
+  textOffsetHumedadConClimaRecinto = 1759,
+  textCondicionTemperaturaExteriorBaja = 1760,
+  textCondicionTemperaturaExteriorAlta = 1761,
+  textMensajeS0ControlTiempo = 1762,
+  textNivelCo2DeControl = 1766,
+  textNivelNh3DeControl = 1767,
+  textMensajeOffsetNatural = 1768,
+  textMensajeRangoNatural = 1771,
+  textMensajeOffsetSalidaNatural = 1775,
+  textMensajeTiempoEnaturalANatural = 1782,
+  textEntradaTolvaLlena = 1783,
+  textEntradaAireTunel = 1784,
+  textPorcentajeTransicion = 1785,
+  textTiempoEsperaMaximo = 1786,
+  textTransicionReguladaTunel = 1787,
+  textMensEntradaAireTunel = 1788,
+  textMensEsperaPorcentajeMovimientoEntrada = 1791,
+  textMensEsperaTiempoMaximoTransicion = 1794,
+  textMensTipoTransicionTunel = 1800,
+  textMachosYHembrasSeparados = 1810,
+  textSoloMachos = 1811,
+  textSoloHembras = 1812,
+  textTablaMixtos = 1813,
+  textTablaMachos = 1814,
+  textTablaHembras = 1815,
+
+
+
+  textEstadisticasCrianzaActual = 1816,
+  textEstadisticasUltimosRegistros = 1817,
+  textEstadisticasCrianzasAnteriores = 1818,
+  textEstadisticasEstadisticas = 1819,
+  textEstadisticasVistaPorDias = 1820,
+  textEstadisticasDet = 1821,
+  textGraficasDiaDeCrianza = 1822,
+  textGraficasTiempoDeActividad = 1823,
+  textEstadisticasTemperaturas = 1824,
+  textEstadisticasTemperaturaConsigna = 1825,
+  textEstadisticasTaExt = 1826,
+  textEstadisticasTaInt = 1827,
+  textEstadisticasTaExtMinMax = 1828,
+  textEstadisticasTaExtMax = 1829,
+  textEstadisticasTaIntMinMax = 1830,
+  textEstadisticasTaIntMax = 1831,
+  textPorcentajeBajas = 1832,
+  textMachos = 1833,
+  textHembras = 1834,
+  textAccion = 1835,
+  textRetirada = 1836,
+  textEliminarUltimoRegistro = 1837,
+  textAddRegistro = 1838,
+  textEliminarTodosLosRegistros = 1839,
+  textMensajeNoSePuedeIntroducirRegistros = 1840,
+  textCrianzaFinalizada = 1841,
+  textAddRegistroAlta = 1842,
+  textAddRegistroBaja = 1843,
+  textAddRegistroRetirada = 1844,
+  textMsjHisteresisEntradaAireInfluRefri = 1845,
+  textEstadisticoTempInteriorMediaHora = 1848,
+  textEstadisticoTempInteriorMediaDia = 1849,
+  textEstadisticoTempInteriorHoraMax = 1850,
+  textEstadisticoTempInteriorHoraMin = 1851,
+  textEstadisticoTempInteriorDiaMax = 1852,
+  textEstadisticoTempInteriorDiaMin = 1853,
+  textEstadisticoTempConsignaMediaHora = 1854,
+  textEstadisticoTempConsignaMediaDia = 1855,
+  textEstadisticoTempExteriorMediaHora = 1856,
+  textEstadisticoTempExteriorMediaDia = 1857,
+  textEstadisticoTempExteriorHoraMax = 1858,
+  textEstadisticoTempExteriorHoraMin = 1859,
+  textEstadisticoTempExteriorDiaMax = 1860,
+  textEstadisticoTempExteriorDiaMin = 1861,
+  textEstadisticoHumInteriorMediaHora = 1862,
+  textEstadisticoHumInteriorMediaDia = 1863,
+  textEstadisticoHumInteriorHoraMax = 1864,
+  textEstadisticoHumInteriorHoraMin = 1865,
+  textEstadisticoHumInteriorDiaMax = 1866,
+  textEstadisticoHumInteriorDiaMin = 1867,
+  textEstadisticoHumConsignaMediaHora = 1868,
+  textEstadisticoHumConsignaMediaDia = 1869,
+  textEstadisticoHumExteriorMediaHora = 1870,
+  textEstadisticoHumExteriorMediaDia = 1871,
+  textEstadisticoHumExteriorHoraMax = 1872,
+  textEstadisticoHumExteriorHoraMin = 1873,
+  textEstadisticoHumExteriorDiaMax = 1874,
+  textEstadisticoHumExteriorDiaMin = 1875,
+  textEstadisticoCo2InteriorMediaHora = 1876,
+  textEstadisticoCo2InteriorMediaDia = 1877,
+  textEstadisticoCo2InteriorHoraMax = 1878,
+  textEstadisticoCo2InteriorHoraMin = 1879,
+  textEstadisticoCo2InteriorDiaMax = 1880,
+  textEstadisticoCo2InteriorDiaMin = 1881,
+  textEstadisticoNh3InteriorMediaHora = 1882,
+  textEstadisticoNh3InteriorMediaDia = 1883,
+  textEstadisticoNh3InteriorHoraMax = 1884,
+  textEstadisticoNh3InteriorHoraMin = 1885,
+  textEstadisticoNh3InteriorDiaMax = 1886,
+  textEstadisticoNh3InteriorDiaMin = 1887,
+
+
+
+  textEstadisticoActividadCal1Hora = 1888,
+  textEstadisticoActividadCal2Hora = 1889,
+  textEstadisticoActividadCal3Hora = 1890,
+  textEstadisticoActividadCal4Hora = 1891,
+  textEstadisticoActividadCal5Hora = 1892,
+  textEstadisticoActividadCal6Hora = 1893,
+  textEstadisticoActividadCal7Hora = 1894,
+  textEstadisticoActividadCal8Hora = 1895,
+  textEstadisticoActividadCal1Dia = 1896,
+  textEstadisticoActividadCal2Dia = 1897,
+  textEstadisticoActividadCal3Dia = 1898,
+  textEstadisticoActividadCal4Dia = 1899,
+  textEstadisticoActividadCal5Dia = 1900,
+  textEstadisticoActividadCal6Dia = 1901,
+  textEstadisticoActividadCal7Dia = 1902,
+  textEstadisticoActividadCal8Dia = 1903,
+  textEstadisticoActividadCt1Hora = 1904,
+  textEstadisticoActividadCt2Hora = 1905,
+  textEstadisticoActividadCt3Hora = 1906,
+  textEstadisticoActividadCt4Hora = 1907,
+  textEstadisticoActividadCt1Dia = 1908,
+  textEstadisticoActividadCt2Dia = 1909,
+  textEstadisticoActividadCt3Dia = 1910,
+  textEstadisticoActividadCt4Dia = 1911,
+  textEstadisticoActividadRefrigeracionPHora = 1912,
+  textEstadisticoActividadRefrigeracionAuxHora = 1913,
+  textEstadisticoActividadRefrigeracionPDia = 1914,
+  textEstadisticoActividadRefrigeracionAuxDia = 1915,
+  textEstadisticoEtapa1Hora = 1916,
+  textEstadisticoEtapa2Hora = 1917,
+  textEstadisticoEtapa3Hora = 1918,
+  textEstadisticoEtapa4Hora = 1919,
+  textEstadisticoEtapa5Hora = 1920,
+  textEstadisticoEtapa6Hora = 1921,
+  textEstadisticoEtapa7Hora = 1922,
+  textEstadisticoEtapa8Hora = 1923,
+  textEstadisticoEtapa9Hora = 1924,
+  textEstadisticoEtapa10Hora = 1925,
+  textEstadisticoEtapa11Hora = 1926,
+  textEstadisticoEtapa12Hora = 1927,
+  textEstadisticoEtapa13Hora = 1928,
+  textEstadisticoEtapa14Hora = 1929,
+  textEstadisticoEtapa15Hora = 1930,
+  textEstadisticoEtapa16Hora = 1931,
+  textEstadisticoEtapa17Hora = 1932,
+  textEstadisticoEtapa18Hora = 1933,
+  textEstadisticoEtapa19Hora = 1934,
+  textEstadisticoEtapa20Hora = 1935,
+  textEstadisticoEtapa21Hora = 1936,
+  textEstadisticoEtapa22Hora = 1937,
+  textEstadisticoEtapa23Hora = 1938,
+  textEstadisticoEtapa24Hora = 1939,
+  textEstadisticoEtapa25Hora = 1940,
+  textEstadisticoEtapa26Hora = 1941,
+  textEstadisticoEtapa27Hora = 1942,
+  textEstadisticoEtapa28Hora = 1943,
+  textEstadisticoEtapa29Hora = 1944,
+  textEstadisticoEtapa30Hora = 1945,
+  textEstadisticoEtapa31Hora = 1946,
+  textEstadisticoEtapa32Hora = 1947,
+  textEstadisticoEtapa1Dia = 1948,
+  textEstadisticoEtapa2Dia = 1949,
+  textEstadisticoEtapa3Dia = 1950,
+  textEstadisticoEtapa4Dia = 1951,
+  textEstadisticoEtapa5Dia = 1952,
+  textEstadisticoEtapa6Dia = 1953,
+  textEstadisticoEtapa7Dia = 1954,
+  textEstadisticoEtapa8Dia = 1955,
+  textEstadisticoEtapa9Dia = 1956,
+  textEstadisticoEtapa10Dia = 1957,
+  textEstadisticoEtapa11Dia = 1958,
+  textEstadisticoEtapa12Dia = 1959,
+  textEstadisticoEtapa13Dia = 1960,
+  textEstadisticoEtapa14Dia = 1961,
+  textEstadisticoEtapa15Dia = 1962,
+  textEstadisticoEtapa16Dia = 1963,
+  textEstadisticoEtapa17Dia = 1964,
+  textEstadisticoEtapa18Dia = 1965,
+  textEstadisticoEtapa19Dia = 1966,
+  textEstadisticoEtapa20Dia = 1967,
+  textEstadisticoEtapa21Dia = 1968,
+  textEstadisticoEtapa22Dia = 1969,
+  textEstadisticoEtapa23Dia = 1970,
+  textEstadisticoEtapa24Dia = 1971,
+  textEstadisticoEtapa25Dia = 1972,
+  textEstadisticoEtapa26Dia = 1973,
+  textEstadisticoEtapa27Dia = 1974,
+  textEstadisticoEtapa28Dia = 1975,
+  textEstadisticoEtapa29Dia = 1976,
+  textEstadisticoEtapa30Dia = 1977,
+  textEstadisticoEtapa31Dia = 1978,
+  textEstadisticoEtapa32Dia = 1979,
+  textEstadisticoActividadEaAHora = 1980,
+  textEstadisticoActividadEaBHora = 1981,
+  textEstadisticoActividadEaCHora = 1982,
+  textEstadisticoActividadEaDHora = 1983,
+  textEstadisticoActividadEaEHora = 1984,
+  textEstadisticoActividadEaTHora = 1985,
+  textEstadisticoActividadEaADia = 1986,
+  textEstadisticoActividadEaBDia = 1987,
+  textEstadisticoActividadEaCDia = 1988,
+  textEstadisticoActividadEaDDia = 1989,
+  textEstadisticoActividadEaEDia = 1990,
+  textEstadisticoActividadEaTDia = 1991,
+  textResetPilaLocal = 1992,
+  textMantenimiento = 1993,
+  textCambiaHora = 1994,
+  textCambiaFecha = 1995,
+  textAceleraCambioHoraCadaMinuto = 1996,
+  textMantenimientoOk = 1997,
+  textPilaComunicaciones = 1998,
+  textNAnimalesMixtosInicio = 1999,
+  textNAnimalesMixtosFin = 2000,
+  textFechaFin = 2001,
+  textNAnimalesMachosInicio = 2002,
+  textNAnimalesMachosFin = 2003,
+  textNAnimalesHembrasInicio = 2004,
+  textNAnimalesHembrasFin = 2005,
+  textInfluenciaMaximosAlarmasTemperatura = 2006,
+  textIncrementoRelativaYDiferenciaMaximas = 2007,
+
+
+
+  textEquipoOff = 2008,
+  textEquipoOn = 2009,
+  textAlarmasOnOff = 2010,
+  textEstadoSondasTemperatura = 2011,
+  textHistoricoCambioParametros = 2012,
+  textHistoricoWarning = 2013,
+  textWarningActuales = 2014,
+  textDiaAnimal = 2015,
+  textMensajeNumeroAnimales0 = 2016,
+  textMensajeSiAnimales0PodraIntroducirDespues = 2017,
+  textMensajeConDiasNegativosNoAnimales = 2018,
+  textMensajeEjecutaNaturalSiSeEncuentraEnElRango = 2019,
+  textMaximo = 2020,
+  textMinimo = 2021,
+  textIdCrianza = 2022,
+  textReferencia = 2023,
+  textDescripcion = 2024,
+  textValor = 2025,
+  textEstadisticasHrConsigna = 2026,
+  textEstadisticasHrExt = 2027,
+  textEstadisticasHrInt = 2028,
+  textEstadisticasHrExtMinMax = 2029,
+  textEstadisticasHrExtMax = 2030,
+  textEstadisticasHrIntMinMax = 2031,
+  textEstadisticasHrIntMax = 2032,
+  textEstadisticasCo2Ppm = 2033,
+  textEstadisticasAmoniacoPpm = 2034,
+  textPrincipal = 2035,
+  textAuxiliar = 2036,
+  textEstadisticasEntradasAire = 2037,
+  textEstadisticasContactosTermicos = 2038,
+  textEstadisticasDetalleDia = 2039,
+  textEstadisticasHoraCont = 2040,
+  textGraficasTemperaturaC = 2041,
+  textGraficasHumedadPerc = 2042,
+  textGraficasTiempoDeActividadM = 2043,
+  textGraficasTiempoDeActividadH = 2044,
+  textMedia = 2045,
+  textEstadisticasTaConsigna = 2046,
+  textCerrar = 2047,
+  textVentiladorConSalida010NoPermitido = 2048,
+  textSalida010NoAsignadaVentiladorGrupo = 2049,
+  textTemporiza = 2050,
+  textMensajeTemporizaSal010Ventila = 2051,
+  textReduccion1EtapaEdadAnimal = 2052,
+  textReduccion1EtapaPorTempExterior = 2053,
+  textMensajePorfavorEspereReseteandoEquipo = 2054,
+  textLGrande = 2055,
+  textMMediano = 2056,
+  textSPequenyo = 2057,
+  textWarningOnOff = 2058,
+  textPotenciometroFc = 2059,
+  textPotenciometroSinFc = 2060,
+  textTiempoFc = 2061,
+  textTiempoSinFc = 2062,
+  textTipoMotor = 2063,
+  textMensajeCambioTipoMotor = 2064,
+  text0 = 2065,
+  textAbrir = 2066,
+  textNoConfigurado = 2067,
+  textNoCalibrado = 2068,
+  textCalibrado = 2069,
+  textResetCalibracion = 2070,
+  textMensajeEquipoCalNoCambiaConfig = 2071,
+  textMensajeFaltaAsignarElementoParaCali = 2072,
+  textIniciaAutocalibracion = 2073,
+  textGuardarPosDeCerrado = 2074,
+  textGuardarPosDeAbierto = 2075,
+  textCuentaPotenciometro = 2076,
+  textCrianzaNoActiva = 2077,
+  textNoHayCrianzasAnteriores = 2078,
+  textPagina = 2079,
+  textGrafico24hTemperatura = 2080,
+  textGrafico24hHumedad = 2081,
+  textPosicionCerrado = 2082,
+  textPosicionAbierto = 2083,
+  textPosicionGuardada = 2084,
+  textGuardarPosicion = 2085,
+  textMensPosGuardadaTieneResetCalibracion = 2086,
+  textMovimientosRecalibracion = 2087,
+  textCalibraCerrando = 2088,
+  textCalibraAbriendo = 2089,
+  textMensTiempoGuardadoTieneResetCalibracion = 2090,
+  textAutocalibracionEnCurso = 2103,
+  textMensEquipoCalibradoResetCalibracion = 2104,
+  textPotenciometroEnUnExtremo = 2105,
+  textPotenciometroLlegandoExtremoInferior = 2106,
+  textPotenciometroLlegandoExtremoSuperior = 2107,
+  textMuevaPotenciometro = 2108,
+
+
+
+  textCurvaRangoDeTemperatura = 2109,
+  textSinEtapasConfiguradas = 2110,
+  textTodoNada = 2111,
+  textDual = 2112,
+  textVelocidadAlta = 2113,
+  textVelocidadBaja = 2114,
+  textCurvaClimatica = 2115,
+  textResetPilaComunicaciones = 2116,
+  textResetPilaServidor = 2117,
+  textKoreano = 2118,
+  textTaiwanes = 2119,
+  textMedidasVentanas = 2120,
+  textAltoVentanasA = 2121,
+  textAltoVentanasB = 2122,
+  textAltoVentanasC = 2123,
+  textAltoVentanasD = 2124,
+  textAltoVentanasE = 2125,
+  textAltoVentanasT = 2126,
+  textAltoVentanasA3 = 2127,
+  textAltoVentanasB3 = 2128,
+  textAnchoVentanasA = 2130,
+  textAnchoVentanasB = 2131,
+  textAnchoVentanasC = 2132,
+  textAnchoVentanasD = 2133,
+  textAnchoVentanasE = 2134,
+  textAnchoVentanasT = 2135,
+  textAnchoVentanasA3 = 2136,
+  textAnchoVentanasB3 = 2137,
+  textNumeroVentanasA = 2138,
+  textNumeroVentanasB = 2139,
+  textNumeroVentanasC = 2140,
+  textNumeroVentanasD = 2141,
+  textNumeroVentanasE = 2142,
+  textNumeroVentanasT = 2143,
+  textNumeroVentanasA3 = 2144,
+  textNumeroVentanasB3 = 2145,
+  textCorreccionMaximaSobreCalculada = 2148,
+  textMensaCorreccionMaximaSobreCalculada = 2149,
+  textPorcentajeMovimientoVentana = 2150,
+  textMensaPorcentajeMovimientoVentana = 2151,
+  textPorcentajeTiempoMovimientoVentana = 2152,
+  textMensaTiempoMovimientoVentana = 2153,
+  textTiempoRespuestaDepresiometro = 2154,
+  textMensaTiempoRespuestaDepresiometro = 2155,
+  textTiempoAdelantoEntradasDeAire = 2156,
+  textMensaTiempoAdelantoEntradasDeAire = 2157,
+  textDepresionDeseadaTunel = 2158,
+  textDepresionActual = 2159,
+  textDiasDeCrianza = 2160,
+  textAnimales = 2161,
+  textIniciales = 2162,
+  textFinales = 2163,
+  textMortalidad = 2164,
+  textConsumos = 2165,
+  textElectricidad = 2166,
+  textPienso = 2167,
+  textTotales = 2168,
+  textGas = 2169,
+  textPesos = 2170,
+  textMedio = 2171,
+  textGananciaMediaDiaria = 2172,
+  textIndiceDeTransformacion = 2173,
+  textFactorDeEficiencia = 2174,
+  textMortalidadTotal = 2175,
+  textKgCarneXM2 = 2176,
+  textPorcentajeMortalidad = 2177,
+  textEntradas = 2178,
+  textRetiradas = 2179,
+  textNumAnimales = 2180,
+  textPesoEnBascula = 2181,
+  textPesoEnMatadero = 2182,
+  textDetalle = 2183,
+  textConsumoTotal = 2184,
+  textConsumoPorAnimal = 2185,
+  textPesoBascula1 = 2186,
+  textPesoBascula2 = 2187,
+  textPesoBascula3 = 2188,
+  textPesoMedioBasculas = 2189,
+  textTempInterior = 2190,
+  textTempExterior = 2191,
+  textTempConsigna = 2192,
+  textConsumoDeAguaDia = 2193,
+  textTempIntMaxima = 2194,
+  textTempIntMinima = 2195,
+  textTempExtMaxima = 2196,
+  textTempExtMinima = 2197,
+  textHrInterior = 2198,
+  textHrExterior = 2199,
+  textHrConsigna = 2200,
+  textHrIntMaxima = 2201,
+  textHrIntMinima = 2202,
+  textHrExtMaxima = 2203,
+  textHrExtMinima = 2204,
+  textCt_1 = 2205,
+  textCt_2 = 2206,
+  textCt_3 = 2207,
+  textCt_4 = 2208,
+  textConsumoDePienso = 2215,
+  textConsumoDeAgua = 2216,
+  textPeso = 2217,
+  textContactosTermicos = 2218,
+  textEntradasDeAire = 2219,
+  textResumen = 2220,
+  textAltasYBajas = 2221,
+  textViento = 2226,
+  textProgramaActual = 2227,
+  textTemperaturaInterior = 2228,
+  textPesoMedio = 2229,
+  textTotalDisponible = 2230,
+  textNumeroPesadas = 2231,
+  textTotalHoy = 2232,
+  textTotalAyer = 2233,
+  textPesoMedioTotal = 2234,
+  textDepresionDeseadaRegulada = 2235,
+
+
+
+  textDepreRegulada = 2236,
+  textDepreTunel = 2237,
+  textCorreccionMaximaSobreCalculadaCerrando = 2238,
+  textOffsetDepresionDeseadaRegulada = 2239,
+  textOffsetDepresionDeseadaTunel = 2240,
+  textPorcentajeTiempoMovimientoVentanaA = 2241,
+  textPorcentajeTiempoMovimientoVentanaB = 2242,
+  textPorcentajeTiempoMovimientoVentanaC = 2243,
+  textPorcentajeTiempoMovimientoVentanaD = 2244,
+  textPorcentajeTiempoMovimientoVentanaE = 2245,
+  textPorcentajeTiempoMovimientoVentanaT = 2246,
+  textIntervaloDepresionCorrecta = 2247,
+  textMensaIntervaloDepresionCorrecta = 2248,
+  textTiempoAdelantoEntradasDeAireMenosM3 = 2249,
+  textMensaTiempoAdelantoEntradasDeAireMenosm3 = 2250,
+  textWarningOnOffDepresionDeseada = 2251,
+  textAjustesWarning = 2252,
+  textTiempoMaxNoAlcanzaDepresionDeseada = 2253,
+  textT1Te1Desasignada = 2254,
+  textT1Te2Desasignada = 2255,
+  textT1Te3Desasignada = 2256,
+  textT1Te4Desasignada = 2257,
+  textT1Te5Desasignada = 2258,
+  textT1Te6Desasignada = 2259,
+  textT2Te1Desasignada = 2260,
+  textT2Te2Desasignada = 2261,
+  textT2Te3Desasignada = 2262,
+  textT2Te4Desasignada = 2263,
+  textT2Te5Desasignada = 2264,
+  textT2Te6Desasignada = 2265,
+  textReleGeneral = 2266,
+  textReleLinea18 = 2267,
+  textDecimasDeLitro = 2268,
+  textDecimasDeGalon = 2269,
+  textReleLinea = 2270,
+  textCentesimasDeLitro = 2272,
+  textCentesimasDeGalon = 2273,
+  textMilesimasDeLitro = 2276,
+  textMilesimasDeGalon = 2277,
+  textUnidadesLitros = 2280,
+  textUnidadesGalon = 2281,
+
+
+
+  textUnidades = 2284,
+  textLiquidos = 2285,
+  textCantidadPorPulso = 2286,
+  textCantidadMaximaLitros = 2287,
+  textCantidadMaximaGalones = 2288,
+  textContadorGeneralDiaActual = 2291,
+  textLitrosDia = 2292,
+  textGalonesDia = 2293,
+  textIncrementoPorcentaje = 2296,
+  textPorAnimalLitros = 2297,
+  textPorAnimalGalones = 2298,
+  textContadorLineasDiaActual = 2301,
+  textEstadisticasContadorLineas = 2302,
+  textEstadisticasContadorGeneral = 2303,
+  textEstadisticoContadorGeneralAguaDia = 2304,
+  textEstadisticoContadorGeneralAguaHora = 2305,
+  textEstadisticoContadorLinea1AguaDia = 2306,
+  textEstadisticoContadorLinea1AguaHora = 2307,
+  textEstadisticoContadorLinea2AguaDia = 2308,
+  textEstadisticoContadorLinea2AguaHora = 2309,
+  textEstadisticoContadorLinea3AguaDia = 2310,
+  textEstadisticoContadorLinea3AguaHora = 2311,
+  textEstadisticoContadorLinea4AguaDia = 2312,
+  textEstadisticoContadorLinea4AguaHora = 2313,
+  textEstadisticoContadorLinea5AguaDia = 2314,
+  textEstadisticoContadorLinea5AguaHora = 2315,
+  textEstadisticoContadorLinea6AguaDia = 2316,
+  textEstadisticoContadorLinea6AguaHora = 2317,
+  textEstadisticoContadorLinea7AguaDia = 2318,
+  textEstadisticoContadorLinea7AguaHora = 2319,
+  textEstadisticoContadorLinea8AguaDia = 2320,
+  textEstadisticoContadorLinea8AguaHora = 2321,
+  textEstadisticoActividadCal9Hora = 2322,
+  textEstadisticoActividadCal10Hora = 2323,
+  textEstadisticoActividadCal11Hora = 2324,
+  textEstadisticoActividadCal12Hora = 2325,
+  textEstadisticoActividadCal9Dia = 2326,
+  textEstadisticoActividadCal10Dia = 2327,
+  textEstadisticoActividadCal11Dia = 2328,
+  textEstadisticoActividadCal12Dia = 2329,
+  textEstadisticoContadorGeneralIncrementoDiaAnterior = 2330,
+  textEstadisticoContadorGeneralPorAnimalHora = 2331,
+  textEstadisticoContadorGeneralPorAnimalDia = 2332,
+  textNoDosificando = 2333,
+  textCantidadDosificada = 2334,
+  textAlarmasVigilanciaAgua = 2335,
+  textInciarDispositivo = 2336,
+  textClaveConfiguracion = 2337,
+  textClaveEdicion = 2338,
+  textNumeroPesadasPw1 = 2339,
+  textNumeroPesadasPw2 = 2340,
+  textNumeroPesadasPw3 = 2341,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textPesoPw1 = 2342,
+  textPesoPw2 = 2343,
+  textPesoPw3 = 2344,
+  textUniformidadPw1 = 2345,
+  textUniformidadPw2 = 2346,
+  textUniformidadPw3 = 2347,
+  textDesviacionPw1 = 2348,
+  textDesviacionPw2 = 2349,
+  textDesviacionPw3 = 2350,
+  textCapacidadSilo1 = 2351,
+  textCapacidadSilo2 = 2352,
+  textCapacidadSilo3 = 2353,
+  textInfluenciaTemperaturaExteriorBajaVentilacion = 2354,
+  textInfluenciaTemperaturaExteriorAltaVentilacion = 2355,
+  textVentilacionInfluenciaHumedadInterior = 2356,
+  textVentilacionInfluenciaRefrigeracion = 2357,
+  textVentilacionInfluenciaCo2 = 2358,
+  textVentilacionInfluenciaNh3 = 2359,
+  textVentilacionInfluenciaNocturna = 2360,
+  textHisteresisInfluenciaHumedadInterior = 2361,
+  textInicioInfluenciaHumedadInterior = 2362,
+  textEntradaAireAInfluenciaTemperaturaExteriorBaja = 2363,
+  textEntradaAireBInfluenciaTemperaturaExteriorBaja = 2364,
+  textEntradaAireCInfluenciaTemperaturaExteriorBaja = 2365,
+  textEntradaAireDInfluenciaTemperaturaExteriorBaja = 2366,
+  textEntradaAireEInfluenciaTemperaturaExteriorBaja = 2367,
+  textEntradaAireTInfluenciaTemperaturaExteriorBaja = 2368,
+  textEntradaAireA3InfluenciaTemperaturaExteriorBaja = 2369,
+  textEntradaAireAInfluenciaNh3 = 2370,
+  textEntradaAireBInfluenciaNh3 = 2371,
+  textEntradaAireCInfluenciaNh3 = 2372,
+  textEntradaAireDInfluenciaNh3 = 2373,
+  textEntradaAireEInfluenciaNh3 = 2374,
+  textEntradaAireTInfluenciaNh3 = 2375,
+  textEntradaAireA3InfluenciaNh3 = 2376,
+  textEntradaAireB3InfluenciaNh3 = 2377,
+  textEntradaAireAInfluenciaCo2 = 2378,
+  textEntradaAireBInfluenciaCo2 = 2379,
+  textEntradaAireCInfluenciaCo2 = 2380,
+  textEntradaAireDInfluenciaCo2 = 2381,
+  textEntradaAireEInfluenciaCo2 = 2382,
+  textEntradaAireTInfluenciaCo2 = 2383,
+  textEntradaAireA3InfluenciaCo2 = 2384,
+  textEntradaAireB3InfluenciaCo2 = 2385,
+  textEntradaAireAInfluenciaRefrigeracion = 2386,
+  textEntradaAireBInfluenciaRefrigeracion = 2387,
+  textEntradaAireCInfluenciaRefrigeracion = 2388,
+  textEntradaAireDInfluenciaRefrigeracion = 2389,
+  textEntradaAireEInfluenciaRefrigeracion = 2390,
+  textEntradaAireTInfluenciaRefrigeracion = 2391,
+  textEntradaAireA3InfluenciaRefrigeracion = 2392,
+  textContactoTermico1Temporizacion = 2393,
+  textContactoTermico2Temporizacion = 2394,
+  textContactoTermico3Temporizacion = 2395,
+  textContactoTermico4Temporizacion = 2396,
+  textOffsetTemperaturaRefrigeracion = 2397,
+  textTemperaturaDeseadaRefrigeracion = 2398,
+  textModificado = 2400,
+  textOpcion = 2401,
+  textBloquear = 2402,
+  textBloqueado = 2403,
+  textDiaActual = 2404,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textReloj1Programa1 = 2405,
+  textReloj1Programa2 = 2406,
+  textReloj1Programa3 = 2407,
+  textReloj1Programa4 = 2408,
+  textReloj1Programa5 = 2409,
+  textReloj2Programa1 = 2413,
+  textReloj2Programa2 = 2414,
+  textReloj2Programa3 = 2415,
+  textReloj2Programa4 = 2416,
+  textReloj2Programa5 = 2417,
+  textImportacionExportacion = 2420,
+  textPantalla = 2421,
+  textExportFileExists = 2422,
+  textExportNoSeDetectaUsb = 2423,
+  textExportando = 2424,
+  textImportando = 2425,
+  textNoSePuedeEliminarElArchivo = 2426,
+  textImportar = 2427,
+  textExportar = 2428,
+  textImportarExportarConfiguracionEquipo = 2429,
+  textSeleccioneDeLaLista = 2430,
+  textIniciarImportacion = 2431,
+  textIniciarExportacion = 2432,
+  textExporteInserteMemoriaUsb = 2433,
+  textNombreDelFichero = 2434,
+  textCancelar = 2435,
+  textSobrescribir = 2436,
+  textExportacionCompletada = 2437,
+  textExportacionEnCurso = 2438,
+  textImportacionCompletada = 2439,
+  textImportacionEnCurso = 2440,
+  textImportacionRealizadaConExito = 2441,
+  textLaImportacionNoSePuedeCancelar = 2442,
+  textNoSeEncuentranDirectorios = 2443,
+  textNoSePuedeCrearDirectorio = 2444,
+  textHisteresisRele2 = 2445,
+  textMensajeOffsetRele2Cal = 2446,
+  textHumidificar = 2447,
+  textDeshumidificar = 2448,
+  textHumedadDeConexion = 2449,
+  textEstadoProgrma = 2450,
+  textIluminacionAjustes = 2451,
+  textIluminacionDestellos = 2452,
+  textEstadoPunto = 2453,
+  textIluminacionPunto1 = 2454,
+  textIluminacionPunto2 = 2455,
+  textIluminacionPunto3 = 2456,
+  textIluminacionPunto4 = 2457,
+  textIluminacionPunto5 = 2458,
+  textIluminacionPunto6 = 2459,
+  textIluminacionPunto7 = 2460,
+  textIluminacionPunto8 = 2461,
+  textIluminacionPunto9 = 2462,
+  textIluminacionPunto10 = 2463,
+  textIluminacionPunto11 = 2464,
+  textIluminacionPunto12 = 2465,
+  textIluminacionPunto13 = 2466,
+  textIluminacionPunto14 = 2467,
+  textIluminacionSinPunto = 2468,
+  textM3EtapaAnteriorFin = 2475,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textDosificacionAguaPunto1 = 2476,
+  textDosificacionAguaPunto2 = 2477,
+  textDosificacionAguaPunto3 = 2478,
+  textDosificacionAguaPunto4 = 2479,
+  textDosificacionAguaPunto5 = 2480,
+  textDosificacionAguaPunto6 = 2481,
+  textDosificacionAguaPunto7 = 2482,
+  textDosificacionAguaPunto8 = 2483,
+  textDosificacionAguaPunto9 = 2484,
+  textDosificacionAguaPunto10 = 2485,
+  textDosificacionAguaPunto11 = 2486,
+  textDosificacionAguaPunto12 = 2487,
+  textDosificacionAguaPunto13 = 2488,
+  textDosificacionAguaPunto14 = 2489,
+  textCfmKEtapaAnteriorFin = 2490,
+  textAlarmaVigilanciaContadorDeAgua = 2496,
+  textPosicion = 2497,
+  textEntradasDeAireNoConectadas = 2498,
+  textInfluenciaIluminacion = 2499,
+  textVentilacionInfluenciaIluminacion = 2500,
+  textEliminarTodasLasEtapasDeVentilacion = 2501,
+  textEsperaEjecutarVentilacionTunel = 2502,
+  textAdelantoEjecutarVentanasTunel = 2503,
+  textEsperaEjecutarVentilacionRegulada = 2504,
+  textAdelantoEjecutarVentanasRegulada = 2505,
+  textEntradaAireTunel1 = 2506,
+  textEntradaAireTunel2 = 2507,
+  textEntradaAireTunel3 = 2508,
+  textEntradaAireTunel4 = 2509,
+  textMensEsperaEjecutarVentilacion = 2514,
+  textMensAdelantoEjecutarVentanas = 2515,
+  textPorFecha = 2516,
+  textTablaRangosTemperatura = 2517,
+  textNumeroDeEtapas = 2518,
+  textMensaInfoOffsetTempRangoConectadoCurvaRango = 2519,
+  textMensaHoraPunto = 2520,
+  textMensaNumeroEtapas = 2521,
+  textRetireElJumper = 2522,
+  textGraficoAyudaZoom = 2523,
+  textGraficoAyudaZoomManual = 2524,
+  textGraficoAyudaPaginas = 2525,
+  textGraficoAyudaInfo = 2526,
+  textGraficoAyudaLeyenda = 2527,
+  textMensajeActivaTestReles = 2528,
+  textReleActivar = 2529,
+  textNVentiladoresRotatoriosAl100 = 2530,
+  textRotatoriosTempoMenorQueConfigurados = 2531,
+  textRotatoriosAl100 = 2532,
+  textEstadoRefrigeracionPorInfluenciaHumedad = 2533,
+  textEstadoRefrigeracionPorInfluenciaDelDiaCrianza = 2534,
+  textEstadoRefrigeracionDespuesDeLasInfluencias = 2535,
+  textEstadoRefrigeracionPorTemperatura = 2536,
+  textNumeroVentanasA1Criadero1 = 2538,
+  textNumeroVentanasB1Criadero1 = 2539,
+  textNumeroVentanasA2Criadero1 = 2540,
+  textNumeroVentanasB2Criadero1 = 2541,
+  textNumeroVentanasT1Criadero1 = 2542,
+  textNumeroVentanasT2Criadero1 = 2543,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textNumeroVentanasA1Criadero2 = 2544,
+  textNumeroVentanasB1Criadero2 = 2545,
+  textNumeroVentanasA2Criadero2 = 2546,
+  textNumeroVentanasB2Criadero2 = 2547,
+  textNumeroVentanasT1Criadero2 = 2548,
+  textNumeroVentanasT2Criadero2 = 2549,
+  textT1Di1V2 = 2550,
+  textT1Di2V2 = 2551,
+  textT1Di3V2 = 2552,
+  textT1Di4V2 = 2553,
+  textT1Di5V2 = 2554,
+  textT1Di6V2 = 2555,
+  textT1Di7V2 = 2556,
+  textT1Di8V2 = 2557,
+  textT2Di1V2 = 2558,
+  textT2Di2V2 = 2559,
+  textT2Di3V2 = 2560,
+  textT2Di4V2 = 2561,
+  textT2Di5V2 = 2562,
+  textT2Di6V2 = 2563,
+  textT2Di7V2 = 2564,
+  textT2Di8V2 = 2565,
+  textTarjetasEquipo = 2566,
+  textTarjetaAn1 = 2567,
+  textTarjetaAn2 = 2568,
+  textTarjetaDg1 = 2571,
+  textTarjetaDg2 = 2572,
+  textTarjetaRl1 = 2575,
+  textTarjetaRl2 = 2576,
+  textTarjetaRl3 = 2577,
+  textTarjetaRl4 = 2578,
+  textTarjetaCom1 = 2582,
+  textMensaMinimoTiempoOff = 2585,
+  textMensaCiloMinimo = 2586,
+  textTestSalida010 = 2587,
+  textEeprom = 2588,
+  textOk = 2589,
+  textDataFlash = 2590,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textEstadisticoEtapaCriadero1Hora = 2591,
+  textEstadisticoEtapaCriadero2Hora = 2592,
+  textEstadisticoEtapaS0Hora = 2593,
+  textEstadisticoEtapaNaturalHora = 2594,
+  textMensCambioModoEstadoNave = 2595,
+  textMensTestRelesActivado = 2596,
+  textEstadisticoEtapaCriadero1Dia = 2597,
+  textEstadisticoEtapaCriadero2Dia = 2598,
+  textEstadisticoEtapaS0Dia = 2599,
+  textEstadisticoEtapaNaturalDia = 2600,
+  textEquipoCpu = 2601,
+  textRefrigeracionPorEtapas = 2602,
+  textRotatorio = 2603,
+  textOffsetEtapas = 2604,
+  textOffsetEtapa1 = 2605,
+  textOffsetEtapa2 = 2606,
+  textOffsetEtapa3 = 2607,
+  textOffsetEtapa4 = 2608,
+  textMultietapaModo = 2613,
+  textReleEtapa1 = 2614,
+  textReleEtapa2 = 2615,
+  textReleEtapa3 = 2616,
+  textReleEtapa4 = 2617,
+  textReleAuxCo2 = 2621,
+  textMensHisteresisTiempo = 2622,
+  textMensModoRefrigeracionPorEtapas = 2623,
+  textMensModoRefrigeracionSimplePorEtapas = 2624,
+  textNumeroEtapasConectadas = 2625,
+  textIluminacionAmanecer1 = 2626,
+  textIluminacionAmanecer2 = 2627,
+  textVentilacionSalida010 = 2628,
+  textCondicionesVentilacionNatural = 2629,
+  textCondicionesVentilacionTunel = 2630,
+  textCondicionesVentilacionS0 = 2631,
+  textCondicionS0Co2Alto = 2632,
+  textCondicionS0Nh3Alto = 2633,
+  textCondicionS0HumedadAlta = 2634,
+  textControlPorTiempoS0 = 2635,
+  textVentilacionAvanzado = 2636,
+  textEstadisticoConsumoSilo1Hora = 2637,
+  textEstadisticoConsumoSilo2Hora = 2638,
+  textEstadisticoConsumoSilo3Hora = 2639,
+  textEstadisticoConsumoSilo1Dia = 2640,
+  textEstadisticoConsumoSilo2Dia = 2641,
+  textEstadisticoConsumoSilo3Dia = 2642,
+  textEstadisticoConsumoTotalHora = 2643,
+  textEstadisticoConsumoTotalDia = 2644,
+  textEstadisticoPesoBascula1Dia = 2645,
+  textEstadisticoPesoBascula2Dia = 2646,
+  textEstadisticoPesoBascula3Dia = 2647,
+  textEstadisticoPesoAnimalDia = 2648,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textEstadisticoGananciaPesoDia = 2649,
+  textEstadisticoConsumoPorAnimalDia = 2650,
+  textEstadisticoAcumuladoConsumoPorAnimalCrianzaDia = 2651,
+  textEstadisticoAcumuladoConsumoTotalCrianzaDia = 2652,
+  textEstadisticoVariacionConsumoPorcentaDiaAnteriorDia = 2653,
+  textEstadisticoIndiceConversionAlimenticiaDia = 2654,
+  textEstadisticoKgCarneM2Dia = 2655,
+  textEstadisticoGananciaPesoMediaDia = 2656,
+  textEstadisticoFactorEficienciaDia = 2657,
+  textEstadisticoIndiceProduccionDia = 2658,
+  textEstadisticoLitrosAnimalAguaAcumuladoCrianzaDia = 2659,
+  textMensInfluenciaIluminacion = 2660,
+  textMensVentInfluenciaCo2 = 2661,
+  textTarjetaContactores = 2662,
+  textAccionMotorA = 2663,
+  textMotorAAbrir = 2664,
+  textMotorACerrar = 2665,
+  textMotorBAbrir = 2666,
+  textMotorBCerrar = 2667,
+  textMotorCAbrir = 2668,
+  textMotorCCerrar = 2669,
+  textMotorDAbrir = 2670,
+  textMotorDCerrar = 2671,
+  textCt1 = 2672,
+  textCt2 = 2673,
+  textCt3 = 2674,
+  textCt4 = 2675,
+  textNoHayDatos = 2676,
+  textActualizandoModuloComs = 2677,
+  textNoSePuedeActualzarModComs = 2678,
+  textCal1 = 2679,
+  textCal2 = 2680,
+  textCal3 = 2681,
+  textCal4 = 2682,
+  textCal5 = 2683,
+  textCal6 = 2684,
+  textCal7 = 2685,
+  textCal8 = 2686,
+  textCal9 = 2687,
+  textCal10 = 2688,
+  textCal11 = 2689,
+  textCal12 = 2690,
+  textSigma2 = 2691,
+  textAlpha2 = 2692,
+  textLeyendoUsb = 2693,
+  textPorFavorEspereUsb = 2694,
+  textClaveRequeridaParaEdicion = 2695,
+  textClaveRequeridaParaNavegacion = 2696,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textAddPunto = 2697,
+  textEliminarPuntoCurvaClimatica = 2698,
+  textEliminarPuntoCurvaRangoTemperatura = 2699,
+  textFalloElectrico = 2700,
+  textSeleccionaIdioma = 2701,
+  textM3 = 2702,
+  textTablaM3PorAnimal = 2703,
+  textM3PorAnimal = 2704,
+  textOffsetMaxLateralA = 2705,
+  textMaxLateralA = 2706,
+  textOffsetMaxLateralB = 2707,
+  textMaxLateralB = 2708,
+  textOffsetMaxLateralC = 2709,
+  textMaxLateralC = 2710,
+  textOffsetMaxLateralD = 2711,
+  textMaxLateralD = 2712,
+  textOffsetMaxLateralE = 2713,
+  textMaxLateralE = 2714,
+  textOffsetMaxTecho = 2715,
+  textMaxTecho = 2716,
+  textMaxEaA = 2717,
+  textMaxEaB = 2718,
+  textMaxEaC = 2719,
+  textMaxEaD = 2720,
+  textMaxEaE = 2721,
+  textMaxEaT = 2722,
+  textVentilacionInfluenciaHoraria = 2723,
+  textInfluenciaHoraria = 2724,
+  textCurvaAlarmaTemperatura = 2725,
+  textRelativaMax = 2726,
+  textRelativaMin = 2727,
+  textMensaValorEnCurvaModificarEnCurva = 2728,
+  textMensaAlarmaTemperaturaDiferencia = 2729,
+  textMensaAlarmaTemperaturaRelativa = 2730,
+  textOffsetCo2 = 2731,
+  textCurvaCo2Nh3Control = 2732,
+  textOffsetNh3 = 2733,
+  textOffsetTemperaturaCalefacciones = 2734,
+  textListaTemperaturaOffsetCalefacciones = 2735,
+  textCurvaOffsetCalefacciones = 2736,
+  textEliminarPuntoCurvaOffsetCalefacciones = 2737,
+  textEliminarPuntoCurvaAlarmasRelativas = 2738,
+  textEliminarPuntoCurvaCo2Nh3 = 2739,
+  textInfluenciaCalefacciones = 2740,
+  textTiempoEsperaEvaluarCondiciones = 2741,
+  textOffsetMaximoSobreTemperaturaDeseada = 2742,
+  textMensajeInfluenciaCalefaccion = 2743,
+  textMensaVentNaturalYInfluCalefacConectado = 2744,
+  textMensaVentiInfluCalefacTiempoEsperaEvaluar = 2745,
+  textMensaVentiInfluCalefacOffsetMaximoSobreTemperaturaDeseada = 2746,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textRefrigeracionInfluenciaHoraria = 2747,
+  textRefrigeracionInfluenciaIluminacion = 2748,
+  textCurvaRefrigeracion = 2749,
+  textCurvaRefrigeracionActivaParametros = 2750,
+  textHumedadMaxima = 2751,
+  textDesconectaRefrigeracion = 2752,
+  textHumedadMax = 2753,
+  textNEtapas = 2754,
+  textOffsetC = 2755,
+  textRefriOff = 2756,
+  textEliminarPuntoCurvaRefrigeracion = 2757,
+  textInfluenciaHorariaHoraInicio = 2758,
+  textInfluenciaHorariaHoraFin = 2759,
+  textRefrigeracionPorEtapasNEtapas = 2760,
+  textOffsetRefrigeracion = 2761,
+  textMensaValorEnCurvaModificarEnCurvaRefrigeracion = 2762,
+  textEstadoRefrigeracionInfluenciaIluminacion = 2763,
+  textEstadoRefrigeracionInfluenciaHoraria = 2764,
+  textInfluenciaHumedad = 2765,
+  textHumedadConsigna = 2766,
+  textMensaInfluenciaHorariaRefrigeracion = 2767,
+  textMensaInfluenciaIluminacionRefrigeracion = 2768,
+  textMensaInfluenciaHumedadRefrigeracion = 2769,
+  textIluminacionExteriorPrograma1 = 2770,
+  textIluminacionExteriorPrograma2 = 2771,
+  textIluminacionExterior = 2772,
+  textReleIluminacionExterior = 2773,
+  textCorreccionTempInterior = 2774,
+  textInfluenciaTemperaturaInterior = 2775,
+  textEntradasAireInfluenciaTemperaturaInterior = 2776,
+  textSondasSeccionReferencia = 2777,
+  textSondasSeccionCorregir = 2778,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textNoCorregir = 2779,
+  textCorregir = 2780,
+  textDiferencialTemperaturaSecciones = 2781,
+  textCorreccionMaxima = 2782,
+  textRealizarCorreccionEnLaZonaTunel = 2783,
+  textTemperaturaSeccionReferencia = 2784,
+  textTemperaturaSeccionCorregir = 2785,
+  textCorreccionActualEntradasDeAire = 2786,
+  textEntradasDeAireCorregir = 2787,
+  textMensaEaInfluenciaTempInterior = 2788,
+  textMensaEaInfluenciaTempInteriorZonaTunel = 2789,
+  textMensaEaInfluenciaTempInteriorEntradasAireCorregir = 2790,
+  textInfluenciaEntradaAire = 2791,
+  textCalculoTeorico = 2792,
+  textMensaDebugDepreCalculoTeorico = 2793,
+  textMensaDebugDepreCalculoCorregidoMaxMin = 2794,
+  textTotalAcumulado = 2795,
+  textTotalPorAnimal = 2796,
+  textPorcentajeIncremento = 2797,
+  textTotal = 2798,
+  textAcumKgPorAnimal = 2799,
+  textAcumLPorAnimal = 2800,
+  textLitrosPorAnimal = 2801,
+  textTotalAgua = 2802,
+  textTotalPienso = 2803,
+  textAcumuladosPorAnimal = 2804,
+  textTotalAcumuladoPienso = 2805,
+  textAguaYPienso = 2806,
+  textInterior = 2807,
+  textExterior = 2808,
+  textVentilacionInfluenciaTemperaturaInteriorBaja = 2809,
+  textDiferenciaDeConexionInfluencia = 2810,
+  textRangoCorreccion = 2811,
+  textMensaInfluTempInterior = 2812,
+  textTemperaturaInteriorMinusculas = 2813,
+  textRelesAuxiliares = 2814,
+  textReleA = 2815,
+  textReleB = 2816,
+  textReleC = 2817,
+  textReleD = 2818,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textVentilacionRelesAuxiliares = 2819,
+  textSinRelesAsignados = 2820,
+  textMensaReleAuxVentila = 2821,
+  textMensaReleAuxVentilaEtpas = 2822,
+  textSeguridadElectrica = 2823,
+  textSeguridadElectricaCriadero1 = 2824,
+  textSeguridadElectricaCriadero2 = 2825,
+  textSeguridadElectricaTodaLaNave = 2826,
+  textTemperaturaConsigna = 2827,
+  textCorreccionTemperaturaExterior = 2828,
+  textPorcentajeVentilacionAnimalMenor = 2829,
+  textPorcentajeVentilacionAnimalMayor = 2830,
+  textSeguridadElectricaAjustes = 2831,
+  textHisteresisInfluenciaTemperaturaExterior = 2832,
+  textTiempoEsperaCambioFalloElectrico = 2833,
+  textMensaSeguridadElectrica = 2834,
+  textMensaSeguridadElectricaEdadAnimal = 2835,
+  textMensaSeguridadElectricaInfluTempExte = 2836,
+  textPorcentajeVentilacionCalculado = 2837,
+  textMensaSeguridadElectricaTiempoEspera = 2838,
+  textDetectado = 2839,
+  textNoDetectado = 2840,
+  textPosicionCriadero1 = 2841,
+  textPosicionCriadero2 = 2842,
+  textPosicionTodaLaNave = 2843,
+  textAlimentacionGallinasCamperas = 2844,
+  textAlimentacionPunto1 = 2845,
+  textAlimentacionPunto2 = 2846,
+  textAlimentacionPunto3 = 2847,
+  textAlimentacionPunto4 = 2848,
+  textAlimentacionPunto5 = 2849,
+  textAlimentacionPunto6 = 2850,
+  textAlimentacionPunto7 = 2851,
+  textAlimentacionSimple = 2852,
+  textAlimentacionReleA = 2860,
+  textAlimentacionReleB = 2861,
+  textAlimentacionReleC = 2862,
+  textAlimentacionReleD = 2863,
+  textAlimentacionReleE = 2864,
+  textInfluenciaSeguridadElectrica = 2865,
+  textN = 2866,
+  textResetConfiguracion = 2867,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textEntradaAireA3 = 2868,
+  textEntradaAireB3 = 2869,
+  textInicioEntradaAireA3 = 2874,
+  textInicioEntradaAireB3 = 2875,
+  textLineaPrincipal = 2876,
+  textLineaSecundaria = 2877,
+  textTiempoMaximoLlenado = 2878,
+  textEntradaAireB3InfluenciaTemperaturaExteriorBaja = 2879,
+  textEntradaAireB3InfluenciaRefrigeracion = 2884,
+  textNumeroVentanasA3Criadero1 = 2888,
+  textNumeroVentanasB3Criadero1 = 2889,
+  textNumeroVentanasA3Criadero2 = 2894,
+  textNumeroVentanasB3Criadero2 = 2895,
+  textPorcentajeTiempoMovimientoVentanaA3 = 2900,
+  textPorcentajeTiempoMovimientoVentanaB3 = 2901,
+  textEaA3 = 2904,
+  textEaB3 = 2905,
+  textMinEaA3 = 2908,
+  textMinEaB3 = 2909,
+  textEstadisticoActividadEaA3Hora = 2913,
+  textEstadisticoActividadEaB3Hora = 2914,
+  textEstadisticoActividadEaA3Dia = 2918,
+  textEstadisticoActividadEaB3Dia = 2919,
+  textOffsetMaxLateralA3 = 2923,
+  textMaxLateralA3 = 2924,
+  textOffsetMaxLateralB3 = 2925,
+  textMaxLateralB3 = 2926,
+  textMaxEaA3 = 2930,
+  textMaxEaB3 = 2931,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textOffsetMinLateralA3 = 2935,
+  textMinLateralA3 = 2936,
+  textOffsetMinLateralB3 = 2940,
+  textMinLateralB3 = 2941,
+  textModoSalida010 = 2945,
+  textLateralIzquierdo1 = 2946,
+  textLateralIzquierdo2 = 2947,
+  textLateralIzquierdo3 = 2948,
+  textLateralDerecho1 = 2949,
+  textLateralDerecho2 = 2950,
+  textLateralDerecho3 = 2951,
+  textFondo1 = 2952,
+  textFondo2 = 2953,
+  textTecho1 = 2954,
+  textTecho2 = 2955,
+  textTecho3 = 2956,
+  textContadorPienso = 2960,
+  textOrigenPienso = 2961,
+  textSilo1 = 2962,
+  textSilo2 = 2963,
+  textSilo3 = 2964,
+  textTiempoCuentaPienso = 2965,
+  textPiensoConsumidoEnElTiempo = 2966,
+  textMensOrigenPienso = 2967,
+  textContadorPorTiempo = 2968,
+  textMensTiempoCuentaPienso = 2969,
+  textCuentaPorHora = 2970,
+  textMensTiempoEntradaPiensoTiempo = 2971,
+  textContadorPiensoDiaActual = 2972,
+  textKgDia = 2973,
+  textKgDiaSilo1 = 2977,
+  textKgDiaSilo2 = 2981,
+  textKgDiaSilo3 = 2985,
+  textEstadisticoContador1Hora = 2986,
+  textEstadisticoContador1Dia = 2987,
+  textEstadisticoContador2Hora = 2988,
+  textEstadisticoContador2Dia = 2989,
+  textEstadisticoContador3Hora = 2990,
+  textEstadisticoContador3Dia = 2991,
+  textEstadisticoContador4Hora = 2992,
+  textEstadisticoContador4Dia = 2993,
+  textEstadisticoContador5Hora = 2994,
+  textEstadisticoContador5Dia = 2995,
+  textEstadisticoContador6Hora = 2996,
+  textEstadisticoContador6Dia = 2997,
+  textContador1Otros = 3015,
+  textContador1ElectricoPrincipal = 3016,
+  textContador1ElectricoSecundario = 3017,
+  textContador1Gas = 3018,
+  textContador1Medicamentos = 3019,
+  textContador2Otros = 3035,
+  textContador2ElectricoPrincipal = 3036,
+  textContador2ElectricoSecundario = 3037,
+  textContador2Gas = 3038,
+  textContador2Medicamentos = 3039,
+
+
+
+
+
+
+
+
+
+
+
+
+  textContador3Otros = 3055,
+  textContador3ElectricoPrincipal = 3056,
+  textContador3ElectricoSecundario = 3057,
+  textContador3Gas = 3058,
+  textContador3Medicamentos = 3059,
+  textContador4Otros = 3075,
+  textContador4ElectricoPrincipal = 3076,
+  textContador4ElectricoSecundario = 3077,
+  textContador4Gas = 3078,
+  textContador4Medicamentos = 3079,
+  textContador5Otros = 3095,
+  textContador5ElectricoPrincipal = 3096,
+  textContador5ElectricoSecundario = 3097,
+  textContador5Gas = 3098,
+  textContador5Medicamentos = 3099,
+  textContador6Otros = 3115,
+  textContador6ElectricoPrincipal = 3116,
+  textContador6ElectricoSecundario = 3117,
+  textContador6Gas = 3118,
+  textContador6Medicamentos = 3119,
+  textKilovatio = 3160,
+  textMililitros = 3161,
+  textOtros = 3162,
+  textElectricoPrincipal = 3163,
+  textElectricoSecundario = 3164,
+  textGas2 = 3165,
+  textMedicamentos = 3166,
+  textTipoContador = 3176,
+  textMensMultiplicadorContadores = 3177,
+  textValorPorPulso = 3178,
+  textContadorDiaActual = 3179,
+  textHoras = 3180,
+  textContadorNumeracion1 = 3181,
+  textContadorNumeracion2 = 3182,
+  textContadorNumeracion3 = 3183,
+  textContadorNumeracion4 = 3184,
+  textContadorNumeracion5 = 3185,
+  textContadorNumeracion6 = 3186,
+  textContadoresDiaActual = 3196,
+  textHoraActual = 3197,
+  textNumeroDecimalesMostrar = 3198,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textEntradasDeAireAjustes = 3199,
+  textCierreEntradasDeAirePorParoDeLaVentilacion = 3200,
+  textM32 = 3201,
+  textCorreccionAbsolutaVActual = 3202,
+  textAutomatico = 3203,
+  textManualOn = 3204,
+  textManualOff = 3205,
+  textCantidadPiensoKg = 3206,
+  textErrorIntervaloSolapado = 3207,
+  textPiensoDosificado = 3208,
+  textPiensoDosificar = 3209,
+  textControlDeLaVariacionDelPeso = 3210,
+  textMensajeVariacionDelPeso = 3211,
+  textPesoMinimoDosificarSilo = 3212,
+  textMensajePesoMinimoDosificarSilo = 3213,
+  textTolvaEbus = 3214,
+  textConectadoBoot = 3215,
+  textMensaNoConectadoClimaRecinto = 3216,
+  textConfirmarImportacion = 3217,
+  textTipoDeDispositivo = 3218,
+  textErrorDiferenteDispositivo = 3219,
+  textDispositivoEnBoot = 3220,
+  textNoSePuedeActualizarAUnaVersionAnterior = 3221,
+  textNoSeEncuentraLaCarpetaCtiEnElUsb = 3222,
+  textNoSeEncuentraElFicheroUdtDeActualizacion = 3223,
+  textDebeCrearUnaCarpetaCtiEnLaRaizEtc = 3224,
+  textActualizacionCompletadaConExito = 3225,
+  textActualizacionFallida = 3226,
+  textReintentar = 3227,
+  textIniciandoActualizacion = 3228,
+  textMemoriaDeSistemaBaja = 3229,
+  textSeHaPerdidoLaConexionEtcEbus = 3230,
+
+
+
+
+
+
+
+
+
+
+  textActivada = 3231,
+  textRecomendableActualizar = 3232,
+  textActualizarEquipoParaFuncionar = 3233,
+  textTarar = 3234,
+  textIniciarTara = 3235,
+  textTara = 3236,
+  textTaraOk = 3237,
+  textTarando = 3238,
+  textErrorPesoInestable = 3239,
+  textNoTarado = 3240,
+  textNumeroCelulas = 3241,
+  textOffsetCero = 3242,
+  textEstabilidadDelPeso = 3243,
+  textPesoMaximoCelulas = 3244,
+  textCelula1FueraDeRango = 3245,
+  textCelula2FueraDeRango = 3246,
+  textCelula3FueraDeRango = 3247,
+  textCelula4FueraDeRango = 3248,
+  textSondaCh4 = 3249,
+  textEstadisticoCh4MediaHora = 3250,
+  textEstadisticoCh4MediaDia = 3251,
+  textCh4 = 3254,
+  textEstadisticoCh4MediaHoraMax = 3255,
+  textEstadisticoCh4MediaDiaMax = 3256,
+  textEstadisticoCh4MediaHoraMin = 3257,
+  textEstadisticoCh4MediaDiaMin = 3258,
+  textAlimentacionPorCantidadMaxima = 3259,
+  textNumeroRepartos = 3260,
+  textTablaRepartos = 3261,
+  textAlimentacionPorCantidadTablaRepartos = 3262,
+  textReleLlenado = 3263,
+  textReleAvanceReparto = 3264,
+  textReleRetrocesoReparto = 3265,
+  textTiempoAvanceReparto = 3266,
+  textTiempoRetrocesoReparto = 3267,
+  textProgramaPorCantidad = 3268,
+  textLlenadoPorCantidad = 3269,
+  textFinalizar = 3270,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textOrigenReleA = 3271,
+  textOrigenReleB = 3272,
+  textOrigenReleC = 3273,
+  textOrigenReleD = 3274,
+  textOrigenReleE = 3275,
+  textOrigenReleF = 3276,
+  textOrigenReleG = 3277,
+  textOrigenReleH = 3278,
+  textOrigenReleI = 3279,
+  textControlAux1 = 3280,
+  textControlAux2 = 3281,
+  textControlAux3 = 3282,
+  textControlAux4 = 3283,
+  textControlAux5 = 3284,
+  textControlAux6 = 3285,
+  textControlAux7 = 3286,
+  textControlAux8 = 3287,
+  textOffsetTiempo = 3295,
+  textMasMenos = 3296,
+  textNuevoOffset = 3297,
+  textEliminaUltimoOffset = 3298,
+  textControlAux = 3299,
+  textFinalizarPrograma = 3300,
+  textAdvertenciaSiCantidadNoAlcanzada = 3301,
+  textAlimentacionSimpleControlAux = 3302,
+  textModoControlAuxYPrincipalIguales = 3303,
+  textMensModoControlAuxYPrincipalIguales = 3304,
+  textTiempoControlAuxYPrincipalIguales = 3305,
+  textMensTiempoControlAuxYPrincipalIguales = 3306,
+  textReleAvance = 3307,
+  textTiempoEncendidoReleAvance = 3308,
+  textReleRetroceso = 3309,
+  textTiempoEncendidoReleRetroceso = 3310,
+  textAlimentacionSimplePrograma = 3311,
+  textMensAlimentacionSimpleFinalizar = 3312,
+  textMensAdvertenciaCantidadNoDosificada = 3313,
+  textMensOrigen = 3314,
+  textSiloConCelulaCarga = 3315,
+  textWifi = 3316,
+  textModem = 3317,
+
+
+
+
+
+  textEscaneaRedes = 3318,
+  textDatosMoviles = 3319,
+  textApnManual = 3320,
+  textApnAuto = 3321,
+  textOperadorMovil = 3322,
+  textCobertura = 3323,
+  textConectando = 3324,
+  textEstadoSim = 3325,
+  textCodigoPin = 3326,
+  textCodigoPuk = 3327,
+  textCodigoPuk2 = 3328,
+  textQuitarCodigoPin = 3329,
+  textApn = 3330,
+  textUsuario = 3331,
+  textTipoConexion = 3332,
+  textAsistenteNuevaConexion = 3334,
+  textEscaneando = 3335,
+  text0RedesEncontradas = 3336,
+  textRed = 3337,
+  textConectar = 3338,
+  textSeguridad = 3339,
+  textWpa = 3340,
+  textWpa2 = 3341,
+  textGprs = 3342,
+  textEdge = 3343,
+  textHsdpa = 3344,
+  textHsdpaMas = 3345,
+  text4G = 3346,
+  textErrorClave = 3347,
+  textConectandoServidor = 3348,
+  textEstadoConexion = 3349,
+  textIpActual = 3350,
+  textPuertaEnlace = 3351,
+  textReconexionesServidor = 3352,
+  textByteEnviados = 3353,
+  textByteRecibidos = 3354,
+  textResetEstadisticas = 3355,
+  textSigma_2 = 3356,
+  textV42 = 3357,
+  textAlpha_2 = 3358,
+  textV22 = 3359,
+  textDlg = 3360,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textCh4Maximo = 3361,
+  textHumedadMinima = 3362,
+  textSondasClimaRecinto = 3363,
+  textHisteresisAlarmaCh4 = 3364,
+  textHisteresisAlarmaHumedad2 = 3365,
+  textMensaVelocidadCanConfiguradaFisicamente = 3366,
+  textIsbxEbus = 3367,
+  textMensaNoSeHaPodidoCompletarLaImportacion = 3368,
+  textWep = 3369,
+  textEventos = 3370,
+  textNombre = 3371,
+  textEntradaActivaPor = 3372,
+  textContadoresEventos = 3373,
+  textAlarmaEntradaDigital = 3374,
+  textAlarmaEntradaDigital1 = 3375,
+  textAlarmaEntradaDigital2 = 3376,
+  textAlarmaEntradaDigital3 = 3377,
+  textEntradaA = 3378,
+  textEntradaB = 3379,
+  textHumedadA = 3380,
+  textHumedadB = 3381,
+  textSondaPh = 3382,
+  textHisteresisAlarmaPh = 3383,
+  textPhMinimo = 3384,
+  textPhMaximo = 3385,
+  textProduccion = 3386,
+  textProduccionFinalizada = 3387,
+  textIniciaProduccion = 3388,
+  textFinalizaProduccion = 3389,
+  textInicioProduccion = 3390,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textMaximoSonda1 = 3391,
+  textMaximoSonda2 = 3392,
+  textMaximoSonda3 = 3393,
+  textMaximoSonda4 = 3394,
+  textMaximoSonda5 = 3395,
+  textMinimoSonda1 = 3405,
+  textMinimoSonda2 = 3406,
+  textMinimoSonda3 = 3407,
+  textMinimoSonda4 = 3408,
+  textMinimoSonda5 = 3409,
+  textAlarmaTemperaturaRecinto = 3420,
+  textAlarmaTemperaturaSonda1 = 3421,
+  textAlarmaTemperaturaSonda2 = 3422,
+  textAlarmaTemperaturaSonda3 = 3423,
+  textAlarmaTemperaturaSonda4 = 3424,
+  textAlarmaTemperaturaSonda5 = 3425,
+  textKgHora = 3426,
+  textDataloger = 3427,
+  textIniciaDataloger = 3428,
+  text5Min = 3429,
+  text10Min = 3430,
+  text15Min = 3431,
+  text20Min = 3432,
+  text30Min = 3433,
+  textAlimentacionReleF = 3434,
+  textAlimentacionReleG = 3435,
+  textControlAuxPorCantidad = 3436,
+  textControlAuxPorTiempo = 3437,
+  textTiempoConectadoReleControlAux = 3438,
+  textEstadoRele = 3439,
+  textIluminacionReleD = 3440,
+  textIluminacionReleE = 3441,
+  textIluminacionReleF = 3442,
+  textIluminacionReleG = 3443,
+  textIluminacionReleH = 3444,
+  textDiaNoche1 = 3460,
+  textDiaNoche2 = 3461,
+  textDiaNoche3 = 3462,
+  textDiaNoche4 = 3463,
+  textDiaNoche5 = 3464,
+
+
+
+
+
+
+
+
+  textModoSalida010A = 3465,
+  textModoSalida010B = 3466,
+  textModoSalida010C = 3467,
+  textModoSalida010D = 3468,
+  textModoSalida010E = 3469,
+  textPublico = 3470,
+  textPrivado = 3471,
+  textServidor = 3472,
+  textResetComunicaciones = 3473,
+  textDiaNoche6 = 3474,
+  textDiaNoche7 = 3475,
+  textDiaNoche8 = 3476,
+  textIncluirEnElConsumoTotal = 3477,
+  textTotalKg = 3478,
+  textFwDeActualizacionNoEncontrado = 3480,
+  textEsperandoRespuestaDelEquipo = 3481,
+  textEquipoNoReconocido = 3482,
+  textElEquipoSeActualizara = 3483,
+  textElEquipoYaTieneLaUltimaVersionEtc = 3484,
+  textEquipoSinBootloaderEtc = 3485,
+  textNoSePuedeActualizarPorModelo = 3486,
+  textEquipoNoDetectado = 3487,
+  textActualizando = 3488,
+  textActualizado = 3489,
+  textActualizandoFwDeCom = 3490,
+  textBbddReseteada = 3491,
+
+
+
+
+
+
+
+
+
+
+  textTablas = 3500,
+  textTablaPeso = 3501,
+  textTablaCorreccion = 3502,
+  textMargenPeso = 3503,
+  textModoTablaAuto = 3504,
+  textModoAuto = 3505,
+  textModoTabla = 3506,
+  textTiempoEstabilidad = 3507,
+  textReferenciaPeso = 3508,
+  textReferenciaInicioAuto = 3509,
+  textActivarCorreccion = 3510,
+  textResetPesadas = 3511,
+  textRestaurarTablaPesosFabrica = 3513,
+  textRestaurarTablaCorreccionesFabrica = 3515,
+  textCelulaFueraRango = 3516,
+  textCelulaDesconectada = 3517,
+  textCelulaOk = 3518,
+  textEstabilizando = 3519,
+  textColocarPesoPatron = 3520,
+  textCalibrandoEspere = 3521,
+  textCalibracionFinalizada = 3522,
+  textPesoPatron = 3523,
+  textBascula = 3524,
+  textTablaActiva = 3525,
+  textConfigTablas = 3526,
+  textDeshalitada = 3527,
+  textConfigBasculas = 3528,
+  textFechaHora = 3529,
+  textNumPesadas = 3530,
+  textErrorCelula = 3531,
+  textAlarma = 3532,
+  textVersionBascula1 = 3533,
+  textVersionBascula2 = 3534,
+  textVersionBascula3 = 3535,
+  textB1 = 3536,
+  textB2 = 3537,
+  textB3 = 3538,
+  textNoDisponible = 3539,
+  textBasculaManual = 3540,
+  textResetVisor = 3541,
+  textResetBascula = 3542,
+  textAsistente = 3543,
+  textSeHaPerdidoLaConexion = 3544,
+  textConElDispositivoEbus = 3545,
+  textPulseOkParaVolver = 3546,
+  textALaPantallaPrincipal = 3547,
+  textIncorrecta = 3548,
+  textUniformidad = 3549,
+  textCoeficienteVariacion = 3550,
+  textDesviacionTipica = 3551,
+  textDesviacion = 3552,
+  textPesoObjetivo = 3553,
+  textPesadas = 3554,
+  textDesconectadoAbreviado = 3555,
+  textCrianzaNoIniciada = 3556,
+  textResetAdc = 3557,
+  textErrorCelulaBascula1 = 3560,
+  textErrorCelulaBascula2 = 3561,
+  textErrorCelulaBascula3 = 3562,
+  textDesconexionBascula1 = 3565,
+  textDesconexionBascula2 = 3566,
+  textDesconexionBascula3 = 3567,
+
+
+
+
+
+
+
+
+
+
+
+  textSondaHumedad1Nc = 3636,
+  textSondaHumedad2Nc = 3637,
+  textHumedad1Maxima = 3638,
+  textHumedad2Maxima = 3639,
+  textHumedad1Minima = 3640,
+  textHumedad2Minima = 3641,
+  textHumedadInteriorMinima = 3642,
+  textHumedadExteriorMinima = 3643,
+  textHumedadInteriorMaxima = 3644,
+  textHumedadExteriorMaxima = 3645,
+  textHisteresisHumedadInterior = 3646,
+  textHisteresisHumedadExterior = 3647,
+  textHisteresisHumedad1 = 3648,
+  textHisteresisHumedad2 = 3649,
+  textAlimentacionReleH = 3650,
+  textAlimentacionReleI = 3651,
+  textAlimentacionReleJ = 3652,
+  textOrigenReleJ = 3653,
+  textJ = 3654,
+  textReloj3 = 3655,
+  textReleReloj3 = 3656,
+  textPs100Ebus = 3657,
+  textAlarmaVigilanciaContadorPienso = 3658,
+  textIntervaloMinimo = 3659,
+  textContadorDerrame = 3660,
+  textIntervaloDerrame = 3661,
+  textIntervalosEsperaVentiladores = 3662,
+  textVentiladoresSimultaneos = 3663,
+  textArranqueProgresivoVentiladores = 3664,
+  textMsjReleVigilancia = 3665,
+  textMsjDesconexionAlarmaVigilancia = 3668,
+  textMovimientoPorTramos = 3669,
+  textMsjVigilanciaMinimo = 3671,
+  textMsjVigilanciaDerrame = 3672,
+  textTiempoMovimiento = 3673,
+  textTiempoAperturaCierre = 3674,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textC01 = 3675,
+  textC02 = 3676,
+  textC03 = 3677,
+  textC04 = 3678,
+  textC05 = 3679,
+  textC06 = 3680,
+  textC07 = 3681,
+  textC08 = 3682,
+  textC09 = 3683,
+  textC10 = 3684,
+  textC11 = 3685,
+  textC12 = 3686,
+  textC13 = 3687,
+  textC14 = 3688,
+  textC15 = 3689,
+  textC16 = 3690,
+  textC17 = 3691,
+  textC18 = 3692,
+  textC19 = 3693,
+  textC20 = 3694,
+  textC21 = 3695,
+  textC22 = 3696,
+  textC23 = 3697,
+  textC24 = 3698,
+  textC25 = 3699,
+  textC26 = 3700,
+  textC27 = 3701,
+  textC28 = 3702,
+  textC29 = 3703,
+  textC30 = 3704,
+  textC31 = 3705,
+  textC32 = 3706,
+  textC33 = 3707,
+  textC34 = 3708,
+  textC35 = 3709,
+  textC36 = 3710,
+  textC37 = 3711,
+  textC38 = 3712,
+  textC39 = 3713,
+  textC40 = 3714,
+  textC41 = 3715,
+  textC42 = 3716,
+  textC43 = 3717,
+  textC44 = 3718,
+  textC45 = 3719,
+  textC46 = 3720,
+  textC47 = 3721,
+  textC48 = 3722,
+  textC49 = 3723,
+  textC50 = 3724,
+  textC51 = 3725,
+  textC52 = 3726,
+  textC53 = 3727,
+  textC54 = 3728,
+  textC55 = 3729,
+  textC56 = 3730,
+  textC57 = 3731,
+  textC58 = 3732,
+  textC59 = 3733,
+  textC60 = 3734,
+  textC61 = 3735,
+  textC62 = 3736,
+  textC63 = 3737,
+  textC64 = 3738,
+  textC65 = 3739,
+  textC66 = 3740,
+  textC67 = 3741,
+  textC68 = 3742,
+  textC69 = 3743,
+  textC70 = 3744,
+  textC71 = 3745,
+  textC72 = 3746,
+  textC73 = 3747,
+  textC74 = 3748,
+  textC75 = 3749,
+  textC76 = 3750,
+  textC77 = 3751,
+  textC78 = 3752,
+  textC79 = 3753,
+  textC80 = 3754,
+  textC81 = 3755,
+  textC82 = 3756,
+  textC83 = 3757,
+  textC84 = 3758,
+  textC85 = 3759,
+  textC86 = 3760,
+  textC87 = 3761,
+  textC88 = 3762,
+  textC89 = 3763,
+  textC90 = 3764,
+  textC91 = 3765,
+  textC92 = 3766,
+  textC93 = 3767,
+  textC94 = 3768,
+  textC95 = 3769,
+  textC96 = 3770,
+  textC97 = 3771,
+  textC98 = 3772,
+  textC99 = 3773,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textVx1 = 3774,
+  textVx3 = 3775,
+  textTiempoEsperaCambioReanudadoElectrico = 3776,
+  textMensaSeguridadElectricaTiempoEsperaReanudado = 3777,
+  textIniciarCalibracionEaA = 3778,
+  textIniciarCalibracionEaB = 3779,
+  textIniciarCalibracionEaC = 3780,
+  textModoCalibracionEaA = 3781,
+  textModoCalibracionEaB = 3782,
+  textModoCalibracionEaC = 3783,
+  textDeteccionFalloElectrico = 3787,
+  textPosicionFalloElectricoEaA = 3788,
+  textPosicionFalloElectricoEaB = 3789,
+  textPosicionFalloElectricoEaC = 3790,
+  textSondasAsignEaA = 3792,
+  textSondasAsignEaB = 3793,
+  textSondasAsignEaC = 3794,
+  textSondasAsignVent = 3795,
+  textSondasAsignCt = 3796,
+  textSonda1 = 3797,
+  textCorreccionTemperatura1 = 3798,
+  textSonda2 = 3799,
+  textCorreccionTemperatura2 = 3800,
+  textVentHisteresis = 3801,
+  textVentModoTemporizacion = 3802,
+  textVentTiempoCicloParo = 3803,
+  textVentTiempoCiclominimoMarcha = 3804,
+  textVentRangoTemporizacion = 3805,
+  textCtHisteresis = 3806,
+  textCtModo = 3807,
+  textCtModoTemporizacion = 3808,
+  textCtTiempoCicloParo = 3809,
+  textCtTiempoCiclominimoMarcha = 3810,
+  textCtRangoTemporizacion = 3811,
+  textClaveComunicaciones = 3813,
+  textAnyo = 3814,
+  textMes = 3815,
+  textMinuto = 3816,
+  textPorcMinMovimientoVentanas = 3817,
+  textPorcMovimientoInmedVentanas = 3818,
+  textTiempoEsperaMovimientoVentanas = 3819,
+  textVersionPlacav2 = 3820,
+  textEaireA = 3821,
+  textEaireB = 3822,
+  textEaireC = 3823,
+  textAperturaMinima = 3824,
+  textAperturaMaxima = 3825,
+  textRangoTemperatura = 3826,
+  textTemperaturaActual = 3827,
+  textNPulsosActual = 3828,
+  textErrorNoDetectaFccEaA = 3829,
+  textErrorNoDetectaFccEaB = 3830,
+  textErrorNoDetectaFccEaC = 3831,
+  textErrorNoDetectaFcoEaA = 3832,
+  textErrorNoDetectaFcoEaB = 3833,
+  textErrorNoDetectaFcoEaC = 3834,
+  textErrorAtascoEaA = 3835,
+  textErrorAtascoEaB = 3836,
+  textErrorAtascoEaC = 3837,
+  textErrorSonda1 = 3838,
+  textErrorSonda2 = 3839,
+  textEquipoEaANoCalibrado = 3840,
+  textEquipoEaBNoCalibrado = 3841,
+  textEquipoEaCNoCalibrado = 3842,
+  textNoSeleccionarPosicion = 3843,
+  textSeleccionarPosicionInicial = 3844,
+  textSeleccionarPosicionFinal = 3845,
+  textPosicionInicialSeleccionada = 3846,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textDesactivado = 3847,
+  textSondasTemperatura1Y2 = 3848,
+  textSinModo = 3849,
+  textModoTodoNada = 3850,
+  textModoProgresiva = 3851,
+  textC47C49 = 3852,
+  textC41C43 = 3853,
+  textC44C45 = 3854,
+  textContolPorIlumincacion = 3855,
+  textMsjControlIluminacion = 3856,
+  textPorKilosDeCarne = 3857,
+  textMsjCambioModoCalculoPorAnimalKg = 3858,
+  textM3hKg = 3859,
+  textCurvaDepresiometro = 3860,
+  textTemperaturaCorreccion1 = 3861,
+  textCorreccion1 = 3862,
+  textTemperaturaCorreccion2 = 3863,
+  textCorreccion2 = 3864,
+  textInfluenciaTemperaturaExteriorBajaDepresiometro = 3865,
+  textSinInternet = 3866,
+  textErrorWlan = 3867,
+  textInfluenciaDepresionRegulada = 3868,
+  textInfluenciaDepresionTunel = 3869,
+  textDepresionDeseadaReguladaPa = 3870,
+  textDepresionDeseadaTunelPa = 3871,
+  textDepresiometroManual = 3872,
+  textMsjModoDepresiometro = 3873,
+  textMsjDepresiometroManual = 3874,
+  textMsjInfluenciaTemperaturaEsteriorBajaTramos = 3875,
+  textMsjArranqueProgresivoVentilaciores = 3876,
+  textTestAlarmas = 3877,
+  textIniciar = 3878,
+  textTiempoDeTest = 3879,
+  textAlarmaConectadaActualmente = 3880,
+  textAnemometroVeleta = 3881,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textEntradaAnemometro = 3882,
+  textEntradaVeleta = 3883,
+  textVelocidad = 3884,
+  textDireccionViento = 3885,
+  textNoSonora = 3886,
+  textSonora = 3887,
+  textTodasLasAlarmas = 3890,
+  textAlarmasSondasTemperatura = 3891,
+  textTemperaturaRelativa = 3892,
+  textCalefaccionSinSondas = 3893,
+  textContactoTermicoSinSondas = 3894,
+  textEntradaAireSinSondas = 3895,
+  textRefrigeracionSinSondas = 3896,
+  textPh = 3897,
+  textAlarmasMotoresDirectos = 3898,
+  textIntentos = 3899,
+  textProcesando = 3900,
+  textChtEbus = 3901,
+  textVdi = 3902,
+  textNumeroPadre = 3903,
+  textPw1 = 3904,
+  textPw2 = 3905,
+  textPw3 = 3906,
+  textCrianzaSincronizada = 3907,
+  textLimpiarWarning = 3908,
+  textDosificacionAlimento = 3909,
+  textMsjAdvertenciasSonorasNoSonoras = 3910,
+  textMrt20Ebus = 3911,
+  textSondas010 = 3912,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textLinea6 = 3913,
+  textEsperandoSensorLlenado = 3914,
+  textLineasSecundariasActivadas = 3915,
+  textAlimentacionAvanzada = 3920,
+  textRepeticiones = 3921,
+  textSiguientePrograma = 3922,
+  textDosificadores = 3923,
+  textLineas = 3924,
+  textRutas = 3925,
+  textDosificador1 = 3926,
+  textDosificador2 = 3927,
+  textDosificador3 = 3928,
+  textDosificador4 = 3929,
+  textDosificador5 = 3930,
+  textDosificador6 = 3931,
+  textDosificador7 = 3932,
+  textDosificador8 = 3933,
+  textDosificador9 = 3934,
+  textDosificador10 = 3935,
+  textDosificador11 = 3936,
+  textDosificador12 = 3937,
+  textDosificador13 = 3938,
+  textDosificador14 = 3939,
+  textDosificador15 = 3940,
+  textDosificador16 = 3941,
+  textSensorLleno = 3942,
+  textSensorVacio = 3943,
+  textRuta = 3944,
+  textDistancia = 3945,
+  textLinea1 = 3946,
+  textLinea2 = 3947,
+  textLinea3 = 3948,
+  textLinea4 = 3949,
+  textLinea5 = 3950,
+  textSensor = 3951,
+  textRuta1 = 3952,
+  textRuta2 = 3953,
+  textRuta3 = 3954,
+  textRuta4 = 3955,
+  textRuta5 = 3956,
+  textRuta6 = 3957,
+  textDosificadores1 = 3958,
+  textDosificadores2 = 3959,
+  textDosificadores3 = 3960,
+  textDosificadores4 = 3961,
+  textReceta4 = 3962,
+  textReceta5 = 3963,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textReceta6 = 3964,
+  textPorcentajePienso1 = 3965,
+  textPorcentajePienso2 = 3966,
+  textPorcentajePienso3 = 3967,
+  textPorcentajePienso4 = 3968,
+  textReceta = 3969,
+  textPiensoUnico = 3970,
+  textAlimentacionAvanzadaPrograma = 3971,
+  textListaDosificadores = 3972,
+  textDosificador = 3973,
+  textPienso1 = 3974,
+  textPienso2 = 3975,
+  textPienso3 = 3976,
+  textPienso4 = 3977,
+  textLongitud = 3978,
+  textOrden = 3979,
+  textControl1 = 3980,
+  textControl2 = 3981,
+  textControl3 = 3982,
+  textControl4 = 3983,
+  textControl5 = 3984,
+  textDespuesDisificarActivarRele = 3985,
+  textAntesDisificarActivarRele = 3986,
+  textNoAsignada = 3987,
+  textLinea = 3988,
+  textPiensos = 3989,
+  textTiempoActivacionRele = 3990,
+  textAnyadirDosificador = 3991,
+  textEliminarUltimoDosificador = 3992,
+  textMenos = 3995,
+  textProgramado = 3997,
+  textOptimizado = 3998,
+  textOrdenDistribuidores = 3999,
+  textVelocidadPienso = 4000,
+  textNoSeHaAsigandoElReleDeAvance = 4001,
+  textLaLongitudDeLaLineaTieneQueSerMayorQue0 = 4002,
+  textRutaSinNingunaLineaActiva = 4003,
+  textNoPuedeHaber2RutasIguales = 4004,
+  textNoSeHaAsignadoLaRuta = 4005,
+  textNoSeHaAsignadoLaLinea = 4006,
+  textNoSeHaAsignadoElReleDeApertura = 4007,
+  textPosicionDosificadorFueraLinea = 4008,
+  textDosificadorMismaPosicion = 4009,
+  textD1 = 4010,
+  textD2 = 4011,
+  textD3 = 4012,
+  textD4 = 4013,
+  textD5 = 4014,
+  textD6 = 4015,
+  textD7 = 4016,
+  textD8 = 4017,
+  textD9 = 4018,
+  textD10 = 4019,
+  textD11 = 4020,
+  textD12 = 4021,
+  textD13 = 4022,
+  textD14 = 4023,
+  textD15 = 4024,
+  textD16 = 4025,
+  textNoSeHaAsignadoElOrigen = 4026,
+  textNoSeHaAsignadoElRele = 4027,
+  textLaSumaDePorcentajesNoEs100 = 4028,
+  textNoSeHaAsignadoElReleDeCierre = 4029,
+  textNoSeHaAsignadoElPienso = 4030,
+  textNoSeHaAsignadoLaReceta = 4031,
+  textNoSeHaEstablecidoLaCantidadDePienso = 4032,
+  textNoSeHaAsignadoElDestino = 4033,
+  textNoSeHaEstablecidoElIntervaloDeLasRepeticiones = 4034,
+  textNoSeHaEstablecidoElNumeroDeRepeticiones = 4035,
+  textLaLineaAsignadaNoPerteneceALaRuta = 4036,
+  textNoSeHaEstablecidoLaVelocidadDistribucion = 4037,
+  textNoSeHaAsignadoElReleDeControl = 4038,
+  textNoSeHaEstablecidoElTiempoDelControl = 4039,
+  textOrigenYLineaUnRele = 4040,
+  textProgreso = 4041,
+  textDiarias = 4042,
+  textAcumuladas = 4043,
+  textPiensoDosificadoKg = 4044,
+  textConsumoDePiensoPorDosificador = 4045,
+  textPesoActual = 4046,
+  textNoHayNingunProgramaActivo = 4047,
+  textResetProgramas = 4048,
+  textTiempoAdelantaMovimientoVentanas = 4049,
+
+
+
+
+
+
+
+
+  textC48C50 = 4050,
+  textAjusteSondasTemperatura = 4051,
+  textCambioTemporizacion = 4052,
+  textSoloVentilacionNatural = 4053,
+  textMensajeEjecutaNaturalSiempre = 4054,
+  textSensorDeCompuertaCerradaNoAsignado = 4055,
+  textSensorDeTolvaDistribucionLlenaNoAsignado = 4056,
+  textSensorDeTolvaDistribucionVaciaNoAsignado = 4057,
+  textNoSeHaDefinidoLaCapacidadMaxima = 4058,
+  textNoSeHaTaradoLaTolva = 4059,
+  textHayAlgunErrorEnElOrigen = 4060,
+  textEsperandoInicio = 4061,
+  textEsperandoRepeticion1De3 = 4062,
+  textEsperandoRepeticion2De3 = 4063,
+  textEsperandoRepeticion3De3 = 4064,
+  textRegistroEventos = 4065,
+  textUsoCpuAlto = 4066,
+  textSensorTolvaPesajeLlena = 4067,
+  textSensorTolvaDistribucionVacia = 4068,
+  textSensorTolvaDistribucionLlena = 4069,
+  textSensorCompuertaPesajeCerrada = 4070,
+  textVersionAnterior = 4071,
+  textPantallaSinConexion = 4072,
+  textComSinConexion = 4073,
+  textInfluenciaAumentoVentilacionPorCalefaccion = 4074,
+  textInfluenciasCalefacciones = 4075,
+  textMsjInfluenciasCalefacciones = 4076,
+  textVigilanciaAlimentacionPorConsumo = 4077,
+  textEntradaDigital = 4078,
+  textContadorActivoSiEntrada = 4079,
+  textAbierta = 4080,
+  textCerrada = 4081,
+  textVigilanciaAlimentacionPorTiempoActivo = 4082,
+  textTiempoMaximoActivo = 4083,
+  textMsjAlarmasVigilanciaPorTiempoActivo = 4084,
+  textAlarmaVigilanciaAlimentacion = 4085,
+  textDetectada = 4086,
+  textNoDetectada = 4087,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  textPuntoSinProgramasActivos = 4088,
+  textListaDeProgramasActivos = 4089,
+  textCal = 4090,
+  textGrXAnimal = 4091,
+  textVal = 4092,
+  textProgres = 4093,
+  textProgramasActivos = 4094,
+  textHerramientas = 4095,
+  textProgresividad = 4096,
+  textDosificacionManual = 4097,
+  textEjecutarDosificacion = 4098,
+  textTiempoAperturaDosificador = 4099,
+  textTiempoCierreDosificador = 4100,
+  textAntesDisificarAbrirDosificadores = 4101,
+  textEjecutarProgramaAhora = 4102,
+  textFinalizarDosificacionActual = 4103,
+  textUltimaDosificacionInterrumpida = 4104,
+  textPiensoRestanteEnDosificador = 4105,
+  textCompletarDosificacion = 4106,
+  textContadorPorPulso = 4107,
+  textNoHaySiguientePuntoDeProgresividad = 4108,
+  textNoHayActivoProgramaDeProgresividad = 4109,
+  textErrorEnLaReceta = 4110,
+  textErrorEnLasLineas = 4111,
+  textErrorEnLosDosificadores = 4112,
+  textErrorEnLosPiensos = 4113,
+  textErrorEnLasRutas = 4114,
+  textErrorEnLaTolvaIntermedia = 4115,
+  textErrorEnLaListaDeDosificadores = 4116,
+  textErrorEnLaConElControl = 4117,
+  textPorcMovimientoAdelantaVentanas = 4118,
+  textConservaBaterias = 4119,
+  textResetProtBaterias = 4120,
+  textResetearEaA = 4121,
+  textResetearEaB = 4122,
+  textResetearEaC = 4123,
+  textAlarmaEepromCorruptaMotorA = 4124,
+  textAlarmaEepromCorruptaMotorB = 4125,
+  textAlarmaEepromCorruptaMotorC = 4126,
+  textAlarmaEepromValoresPorDefectoMotorA = 4127,
+  textAlarmaEepromValoresPorDefectoMotorB = 4128,
+  textAlarmaEepromValoresPorDefectoMotorC = 4129,
+  textAlarmaFalloComunicacionEaA = 4130,
+  textAlarmaFalloComunicacionEaB = 4131,
+  textAlarmaFalloComunicacionEaC = 4132,
+  text01000Ppm = 4133,
 
 
 
@@ -4801,7 +4361,7 @@ text01000Ppm = 4133,
 
 
 
-    textAaCausaPoweroff = 4252,
+  textAaCausaPoweroff = 4252,
   textAaCausaDesconexionAa = 4253,
   textAaCausaCambioHora = 4254,
   textErrorSiloXVacio = 4255,
@@ -4909,7 +4469,7 @@ text01000Ppm = 4133,
 
 
 
-    textConfiguracionAlarmas = 4357,
+  textConfiguracionAlarmas = 4357,
   textRestaurarAlarmas = 4358,
   textErrCelula1 = 4359,
   textErrCelula2 = 4360,
@@ -5065,7 +4625,7 @@ text01000Ppm = 4133,
 
 
 
-    textSilows3 = 4490,
+  textSilows3 = 4490,
   textSilows1 = 4491,
   textAlarmasSilo1 = 4492,
   textAlarmasSilo2 = 4493,
@@ -5243,7 +4803,7 @@ text01000Ppm = 4133,
 
 
 
-    textDia0 = 4665,
+  textDia0 = 4665,
   textDia4 = 4666,
   textDia14 = 4667,
   textDia21 = 4668,
@@ -5429,7 +4989,7 @@ text01000Ppm = 4133,
 
 
 
-    textCti75 = 4830,
+  textCti75 = 4830,
   textVentiladorConSalida010OTriacNoPermitido = 4831,
   textInciarLote = 4832,
   textSeleccionLote = 4833,
@@ -5582,7 +5142,7 @@ text01000Ppm = 4133,
 
 
 
-    textConfiguracionModoDosificadores = 4958,
+  textConfiguracionModoDosificadores = 4958,
   textTiempoAperturaDosificadores = 4959,
   textTiempoEntreAperturaCierre = 4960,
   textTiempoCierreDosificadores = 4961,
@@ -5746,7 +5306,7 @@ text01000Ppm = 4133,
 
 
 
-    textAjusteTiemposMaquina = 5108,
+  textAjusteTiemposMaquina = 5108,
   textInicioAuto = 5109,
   textAperturaPuertaEntrada = 5110,
   textEsperaLecturaComedero = 5111,
@@ -5900,7 +5460,7 @@ text01000Ppm = 4133,
 
 
 
-    textPosicionMinimaAuto = 5242,
+  textPosicionMinimaAuto = 5242,
   textPosicionMaximaAuto = 5243,
   textIntervaloMinimoMovimiento = 5244,
   textAtrasoVentanaBarlovento = 5245,
@@ -6031,7 +5591,7 @@ text01000Ppm = 4133,
 
 
 
-    textWarningErrorConfigAlimentacionAvanzada = 9011,
+  textWarningErrorConfigAlimentacionAvanzada = 9011,
   textWarningDosificadorD1Lleno = 9012,
   textWarningDosificadorD2Lleno = 9013,
   textWarningDosificadorD3Lleno = 9014,
@@ -6127,7 +5687,7 @@ text01000Ppm = 4133,
 
 
 
-    textAlarmaCal1SinSondas = 10025,
+  textAlarmaCal1SinSondas = 10025,
   textAlarmaCal2SinSondas = 10026,
   textAlarmaCal3SinSondas = 10027,
   textAlarmaCal4SinSondas = 10028,
@@ -6328,11 +5888,5 @@ text01000Ppm = 4133,
   textAlarmaCrAux1SinSondas = 10206,
   textAlarmaCrAux2SinSondas = 10207,
   textNumeroAlarmas,
-
-
-
-
-
-
 
 }

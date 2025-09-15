@@ -5,6 +5,7 @@ import { EnTipoTramaOld, EnTipoMensajeDispositivoCentral, EnEstadisticosNombres,
 import { getTipoTramaOld, getTipoMensajeOld, getDataSectionOld, getParsedHeaderOld, getStartOld, getCRCFromFrameOld, getEndOld } from "./getTrama";
 import { josLogger } from "src/utils/josLogger";
 import { ParametroHistoricoValorOmegaDfDto } from "src/dtoBE/tt_estadisticosOldDF.dto";
+import { EnTextos } from "src/utils/enumTextos";
 
 // =================== payload selector ===================
 
@@ -763,7 +764,7 @@ export function logTramaParametroHistoricoEventoOmegaDf(frame: Buffer): void {
     josLogger.trace(`propiedades:    0x${propHex} (${propiedades})`);
     josLogger.trace(`fecha:          ${fecha.dia}-${fecha.mes}-${fecha.anyo}`);
     josLogger.trace(`hora:           ${hora.hora}:${hora.min}:${hora.seg}`);
-    josLogger.trace(`nombreVar:      ${EnEstadisticosNombres[nombreVariable]} (${nombreVariable})`);
+    josLogger.trace(`nombreVar:      ${EnTextos[nombreVariable]} (${nombreVariable})`);
     josLogger.trace(`diaCrianza:     ${diaCrianza}`);
     josLogger.trace(`idCrianza:      ${idCrianza}`);
     josLogger.trace(`reserva[8]:     ${reserva.toString('hex')}`);

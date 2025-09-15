@@ -203,7 +203,7 @@ export const defaultParametroHistoricoOmegaEventoNormal: ParametroHistoricoOmega
   ) as EnEventosEstadisPropiedades,
   fecha: { dia: 1, mes: 1, anyo: 2023 },                               // fecha del evento
   hora: { hora: 0, min: 0, seg: 0 },                                   // hora del evento
-  nombreVariable: EnEstadisticosNombres.eventosEventosControlAcceso,              // variable asociada al evento (ejemplo)
+  nombreVariable: EnTextos.textEventos,                                // variable asociada al evento (ejemplo)
   diaCrianza: 12,                                                      // día de crianza (int16)
   identificadorCrianzaUnico: 0,                                        // 0 si no hay crianza asociada
   reserva: Buffer.alloc(8, 0x00),                                      // 8B reservados (relleno a cero)
@@ -213,14 +213,14 @@ export const defaultParametroHistoricoOmegaEventoAlarma: ParametroHistoricoOmega
   ...defaultParametroHistoricoOmegaEventoNormal,
   tipo: EnEventosEstadisTipo.alarmas,
   propiedades: EnEventosEstadisPropiedades.eventoSonoro,
-  nombreVariable: EnTextos.textAlarmaSonda1MediaHora,
+  nombreVariable: EnTextos.textAlarma4,
 };
 
 export const defaultParametroHistoricoOmegaEventoWarning: ParametroHistoricoOmegaEventoDto = {
   ...defaultParametroHistoricoOmegaEventoNormal,
   tipo: EnEventosEstadisTipo.warning,
   propiedades: EnEventosEstadisPropiedades.accionEventoOn,
-  nombreVariable: EnTextos.textAlarmaSonda1MediaHora,
+  nombreVariable: EnTextos.textWarningProg3NoFinalizadoSolapamiento,
 };
 
 

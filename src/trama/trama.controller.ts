@@ -22,7 +22,7 @@ import {
   ProgresoActualizacionTxDto,
 } from 'src/dtoLE/tt_sistema.dto';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
-import { logTramaParametroHistoricoOld, logTramaParametroHistoricoOmegaDf } from 'src/utils/BE_Old/get/getEstadistico';
+import { logTramaParametroHistoricoEventoOmegaDf, logTramaParametroHistoricoOld, logTramaParametroHistoricoOmegaDf } from 'src/utils/BE_Old/get/getEstadistico';
 import { logTramaCompletaTablaDispositivosOld } from 'src/utils/BE_Old/get/getTablaDispositivos';
 import { PROTO_VERSION_OLD } from 'src/utils/BE_Old/globals/constGlobales';
 import { EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld, EnTipoMensajeCentralDispositivo, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
@@ -827,7 +827,7 @@ export class TramaController {
 
     const ok = this.tcp.enviarFrameOld(frame);
     const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
-    logTramaParametroHistoricoOmegaDf(bufferFrame);
+    logTramaParametroHistoricoEventoOmegaDf(bufferFrame);
     return ok;
   }
 
