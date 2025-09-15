@@ -1,4 +1,4 @@
-import { EnEventosEstadisFamilia, EnEventosEstadisPropiedades, EnEventosEstadisSubfamilia, EnEventosEstadisTipo, EnTipoDatoDFAccion } from "src/utils/BE_Old/globals/enumOld";
+import { EnCrianzaAltaBajaAccion, EnCrianzaTipoAnimal, EnEventosEstadisFamilia, EnEventosEstadisPropiedades, EnEventosEstadisSubfamilia, EnEventosEstadisTipo, EnTipoDatoDFAccion } from "src/utils/BE_Old/globals/enumOld";
 import { EnTextos } from "src/utils/enumTextos";
 import { packValorDf4BE } from "src/utils/helpers";
 import { Fecha, Tiempo } from "src/utils/tiposGlobales";
@@ -150,13 +150,16 @@ export function serializarParametroHistoricoValorOmegaDf(
   return out;
 }
 
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // TIPO DATO EVENTO
 // ---------------------------------------- ParametroHistoricoOmegaEventoDto ----------------------------------------
@@ -257,9 +260,6 @@ export function serializarParametroHistoricoEventoOmegaDf(
     throw new Error('MAC inválida: se espera number|bigint o Buffer de 8 bytes');
   }
 
-
-
-
   // --- 1B tipoDato
   out.writeUInt8((d.tipoDato as number) & 0xff, offset++);
 
@@ -317,13 +317,16 @@ export function serializarParametroHistoricoEventoOmegaDf(
   return out;
 }
 
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // EVENTO CONCATENADO
 // ---------------------------------------- ParametroHistoricoOmegaEventoConcatenadoDto ----------------------------------------
@@ -430,31 +433,22 @@ export function serializarParametroHistoricoEventoConcatenadoOmegaDf(
     macAny.copy(out, offset); offset += 8;
 
   } else { throw new Error('MAC inválida: se espera number|bigint o Buffer de 8 bytes'); }
-
   // --- 1B tipoDato
   out.writeUInt8((d.tipoDato as number) & 0xff, offset++);
-
   // --- 1B identificador único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, offset++);
-
   // --- 2B versión alarma concatenada (BE)
   out.writeUInt16BE(d.versionAlarmaConcatenada & 0xffff, offset); offset += 2;
-
   // --- 1B tipo (ENUM_EVENTOS_ESTADIS_TIPO)
   out.writeUInt8((d.tipo as number) & 0xff, offset++);
-
   // --- 1B subfamilia
   out.writeUInt8((d.subfamilia as number) & 0xff, offset++);
-
   // --- 2B familia (BE)
   out.writeUInt16BE((d.familia as number) & 0xffff, offset); offset += 2;
-
   // --- 2B propiedades (bitmask, BE)
   out.writeUInt16BE((d.propiedades as number) & 0xffff, offset); offset += 2;
-
   // --- 2B nombreAlarma (BE)
   out.writeUInt16BE((d.nombreAlarma as number) & 0xffff, offset); offset += 2;
-
   // --- 3B fecha (dd, mm, yy)
   {
     const yy = (d.fecha.anyo ?? 0) % 100;
@@ -462,21 +456,16 @@ export function serializarParametroHistoricoEventoConcatenadoOmegaDf(
     out.writeUInt8(d.fecha.mes & 0xff, offset++);
     out.writeUInt8(yy & 0xff, offset++);
   }
-
   // --- 3B hora (hh, mm, ss)
   out.writeUInt8(d.hora.hora & 0xff, offset++);
   out.writeUInt8(d.hora.min & 0xff, offset++);
   out.writeUInt8(d.hora.seg & 0xff, offset++);
-
   // --- 2B diaCrianza (int16, BE)
   out.writeInt16BE(d.diaCrianza | 0, offset); offset += 2;
-
   // --- 4B identificadorCrianzaUnico (BE)
   out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, offset); offset += 4;
-
   // --- 1B reserva
   out.writeUInt8(d.reserva & 0xff, offset++);
-
   // --- 1B numeroBytesCadena (1..80)
   if (!Buffer.isBuffer(d.cadenaConcatenada)) { throw new Error('cadenaConcatenada inválida: se espera Buffer'); }
   if (d.cadenaConcatenada.length > CADENA_MAX_BYTES) { throw new Error(`cadenaConcatenada demasiado larga: máx ${CADENA_MAX_BYTES} bytes (40 uint16)`); }
@@ -501,13 +490,16 @@ export function serializarParametroHistoricoEventoConcatenadoOmegaDf(
   return out;
 }
 
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------- ParametroHistoricoOmegaEstadisticoGenericoDto ----------------------------------------
 /** 5.9.6.5 — TM_envia_historico: ESTADISTICO_GENERICO (misma estructura que el concatenado) */
@@ -581,31 +573,22 @@ export function serializarParametroHistoricoEstadisticoGenericoOmegaDf(
     throw new Error('MAC inválida: se espera Buffer de 8 bytes');
   }
   d.mac.copy(out, offset); offset += 8;
-
   // --- 1B tipoDato
   out.writeUInt8((d.tipoDato as number) & 0xff, offset++);
-
   // --- 1B identificador único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, offset++);
-
   // --- 2B versión “alarma/estadístico concatenado” (BE)
   out.writeUInt16BE(d.versionAlarmaConcatenada & 0xffff, offset); offset += 2;
-
   // --- 1B tipo
   out.writeUInt8((d.tipo as number) & 0xff, offset++);
-
   // --- 1B subfamilia
   out.writeUInt8((d.subfamilia as number) & 0xff, offset++);
-
   // --- 2B familia (BE)
   out.writeUInt16BE((d.familia as number) & 0xffff, offset); offset += 2;
-
   // --- 2B propiedades (bitmask, BE)
   out.writeUInt16BE((d.propiedades as number) & 0xffff, offset); offset += 2;
-
   // --- 2B nombreAlarma / nombre_estadistico (BE)
   out.writeUInt16BE((d.nombreAlarma as number) & 0xffff, offset); offset += 2;
-
   // --- 3B fecha (dd, mm, yy)
   {
     const yy = (d.fecha.anyo ?? 0) % 100;
@@ -613,21 +596,16 @@ export function serializarParametroHistoricoEstadisticoGenericoOmegaDf(
     out.writeUInt8(d.fecha.mes & 0xff, offset++);
     out.writeUInt8(yy & 0xff, offset++);
   }
-
   // --- 3B hora (hh, mm, ss)
   out.writeUInt8(d.hora.hora & 0xff, offset++);
   out.writeUInt8(d.hora.min & 0xff, offset++);
   out.writeUInt8(d.hora.seg & 0xff, offset++);
-
   // --- 2B diaCrianza (int16, BE)
   out.writeInt16BE(d.diaCrianza | 0, offset); offset += 2;
-
   // --- 4B identificadorCrianzaUnico (BE)
   out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, offset); offset += 4;
-
   // --- 1B reserva
   out.writeUInt8(d.reserva & 0xff, offset++);
-
   // --- 1B numeroBytesCadena (1..80)
   if (!Buffer.isBuffer(d.cadenaConcatenada)) {
     throw new Error('cadenaConcatenada inválida: se espera Buffer');
@@ -650,15 +628,16 @@ export function serializarParametroHistoricoEstadisticoGenericoOmegaDf(
   return out;
 }
 
-
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------- ParametroHistoricoOmegaCambioParametroDfDto ----------------------------------------
 /** 5.9.6.6 — TM_envia_historico: DF_CAMBIO_PARAMETRO */
@@ -725,7 +704,6 @@ export function serializarParametroHistoricoCambioParametroOmegaDf(
 
   // --- 1B tipoDato
   out.writeUInt8((d.tipoDato as number) & 0xff, o++);
-
   // --- 3B fecha (dd, mm, yy)
   {
     const yy = (d.fecha.anyo ?? 0) % 100;
@@ -733,38 +711,28 @@ export function serializarParametroHistoricoCambioParametroOmegaDf(
     out.writeUInt8(d.fecha.mes & 0xff, o++);
     out.writeUInt8(yy & 0xff, o++);
   }
-
   // --- 3B hora (hh, mm, ss)
   out.writeUInt8(d.hora.hora & 0xff, o++);
   out.writeUInt8(d.hora.min & 0xff, o++);
   out.writeUInt8(d.hora.seg & 0xff, o++);
-
   // --- 1B identificador único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, o++);
-
   // --- 2B identificador cliente (BE)
   out.writeUInt16BE(d.identificadorCliente & 0xffff, o); o += 2;
-
   // --- 2B TEXT_variable (BE)
   out.writeUInt16BE(d.textVariable & 0xffff, o); o += 2;
-
   // --- 4B valorVariable (BE o crudo)
   writeValor4BPorTipo(out, o, d.tipoDato, d.valorVariable);
   o += 4;
-
   // --- 4B identificadorCrianzaUnico (BE)
   out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o); o += 4;
-
   // --- 2B diaCrianza (int16, BE)
   out.writeInt16BE(d.diaCrianza | 0, o); o += 2;
-
   // --- 2B TEXT_Titulo_variable (BE)
   out.writeUInt16BE(d.textTituloVariable & 0xffff, o); o += 2;
-
   // --- 4B variable2 (BE o crudo)
   writeU32OrBuf4(out, o, d.variable2);
   o += 4;
-
   // --- 4B variable3 TEXT_titulo_personalizado (BE o crudo)
   writeU32OrBuf4(out, o, d.variable3TextTituloPersonalizado);
   o += 4;
@@ -850,13 +818,16 @@ function writeU32OrBuf4(buf: Buffer, off: number, v: number | Buffer) {
   }
 }
 
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------- ParametroHistoricoOmegaEbusFinalesDto ----------------------------------------
 /** 5.9.6.7 — TM_envia_historico: DATOS_EBUS_FINALES
@@ -865,44 +836,32 @@ function writeU32OrBuf4(buf: Buffer, off: number, v: number | Buffer) {
 export interface ParametroHistoricoOmegaEbusFinalesDto {
   /** 8B: MAC del equipo */
   mac: Buffer;
-
   /** 1B: tipo de dato (constante “DATOS_EBUS_FINALES”) */
   tipoDato: EnTipoDatoDFAccion;
-
   /** 3B: fecha */
   fecha: Fecha;
-
   /** 3B: hora */
   hora: Tiempo;
-
   /** 1B: identificador único dentro del segundo */
   identificadorUnicoDentroDelSegundo: number;
-
   /** 2B: identificador cliente */
   identificadorCliente: number;
-
   /** 2B: TEXT_variable (id de texto/catálogo) */
   textVariable: number;
-
   /** 4B: valor variable principal */
   valorVariable: number | Buffer;
-
   /** 4B: identificador crianza único */
   identificadorCrianzaUnico: number;
-
   /** 2B (int16): día de crianza */
   diaCrianza: number;
-
   /** 2B: TEXT_Titulo_variable (id de texto/catálogo) */
   textTituloVariable: number;
-
   /** 4B: variable2: primer byte = EnTipoDatoDf; resto = valor/metadata */
   variable2Raw: Buffer;
   /** Conveniencia: tipo embebido en el primer byte de variable2 */
   variable2TipoDato?: EnTipoDatoDFAccion;
   /** Conveniencia: los 3 bytes restantes interpretados según variable2TipoDato (si aplica) */
   variable2Valor?: number | Buffer;
-
   /** 4B: TEXT_titulo_personalizado (id/valor; se deja genérico) */
   variable3TextTituloPersonalizado: number | Buffer;
 }
@@ -941,7 +900,6 @@ export function serializarParametroHistoricoEbusFinalesOmegaDf(
 
   // --- 1B tipoDato (constante DATOS_EBUS_FINALES)
   out.writeUInt8((d.tipoDato as number) & 0xff, o++);
-
   // --- 3B fecha (dd, mm, yy)
   {
     const yy = (d.fecha.anyo ?? 0) % 100;
@@ -949,21 +907,16 @@ export function serializarParametroHistoricoEbusFinalesOmegaDf(
     out.writeUInt8(d.fecha.mes & 0xff, o++);
     out.writeUInt8(yy & 0xff, o++);
   }
-
   // --- 3B hora (hh, mm, ss)
   out.writeUInt8(d.hora.hora & 0xff, o++);
   out.writeUInt8(d.hora.min & 0xff, o++);
   out.writeUInt8(d.hora.seg & 0xff, o++);
-
   // --- 1B identificador único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, o++);
-
   // --- 2B identificador cliente (BE)
   out.writeUInt16BE(d.identificadorCliente & 0xffff, o); o += 2;
-
   // --- 2B TEXT_variable (BE)
   out.writeUInt16BE(d.textVariable & 0xffff, o); o += 2;
-
   // --- 4B valorVariable (si es Buffer de 4B, copia; si es number, UInt32BE)
   if (Buffer.isBuffer(d.valorVariable)) {
     if (d.valorVariable.length !== 4) throw new Error('valorVariable Buffer debe ser de 4 bytes');
@@ -975,13 +928,11 @@ export function serializarParametroHistoricoEbusFinalesOmegaDf(
 
   // --- 4B identificadorCrianzaUnico (BE)
   out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o); o += 4;
-
   // --- 2B diaCrianza (int16, BE)
   out.writeInt16BE(d.diaCrianza | 0, o); o += 2;
 
   // --- 2B TEXT_Titulo_variable (BE)
   out.writeUInt16BE(d.textTituloVariable & 0xffff, o); o += 2;
-
   // --- 4B variable2Raw: primer byte = tipo; resto 3B = valor/meta
   if (Buffer.isBuffer(d.variable2Raw)) {
     if (d.variable2Raw.length !== 4) throw new Error('variable2Raw debe ser Buffer de 4 bytes');
@@ -1022,69 +973,50 @@ export function serializarParametroHistoricoEbusFinalesOmegaDf(
   return out;
 }
 
-
-
-
-
-
-
-
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------- ParametroHistoricoOmegaCambioParametroConcatenadoDto ----------------------------------------
 /** 5.9.6.8 — TM_envia_historico: CAMBIO_PARAMETRO_CONCATENADO */
 export interface ParametroHistoricoOmegaCambioParametroConcatenadoDto {
   /** 8B: MAC del equipo */
   mac: Buffer;
-
   /** 1B: identificador único dentro del segundo */
   identificadorUnicoDentroDelSegundo: number;
-
   /** 2B: versión del cambio de parámetro concatenado */
   versionCambioParametroConcatenado: number;
-
   /** 2B: identificador cliente */
   identificadorCliente: number;
-
   /** 1B: tipo de equipo donde se realizó el cambio */
   tipoEquipo: number;
-
   /** 1B: nodo EBUS (0 si no es cambio en EBUS) */
   ebusNodo: number;
-
   /** 3B: fecha */
   fecha: Fecha;
-
   /** 3B: hora */
   hora: Tiempo;
-
   /** 2B (int16): día de crianza */
   diaCrianza: number;
-
   /** 4B: identificador crianza único */
   identificadorCrianzaUnico: number;
-
   /** 1B: bytes efectivos del título dentro de la cadena concatenada */
   numeroByteTitulo: number;
-
   /** 1B: bytes efectivos de la opción dentro de la cadena concatenada */
   numeroByteOpcion: number;
-
   /** 1B: bytes efectivos del valor; 0 ⇒ el valor es numérico (no cadena) */
   numeroByteValor: number;
-
   /** 1B: tipo de dato del cambio de parámetro cuando el valor es numérico (EnTipoDatoDf) */
   tipoDatoCambioParametro: EnTipoDatoDFAccion;
-
   /** 4B: valor numérico cuando ‘numeroByteValor’=0; si no, ignorar */
   valorVariable: number | Buffer;
-
   /**
    * Cadena concatenada hasta 80 *uint16* (máx. 160 bytes).
    * Orden: título + opción + valor (si es texto). Usar junto con los tamaños.
@@ -1130,19 +1062,14 @@ export function serializarParametroHistoricoCambioParametroConcatenadoOmegaDf(
 
   // --- 1B identificador único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, o++);
-
   // --- 2B versión cambio parámetro concatenado (BE)
   out.writeUInt16BE(d.versionCambioParametroConcatenado & 0xffff, o); o += 2;
-
   // --- 2B identificador cliente (BE)
   out.writeUInt16BE(d.identificadorCliente & 0xffff, o); o += 2;
-
   // --- 1B tipoEquipo
   out.writeUInt8(d.tipoEquipo & 0xff, o++);
-
   // --- 1B ebusNodo
   out.writeUInt8(d.ebusNodo & 0xff, o++);
-
   // --- 3B fecha (dd, mm, yy)
   {
     const yy = (d.fecha.anyo ?? 0) % 100;
@@ -1150,18 +1077,14 @@ export function serializarParametroHistoricoCambioParametroConcatenadoOmegaDf(
     out.writeUInt8(d.fecha.mes & 0xff, o++);
     out.writeUInt8(yy & 0xff, o++);
   }
-
   // --- 3B hora (hh, mm, ss)
   out.writeUInt8(d.hora.hora & 0xff, o++);
   out.writeUInt8(d.hora.min & 0xff, o++);
   out.writeUInt8(d.hora.seg & 0xff, o++);
-
   // --- 2B diaCrianza (int16, BE)
   out.writeInt16BE(d.diaCrianza | 0, o); o += 2;
-
   // --- 4B identificadorCrianzaUnico (BE)
   out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o); o += 4;
-
   // --- Bytes efectivos (título/opción/valor)
   // Clampeamos para que no excedan el tamaño real de cadenaConcatenada ni el máximo 160.
   if (!Buffer.isBuffer(d.cadenaConcatenada)) {
@@ -1171,20 +1094,17 @@ export function serializarParametroHistoricoCambioParametroConcatenadoOmegaDf(
 
   let nTitulo = (d.numeroByteTitulo | 0);
   let nOpcion = (d.numeroByteOpcion | 0);
-  let nValor  = (d.numeroByteValor  | 0);
-
+  let nValor = (d.numeroByteValor | 0);
   if (nTitulo < 0) nTitulo = 0;
   if (nOpcion < 0) nOpcion = 0;
-  if (nValor  < 0) nValor  = 0;
-
+  if (nValor < 0) nValor = 0;
   if (nTitulo > cadLen) { nTitulo = cadLen; nOpcion = 0; nValor = 0; }
   if (nTitulo + nOpcion > cadLen) { nOpcion = cadLen - nTitulo; nValor = 0; }
   if (nTitulo + nOpcion + nValor > cadLen) { nValor = cadLen - (nTitulo + nOpcion); }
 
   out.writeUInt8(nTitulo & 0xff, o++);
   out.writeUInt8(nOpcion & 0xff, o++);
-  out.writeUInt8(nValor  & 0xff, o++);
-
+  out.writeUInt8(nValor & 0xff, o++);
   // --- 1B tipoDatoCambioParametro
   out.writeUInt8((d.tipoDatoCambioParametro as number) & 0xff, o++);
 
@@ -1207,75 +1127,44 @@ export function serializarParametroHistoricoCambioParametroConcatenadoOmegaDf(
   return out;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------- ParametroHistoricoOmegaInicioCrianzaDto ----------------------------------------
 /** 5.9.6.9 — TM_envia_historico: DF_INICIO_CRIANZA */
 export interface ParametroHistoricoOmegaInicioCrianzaDto {
   /** 8B: MAC del equipo */
   mac: Buffer;
-
   /** 1B: tipo de dato (esperado: EnTipoDatoDf.inicioCrianza) */
   tipoDato: EnTipoDatoDFAccion;
-
   /** 3B: fecha (yyyymmdd compactado en 3 bytes según tu helper) */
   fecha: Fecha;
-
   /** 3B: hora (hh:mm:ss compactado en 3 bytes) */
   hora: Tiempo;
-
   /** 1B: identificador único dentro del segundo */
   identificadorUnicoDentroDelSegundo: number;
-
   /** 2B: identificador cliente */
   identificadorCliente: number;
-
   /** 2B: nombre de la variable (catálogo interno) */
   nombreVariable: number;
-
   /** 4B: valor de la variable (numérico) */
   valorVariable: number | Buffer;
-
   /** 4B: identificador único de crianza (0 ⇒ no crianza) */
   identificadorCrianzaUnico: number;
-
   /** 2B (int16): día de crianza */
   diaCrianza: number;
-
   /** 2B: variable1_2 (reservado/uso específico) */
   variable1_2: number;
-
   /** 4B: variable2 (reservado/uso específico) */
   variable2: number | Buffer;
-
   /** 4B: variable3 (reservado/uso específico) */
   variable3: number | Buffer;
 }
@@ -1379,23 +1268,16 @@ export function serializarParametroHistoricoInicioCrianzaOmegaDf(
   return out;
 }
 
-
-
-
-
-
-
-
-
-
-
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------- ParametroHistoricoOmegaFinCrianzaDto ----------------------------------------
 /** 5.9.6.10 — TM_envia_historico: DF_FIN_CRIANZA
@@ -1403,41 +1285,29 @@ export function serializarParametroHistoricoInicioCrianzaOmegaDf(
  */
 export interface ParametroHistoricoOmegaFinCrianzaDto {
   /** 8B: MAC del equipo */
-  mac: number|Buffer;
-
+  mac: number | Buffer
   /** 1B: tipo de dato (esperado: EnTipoDatoDf.finCrianza) */
   tipoDato: EnTipoDatoDFAccion;
-
   /** 3B: fecha */
   fecha: Fecha;
-
   /** 3B: hora */
   hora: Tiempo;
-
   /** 1B: identificador único dentro del segundo */
   identificadorUnicoDentroDelSegundo: number;
-
   /** 2B: identificador cliente */
   identificadorCliente: number;
-
   /** 2B: “nombre variable” ⇒ aquí indica ‘tipo_animal’ (catálogo) */
   nombreVariableTipoAnimal: number; // puede mapearse a EnCrianzaTipoAnimal si procede
-
   /** 4B: “valor variable” ⇒ n_animales_machos_mixtos */
   valorVariableNAnimalesMachosMixtos: number;
-
   /** 4B: identificador único de crianza (0 ⇒ no crianza) */
   identificadorCrianzaUnico: number;
-
   /** 2B (int16): día de crianza */
   diaCrianza: number;
-
   /** 2B: variable1_2 (reservado/uso específico) */
   variable1_2: number;
-
   /** 4B: variable2 ⇒ n_animales_hembras */
   variable2NAnimalesHembras: number;
-
   /** 4B: variable3 (reservado/uso específico) */
   variable3: number | Buffer;
 }
@@ -1492,28 +1362,20 @@ export function serializarParametroHistoricoFinCrianzaOmegaDf(
 
   // --- 1B id único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, o++);
-
   // --- 2B identificador cliente (BE)
   out.writeUInt16BE(d.identificadorCliente & 0xffff, o); o += 2;
-
   // --- 2B nombreVariableTipoAnimal (BE)
   out.writeUInt16BE(d.nombreVariableTipoAnimal & 0xffff, o); o += 2;
-
   // --- 4B n_animales_machos_mixtos (UInt32BE)
   out.writeUInt32BE(d.valorVariableNAnimalesMachosMixtos >>> 0, o); o += 4;
-
   // --- 4B identificadorCrianzaUnico (BE)
   out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o); o += 4;
-
   // --- 2B diaCrianza (int16, BE)
   out.writeInt16BE(d.diaCrianza | 0, o); o += 2;
-
   // --- 2B variable1_2 (BE)
   out.writeUInt16BE(d.variable1_2 & 0xffff, o); o += 2;
-
   // --- 4B n_animales_hembras (UInt32BE)
   out.writeUInt32BE(d.variable2NAnimalesHembras >>> 0, o); o += 4;
-
   // --- 4B variable3 (UInt32BE o crudo)
   if (Buffer.isBuffer(d.variable3)) {
     if (d.variable3.length !== 4) throw new Error('variable3 Buffer debe ser de 4 bytes');
@@ -1529,37 +1391,366 @@ export function serializarParametroHistoricoFinCrianzaOmegaDf(
   return out;
 }
 
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+// ---------------------------------------- ParametroHistoricoOmegaEntradaAnimalesDto ----------------------------------------
+/** 5.9.6.11 — TM_envia_historico: ENTRADA_ANIMALES
+ *  Semántica: indica tipo de animal y nº de animales por sexo que entran.
+ */
+export interface ParametroHistoricoOmegaEntradaAnimalesDto {
+  /** 8B: MAC del equipo */
+  mac: number | Buffer;
+  /** 1B: tipo de dato (esperado: EnTipoDatoDFAccion.entradaAnimales) */
+  tipoDato: EnTipoDatoDFAccion;
+  /** 3B: fecha */
+  fecha: Fecha;
+  /** 3B: hora */
+  hora: Tiempo;
+  /** 1B: identificador único dentro del segundo */
+  identificadorUnicoDentroDelSegundo: number;
+  /** 2B: identificador cliente */
+  identificadorCliente: number;
+  /** 2B: “nombre variable” ⇒ aquí indica ‘tipo_animal’ (catálogo) */
+  nombreVariableTipoAnimal: number | EnCrianzaTipoAnimal;
+  /** 4B: “valor variable” ⇒ n_animales_machos_mixtos */
+  valorVariableNAnimalesMachosMixtos: number;
+  /** 4B: identificador único de crianza (0 ⇒ no crianza) */
+  identificadorCrianzaUnico: number;
+  /** 2B (int16): día de crianza */
+  diaCrianza: number;
+  /** 2B: variable1_2 (reservado/uso específico) */
+  variable1_2: number;
+  /** 4B: variable2 ⇒ n_animales_hembras */
+  variable2NAnimalesHembras: number;
+  /** 4B: variable3 (reservado/uso específico) */
+  variable3: number | Buffer;
+}
 
+// =================== Serialización ENTRADA_ANIMALES (Omega) ===================
 
+/**
+ * Serializa la “data” de TM_envia_historico (ENTRADA_ANIMALES) a Buffer (BE).
+ * Layout (40 B):
+ *  8B  mac
+ *  1B  tipoDato                                   (EnTipoDatoDFAccion.entradaAnimales)
+ *  3B  fecha (dd, mm, yy)
+ *  3B  hora  (hh, mm, ss)
+ *  1B  identificadorUnicoDentroDelSegundo
+ *  2B  identificadorCliente                       (BE)
+ *  2B  nombreVariableTipoAnimal                   (BE)  // EnCrianzaTipoAnimal.*
+ *  4B  valorVariableNAnimalesMachosMixtos         (UInt32BE)
+ *  4B  identificadorCrianzaUnico                  (BE)
+ *  2B  diaCrianza (int16)                         (BE)
+ *  2B  variable1_2                                (BE)
+ *  4B  variable2NAnimalesHembras                  (UInt32BE)
+ *  4B  variable3                                  (UInt32BE o 4B crudos)
+ */
+export function serializarParametroHistoricoEntradaAnimalesOmegaDf(
+  d: ParametroHistoricoOmegaEntradaAnimalesDto
+): Buffer {
+  const OUT_LEN = 40;
+  const out = Buffer.alloc(OUT_LEN);
+  let o = 0;
 
+  // --- 8B MAC (admite number|bigint|Buffer)
+  const macAny = d.mac as unknown as number | bigint | Buffer;
+  if (typeof macAny === 'number' || typeof macAny === 'bigint') {
+    let macBig = typeof macAny === 'bigint' ? macAny : BigInt(macAny);
+    if (macBig < 0n || macBig > 0xFFFF_FFFF_FFFF_FFFFn) {
+      throw new Error('MAC inválida: fuera de rango (0..2^64-1)');
+    }
+    if (typeof (out as any).writeBigUInt64BE === 'function') {
+      (out as any).writeBigUInt64BE(macBig, o);
+    } else {
+      for (let i = 7; i >= 0; i--) { out[o + i] = Number(macBig & 0xFFn); macBig >>= 8n; }
+    }
+    o += 8;
+  } else if (Buffer.isBuffer(macAny)) {
+    if (macAny.length !== 8) throw new Error('MAC inválida: se espera Buffer de 8 bytes');
+    macAny.copy(out, o); o += 8;
+  } else {
+    throw new Error('MAC inválida: se espera number|bigint o Buffer de 8 bytes');
+  }
 
+  // --- 1B tipoDato
+  out.writeUInt8((d.tipoDato as number) & 0xff, o++);
 
+  // --- 3B fecha (dd, mm, yy)
+  {
+    const yy = (d.fecha.anyo ?? 0) % 100;
+    out.writeUInt8(d.fecha.dia & 0xff, o++);
+    out.writeUInt8(d.fecha.mes & 0xff, o++);
+    out.writeUInt8(yy & 0xff, o++);
+  }
 
+  // --- 3B hora (hh, mm, ss)
+  out.writeUInt8(d.hora.hora & 0xff, o++);
+  out.writeUInt8(d.hora.min & 0xff, o++);
+  out.writeUInt8(d.hora.seg & 0xff, o++);
+  // --- 1B id único dentro del segundo
+  out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, o++);
+  // --- 2B identificador cliente (BE)
+  out.writeUInt16BE(d.identificadorCliente & 0xffff, o); o += 2;
+  // --- 2B nombreVariableTipoAnimal (BE)
+  out.writeUInt16BE((d.nombreVariableTipoAnimal as number) & 0xffff, o); o += 2;
+  // --- 4B n_animales_machos_mixtos (UInt32BE)
+  out.writeUInt32BE(d.valorVariableNAnimalesMachosMixtos >>> 0, o); o += 4;
+  // --- 4B identificadorCrianzaUnico (BE)
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o); o += 4;
+  // --- 2B diaCrianza (int16, BE)
+  out.writeInt16BE(d.diaCrianza | 0, o); o += 2;
+  // --- 2B variable1_2 (BE)
+  out.writeUInt16BE(d.variable1_2 & 0xffff, o); o += 2;
+  // --- 4B n_animales_hembras (UInt32BE)
+  out.writeUInt32BE(d.variable2NAnimalesHembras >>> 0, o); o += 4;
+  // --- 4B variable3 (UInt32BE o 4B crudos)
+  if (Buffer.isBuffer(d.variable3)) {
+    if (d.variable3.length !== 4) throw new Error('variable3 Buffer debe ser de 4 bytes');
+    d.variable3.copy(out, o);
+  } else {
+    out.writeUInt32BE((d.variable3 as number) >>> 0, o);
+  }
+  o += 4;
 
+  if (o !== OUT_LEN) throw new Error(`Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`);
+  return out;
+}
 
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+// ---------------------------------------- ParametroHistoricoOmegaAltasBajasDto ----------------------------------------
+/** 5.9.6.12 — TM_envia_historico: ALTAS_BAJAS
+ *  Semántica: indica acción (alta/baja/retirada/…) y nº de animales por sexo.
+ */
+export interface ParametroHistoricoOmegaAltasBajasDto {
+  /** 8B: MAC del equipo */
+  mac: number | Buffer;
+  /** 1B: tipo de dato (esperado: EnTipoDatoDFAccion.altasBajas) */
+  tipoDato: EnTipoDatoDFAccion;
+  /** 3B: fecha */
+  fecha: Fecha;
+  /** 3B: hora */
+  hora: Tiempo;
+  /** 1B: identificador único dentro del segundo */
+  identificadorUnicoDentroDelSegundo: number;
+  /** 2B: identificador cliente */
+  identificadorCliente: number;
+  /** 2B: “nombre variable acción” (ENUM_CRIANZA_ALTA_BAJA_ACCION) */
+  nombreVariableAccion: number | EnCrianzaAltaBajaAccion;
+  /** 4B: “valor variable” ⇒ n_animales_machos_mixtos */
+  valorVariableNAnimalesMachosMixtos: number;
+  /** 4B: identificador único de crianza (0 ⇒ no crianza) */
+  identificadorCrianzaUnico: number;
+  /** 2B (int16): día de crianza */
+  diaCrianza: number;
+  /** 2B: variable1_2 (reservado/uso específico) */
+  variable1_2: number;
+  /** 4B: variable2 ⇒ n_animales_hembras */
+  variable2NAnimalesHembras: number;
+  /** 4B: variable3 (reservado/uso específico) */
+  variable3: number | Buffer;
+}
 
+// =================== Serialización ALTAS_BAJAS (Omega) ===================
 
+/**
+ * Serializa la “data” de TM_envia_historico (ALTAS_BAJAS) a Buffer (BE).
+ * Layout (40 B):
+ *  8B  mac
+ *  1B  tipoDato                                   (EnTipoDatoDFAccion.altasBajas)
+ *  3B  fecha (dd, mm, yy)
+ *  3B  hora  (hh, mm, ss)
+ *  1B  identificadorUnicoDentroDelSegundo
+ *  2B  identificadorCliente                       (BE)
+ *  2B  nombreVariableAccion                       (BE)  // EnCrianzaAltaBajaAccion.*
+ *  4B  valorVariableNAnimalesMachosMixtos         (UInt32BE)
+ *  4B  identificadorCrianzaUnico                  (BE)
+ *  2B  diaCrianza (int16)                         (BE)
+ *  2B  variable1_2                                (BE)
+ *  4B  variable2NAnimalesHembras                  (UInt32BE)
+ *  4B  variable3                                  (UInt32BE o 4B crudos)
+ */
+export function serializarParametroHistoricoAltasBajasOmegaDf(
+  d: ParametroHistoricoOmegaAltasBajasDto
+): Buffer {
+  const OUT_LEN = 40;
+  const out = Buffer.alloc(OUT_LEN);
+  let o = 0;
 
+  // --- 8B MAC (admite number|bigint|Buffer)
+  const macAny = d.mac as unknown as number | bigint | Buffer;
+  if (typeof macAny === 'number' || typeof macAny === 'bigint') {
+    let macBig = typeof macAny === 'bigint' ? macAny : BigInt(macAny);
+    if (macBig < 0n || macBig > 0xFFFF_FFFF_FFFF_FFFFn) {
+      throw new Error('MAC inválida: fuera de rango (0..2^64-1)');
+    }
+    if (typeof (out as any).writeBigUInt64BE === 'function') {
+      (out as any).writeBigUInt64BE(macBig, o);
+    } else {
+      for (let i = 7; i >= 0; i--) { out[o + i] = Number(macBig & 0xFFn); macBig >>= 8n; }
+    }
+    o += 8;
+  } else if (Buffer.isBuffer(macAny)) {
+    if (macAny.length !== 8) throw new Error('MAC inválida: se espera Buffer de 8 bytes');
+    macAny.copy(out, o); o += 8;
+  } else {
+    throw new Error('MAC inválida: se espera number|bigint o Buffer de 8 bytes');
+  }
 
+  // --- 1B tipoDato
+  out.writeUInt8((d.tipoDato as number) & 0xff, o++);
 
+  // --- 3B fecha (dd, mm, yy)
+  {
+    const yy = (d.fecha.anyo ?? 0) % 100;
+    out.writeUInt8(d.fecha.dia & 0xff, o++);
+    out.writeUInt8(d.fecha.mes & 0xff, o++);
+    out.writeUInt8(yy & 0xff, o++);
+  }
 
+  // --- 3B hora (hh, mm, ss)
+  out.writeUInt8(d.hora.hora & 0xff, o++);
+  out.writeUInt8(d.hora.min & 0xff, o++);
+  out.writeUInt8(d.hora.seg & 0xff, o++);
+  // --- 1B id único dentro del segundo
+  out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, o++);
+  // --- 2B identificador cliente (BE)
+  out.writeUInt16BE(d.identificadorCliente & 0xffff, o); o += 2;
+  // --- 2B nombreVariableAccion (BE)
+  out.writeUInt16BE((d.nombreVariableAccion as number) & 0xffff, o); o += 2;
+  // --- 4B n_animales_machos_mixtos (UInt32BE)
+  out.writeUInt32BE(d.valorVariableNAnimalesMachosMixtos >>> 0, o); o += 4;
+  // --- 4B identificadorCrianzaUnico (BE)
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o); o += 4;
+  // --- 2B diaCrianza (int16, BE)
+  out.writeInt16BE(d.diaCrianza | 0, o); o += 2;
+  // --- 2B variable1_2 (BE)
+  out.writeUInt16BE(d.variable1_2 & 0xffff, o); o += 2;
+  // --- 4B n_animales_hembras (UInt32BE)
+  out.writeUInt32BE(d.variable2NAnimalesHembras >>> 0, o); o += 4;
+  // --- 4B variable3 (UInt32BE o 4B crudos)
+  if (Buffer.isBuffer(d.variable3)) {
+    if (d.variable3.length !== 4) throw new Error('variable3 Buffer debe ser de 4 bytes');
+    d.variable3.copy(out, o);
+  } else {
+    out.writeUInt32BE((d.variable3 as number) >>> 0, o);
+  }
+  o += 4;
 
+  if (o !== OUT_LEN) throw new Error(`Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`);
+  return out;
+}
 
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+// ---------------------------------------- ParametroHistoricoOmegaDebugStringDto ----------------------------------------
+/** 5.9.6.13 — TM_envia_historico: DEBUG_STRING
+ *  Cadena de depuración fija de 30 bytes.
+ */
+export interface ParametroHistoricoOmegaDebugStringDto {
+  /** 8B: MAC del equipo. */
+  mac: number | Buffer;
+  /** 1B: tipo de dato (esperado: EnTipoDatoDFAccion.debugString). */
+  tipoDato: EnTipoDatoDFAccion;
+  /** 1B: identificador único dentro del segundo. */
+  identificadorUnicoDentroDelSegundo: number;
+  /** 30B: cadena de depuración cruda (Uint8[30], p.ej. ASCII/UTF-8 sin terminador). */
+  debugString: Buffer;
+  /** (Opcional) Texto decodificado de `debugString` si se desea manejar como string. */
+  debugStringTexto?: string;
+}
 
+// =================== Serialización DEBUG_STRING (Omega) ===================
 
+/**
+ * Serializa la “data” de TM_envia_historico (DEBUG_STRING) a Buffer (BE).
+ * Layout (40 B):
+ *  - 8B  mac
+ *  - 1B  tipoDato                             (EnTipoDatoDFAccion.debugString)
+ *  - 1B  identificadorUnicoDentroDelSegundo
+ *  - 30B debugString (Uint8[30], ASCII/UTF-8, cero-padding, truncado si >30)
+ */
+export function serializarParametroHistoricoDebugStringOmegaDf(d: ParametroHistoricoOmegaDebugStringDto): Buffer {
+  const OUT_LEN = 40;
+  const out = Buffer.alloc(OUT_LEN);
+  let offset = 0;
 
+  // --- 8B MAC (admite number|bigint|Buffer)
+  const macAny = d.mac as unknown as number | bigint | Buffer;
+  if (typeof macAny === 'number' || typeof macAny === 'bigint') {
+    let macBig = typeof macAny === 'bigint' ? macAny : BigInt(macAny);
+    if (macBig < 0n || macBig > 0xFFFF_FFFF_FFFF_FFFFn) {
+      throw new Error('MAC inválida: fuera de rango (0..2^64-1)');
+    }
+    if (typeof (out as any).writeBigUInt64BE === 'function') {
+      (out as any).writeBigUInt64BE(macBig, offset);
+    } else {
+      for (let i = 7; i >= 0; i--) { out[offset + i] = Number(macBig & 0xFFn); macBig >>= 8n; }
+    }
+    offset += 8;
+  } else if (Buffer.isBuffer(macAny)) {
+    if (macAny.length !== 8) throw new Error('MAC inválida: se espera Buffer de 8 bytes');
+    macAny.copy(out, offset); offset += 8;
+  } else {
+    throw new Error('MAC inválida: se espera number|bigint o Buffer de 8 bytes');
+  }
 
+  // --- 1B tipoDato
+  out.writeUInt8((d.tipoDato as number) & 0xff, offset++);
 
+  // --- 1B identificador único
+  out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, offset++);
 
+  // --- 30B debugString (prioriza `debugStringTexto` si viene)
+  let strBuf: Buffer;
+  if (typeof d.debugStringTexto === 'string') {
+    strBuf = Buffer.from(d.debugStringTexto, 'utf8'); // codificamos en UTF-8 (ASCII compatible)
+  } else if (Buffer.isBuffer(d.debugString)) {
+    strBuf = d.debugString;
+  } else {
+    throw new Error('debugString inválido: se espera Buffer de hasta 30 bytes o debugStringTexto');
+  }
 
+  if (strBuf.length >= 30) {
+    // Truncamos a 30B
+    strBuf.copy(out, offset, 0, 30);
+  } else {
+    // Copia + padding a cero
+    strBuf.copy(out, offset);
+    out.fill(0x00, offset + strBuf.length, offset + 30);
+  }
+  offset += 30;
 
-
-
-
-
+  if (offset !== OUT_LEN) throw new Error(`Longitud inesperada al serializar (offset=${offset}, esperado=${OUT_LEN})`);
+  return out;
+}
 
 
 

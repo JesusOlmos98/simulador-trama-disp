@@ -1,10 +1,10 @@
-import { EnCrianzaTipoAnimal, EnTipoEquipo } from "src/utils/LE/globals/enums";
 import { PresentacionCentralOldDto, TablaCentralItemOld } from "./tt_sistemaOld.dto";
 import { ParametroHistoricoOldDto } from "./tt_estadisticosOld.dto";
-import { EnEstadisticosNombres, EnEventosEstadisFamilia, EnEventosEstadisPropiedades, EnEventosEstadisSubfamilia, EnEventosEstadisTipo, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld } from "src/utils/BE_Old/globals/enumOld";
-import { ParametroHistoricoOmegaCambioParametroConcatenadoDto, ParametroHistoricoOmegaCambioParametroDfDto, ParametroHistoricoOmegaEbusFinalesDto, ParametroHistoricoOmegaEstadisticoGenericoDto, ParametroHistoricoOmegaEventoConcatenadoDto, ParametroHistoricoOmegaEventoDto, ParametroHistoricoOmegaFinCrianzaDto, ParametroHistoricoOmegaInicioCrianzaDto, ParametroHistoricoValorOmegaDfDto } from "./tt_estadisticosOldDF.dto";
+import { EnCrianzaAltaBajaAccion, EnCrianzaTipoAnimal, EnEstadisticosNombres, EnEventosEstadisFamilia, EnEventosEstadisPropiedades, EnEventosEstadisSubfamilia, EnEventosEstadisTipo, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld } from "src/utils/BE_Old/globals/enumOld";
+import { ParametroHistoricoOmegaAltasBajasDto, ParametroHistoricoOmegaCambioParametroConcatenadoDto, ParametroHistoricoOmegaCambioParametroDfDto, ParametroHistoricoOmegaDebugStringDto, ParametroHistoricoOmegaEbusFinalesDto, ParametroHistoricoOmegaEntradaAnimalesDto, ParametroHistoricoOmegaEstadisticoGenericoDto, ParametroHistoricoOmegaEventoConcatenadoDto, ParametroHistoricoOmegaEventoDto, ParametroHistoricoOmegaFinCrianzaDto, ParametroHistoricoOmegaInicioCrianzaDto, ParametroHistoricoValorOmegaDfDto } from "./tt_estadisticosOldDF.dto";
 import { EnTextos } from "src/utils/enumTextos";
 import { packHora4, packFecha4 } from "src/utils/helpers";
+import { EnTipoEquipo } from "src/utils/LE/globals/enums";
 
 // Presentación (Omega) – protocolo antiguo (Big Endian)
 export const defaultPresentacionOmegaOld: PresentacionCentralOldDto = {
@@ -150,8 +150,9 @@ export const defaultEstadisticoAlarmasOld: ParametroHistoricoOldDto = {
 // 0: inicio 
 // 1: fin
 
-//? EnTipoDatoDFAccion
+// * ------------------------------------------------------------------------------------------------------------------------------------------------
 
+//? EnTipoDatoDFAccion
 /** Objeto de ejemplo para enviar una temperatura (OmegaDf). */
 export const defaultParametroHistoricoValorOmegaDf: ParametroHistoricoValorOmegaDfDto = {
   mac: 12345678,                                          // 8B MAC del equipo (ejemplo típico XBee de 64 bits)
@@ -186,9 +187,7 @@ export const defaultParametroHistoricoAlarmaOmegaDf: ParametroHistoricoValorOmeg
   variable3: 0,                                           // 4B auxiliar (reservado / no aplica)
 };
 
-
-
-
+// * ------------------------------------------------------------------------------------------------------------------------------------------------
 
 /** Objeto de ejemplo para enviar un EVENTO (Omega). */
 export const defaultParametroHistoricoOmegaEventoNormal: ParametroHistoricoOmegaEventoDto = {
@@ -226,9 +225,7 @@ export const defaultParametroHistoricoOmegaEventoWarning: ParametroHistoricoOmeg
   nombreVariable: EnTextos.textWarningProg3NoFinalizadoSolapamiento,
 };
 
-
-
-
+// * ------------------------------------------------------------------------------------------------------------------------------------------------
 
 const MAX_CADENA_BYTES_CONCAT = 80;
 const toCadena80 = (s: string) => {
@@ -284,10 +281,7 @@ export const defaultParametroHistoricoOmegaEventoConcatenadoWarning: ParametroHi
   cadenaConcatenada: cadenaConcatWarning,
 };
 
-
-
-
-
+// * ------------------------------------------------------------------------------------------------------------------------------------------------
 
 // =================== Defaults ESTADISTICO_GENERICO ===================
 
@@ -314,9 +308,7 @@ export const defaultParametroHistoricoOmegaEstadisticoGenerico: ParametroHistori
   cadenaConcatenada: cadenaEstadGenerico,
 };
 
-
-
-
+// * ------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ---------- DEFAULT: NUMÉRICO (uint16) ----------
 export const defaultParametroHistoricoOmegaCambioParametroUint16: ParametroHistoricoOmegaCambioParametroDfDto = {
@@ -351,9 +343,7 @@ export const defaultParametroHistoricoOmegaCambioParametroFecha: ParametroHistor
   valorVariable: packFecha4(1, 1, 23),
 };
 
-
-
-
+// * ------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ---------- DEFAULT A: variable2 = tipo UINT16 con valor 25 (0x000019) ----------
 export const defaultParametroHistoricoOmegaEbusFinalesA: ParametroHistoricoOmegaEbusFinalesDto = {
@@ -393,9 +383,7 @@ export const defaultParametroHistoricoOmegaEbusFinalesB: ParametroHistoricoOmega
   variable3TextTituloPersonalizado: 0,
 };
 
-
-
-
+// * ------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ---------- DEFAULT A: valor numérico (numeroByteValor=0 ⇒ usar valorVariable), sin EBUS ----------
 const tituloA = Buffer.from('Cambio parámetro: Setpoint alimentación', 'utf16le');
@@ -450,9 +438,7 @@ export const defaultParametroHistoricoOmegaCambioParametroConcatenadoTexto: Para
   cadenaConcatenada: cadenaB,
 };
 
-
-
-
+// * ------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ---------- DEFAULT: Inicio de crianza básico (valorVariable numérico) ----------
 export const defaultParametroHistoricoOmegaInicioCrianza: ParametroHistoricoOmegaInicioCrianzaDto = {
@@ -480,9 +466,7 @@ export const defaultParametroHistoricoOmegaInicioCrianzaCrudo: ParametroHistoric
   variable3: Buffer.from([0x00, 0x00, 0x00, 0x00]),
 };
 
-
-
-
+// * ------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ---------- DEFAULT A: Crianza “mixtos” ----------
 export const defaultParametroHistoricoOmegaFinCrianzaMixtos: ParametroHistoricoOmegaFinCrianzaDto = {
@@ -518,21 +502,96 @@ export const defaultParametroHistoricoOmegaFinCrianzaSeparado: ParametroHistoric
   variable3: 0,
 };
 
+// * ------------------------------------------------------------------------------------------------------------------------------------------------
 
+// ---------- DEFAULT A: Entrada “mixtos” ----------
+export const defaultParametroHistoricoOmegaEntradaAnimalesMixtos: ParametroHistoricoOmegaEntradaAnimalesDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),
+  tipoDato: EnTipoDatoDFAccion.entradaAnimales,               // (=34)
+  fecha: { dia: 2, mes: 1, anyo: 2023 },
+  hora: { hora: 8, min: 0, seg: 0 },
+  identificadorUnicoDentroDelSegundo: 0,
+  identificadorCliente: 1,
+  nombreVariableTipoAnimal: EnCrianzaTipoAnimal.mixtos,       // 0
+  valorVariableNAnimalesMachosMixtos: 500,                    // machos/mixtos que entran
+  identificadorCrianzaUnico: 0,
+  diaCrianza: 1,
+  variable1_2: 0,
+  variable2NAnimalesHembras: 480,                             // hembras que entran
+  variable3: 0,
+};
 
+// ---------- DEFAULT B: Entrada “soloHembras” ----------
+export const defaultParametroHistoricoOmegaEntradaAnimalesSoloHembras: ParametroHistoricoOmegaEntradaAnimalesDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),
+  tipoDato: EnTipoDatoDFAccion.entradaAnimales,
+  fecha: { dia: 10, mes: 2, anyo: 2024 },
+  hora: { hora: 6, min: 45, seg: 30 },
+  identificadorUnicoDentroDelSegundo: 1,
+  identificadorCliente: 2,
+  nombreVariableTipoAnimal: EnCrianzaTipoAnimal.soloHembras,  // 2
+  valorVariableNAnimalesMachosMixtos: 0,                      // no entran machos
+  identificadorCrianzaUnico: 123456,
+  diaCrianza: 0,
+  variable1_2: 0,
+  variable2NAnimalesHembras: 1000,                            // entran 1000 hembras
+  variable3: 0,
+};
 
+// * ------------------------------------------------------------------------------------------------------------------------------------------------
 
+// ---------- DEFAULT A: ALTA de animales ----------
+export const defaultParametroHistoricoOmegaAltasBajasAlta: ParametroHistoricoOmegaAltasBajasDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),
+  tipoDato: EnTipoDatoDFAccion.altasBajas,                    // (=32)
+  fecha: { dia: 5, mes: 4, anyo: 2024 },
+  hora: { hora: 9, min: 15, seg: 10 },
+  identificadorUnicoDentroDelSegundo: 0,
+  identificadorCliente: 1,
+  nombreVariableAccion: EnCrianzaAltaBajaAccion.alta,         // 1
+  valorVariableNAnimalesMachosMixtos: 300,                    // altas machos/mixtos
+  identificadorCrianzaUnico: 0,
+  diaCrianza: 7,
+  variable1_2: 0,
+  variable2NAnimalesHembras: 280,                             // altas hembras
+  variable3: 0,
+};
 
+// ---------- DEFAULT B: BAJA de animales ----------
+export const defaultParametroHistoricoOmegaAltasBajasBaja: ParametroHistoricoOmegaAltasBajasDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),
+  tipoDato: EnTipoDatoDFAccion.altasBajas,
+  fecha: { dia: 12, mes: 6, anyo: 2024 },
+  hora: { hora: 17, min: 45, seg: 0 },
+  identificadorUnicoDentroDelSegundo: 1,
+  identificadorCliente: 2,
+  nombreVariableAccion: EnCrianzaAltaBajaAccion.baja,         // 0
+  valorVariableNAnimalesMachosMixtos: 50,                     // bajas machos/mixtos
+  identificadorCrianzaUnico: 123456,
+  diaCrianza: 30,
+  variable1_2: 0,
+  variable2NAnimalesHembras: 40,                              // bajas hembras
+  variable3: 0,
+};
 
+// * ------------------------------------------------------------------------------------------------------------------------------------------------
 
+// ---------- DEFAULT A: Mensaje corto “DBG:OK” ----------
+export const defaultParametroHistoricoOmegaDebugStringOk: ParametroHistoricoOmegaDebugStringDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),
+  tipoDato: EnTipoDatoDFAccion.debugString, // (=40)
+  identificadorUnicoDentroDelSegundo: 0,
+  debugString: Buffer.from('DBG:OK', 'utf8'), // se rellenará con ceros hasta 30B
+};
 
-
-
-
-
-
-
-
+// ---------- DEFAULT B: Mensaje con valores “TMP=25C;HUM=60%” ----------
+export const defaultParametroHistoricoOmegaDebugStringValores: ParametroHistoricoOmegaDebugStringDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),
+  tipoDato: EnTipoDatoDFAccion.debugString,
+  identificadorUnicoDentroDelSegundo: 1,
+  debugString: Buffer.from('TMP=25C; HUM=60%', 'utf8'), // sensor simulado: 25°C, 60% HR
+  // debugStringTexto: 'TMP=25C; HUM=60%', // también puedes usar este campo si prefieres
+};
 
 //* -------------------------------------------------------------------------------------------------------------------
 //* -------------------------------------------------------------------------------------------------------------------

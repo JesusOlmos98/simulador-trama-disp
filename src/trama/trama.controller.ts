@@ -1,8 +1,7 @@
 import { Controller, Post, Query, BadRequestException } from '@nestjs/common';
-import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld, defaultParametroHistoricoAlarmaOmegaDf, defaultParametroHistoricoOmegaCambioParametroConcatenadoNumerico, defaultParametroHistoricoOmegaCambioParametroConcatenadoTexto, defaultParametroHistoricoOmegaCambioParametroFecha, defaultParametroHistoricoOmegaCambioParametroTiempo, defaultParametroHistoricoOmegaCambioParametroUint16, defaultParametroHistoricoOmegaEbusFinalesA, defaultParametroHistoricoOmegaEbusFinalesB, defaultParametroHistoricoOmegaEstadisticoGenerico, defaultParametroHistoricoOmegaEventoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoNormal, defaultParametroHistoricoOmegaEventoConcatenadoWarning, defaultParametroHistoricoOmegaEventoNormal, defaultParametroHistoricoOmegaEventoWarning, defaultParametroHistoricoOmegaFinCrianzaMixtos, defaultParametroHistoricoOmegaFinCrianzaSeparado, defaultParametroHistoricoOmegaInicioCrianza, defaultParametroHistoricoOmegaInicioCrianzaCrudo } from 'src/dtoBE/defaultTramaOld';
-import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
+import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld, defaultParametroHistoricoAlarmaOmegaDf, defaultParametroHistoricoOmegaAltasBajasAlta, defaultParametroHistoricoOmegaAltasBajasBaja, defaultParametroHistoricoOmegaCambioParametroConcatenadoNumerico, defaultParametroHistoricoOmegaCambioParametroConcatenadoTexto, defaultParametroHistoricoOmegaCambioParametroFecha, defaultParametroHistoricoOmegaCambioParametroTiempo, defaultParametroHistoricoOmegaCambioParametroUint16, defaultParametroHistoricoOmegaDebugStringOk, defaultParametroHistoricoOmegaDebugStringValores, defaultParametroHistoricoOmegaEbusFinalesA, defaultParametroHistoricoOmegaEbusFinalesB, defaultParametroHistoricoOmegaEntradaAnimalesMixtos, defaultParametroHistoricoOmegaEntradaAnimalesSoloHembras, defaultParametroHistoricoOmegaEstadisticoGenerico, defaultParametroHistoricoOmegaEventoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoNormal, defaultParametroHistoricoOmegaEventoConcatenadoWarning, defaultParametroHistoricoOmegaEventoNormal, defaultParametroHistoricoOmegaEventoWarning, defaultParametroHistoricoOmegaFinCrianzaMixtos, defaultParametroHistoricoOmegaFinCrianzaSeparado, defaultParametroHistoricoOmegaInicioCrianza, defaultParametroHistoricoOmegaInicioCrianzaCrudo } from 'src/dtoBE/defaultTramaOld';
 import { serializarParametroHistoricoOld } from 'src/dtoBE/tt_estadisticosOld.dto';
-import { serializarParametroHistoricoCambioParametroConcatenadoOmegaDf, serializarParametroHistoricoCambioParametroOmegaDf, serializarParametroHistoricoEbusFinalesOmegaDf, serializarParametroHistoricoEstadisticoGenericoOmegaDf, serializarParametroHistoricoEventoConcatenadoOmegaDf, serializarParametroHistoricoEventoOmegaDf, serializarParametroHistoricoFinCrianzaOmegaDf, serializarParametroHistoricoInicioCrianzaOmegaDf, serializarParametroHistoricoValorOmegaDf } from 'src/dtoBE/tt_estadisticosOldDF.dto';
+import { serializarParametroHistoricoAltasBajasOmegaDf, serializarParametroHistoricoCambioParametroConcatenadoOmegaDf, serializarParametroHistoricoCambioParametroOmegaDf, serializarParametroHistoricoDebugStringOmegaDf, serializarParametroHistoricoEbusFinalesOmegaDf, serializarParametroHistoricoEntradaAnimalesOmegaDf, serializarParametroHistoricoEstadisticoGenericoOmegaDf, serializarParametroHistoricoEventoConcatenadoOmegaDf, serializarParametroHistoricoEventoOmegaDf, serializarParametroHistoricoFinCrianzaOmegaDf, serializarParametroHistoricoInicioCrianzaOmegaDf, serializarParametroHistoricoValorOmegaDf } from 'src/dtoBE/tt_estadisticosOldDF.dto';
 import {
   defaultDataTempSonda1,
   defaultDataContadorAgua,
@@ -13,7 +12,6 @@ import {
   defaultDatosValorTempSonda1,
 } from 'src/dtoLE/defaultTrama';
 import { FrameDto } from 'src/dtoLE/frame.dto';
-import { PeticionConsolaDto } from 'src/dtoLE/tt_depuracion.dto';
 import { serializarDatosEstadisticoValor } from 'src/dtoLE/tt_estadisticos.dto';
 import {
   EstadoDispositivoTxDto,
@@ -22,18 +20,16 @@ import {
   ProgresoActualizacionTxDto,
 } from 'src/dtoLE/tt_sistema.dto';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
-import { logTramaParametroHistoricoCambioParametroConcatenadoOmegaDf, logTramaParametroHistoricoCambioParametroOmegaDf, logTramaParametroHistoricoEbusFinalesOmegaDf, logTramaParametroHistoricoEstadisticoGenericoOmegaDf, logTramaParametroHistoricoEventoConcatenadoOmegaDf, logTramaParametroHistoricoEventoOmegaDf, logTramaParametroHistoricoFinCrianzaOmegaDf, logTramaParametroHistoricoInicioCrianzaOmegaDf, logTramaParametroHistoricoOld, logTramaParametroHistoricoOmegaDf } from 'src/utils/BE_Old/get/getEstadistico';
+import { logTramaParametroHistoricoAltasBajasOmegaDf, logTramaParametroHistoricoCambioParametroConcatenadoOmegaDf, logTramaParametroHistoricoCambioParametroOmegaDf, logTramaParametroHistoricoDebugStringOmegaDf, logTramaParametroHistoricoEbusFinalesOmegaDf, logTramaParametroHistoricoEntradaAnimalesOmegaDf, logTramaParametroHistoricoEstadisticoGenericoOmegaDf, logTramaParametroHistoricoEventoConcatenadoOmegaDf, logTramaParametroHistoricoEventoOmegaDf, logTramaParametroHistoricoFinCrianzaOmegaDf, logTramaParametroHistoricoInicioCrianzaOmegaDf, logTramaParametroHistoricoOld, logTramaParametroHistoricoOmegaDf } from 'src/utils/BE_Old/get/getEstadistico';
 import { logTramaCompletaTablaDispositivosOld } from 'src/utils/BE_Old/get/getTablaDispositivos';
 import { PROTO_VERSION_OLD } from 'src/utils/BE_Old/globals/constGlobales';
 import { EnEventosEstadisPropiedades, EnEventosEstadisTipo, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld, EnTipoMensajeCentralDispositivo, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
-import { START, END } from 'src/utils/LE/globals/constGlobales';
 import {
   EnTipoTrama,
   EnTmSistema,
   EnTipoEquipo,
   EnGcspaEventoActualizacionServer,
   EnTmEstadisticos,
-  EnTmDepuracion,
   EnEstadisPeriodicidad,
   EnEstadisticosControladores,
   EnGtUnidades,
@@ -61,7 +57,7 @@ export class TramaController {
   // * ----------------------------------------------- TT SISTEMAS -------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
-  // ------------------------------------------- PRESENTACION -------------------------------------------
+  //  PRESENTACION 
   /** POST /api/trama/presentacion
    * body (opcional): { nodoOrigen?, nodoDestino?, datos?: PresentacionDto }
    */
@@ -77,7 +73,9 @@ export class TramaController {
     }
   }
 
-  // ------------------------------------------- PRESENCIA -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  PRESENCIA 
   /** POST /api/trama/presencia
    * body (opcional): { nodoOrigen?, nodoDestino? }
    */
@@ -94,7 +92,9 @@ export class TramaController {
     }
   }
 
-  // ------------------------------------------- ESTADO DISPOSITIVO -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  ESTADO DISPOSITIVO 
   @Post('estadoDispositivo')
   async estadoDispositivo(@Query('ver') ver?: string) {
     const usePort = ver === '0' ? 8002 : 8003;
@@ -124,7 +124,9 @@ export class TramaController {
     else return enviarFrame;
   }
 
-  // ------------------------------------------- CONFIG FINAL -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  CONFIG FINAL 
   @Post('configFinal')
   async configFinal() {
     // Datos de ejemplo (doc 2.4.7)
@@ -147,7 +149,9 @@ export class TramaController {
     return !!ok && ok;
   }
 
-  // ------------------------------------------- URL DESCARGA OTA -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  URL DESCARGA OTA 
   @Post('urlDescargaOta')
   async urlDescargaOta() {
     // Datos de ejemplo (doc 1.1.1: solo dosimac por http; para pruebas puedes variar el tipo_equipo)
@@ -170,7 +174,9 @@ export class TramaController {
     return !!ok && ok;
   }
 
-  // ------------------------------------------- PROGRESO ACTUALIZACION -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  PROGRESO ACTUALIZACION 
   @Post('progresoActualizacion')
   async progresoActualizacion() {
     // Datos de ejemplo (doc 1.1.3)
@@ -340,7 +346,9 @@ export class TramaController {
     return { ok: true, enviados, desde: fi, hasta: ff, parsedPreiodicidad, tipo };
   }
 
-  // ------------------------------------------- VALOR (ej. tempSonda1) -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  VALOR (ej. tempSonda1) 
   /** POST /api/trama/tempSonda1 */
   @Post('tempSonda1')
   async tempSonda1() {
@@ -364,7 +372,9 @@ export class TramaController {
     return ok;
   }
 
-  // ------------------------------------------- CONTADOR (ej. contadorAgua) -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  CONTADOR (ej. contadorAgua) 
   /** POST /api/trama/contadorAgua */
   @Post('contadorAgua')
   async contadorAgua() {
@@ -388,7 +398,9 @@ export class TramaController {
     return ok;
   }
 
-  // ------------------------------------------- ACTIVIDAD (ej. actividadCalefaccion1) -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  ACTIVIDAD (ej. actividadCalefaccion1) 
   /** POST /api/trama/actividadCalefaccion1 */
   @Post('actividadCalefaccion1')
   async actividadCalefaccion1() {
@@ -412,7 +424,9 @@ export class TramaController {
     return ok;
   }
 
-  // ------------------------------------------- EVENTO (ej. inicioCrianza) -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  // EVENTO (ej. inicioCrianza) 
   /** POST /api/trama/eventoInicioCrianza */
   @Post('eventoInicioCrianza')
   async eventoInicioCrianza() {
@@ -437,7 +451,9 @@ export class TramaController {
     return ok;
   }
 
-  // ------------------------------------------- ALARMA (ej. alarmaTempAlta) -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  ALARMA (ej. alarmaTempAlta) 
   /** POST /api/trama/alarmaTempAlta */
   @Post('alarmaTempAlta')
   async alarmaTempAlta() {
@@ -460,6 +476,8 @@ export class TramaController {
     const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
     return ok;
   }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
   @Post('cambioParametro')
   async cambioParametro() {
@@ -546,6 +564,8 @@ export class TramaController {
     return okFin;
   }
 
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
   // ------------------------------------------- TABLA DISPOSITIVOS (OLD) -------------------------------------------
   @Post('cambioEstadoDispositivo')
   /** Se puede introducir por parámetro, opcionalmente: mac, nodo, estado, td (tipoDispositivo), version, hayAlarma */
@@ -626,6 +646,8 @@ export class TramaController {
     return ok;
   }
 
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
   @Post('estadisticoAltasBajasRetiradas')
   async estadisticoAltasBajasRetiradasOld(@Query('altaBajaRetirada') altaBajaRetirada?: string) {
 
@@ -665,6 +687,8 @@ export class TramaController {
 
   }
 
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
   @Post('estadisticoInicioFinOld')
   async estadisticoInicioFinOld(@Query('inicioFin') inicioFin?: string) {
 
@@ -693,6 +717,8 @@ export class TramaController {
     logTramaParametroHistoricoOld(bufferFrame);
     return ok;
   }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
   @Post('estadisticoAlarmasOld')
   async estadisticoAlarmasOld(@Query('alarma') alarma?: string) {
@@ -769,9 +795,7 @@ export class TramaController {
     return ok;
   }
 
-
-
-
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
   @Post('estadisticoAlarmaOmegaDf')
   async estadisticoAlarmaOmegaDf(
@@ -803,9 +827,7 @@ export class TramaController {
     return ok;
   }
 
-
-
-
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
   @Post('estadisticoEventoOmegaDf')
   async estadisticoEventoOmegaDf(
@@ -840,9 +862,7 @@ export class TramaController {
     return ok;
   }
 
-
-
-
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
   @Post('estadisticoEventoConcatenadoOmegaDf')
   async estadisticoEventoConcatenadoOmegaDf(
@@ -882,9 +902,7 @@ export class TramaController {
     return ok;
   }
 
-
-
-
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
   @Post('estadisticoGenericoOmegaDf')
   async estadisticoGenericoOmegaDf(
@@ -939,9 +957,7 @@ export class TramaController {
     return ok;
   }
 
-
-
-
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
   @Post('cambioParametroOmegaDf')
   async cambioParametroOmegaDf(
@@ -976,9 +992,7 @@ export class TramaController {
     return ok;
   }
 
-
-
-
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
   @Post('ebusFinalesOmegaDf')
   async ebusFinalesOmegaDf(
@@ -1012,8 +1026,7 @@ export class TramaController {
     return ok;
   }
 
-
-
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
   // =================== @Post para CAMBIO_PARAMETRO_CONCATENADO ===================
   // Selector simple por query: n0 (numérico) / t1 (valor textual)
@@ -1052,9 +1065,7 @@ export class TramaController {
     return ok;
   }
 
-
-
-
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
   // =================== @Post DF_INICIO_CRIANZA ===================
   // Selector por query: n0c1 → 0 = default numérico, 1 = default "crudo"
@@ -1090,59 +1101,148 @@ export class TramaController {
     return ok;
   }
 
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
+  // =================== @Post DF_FIN_CRIANZA ===================
+  // Selector por query: m0s1 → 0 = default mixtos, 1 = macho/hembra separado
+  @Post('finCrianzaOmegaDf')
+  async finCrianzaOmegaDf(
+    @Query('m0s1') m0s1?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
+    let dto = defaultParametroHistoricoOmegaFinCrianzaMixtos;
+    if (m0s1 !== undefined) {
+      const n = parseInt(m0s1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaFinCrianzaSeparado;
+    }
 
+    const data = serializarParametroHistoricoFinCrianzaOmegaDf(dto);
 
-  
-// =================== @Post DF_FIN_CRIANZA ===================
-// Selector por query: m0s1 → 0 = default mixtos, 1 = macho/hembra separado
-@Post('finCrianzaOmegaDf')
-async finCrianzaOmegaDf(
-  @Query('m0s1') m0s1?: string
-) {
-  await this.tcp.cambiarPuerto({ port: 8002 });
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
 
-  let dto = defaultParametroHistoricoOmegaFinCrianzaMixtos;
-  if (m0s1 !== undefined) {
-    const n = parseInt(m0s1);
-    if (n === 1) dto = defaultParametroHistoricoOmegaFinCrianzaSeparado;
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Logger opcional:
+    logTramaParametroHistoricoFinCrianzaOmegaDf(bufferFrame);
+
+    return ok;
   }
 
-  const data = serializarParametroHistoricoFinCrianzaOmegaDf(dto);
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
-  const frame = this.tcp.crearFrameOld({
-    nodoOrigen: 1,
-    nodoDestino: 0,
-    tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
-    tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
-    data,
-    versionProtocolo: PROTO_VERSION_OLD,
-  });
+  // =================== @Post ENTRADA_ANIMALES ===================
+  // Selector por query: m0h1 → 0 = default mixtos, 1 = solo hembras
+  @Post('entradaAnimalesOmegaDf')
+  async entradaAnimalesOmegaDf(
+    @Query('m0h1') m0h1?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
-  const ok = this.tcp.enviarFrameOld(frame);
-  const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+    let dto = defaultParametroHistoricoOmegaEntradaAnimalesMixtos;
+    if (m0h1 !== undefined) {
+      const n = parseInt(m0h1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaEntradaAnimalesSoloHembras;
+    }
 
-  // Logger opcional:
-   logTramaParametroHistoricoFinCrianzaOmegaDf(bufferFrame);
+    const data = serializarParametroHistoricoEntradaAnimalesOmegaDf(dto);
 
-  return ok;
-}
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
 
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
 
+    // Logger opcional
+    logTramaParametroHistoricoEntradaAnimalesOmegaDf(bufferFrame);
 
+    return ok;
+  }
 
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
+  // =================== @Post ALTAS_BAJAS ===================
+  // Selector por query: a0b1 → 0 = default ALTA, 1 = default BAJA
+  @Post('altasBajasOmegaDf')
+  async altasBajasOmegaDf(
+    @Query('a0b1') a0b1?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
+    let dto = defaultParametroHistoricoOmegaAltasBajasAlta;
+    if (a0b1 !== undefined) {
+      const n = parseInt(a0b1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaAltasBajasBaja;
+    }
 
+    const data = serializarParametroHistoricoAltasBajasOmegaDf(dto);
 
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
 
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
 
+    // Logger opcional:
+    logTramaParametroHistoricoAltasBajasOmegaDf(bufferFrame);
 
+    return ok;
+  }
 
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
+  // =================== @Post DEBUG_STRING ===================
+  // Selector por query: ok0val1 → 0 = default “OK”, 1 = default “valores”
+  @Post('debugStringOmegaDf')
+  async debugStringOmegaDf(
+    @Query('ok0val1') ok0val1?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
+    let dto = defaultParametroHistoricoOmegaDebugStringOk;
+    if (ok0val1 !== undefined) {
+      const n = parseInt(ok0val1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaDebugStringValores;
+    }
 
+    const data = serializarParametroHistoricoDebugStringOmegaDf(dto);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    logTramaParametroHistoricoDebugStringOmegaDf(bufferFrame);
+
+    return ok;
+  }
 
 
 
