@@ -1,4 +1,5 @@
 import { EnEventosEstadisFamilia, EnEventosEstadisPropiedades, EnEventosEstadisSubfamilia, EnEventosEstadisTipo, EnTipoDatoDFAccion } from "src/utils/BE_Old/globals/enumOld";
+import { EnTextos } from "src/utils/enumTextos";
 import { packValorDf4BE } from "src/utils/helpers";
 import { Fecha, Tiempo } from "src/utils/tiposGlobales";
 
@@ -150,18 +151,14 @@ export function serializarParametroHistoricoValorOmegaDf(
 }
 
 
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-
-
-
-
-
-
-
-
-
-
+// TIPO DATO EVENTO
 // ---------------------------------------- ParametroHistoricoOmegaEventoDto ----------------------------------------
 /** 5.9.6.3 — TM_envia_historico: EVENTO */
 export interface ParametroHistoricoOmegaEventoDto {
@@ -321,37 +318,19 @@ export function serializarParametroHistoricoEventoOmegaDf(
 }
 
 
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// EVENTO CONCATENADO
 // ---------------------------------------- ParametroHistoricoOmegaEventoConcatenadoDto ----------------------------------------
 /** 5.9.6.4 — TM_envia_historico: EVENTO_CONCATENADO */
 export interface ParametroHistoricoOmegaEventoConcatenadoDto {
   /** 8B: MAC del equipo. */
-  mac: Buffer;
+  mac: number | Buffer;
   /** 1B: tipo de dato (debería indicar “evento concatenado”). */
   tipoDato: EnTipoDatoDFAccion;
   /** 1B: identificador único dentro del segundo. */
@@ -367,7 +346,7 @@ export interface ParametroHistoricoOmegaEventoConcatenadoDto {
   /** 2B: propiedades (bitmask ENUM_EVENTOS_ESTADIS_PROPIEDADES). */
   propiedades: EnEventosEstadisPropiedades;
   /** 2B: identificador de la alarma/evento (texto). */
-  nombreAlarma: number;
+  nombreAlarma: number | EnTextos;
   /** 3B: fecha. */
   fecha: Fecha;
   /** 3B: hora. */
@@ -386,6 +365,148 @@ export interface ParametroHistoricoOmegaEventoConcatenadoDto {
    */
   cadenaConcatenada: Buffer;
 }
+
+/**
+ * Serializa la “data” de TM_envia_historico (EVENTO_CONCATENADO) a Buffer (BE).
+ * Layout (114 B):
+ *  8B  mac
+ *  1B  tipoDato
+ *  1B  identificadorUnicoDentroDelSegundo
+ *  2B  versionAlarmaConcatenada          (BE)
+ *  1B  tipo                              
+ *  1B  subfamilia
+ *  2B  familia                           (BE)
+ *  2B  propiedades                       (BE, bitmask)
+ *  2B  nombreAlarma                      (BE)
+ *  3B  fecha (dd, mm, yy)
+ *  3B  hora  (hh, mm, ss)
+ *  2B  diaCrianza (int16)                (BE)
+ *  4B  identificadorCrianzaUnico         (BE)
+ *  1B  reserva
+ *  1B  numeroBytesCadena                 (1..80) *
+ * 80B  cadenaConcatenada (máx. 80 bytes; UTF-16LE habitual)
+ *
+ * *La doc menciona 1..128 bytes, pero el array definido es de 40 * uint16 = 80 bytes.
+ *  Aquí validamos contra 80 para mantener coherencia con el tamaño real del bloque.
+ */
+export function serializarParametroHistoricoEventoConcatenadoOmegaDf(
+  d: ParametroHistoricoOmegaEventoConcatenadoDto
+): Buffer {
+  const OUT_LEN = 114;
+  const CADENA_MAX_BYTES = 80; // 40 * uint16
+
+  const out = Buffer.alloc(OUT_LEN);
+  let offset = 0;
+
+  // --- 8B MAC
+  // if (!Buffer.isBuffer(d.mac) || d.mac.length !== 8) {
+  //   throw new Error('MAC inválida: se espera Buffer de 8 bytes');
+  // }
+  // d.mac.copy(out, offset); offset += 8;
+
+
+  const macAny = d.mac as unknown as number | bigint | Buffer;
+
+  if (typeof macAny === 'number' || typeof macAny === 'bigint') {
+    let macBig = typeof macAny === 'bigint' ? macAny : BigInt(macAny);
+
+    // Validación de rango 0..2^64-1
+    if (macBig < 0n || macBig > 0xFFFF_FFFF_FFFF_FFFFn) { throw new Error('MAC inválida: fuera de rango (0..2^64-1)'); }
+
+    // Si tu Node soporta writeBigUInt64BE, úsalo; si no, fallback manual
+    if (typeof (out as any).writeBigUInt64BE === 'function') {
+      (out as any).writeBigUInt64BE(macBig, offset);
+    } else {
+      // Fallback: escribir BigInt byte a byte en BE
+      for (let i = 7; i >= 0; i--) {
+        out[offset + i] = Number(macBig & 0xFFn);
+        macBig >>= 8n;
+      }
+    }
+    offset += 8;
+
+  } else if (Buffer.isBuffer(macAny)) {
+    if (macAny.length !== 8) { throw new Error('MAC inválida: se espera Buffer de 8 bytes'); }
+    macAny.copy(out, offset); offset += 8;
+
+  } else { throw new Error('MAC inválida: se espera number|bigint o Buffer de 8 bytes'); }
+
+  // --- 1B tipoDato
+  out.writeUInt8((d.tipoDato as number) & 0xff, offset++);
+
+  // --- 1B identificador único dentro del segundo
+  out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, offset++);
+
+  // --- 2B versión alarma concatenada (BE)
+  out.writeUInt16BE(d.versionAlarmaConcatenada & 0xffff, offset); offset += 2;
+
+  // --- 1B tipo (ENUM_EVENTOS_ESTADIS_TIPO)
+  out.writeUInt8((d.tipo as number) & 0xff, offset++);
+
+  // --- 1B subfamilia
+  out.writeUInt8((d.subfamilia as number) & 0xff, offset++);
+
+  // --- 2B familia (BE)
+  out.writeUInt16BE((d.familia as number) & 0xffff, offset); offset += 2;
+
+  // --- 2B propiedades (bitmask, BE)
+  out.writeUInt16BE((d.propiedades as number) & 0xffff, offset); offset += 2;
+
+  // --- 2B nombreAlarma (BE)
+  out.writeUInt16BE((d.nombreAlarma as number) & 0xffff, offset); offset += 2;
+
+  // --- 3B fecha (dd, mm, yy)
+  {
+    const yy = (d.fecha.anyo ?? 0) % 100;
+    out.writeUInt8(d.fecha.dia & 0xff, offset++);
+    out.writeUInt8(d.fecha.mes & 0xff, offset++);
+    out.writeUInt8(yy & 0xff, offset++);
+  }
+
+  // --- 3B hora (hh, mm, ss)
+  out.writeUInt8(d.hora.hora & 0xff, offset++);
+  out.writeUInt8(d.hora.min & 0xff, offset++);
+  out.writeUInt8(d.hora.seg & 0xff, offset++);
+
+  // --- 2B diaCrianza (int16, BE)
+  out.writeInt16BE(d.diaCrianza | 0, offset); offset += 2;
+
+  // --- 4B identificadorCrianzaUnico (BE)
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, offset); offset += 4;
+
+  // --- 1B reserva
+  out.writeUInt8(d.reserva & 0xff, offset++);
+
+  // --- 1B numeroBytesCadena (1..80)
+  if (!Buffer.isBuffer(d.cadenaConcatenada)) { throw new Error('cadenaConcatenada inválida: se espera Buffer'); }
+  if (d.cadenaConcatenada.length > CADENA_MAX_BYTES) { throw new Error(`cadenaConcatenada demasiado larga: máx ${CADENA_MAX_BYTES} bytes (40 uint16)`); }
+
+  // Usamos el mínimo entre lo indicado y lo disponible, acotado a 80.
+  let nBytes = d.numeroBytesCadena;
+  if (typeof nBytes !== 'number' || !Number.isInteger(nBytes)) { throw new Error('numeroBytesCadena inválido: se espera entero'); }
+  nBytes = Math.min(nBytes, d.cadenaConcatenada.length, CADENA_MAX_BYTES);
+
+  if (nBytes < 1 || nBytes > CADENA_MAX_BYTES) { throw new Error(`numeroBytesCadena fuera de rango: 1..${CADENA_MAX_BYTES}`); }
+
+  out.writeUInt8(nBytes & 0xff, offset++);
+
+  // --- 80B cadenaConcatenada (relleno con ceros si sobra)
+  d.cadenaConcatenada.copy(out, offset, 0, nBytes);
+  offset += CADENA_MAX_BYTES; // reservamos el bloque completo
+
+  // Seguridad: offset debe ser 114
+  if (offset !== OUT_LEN) {
+    throw new Error(`Longitud inesperada al serializar (offset=${offset}, esperado=${OUT_LEN})`);
+  }
+  return out;
+}
+
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 // ---------------------------------------- ParametroHistoricoOmegaEstadisticoGenericoDto ----------------------------------------
@@ -425,6 +546,31 @@ export interface ParametroHistoricoOmegaEstadisticoGenericoDto {
   cadenaConcatenada: Buffer;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 // ---------------------------------------- ParametroHistoricoOmegaCambioParametroDfDto ----------------------------------------
 /** 5.9.6.6 — TM_envia_historico: DF_CAMBIO_PARAMETRO */
 export interface ParametroHistoricoOmegaCambioParametroDfDto {
@@ -455,6 +601,25 @@ export interface ParametroHistoricoOmegaCambioParametroDfDto {
   /** 4B: TEXT_titulo_personalizado (id/valor; se deja genérico) */
   variable3TextTituloPersonalizado: number | Buffer;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 // ---------------------------------------- ParametroHistoricoOmegaEbusFinalesDto ----------------------------------------
 /** 5.9.6.7 — TM_envia_historico: DATOS_EBUS_FINALES
@@ -504,6 +669,22 @@ export interface ParametroHistoricoOmegaEbusFinalesDto {
   /** 4B: TEXT_titulo_personalizado (id/valor; se deja genérico) */
   variable3TextTituloPersonalizado: number | Buffer;
 }
+
+
+
+
+
+
+
+
+
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 // ---------------------------------------- ParametroHistoricoOmegaCambioParametroConcatenadoDto ----------------------------------------
 /** 5.9.6.8 — TM_envia_historico: CAMBIO_PARAMETRO_CONCATENADO */
@@ -560,6 +741,37 @@ export interface ParametroHistoricoOmegaCambioParametroConcatenadoDto {
   cadenaConcatenada: Buffer;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 // ---------------------------------------- ParametroHistoricoOmegaInicioCrianzaDto ----------------------------------------
 /** 5.9.6.9 — TM_envia_historico: DF_INICIO_CRIANZA */
 export interface ParametroHistoricoOmegaInicioCrianzaDto {
@@ -602,6 +814,25 @@ export interface ParametroHistoricoOmegaInicioCrianzaDto {
   /** 4B: variable3 (reservado/uso específico) */
   variable3: number | Buffer;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 // ---------------------------------------- ParametroHistoricoOmegaFinCrianzaDto ----------------------------------------
 /** 5.9.6.10 — TM_envia_historico: DF_FIN_CRIANZA

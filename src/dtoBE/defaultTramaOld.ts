@@ -2,7 +2,7 @@ import { EnTipoEquipo } from "src/utils/LE/globals/enums";
 import { PresentacionCentralOldDto, TablaCentralItemOld } from "./tt_sistemaOld.dto";
 import { ParametroHistoricoOldDto } from "./tt_estadisticosOld.dto";
 import { EnEstadisticosNombres, EnEventosEstadisFamilia, EnEventosEstadisPropiedades, EnEventosEstadisSubfamilia, EnEventosEstadisTipo, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld } from "src/utils/BE_Old/globals/enumOld";
-import { ParametroHistoricoOmegaEventoDto, ParametroHistoricoValorOmegaDfDto } from "./tt_estadisticosOldDF.dto";
+import { ParametroHistoricoOmegaEventoConcatenadoDto, ParametroHistoricoOmegaEventoDto, ParametroHistoricoValorOmegaDfDto } from "./tt_estadisticosOldDF.dto";
 import { EnTextos } from "src/utils/enumTextos";
 
 // Presentación (Omega) – protocolo antiguo (Big Endian)
@@ -187,6 +187,8 @@ export const defaultParametroHistoricoAlarmaOmegaDf: ParametroHistoricoValorOmeg
 
 
 
+
+
 /** Objeto de ejemplo para enviar un EVENTO (Omega). */
 export const defaultParametroHistoricoOmegaEventoNormal: ParametroHistoricoOmegaEventoDto = {
   mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]), // 8B MAC del equipo (ejemplo típico 64 bits)
@@ -223,6 +225,63 @@ export const defaultParametroHistoricoOmegaEventoWarning: ParametroHistoricoOmeg
   nombreVariable: EnTextos.textWarningProg3NoFinalizadoSolapamiento,
 };
 
+
+
+
+
+const MAX_CADENA_BYTES_CONCAT = 80;
+const toCadena80 = (s: string) => {
+  const b = Buffer.from(s, 'utf16le');
+  return b.length > MAX_CADENA_BYTES_CONCAT ? b.subarray(0, MAX_CADENA_BYTES_CONCAT) : b;
+};
+
+// Cadenas por defecto (ejemplos)
+const cadenaConcatNormal = toCadena80('Evento: Alimentación iniciada');
+const cadenaConcatAlarma = toCadena80('Alarma: Agua derrame detectado');
+const cadenaConcatWarning = toCadena80('Warning: Programación 3 no finalizada (solape)');
+
+// ---------------------------------------- EVENTO_CONCATENADO: NORMAL ----------------------------------------
+export const defaultParametroHistoricoOmegaEventoConcatenadoNormal: ParametroHistoricoOmegaEventoConcatenadoDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),     // 8B MAC
+  tipoDato: EnTipoDatoDFAccion.eventoConcatenado,                          // 43
+  identificadorUnicoDentroDelSegundo: 0,                                   // si hay varias tramas en el mismo segundo
+  versionAlarmaConcatenada: 1,                                             // versión de estructura concatenada
+  tipo: EnEventosEstadisTipo.evento,                                       // NORMAL = evento
+  subfamilia: EnEventosEstadisSubfamilia.noDefinido,
+  familia: EnEventosEstadisFamilia.alimentacion,                           // p.ej. Alimentación avanzada
+  propiedades: (
+    EnEventosEstadisPropiedades.accionEventoOn |                           // ON/activo
+    EnEventosEstadisPropiedades.eventoSonoro                               // sonoro
+  ) as EnEventosEstadisPropiedades,
+  nombreAlarma: EnTextos.textEventos,                                      // identificador texto asociado
+  fecha: { dia: 1, mes: 1, anyo: 2023 },
+  hora: { hora: 0, min: 0, seg: 0 },
+  diaCrianza: 12,
+  identificadorCrianzaUnico: 0,
+  reserva: 0,
+  numeroBytesCadena: cadenaConcatNormal.length,                            // máx. 80 bytes
+  cadenaConcatenada: cadenaConcatNormal,
+};
+
+// ---------------------------------------- EVENTO_CONCATENADO: ALARMA ----------------------------------------
+export const defaultParametroHistoricoOmegaEventoConcatenadoAlarma: ParametroHistoricoOmegaEventoConcatenadoDto = {
+  ...defaultParametroHistoricoOmegaEventoConcatenadoNormal,
+  tipo: EnEventosEstadisTipo.alarmas,
+  propiedades: EnEventosEstadisPropiedades.eventoSonoro,                   // como tu patrón en alarma simple
+  nombreAlarma: EnTextos.textAlarma4,
+  numeroBytesCadena: cadenaConcatAlarma.length,
+  cadenaConcatenada: cadenaConcatAlarma,
+};
+
+// ---------------------------------------- EVENTO_CONCATENADO: WARNING ----------------------------------------
+export const defaultParametroHistoricoOmegaEventoConcatenadoWarning: ParametroHistoricoOmegaEventoConcatenadoDto = {
+  ...defaultParametroHistoricoOmegaEventoConcatenadoNormal,
+  tipo: EnEventosEstadisTipo.warning,
+  propiedades: EnEventosEstadisPropiedades.accionEventoOn,                 // como tu patrón en warning simple
+  nombreAlarma: EnTextos.textWarningProg3NoFinalizadoSolapamiento,
+  numeroBytesCadena: cadenaConcatWarning.length,
+  cadenaConcatenada: cadenaConcatWarning,
+};
 
 
 //* -------------------------------------------------------------------------------------------------------------------

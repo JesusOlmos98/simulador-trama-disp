@@ -1,8 +1,8 @@
 import { Controller, Post, Query, BadRequestException } from '@nestjs/common';
-import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld, defaultParametroHistoricoAlarmaOmegaDf, defaultParametroHistoricoOmegaEventoAlarma, defaultParametroHistoricoOmegaEventoNormal, defaultParametroHistoricoOmegaEventoWarning } from 'src/dtoBE/defaultTramaOld';
+import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld, defaultParametroHistoricoAlarmaOmegaDf, defaultParametroHistoricoOmegaEventoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoNormal, defaultParametroHistoricoOmegaEventoConcatenadoWarning, defaultParametroHistoricoOmegaEventoNormal, defaultParametroHistoricoOmegaEventoWarning } from 'src/dtoBE/defaultTramaOld';
 import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
 import { serializarParametroHistoricoOld } from 'src/dtoBE/tt_estadisticosOld.dto';
-import { serializarParametroHistoricoEventoOmegaDf, serializarParametroHistoricoValorOmegaDf } from 'src/dtoBE/tt_estadisticosOldDF.dto';
+import { serializarParametroHistoricoEventoConcatenadoOmegaDf, serializarParametroHistoricoEventoOmegaDf, serializarParametroHistoricoValorOmegaDf } from 'src/dtoBE/tt_estadisticosOldDF.dto';
 import {
   defaultDataTempSonda1,
   defaultDataContadorAgua,
@@ -22,7 +22,7 @@ import {
   ProgresoActualizacionTxDto,
 } from 'src/dtoLE/tt_sistema.dto';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
-import { logTramaParametroHistoricoEventoOmegaDf, logTramaParametroHistoricoOld, logTramaParametroHistoricoOmegaDf } from 'src/utils/BE_Old/get/getEstadistico';
+import { logTramaParametroHistoricoEventoConcatenadoOmegaDf, logTramaParametroHistoricoEventoOmegaDf, logTramaParametroHistoricoOld, logTramaParametroHistoricoOmegaDf } from 'src/utils/BE_Old/get/getEstadistico';
 import { logTramaCompletaTablaDispositivosOld } from 'src/utils/BE_Old/get/getTablaDispositivos';
 import { PROTO_VERSION_OLD } from 'src/utils/BE_Old/globals/constGlobales';
 import { EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld, EnTipoMensajeCentralDispositivo, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
@@ -831,6 +831,43 @@ export class TramaController {
     return ok;
   }
 
+@Post('estadisticoEventoConcatenadoOmegaDf')
+async estadisticoEventoConcatenadoOmegaDf(
+  @Query('e0a1w2') e0a1w2?: string
+) {
+  // Puerto del simulador para histórico Omega
+  await this.tcp.cambiarPuerto({ port: 8002 });
+
+  // Elegimos el default según e0a1w2: 0=evento normal, 1=alarma, 2=warning (por defecto: normal)
+  let dto = defaultParametroHistoricoOmegaEventoConcatenadoNormal;
+  if (e0a1w2 !== undefined) {
+    const n = parseInt(e0a1w2);
+    if (n === 1) dto = defaultParametroHistoricoOmegaEventoConcatenadoAlarma;
+    else if (n === 2) dto = defaultParametroHistoricoOmegaEventoConcatenadoWarning;
+  }
+
+  // Serializamos DATA para TM_envia_historico: EVENTO_CONCATENADO
+  const data = serializarParametroHistoricoEventoConcatenadoOmegaDf(dto);
+
+  // Construimos el frame OLD
+  const frame = this.tcp.crearFrameOld({
+    nodoOrigen: 1,
+    nodoDestino: 0,
+    tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // (=6)
+    tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+    data,
+    versionProtocolo: PROTO_VERSION_OLD,
+  });
+
+  // Enviamos y (opcional) log de la trama
+  const ok = this.tcp.enviarFrameOld(frame);
+  const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+  // Si tienes un logger específico para EVENTO_CONCATENADO, descomenta la línea de abajo:
+  logTramaParametroHistoricoEventoConcatenadoOmegaDf(bufferFrame);
+
+  return ok;
+}
 
 
 
