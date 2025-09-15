@@ -7,7 +7,6 @@ import { ParametroHistoricoOldDto } from "src/dtoBE/tt_estadisticosOld.dto";
 import { PresentacionCentralOldDto, RtTablaCentralFinOldDto, RtTablaCentralMasOldDto, serializarTablaCentralItemsOld, TablaCentralItemOld } from "src/dtoBE/tt_sistemaOld.dto";
 import { defaultDataTempSonda1, defaultDataContadorAgua, defaultDataActividadCalefaccion1, defaultDataEventoInicioCrianza, defaultDataAlarmaTempAlta, defaultDataCambioParametro, defaultPresentacionCTI40 } from "src/dtoLE/defaultTrama";
 import { FrameDto } from "src/dtoLE/frame.dto";
-import { PeticionConsolaDto } from "src/dtoLE/tt_depuracion.dto";
 import { EnviaEstadisticoDto } from "src/dtoLE/tt_estadisticos.dto";
 import { PresentacionDto, EstadoDispositivoTxDto, ConfigFinalTxDto, UrlDescargaOtaTxDto, ProgresoActualizacionTxDto } from "src/dtoLE/tt_sistema.dto";
 import { DEF_MAX_DATOS_TRAMA, MAX_ITEMS_PER_FRAME, PROTO_VERSION_OLD } from "src/utils/BE_Old/globals/constGlobales";

@@ -1,7 +1,7 @@
 import { Controller, Post, Query, BadRequestException } from '@nestjs/common';
-import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld, defaultParametroHistoricoAlarmaOmegaDf, defaultParametroHistoricoOmegaAltasBajasAlta, defaultParametroHistoricoOmegaAltasBajasBaja, defaultParametroHistoricoOmegaCambioParametroConcatenadoNumerico, defaultParametroHistoricoOmegaCambioParametroConcatenadoTexto, defaultParametroHistoricoOmegaCambioParametroFecha, defaultParametroHistoricoOmegaCambioParametroTiempo, defaultParametroHistoricoOmegaCambioParametroUint16, defaultParametroHistoricoOmegaDebugStringOk, defaultParametroHistoricoOmegaDebugStringValores, defaultParametroHistoricoOmegaEbusFinalesA, defaultParametroHistoricoOmegaEbusFinalesB, defaultParametroHistoricoOmegaEntradaAnimalesMixtos, defaultParametroHistoricoOmegaEntradaAnimalesSoloHembras, defaultParametroHistoricoOmegaEstadisticoGenerico, defaultParametroHistoricoOmegaEventoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoNormal, defaultParametroHistoricoOmegaEventoConcatenadoWarning, defaultParametroHistoricoOmegaEventoNormal, defaultParametroHistoricoOmegaEventoWarning, defaultParametroHistoricoOmegaFinCrianzaMixtos, defaultParametroHistoricoOmegaFinCrianzaSeparado, defaultParametroHistoricoOmegaInicioCrianza, defaultParametroHistoricoOmegaInicioCrianzaCrudo } from 'src/dtoBE/defaultTramaOld';
+import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld, defaultParametroHistoricoAlarmaOmegaDf, defaultParametroHistoricoOmegaAltasBajasAlta, defaultParametroHistoricoOmegaAltasBajasBaja, defaultParametroHistoricoOmegaCambioParametroConcatenadoNumerico, defaultParametroHistoricoOmegaCambioParametroConcatenadoTexto, defaultParametroHistoricoOmegaCambioParametroFecha, defaultParametroHistoricoOmegaCambioParametroTiempo, defaultParametroHistoricoOmegaCambioParametroUint16, defaultParametroHistoricoOmegaDebugStringOk, defaultParametroHistoricoOmegaDebugStringValores, defaultParametroHistoricoOmegaEbusFinalesA, defaultParametroHistoricoOmegaEbusFinalesB, defaultParametroHistoricoOmegaEntradaAnimalesMixtos, defaultParametroHistoricoOmegaEntradaAnimalesSoloHembras, defaultParametroHistoricoOmegaEstadisticoGenerico, defaultParametroHistoricoOmegaEstadisticoGenericoAlarma, defaultParametroHistoricoOmegaEstadisticoGenericoEvento, defaultParametroHistoricoOmegaEstadisticoGenericoWarning, defaultParametroHistoricoOmegaEventoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoNormal, defaultParametroHistoricoOmegaEventoConcatenadoWarning, defaultParametroHistoricoOmegaEventoNormal, defaultParametroHistoricoOmegaEventoWarning, defaultParametroHistoricoOmegaFinCrianzaMixtos, defaultParametroHistoricoOmegaFinCrianzaSeparado, defaultParametroHistoricoOmegaInicioCrianza, defaultParametroHistoricoOmegaInicioCrianzaCrudo } from 'src/dtoBE/defaultTramaOld';
 import { serializarParametroHistoricoOld } from 'src/dtoBE/tt_estadisticosOld.dto';
-import { serializarParametroHistoricoAltasBajasOmegaDf, serializarParametroHistoricoCambioParametroConcatenadoOmegaDf, serializarParametroHistoricoCambioParametroOmegaDf, serializarParametroHistoricoDebugStringOmegaDf, serializarParametroHistoricoEbusFinalesOmegaDf, serializarParametroHistoricoEntradaAnimalesOmegaDf, serializarParametroHistoricoEstadisticoGenericoOmegaDf, serializarParametroHistoricoEventoConcatenadoOmegaDf, serializarParametroHistoricoEventoOmegaDf, serializarParametroHistoricoFinCrianzaOmegaDf, serializarParametroHistoricoInicioCrianzaOmegaDf, serializarParametroHistoricoValorOmegaDf } from 'src/dtoBE/tt_estadisticosOldDF.dto';
+import { ParametroHistoricoOmegaEstadisticoGenericoDto, serializarParametroHistoricoAltasBajasOmegaDf, serializarParametroHistoricoCambioParametroConcatenadoOmegaDf, serializarParametroHistoricoCambioParametroOmegaDf, serializarParametroHistoricoDebugStringOmegaDf, serializarParametroHistoricoEbusFinalesOmegaDf, serializarParametroHistoricoEntradaAnimalesOmegaDf, serializarParametroHistoricoEstadisticoGenericoOmegaDf, serializarParametroHistoricoEventoConcatenadoOmegaDf, serializarParametroHistoricoEventoOmegaDf, serializarParametroHistoricoFinCrianzaOmegaDf, serializarParametroHistoricoInicioCrianzaOmegaDf, serializarParametroHistoricoValorOmegaDf } from 'src/dtoBE/tt_estadisticosOldDF.dto';
 import {
   defaultDataTempSonda1,
   defaultDataContadorAgua,
@@ -23,7 +23,7 @@ import { TcpClientService } from 'src/tcp-client/tcp-client.service';
 import { logTramaParametroHistoricoAltasBajasOmegaDf, logTramaParametroHistoricoCambioParametroConcatenadoOmegaDf, logTramaParametroHistoricoCambioParametroOmegaDf, logTramaParametroHistoricoDebugStringOmegaDf, logTramaParametroHistoricoEbusFinalesOmegaDf, logTramaParametroHistoricoEntradaAnimalesOmegaDf, logTramaParametroHistoricoEstadisticoGenericoOmegaDf, logTramaParametroHistoricoEventoConcatenadoOmegaDf, logTramaParametroHistoricoEventoOmegaDf, logTramaParametroHistoricoFinCrianzaOmegaDf, logTramaParametroHistoricoInicioCrianzaOmegaDf, logTramaParametroHistoricoOld, logTramaParametroHistoricoOmegaDf } from 'src/utils/BE_Old/get/getEstadistico';
 import { logTramaCompletaTablaDispositivosOld } from 'src/utils/BE_Old/get/getTablaDispositivos';
 import { PROTO_VERSION_OLD } from 'src/utils/BE_Old/globals/constGlobales';
-import { EnEventosEstadisPropiedades, EnEventosEstadisTipo, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld, EnTipoMensajeCentralDispositivo, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
+import { EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
 import {
   EnTipoTrama,
   EnTmSistema,
@@ -34,7 +34,6 @@ import {
   EnEstadisticosControladores,
   EnGtUnidades,
 } from 'src/utils/LE/globals/enums';
-import { EnTextos } from 'src/utils/enumTextos';
 import { mac8FromParam, parseDmYToFecha } from 'src/utils/helpers';
 import { josLogger } from 'src/utils/josLogger';
 import { Fecha, Tiempo } from 'src/utils/tiposGlobales';
@@ -911,27 +910,12 @@ export class TramaController {
     // Puerto del simulador para histórico Omega
     await this.tcp.cambiarPuerto({ port: 8002 });
 
-    // Partimos del default y, opcionalmente, adaptamos tipo/props como en e0a1w2: 0=evento, 1=alarma, 2=warning
-    const dto = { ...defaultParametroHistoricoOmegaEstadisticoGenerico };
-
+    // Seleccionamos el DTO completo según e0a1w2: 0=evento, 1=alarma, 2=warning (por defecto: evento)
+    let dto: ParametroHistoricoOmegaEstadisticoGenericoDto = defaultParametroHistoricoOmegaEstadisticoGenericoEvento;
     if (e0a1w2 !== undefined) {
       const n = parseInt(e0a1w2);
-      if (n === 1) {
-        dto.tipo = EnEventosEstadisTipo.alarmas;
-        dto.propiedades = EnEventosEstadisPropiedades.eventoSonoro;
-        dto.nombreAlarma = EnTextos.textAlarma4 as unknown as number;
-      } else if (n === 2) {
-        dto.tipo = EnEventosEstadisTipo.warning;
-        dto.propiedades = EnEventosEstadisPropiedades.accionEventoOn;
-        dto.nombreAlarma = EnTextos.textWarningProg3NoFinalizadoSolapamiento as unknown as number;
-      } else {
-        dto.tipo = EnEventosEstadisTipo.evento;
-        dto.propiedades = (
-          EnEventosEstadisPropiedades.accionEventoOn |
-          EnEventosEstadisPropiedades.eventoSonoro
-        ) as EnEventosEstadisPropiedades;
-        dto.nombreAlarma = EnTextos.textEventos as unknown as number;
-      }
+      if (n === 1) dto = defaultParametroHistoricoOmegaEstadisticoGenericoAlarma;
+      else if (n === 2) dto = defaultParametroHistoricoOmegaEstadisticoGenericoWarning;
     }
 
     // Serializamos DATA para TM_envia_historico: ESTADISTICO_GENERICO (layout 114B)
@@ -951,7 +935,6 @@ export class TramaController {
     const ok = this.tcp.enviarFrameOld(frame);
     const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
 
-    // Si implementas un logger específico, descomenta:
     logTramaParametroHistoricoEstadisticoGenericoOmegaDf(bufferFrame);
 
     return ok;

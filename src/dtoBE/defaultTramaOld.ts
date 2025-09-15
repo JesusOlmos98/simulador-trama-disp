@@ -308,6 +308,30 @@ export const defaultParametroHistoricoOmegaEstadisticoGenerico: ParametroHistori
   cadenaConcatenada: cadenaEstadGenerico,
 };
 
+export const defaultParametroHistoricoOmegaEstadisticoGenericoEvento: ParametroHistoricoOmegaEstadisticoGenericoDto = {
+  ...defaultParametroHistoricoOmegaEstadisticoGenerico,
+  tipo: EnEventosEstadisTipo.evento,
+  propiedades: (
+    EnEventosEstadisPropiedades.accionEventoOn |
+    EnEventosEstadisPropiedades.eventoSonoro
+  ) as EnEventosEstadisPropiedades,
+  nombreAlarma: EnTextos.textEventos as unknown as number,
+};
+
+export const defaultParametroHistoricoOmegaEstadisticoGenericoAlarma: ParametroHistoricoOmegaEstadisticoGenericoDto = {
+  ...defaultParametroHistoricoOmegaEstadisticoGenerico,
+  tipo: EnEventosEstadisTipo.alarmas,
+  propiedades: EnEventosEstadisPropiedades.eventoSonoro,
+  nombreAlarma: EnTextos.textAlarma4 as unknown as number,
+};
+
+export const defaultParametroHistoricoOmegaEstadisticoGenericoWarning: ParametroHistoricoOmegaEstadisticoGenericoDto = {
+  ...defaultParametroHistoricoOmegaEstadisticoGenerico,
+  tipo: EnEventosEstadisTipo.warning,
+  propiedades: EnEventosEstadisPropiedades.accionEventoOn,
+  nombreAlarma: EnTextos.textWarningProg3NoFinalizadoSolapamiento as unknown as number,
+};
+
 // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ---------- DEFAULT: NUMÉRICO (uint16) ----------

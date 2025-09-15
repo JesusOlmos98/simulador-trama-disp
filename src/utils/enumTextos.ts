@@ -102,8 +102,6 @@ export enum EnTextos {
   textDisponible = 89,
   textVerificando = 90,
 
-
-
   textCurvaCalefaccion = 91,
   textInfluenciaAmbiente = 92,
   textSondas = 93,
@@ -168,8 +166,6 @@ export enum EnTextos {
   textAbierto = 152,
   textCerrado = 153,
 
-
-
   textIdioma = 154,
   textEspanol = 155,
   textIngles = 156,
@@ -219,8 +215,6 @@ export enum EnTextos {
   textHumedad1 = 200,
   textHumedad2 = 201,
   textTipo = 202,
-
-
 
   textEntradaAireA = 203,
   textEntradaAireB = 204,
@@ -325,8 +319,6 @@ export enum EnTextos {
   textHoraRed = 303,
   textHoraManual = 304,
   textRele1 = 305,
-
-
 
   textReleAutoNc = 306,
   textReleAutoNa = 307,
@@ -446,8 +438,6 @@ export enum EnTextos {
   textVentilacionInicio = 421,
   textVentilacionFin = 422,
 
-
-
   textInicioCorreccion = 423,
   textFinCorreccion = 424,
   textHayAlarmas = 425,
@@ -518,8 +508,6 @@ export enum EnTextos {
   textVentilador30 = 490,
   textVentilador31 = 491,
   textVentilador32 = 492,
-
-
 
   textEntradaAnalogica1 = 493,
   textEntradaAnalogica2 = 494,
@@ -628,8 +616,6 @@ export enum EnTextos {
   textVersionProduccion = 597,
   textCfmInferiorGrupoAnterior = 598,
   textNoHayTelefonosDefinidos = 599,
-
-
 
   text________ = 600,
   textL______ = 601,
@@ -760,8 +746,6 @@ export enum EnTextos {
   text__MMJVSD = 726,
   textLMMJVSD = 727,
 
-
-
   textCfmKInicio = 728,
   textCfmKFin = 729,
   textTablaCfmPorAnimal = 730,
@@ -845,8 +829,6 @@ export enum EnTextos {
   textL8 = 808,
   textI = 809,
 
-
-
   textRegulada = 810,
   textOnOff = 811,
   textReleAlimentacion = 812,
@@ -925,8 +907,6 @@ export enum EnTextos {
   textT4R14 = 885,
   textT4R15 = 886,
   textT4R16 = 887,
-
-
 
   textInfluenciaSensacionTermicaRefrigeracion = 888,
   textConectarRefrigeracion = 889,
@@ -1011,8 +991,6 @@ export enum EnTextos {
   textEtapa31 = 970,
   textEtapa32 = 971,
 
-
-
   textNVentiladoresFijos = 972,
   textNVentiladoresTemporizados = 973,
   textVentiladoresEstaticos = 974,
@@ -1079,8 +1057,6 @@ export enum EnTextos {
   textFinEaE = 1035,
   textFinEaT = 1036,
 
-
-
   textControlTemperaturaExteriorHisteresis = 1037,
   textInfluenciaHumedadHisteresis = 1038,
   textInfluenciaHumedadValorActiva = 1039,
@@ -1142,8 +1118,6 @@ export enum EnTextos {
   textExpa = 1095,
   textTurcoIdioma = 1096,
 
-
-
   textEntrada0101 = 1100,
   textEntrada0102 = 1101,
   textEntrada0103 = 1102,
@@ -1193,8 +1167,6 @@ export enum EnTextos {
   textVentilacionMinimaAbsoluta = 1154,
   textAceptar = 1155,
 
-
-
   textMensajeNoEditarOtraEdit1 = 1157,
   textTc5 = 1158,
   textExpa1 = 1159,
@@ -1228,8 +1200,6 @@ export enum EnTextos {
   textFinEntradaAireT = 1206,
   textFinEntradaAireA3 = 1207,
   textFinEntradaAireB3 = 1208,
-
-
 
   textMensajeConfirmacionCambioModoVent1 = 1210,
   textS1T = 1220,
@@ -1270,8 +1240,6 @@ export enum EnTextos {
   textVentiladoresDistintosKm3 = 1256,
   textTotalVentilacionCalculada = 1257,
 
-
-
   textMensajeVentCalCorregidaMinMax1 = 1258,
   textFijosTempoMenorQueConfigurados = 1259,
   textMensajeTotalVentModificada1 = 1264,
@@ -1296,8 +1264,6 @@ export enum EnTextos {
   textRangoCriadero2 = 1303,
   textVentilacionTodaLaNave = 1304,
   textControlPorCrianza = 1305,
-
-
 
   textIluminacionReleA = 1306,
   textIluminacionReleB = 1307,
@@ -1345,8 +1311,6 @@ export enum EnTextos {
   textVersionUvi = 1353,
   textNoCompatibleConEquipo = 1354,
   textVentilacionTunel = 1355,
-
-
 
   textOffsetNatural = 1356,
   textOffsetSalidaNatural = 1357,
@@ -1397,8 +1361,6 @@ export enum EnTextos {
   textFinalCarreraClose = 1427,
   textEntradaPotenciometro = 1428,
   textEntradasDigitales = 1429,
-
-
 
   textMotorDirectoD1 = 1430,
   textMotorDirectoD2 = 1431,
@@ -1473,8 +1435,6 @@ export enum EnTextos {
   textHisteresisAlarmaRelativa = 1500,
   textHisteresisAlarmaHumedad = 1501,
 
-
-
   textSondasAlarmaDiferencia = 1502,
   textHisteresisAlarmaCo2 = 1503,
   textHisteresisAlarmaNh3 = 1504,
@@ -1539,8 +1499,6 @@ export enum EnTextos {
   textSemana8 = 1564,
   textSemana9 = 1565,
   textSemana10 = 1566,
-
-
 
   textOrigenesPienso = 1567,
   textDestinosPienso = 1568,
@@ -1621,8 +1579,6 @@ export enum EnTextos {
   textMultiplicador = 1643,
   textUnidad = 1644,
 
-
-
   textGramo = 1645,
   textKgramo = 1646,
   textLitros = 1647,
@@ -1698,8 +1654,6 @@ export enum EnTextos {
   text8 = 1717,
   text9 = 1718,
 
-
-
   textHumedadInterior1 = 1719,
   textHumedadInterior2 = 1720,
   textVisualizacionSondas = 1721,
@@ -1753,8 +1707,6 @@ export enum EnTextos {
   textTablaMixtos = 1813,
   textTablaMachos = 1814,
   textTablaHembras = 1815,
-
-
 
   textEstadisticasCrianzaActual = 1816,
   textEstadisticasUltimosRegistros = 1817,
@@ -1826,8 +1778,6 @@ export enum EnTextos {
   textEstadisticoNh3InteriorHoraMin = 1885,
   textEstadisticoNh3InteriorDiaMax = 1886,
   textEstadisticoNh3InteriorDiaMin = 1887,
-
-
 
   textEstadisticoActividadCal1Hora = 1888,
   textEstadisticoActividadCal2Hora = 1889,
@@ -1950,8 +1900,6 @@ export enum EnTextos {
   textInfluenciaMaximosAlarmasTemperatura = 2006,
   textIncrementoRelativaYDiferenciaMaximas = 2007,
 
-
-
   textEquipoOff = 2008,
   textEquipoOn = 2009,
   textAlarmasOnOff = 2010,
@@ -2041,8 +1989,6 @@ export enum EnTextos {
   textPotenciometroLlegandoExtremoInferior = 2106,
   textPotenciometroLlegandoExtremoSuperior = 2107,
   textMuevaPotenciometro = 2108,
-
-
 
   textCurvaRangoDeTemperatura = 2109,
   textSinEtapasConfiguradas = 2110,
@@ -2159,8 +2105,6 @@ export enum EnTextos {
   textPesoMedioTotal = 2234,
   textDepresionDeseadaRegulada = 2235,
 
-
-
   textDepreRegulada = 2236,
   textDepreTunel = 2237,
   textCorreccionMaximaSobreCalculadaCerrando = 2238,
@@ -2202,8 +2146,6 @@ export enum EnTextos {
   textMilesimasDeGalon = 2277,
   textUnidadesLitros = 2280,
   textUnidadesGalon = 2281,
-
-
 
   textUnidades = 2284,
   textLiquidos = 2285,
@@ -2257,26 +2199,6 @@ export enum EnTextos {
   textNumeroPesadasPw1 = 2339,
   textNumeroPesadasPw2 = 2340,
   textNumeroPesadasPw3 = 2341,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textPesoPw1 = 2342,
   textPesoPw2 = 2343,
@@ -2341,24 +2263,6 @@ export enum EnTextos {
   textBloqueado = 2403,
   textDiaActual = 2404,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textReloj1Programa1 = 2405,
   textReloj1Programa2 = 2406,
   textReloj1Programa3 = 2407,
@@ -2420,28 +2324,6 @@ export enum EnTextos {
   textIluminacionSinPunto = 2468,
   textM3EtapaAnteriorFin = 2475,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textDosificacionAguaPunto1 = 2476,
   textDosificacionAguaPunto2 = 2477,
   textDosificacionAguaPunto3 = 2478,
@@ -2501,20 +2383,6 @@ export enum EnTextos {
   textNumeroVentanasT1Criadero1 = 2542,
   textNumeroVentanasT2Criadero1 = 2543,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textNumeroVentanasA1Criadero2 = 2544,
   textNumeroVentanasB1Criadero2 = 2545,
   textNumeroVentanasA2Criadero2 = 2546,
@@ -2553,21 +2421,6 @@ export enum EnTextos {
   textEeprom = 2588,
   textOk = 2589,
   textDataFlash = 2590,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textEstadisticoEtapaCriadero1Hora = 2591,
   textEstadisticoEtapaCriadero2Hora = 2592,
@@ -2621,21 +2474,6 @@ export enum EnTextos {
   textEstadisticoPesoBascula3Dia = 2647,
   textEstadisticoPesoAnimalDia = 2648,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textEstadisticoGananciaPesoDia = 2649,
   textEstadisticoConsumoPorAnimalDia = 2650,
   textEstadisticoAcumuladoConsumoPorAnimalCrianzaDia = 2651,
@@ -2684,19 +2522,6 @@ export enum EnTextos {
   textPorFavorEspereUsb = 2694,
   textClaveRequeridaParaEdicion = 2695,
   textClaveRequeridaParaNavegacion = 2696,
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textAddPunto = 2697,
   textEliminarPuntoCurvaClimatica = 2698,
@@ -2749,46 +2574,6 @@ export enum EnTextos {
   textMensaVentiInfluCalefacTiempoEsperaEvaluar = 2745,
   textMensaVentiInfluCalefacOffsetMaximoSobreTemperaturaDeseada = 2746,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textRefrigeracionInfluenciaHoraria = 2747,
   textRefrigeracionInfluenciaIluminacion = 2748,
   textCurvaRefrigeracion = 2749,
@@ -2821,31 +2606,6 @@ export enum EnTextos {
   textEntradasAireInfluenciaTemperaturaInterior = 2776,
   textSondasSeccionReferencia = 2777,
   textSondasSeccionCorregir = 2778,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textNoCorregir = 2779,
   textCorregir = 2780,
@@ -2887,43 +2647,6 @@ export enum EnTextos {
   textReleB = 2816,
   textReleC = 2817,
   textReleD = 2818,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textVentilacionRelesAuxiliares = 2819,
   textSinRelesAsignados = 2820,
@@ -2968,27 +2691,6 @@ export enum EnTextos {
   textN = 2866,
   textResetConfiguracion = 2867,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textEntradaAireA3 = 2868,
   textEntradaAireB3 = 2869,
   textInicioEntradaAireA3 = 2874,
@@ -3018,27 +2720,6 @@ export enum EnTextos {
   textMaxLateralB3 = 2926,
   textMaxEaA3 = 2930,
   textMaxEaB3 = 2931,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textOffsetMinLateralA3 = 2935,
   textMinLateralA3 = 2936,
@@ -3096,17 +2777,6 @@ export enum EnTextos {
   textContador2Gas = 3038,
   textContador2Medicamentos = 3039,
 
-
-
-
-
-
-
-
-
-
-
-
   textContador3Otros = 3055,
   textContador3ElectricoPrincipal = 3056,
   textContador3ElectricoSecundario = 3057,
@@ -3149,27 +2819,6 @@ export enum EnTextos {
   textHoraActual = 3197,
   textNumeroDecimalesMostrar = 3198,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textEntradasDeAireAjustes = 3199,
   textCierreEntradasDeAirePorParoDeLaVentilacion = 3200,
   textM32 = 3201,
@@ -3202,15 +2851,6 @@ export enum EnTextos {
   textIniciandoActualizacion = 3228,
   textMemoriaDeSistemaBaja = 3229,
   textSeHaPerdidoLaConexionEtcEbus = 3230,
-
-
-
-
-
-
-
-
-
 
   textActivada = 3231,
   textRecomendableActualizar = 3232,
@@ -3250,25 +2890,6 @@ export enum EnTextos {
   textProgramaPorCantidad = 3268,
   textLlenadoPorCantidad = 3269,
   textFinalizar = 3270,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textOrigenReleA = 3271,
   textOrigenReleB = 3272,
@@ -3310,10 +2931,6 @@ export enum EnTextos {
   textSiloConCelulaCarga = 3315,
   textWifi = 3316,
   textModem = 3317,
-
-
-
-
 
   textEscaneaRedes = 3318,
   textDatosMoviles = 3319,
@@ -3358,19 +2975,6 @@ export enum EnTextos {
   textV22 = 3359,
   textDlg = 3360,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   textCh4Maximo = 3361,
   textHumedadMinima = 3362,
   textSondasClimaRecinto = 3363,
@@ -3401,20 +3005,6 @@ export enum EnTextos {
   textIniciaProduccion = 3388,
   textFinalizaProduccion = 3389,
   textInicioProduccion = 3390,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textMaximoSonda1 = 3391,
   textMaximoSonda2 = 3392,
@@ -3457,13 +3047,6 @@ export enum EnTextos {
   textDiaNoche4 = 3463,
   textDiaNoche5 = 3464,
 
-
-
-
-
-
-
-
   textModoSalida010A = 3465,
   textModoSalida010B = 3466,
   textModoSalida010C = 3467,
@@ -3490,15 +3073,6 @@ export enum EnTextos {
   textActualizado = 3489,
   textActualizandoFwDeCom = 3490,
   textBbddReseteada = 3491,
-
-
-
-
-
-
-
-
-
 
   textTablas = 3500,
   textTablaPeso = 3501,
@@ -3563,16 +3137,6 @@ export enum EnTextos {
   textDesconexionBascula2 = 3566,
   textDesconexionBascula3 = 3567,
 
-
-
-
-
-
-
-
-
-
-
   textSondaHumedad1Nc = 3636,
   textSondaHumedad2Nc = 3637,
   textHumedad1Maxima = 3638,
@@ -3609,33 +3173,6 @@ export enum EnTextos {
   textMsjVigilanciaDerrame = 3672,
   textTiempoMovimiento = 3673,
   textTiempoAperturaCierre = 3674,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textC01 = 3675,
   textC02 = 3676,
@@ -3737,23 +3274,6 @@ export enum EnTextos {
   textC98 = 3772,
   textC99 = 3773,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textVx1 = 3774,
   textVx3 = 3775,
   textTiempoEsperaCambioReanudadoElectrico = 3776,
@@ -3823,26 +3343,6 @@ export enum EnTextos {
   textSeleccionarPosicionFinal = 3845,
   textPosicionInicialSeleccionada = 3846,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textDesactivado = 3847,
   textSondasTemperatura1Y2 = 3848,
   textSinModo = 3849,
@@ -3879,27 +3379,6 @@ export enum EnTextos {
   textAlarmaConectadaActualmente = 3880,
   textAnemometroVeleta = 3881,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textEntradaAnemometro = 3882,
   textEntradaVeleta = 3883,
   textVelocidad = 3884,
@@ -3929,24 +3408,6 @@ export enum EnTextos {
   textMsjAdvertenciasSonorasNoSonoras = 3910,
   textMrt20Ebus = 3911,
   textSondas010 = 3912,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textLinea6 = 3913,
   textEsperandoSensorLlenado = 3914,
@@ -3995,25 +3456,6 @@ export enum EnTextos {
   textDosificadores4 = 3961,
   textReceta4 = 3962,
   textReceta5 = 3963,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textReceta6 = 3964,
   textPorcentajePienso1 = 3965,
@@ -4099,13 +3541,6 @@ export enum EnTextos {
   textResetProgramas = 4048,
   textTiempoAdelantaMovimientoVentanas = 4049,
 
-
-
-
-
-
-
-
   textC48C50 = 4050,
   textAjusteSondasTemperatura = 4051,
   textCambioTemporizacion = 4052,
@@ -4144,24 +3579,6 @@ export enum EnTextos {
   textAlarmaVigilanciaAlimentacion = 4085,
   textDetectada = 4086,
   textNoDetectada = 4087,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textPuntoSinProgramasActivos = 4088,
   textListaDeProgramasActivos = 4089,
@@ -4209,27 +3626,6 @@ export enum EnTextos {
   textAlarmaFalloComunicacionEaB = 4131,
   textAlarmaFalloComunicacionEaC = 4132,
   text01000Ppm = 4133,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textTipoSensorTolvaPesajeLlena = 4134,
   textTipoSensorCompuertaPesajeCerrada = 4135,
@@ -4349,18 +3745,6 @@ export enum EnTextos {
   textErrorSiloInactivo = 4250,
   textErrorSiloTara = 4251,
 
-
-
-
-
-
-
-
-
-
-
-
-
   textAaCausaPoweroff = 4252,
   textAaCausaDesconexionAa = 4253,
   textAaCausaCambioHora = 4254,
@@ -4441,33 +3825,6 @@ export enum EnTextos {
   textNoHabilitadoSilo1 = 4354,
   textNoHabilitadoSilo2 = 4355,
   textNoHabilitadoSilo3 = 4356,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textConfiguracionAlarmas = 4357,
   textRestaurarAlarmas = 4358,
@@ -4602,28 +3959,6 @@ export enum EnTextos {
   textMensTestConectado = 4487,
   textMensTipoTest = 4488,
   textGriegoIdioma = 4489,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textSilows3 = 4490,
   textSilows1 = 4491,
@@ -4792,17 +4127,6 @@ export enum EnTextos {
   textCalefaccionAjustes = 4663,
   textHisteresisCambioDePunto = 4664,
 
-
-
-
-
-
-
-
-
-
-
-
   textDia0 = 4665,
   textDia4 = 4666,
   textDia14 = 4667,
@@ -4969,26 +4293,6 @@ export enum EnTextos {
   textDensidadInicio = 4828,
   textDensidadFin = 4829,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textCti75 = 4830,
   textVentiladorConSalida010OTriacNoPermitido = 4831,
   textInciarLote = 4832,
@@ -5117,30 +4421,6 @@ export enum EnTextos {
   textConectandoRouter = 4955,
   textConexionRouterErronea = 4956,
   textMensajeInfluenciaCalefaccion2 = 4957,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textConfiguracionModoDosificadores = 4958,
   textTiempoAperturaDosificadores = 4959,
@@ -5293,19 +4573,6 @@ export enum EnTextos {
   textSuperLento = 5106,
   textNormalSonda = 5107,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   textAjusteTiemposMaquina = 5108,
   textInicioAuto = 5109,
   textAperturaPuertaEntrada = 5110,
@@ -5441,25 +4708,6 @@ export enum EnTextos {
   textPeriodo5 = 5240,
   textRecirculacion = 5241,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textPosicionMinimaAuto = 5242,
   textPosicionMaximaAuto = 5243,
   textIntervaloMinimoMovimiento = 5244,
@@ -5569,28 +4817,6 @@ export enum EnTextos {
   textWarningActualizarControladorCompatibilidadEbus = 9009,
   textWarningActualizarDispositivosEbusCompatibilidad = 9010,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textWarningErrorConfigAlimentacionAvanzada = 9011,
   textWarningDosificadorD1Lleno = 9012,
   textWarningDosificadorD2Lleno = 9013,
@@ -5662,30 +4888,6 @@ export enum EnTextos {
   textAlarmaMotorD9Atasco = 10022,
   textAlarmaMotorD10Atasco = 10023,
   textAlarmaVentilacionSinSondas = 10024,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   textAlarmaCal1SinSondas = 10025,
   textAlarmaCal2SinSondas = 10026,
@@ -5783,22 +4985,6 @@ export enum EnTextos {
   textAlarmaAguaVigilanciaMinimoLinea7 = 10118,
   textAlarmaAguaVigilanciaMinimoLinea8 = 10119,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   textAlarmaAguaVigilanciaDerrameCGeneral = 10120,
   textAlarmaAguaVigilanciaDerrameLinea1 = 10121,
   textAlarmaAguaVigilanciaDerrameLinea2 = 10122,
@@ -5888,5 +5074,4 @@ export enum EnTextos {
   textAlarmaCrAux1SinSondas = 10206,
   textAlarmaCrAux2SinSondas = 10207,
   textNumeroAlarmas,
-
 }
