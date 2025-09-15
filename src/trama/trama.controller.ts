@@ -1,8 +1,8 @@
 import { Controller, Post, Query, BadRequestException } from '@nestjs/common';
-import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld, defaultParametroHistoricoAlarmaOmegaDf, defaultParametroHistoricoOmegaEventoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoNormal, defaultParametroHistoricoOmegaEventoConcatenadoWarning, defaultParametroHistoricoOmegaEventoNormal, defaultParametroHistoricoOmegaEventoWarning } from 'src/dtoBE/defaultTramaOld';
+import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld, defaultParametroHistoricoAlarmaOmegaDf, defaultParametroHistoricoOmegaCambioParametroConcatenadoNumerico, defaultParametroHistoricoOmegaCambioParametroConcatenadoTexto, defaultParametroHistoricoOmegaCambioParametroFecha, defaultParametroHistoricoOmegaCambioParametroTiempo, defaultParametroHistoricoOmegaCambioParametroUint16, defaultParametroHistoricoOmegaEbusFinalesA, defaultParametroHistoricoOmegaEbusFinalesB, defaultParametroHistoricoOmegaEstadisticoGenerico, defaultParametroHistoricoOmegaEventoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoNormal, defaultParametroHistoricoOmegaEventoConcatenadoWarning, defaultParametroHistoricoOmegaEventoNormal, defaultParametroHistoricoOmegaEventoWarning, defaultParametroHistoricoOmegaFinCrianzaMixtos, defaultParametroHistoricoOmegaFinCrianzaSeparado, defaultParametroHistoricoOmegaInicioCrianza, defaultParametroHistoricoOmegaInicioCrianzaCrudo } from 'src/dtoBE/defaultTramaOld';
 import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
 import { serializarParametroHistoricoOld } from 'src/dtoBE/tt_estadisticosOld.dto';
-import { serializarParametroHistoricoEventoConcatenadoOmegaDf, serializarParametroHistoricoEventoOmegaDf, serializarParametroHistoricoValorOmegaDf } from 'src/dtoBE/tt_estadisticosOldDF.dto';
+import { serializarParametroHistoricoCambioParametroConcatenadoOmegaDf, serializarParametroHistoricoCambioParametroOmegaDf, serializarParametroHistoricoEbusFinalesOmegaDf, serializarParametroHistoricoEstadisticoGenericoOmegaDf, serializarParametroHistoricoEventoConcatenadoOmegaDf, serializarParametroHistoricoEventoOmegaDf, serializarParametroHistoricoFinCrianzaOmegaDf, serializarParametroHistoricoInicioCrianzaOmegaDf, serializarParametroHistoricoValorOmegaDf } from 'src/dtoBE/tt_estadisticosOldDF.dto';
 import {
   defaultDataTempSonda1,
   defaultDataContadorAgua,
@@ -22,10 +22,10 @@ import {
   ProgresoActualizacionTxDto,
 } from 'src/dtoLE/tt_sistema.dto';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
-import { logTramaParametroHistoricoEventoConcatenadoOmegaDf, logTramaParametroHistoricoEventoOmegaDf, logTramaParametroHistoricoOld, logTramaParametroHistoricoOmegaDf } from 'src/utils/BE_Old/get/getEstadistico';
+import { logTramaParametroHistoricoCambioParametroConcatenadoOmegaDf, logTramaParametroHistoricoCambioParametroOmegaDf, logTramaParametroHistoricoEbusFinalesOmegaDf, logTramaParametroHistoricoEstadisticoGenericoOmegaDf, logTramaParametroHistoricoEventoConcatenadoOmegaDf, logTramaParametroHistoricoEventoOmegaDf, logTramaParametroHistoricoFinCrianzaOmegaDf, logTramaParametroHistoricoInicioCrianzaOmegaDf, logTramaParametroHistoricoOld, logTramaParametroHistoricoOmegaDf } from 'src/utils/BE_Old/get/getEstadistico';
 import { logTramaCompletaTablaDispositivosOld } from 'src/utils/BE_Old/get/getTablaDispositivos';
 import { PROTO_VERSION_OLD } from 'src/utils/BE_Old/globals/constGlobales';
-import { EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld, EnTipoMensajeCentralDispositivo, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
+import { EnEventosEstadisPropiedades, EnEventosEstadisTipo, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld, EnTipoMensajeCentralDispositivo, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
 import { START, END } from 'src/utils/LE/globals/constGlobales';
 import {
   EnTipoTrama,
@@ -38,6 +38,7 @@ import {
   EnEstadisticosControladores,
   EnGtUnidades,
 } from 'src/utils/LE/globals/enums';
+import { EnTextos } from 'src/utils/enumTextos';
 import { mac8FromParam, parseDmYToFecha } from 'src/utils/helpers';
 import { josLogger } from 'src/utils/josLogger';
 import { Fecha, Tiempo } from 'src/utils/tiposGlobales';
@@ -768,6 +769,10 @@ export class TramaController {
     return ok;
   }
 
+
+
+
+
   @Post('estadisticoAlarmaOmegaDf')
   async estadisticoAlarmaOmegaDf(
     // @Query('nombreEstadistico') nombreEstadistico?: string,
@@ -797,6 +802,10 @@ export class TramaController {
     logTramaParametroHistoricoOmegaDf(bufferFrame);
     return ok;
   }
+
+
+
+
 
   @Post('estadisticoEventoOmegaDf')
   async estadisticoEventoOmegaDf(
@@ -831,43 +840,301 @@ export class TramaController {
     return ok;
   }
 
-@Post('estadisticoEventoConcatenadoOmegaDf')
-async estadisticoEventoConcatenadoOmegaDf(
-  @Query('e0a1w2') e0a1w2?: string
-) {
-  // Puerto del simulador para histórico Omega
-  await this.tcp.cambiarPuerto({ port: 8002 });
 
-  // Elegimos el default según e0a1w2: 0=evento normal, 1=alarma, 2=warning (por defecto: normal)
-  let dto = defaultParametroHistoricoOmegaEventoConcatenadoNormal;
-  if (e0a1w2 !== undefined) {
-    const n = parseInt(e0a1w2);
-    if (n === 1) dto = defaultParametroHistoricoOmegaEventoConcatenadoAlarma;
-    else if (n === 2) dto = defaultParametroHistoricoOmegaEventoConcatenadoWarning;
+
+
+
+  @Post('estadisticoEventoConcatenadoOmegaDf')
+  async estadisticoEventoConcatenadoOmegaDf(
+    @Query('e0a1w2') e0a1w2?: string
+  ) {
+    // Puerto del simulador para histórico Omega
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    // Elegimos el default según e0a1w2: 0=evento normal, 1=alarma, 2=warning (por defecto: normal)
+    let dto = defaultParametroHistoricoOmegaEventoConcatenadoNormal;
+    if (e0a1w2 !== undefined) {
+      const n = parseInt(e0a1w2);
+      if (n === 1) dto = defaultParametroHistoricoOmegaEventoConcatenadoAlarma;
+      else if (n === 2) dto = defaultParametroHistoricoOmegaEventoConcatenadoWarning;
+    }
+
+    // Serializamos DATA para TM_envia_historico: EVENTO_CONCATENADO
+    const data = serializarParametroHistoricoEventoConcatenadoOmegaDf(dto);
+
+    // Construimos el frame OLD
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    // Enviamos y (opcional) log de la trama
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Si tienes un logger específico para EVENTO_CONCATENADO, descomenta la línea de abajo:
+    logTramaParametroHistoricoEventoConcatenadoOmegaDf(bufferFrame);
+
+    return ok;
   }
 
-  // Serializamos DATA para TM_envia_historico: EVENTO_CONCATENADO
-  const data = serializarParametroHistoricoEventoConcatenadoOmegaDf(dto);
 
-  // Construimos el frame OLD
+
+
+
+  @Post('estadisticoGenericoOmegaDf')
+  async estadisticoGenericoOmegaDf(
+    @Query('e0a1w2') e0a1w2?: string
+  ) {
+    // Puerto del simulador para histórico Omega
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    // Partimos del default y, opcionalmente, adaptamos tipo/props como en e0a1w2: 0=evento, 1=alarma, 2=warning
+    const dto = { ...defaultParametroHistoricoOmegaEstadisticoGenerico };
+
+    if (e0a1w2 !== undefined) {
+      const n = parseInt(e0a1w2);
+      if (n === 1) {
+        dto.tipo = EnEventosEstadisTipo.alarmas;
+        dto.propiedades = EnEventosEstadisPropiedades.eventoSonoro;
+        dto.nombreAlarma = EnTextos.textAlarma4 as unknown as number;
+      } else if (n === 2) {
+        dto.tipo = EnEventosEstadisTipo.warning;
+        dto.propiedades = EnEventosEstadisPropiedades.accionEventoOn;
+        dto.nombreAlarma = EnTextos.textWarningProg3NoFinalizadoSolapamiento as unknown as number;
+      } else {
+        dto.tipo = EnEventosEstadisTipo.evento;
+        dto.propiedades = (
+          EnEventosEstadisPropiedades.accionEventoOn |
+          EnEventosEstadisPropiedades.eventoSonoro
+        ) as EnEventosEstadisPropiedades;
+        dto.nombreAlarma = EnTextos.textEventos as unknown as number;
+      }
+    }
+
+    // Serializamos DATA para TM_envia_historico: ESTADISTICO_GENERICO (layout 114B)
+    const data = serializarParametroHistoricoEstadisticoGenericoOmegaDf(dto);
+
+    // Construimos el frame OLD
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    // Enviamos y (opcional) log de la trama
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Si implementas un logger específico, descomenta:
+    logTramaParametroHistoricoEstadisticoGenericoOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+
+
+
+
+  @Post('cambioParametroOmegaDf')
+  async cambioParametroOmegaDf(
+    @Query('n0t1f2') n0t1f2?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let dto = defaultParametroHistoricoOmegaCambioParametroUint16;
+    if (n0t1f2 !== undefined) {
+      const n = parseInt(n0t1f2);
+      if (n === 1) dto = defaultParametroHistoricoOmegaCambioParametroTiempo;
+      else if (n === 2) dto = defaultParametroHistoricoOmegaCambioParametroFecha;
+    }
+
+    const data = serializarParametroHistoricoCambioParametroOmegaDf(dto);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Cuando hagamos los getters/log, podrás activar:
+    logTramaParametroHistoricoCambioParametroOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+
+
+
+
+  @Post('ebusFinalesOmegaDf')
+  async ebusFinalesOmegaDf(
+    @Query('a0b1') a0b1?: string // 0 => default A (por defecto), 1 => default B
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let dto = defaultParametroHistoricoOmegaEbusFinalesA;
+    if (a0b1 !== undefined) {
+      const n = parseInt(a0b1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaEbusFinalesB;
+    }
+
+    const data = serializarParametroHistoricoEbusFinalesOmegaDf(dto);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Cuando tengamos logger específico:
+    logTramaParametroHistoricoEbusFinalesOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+
+
+
+  // =================== @Post para CAMBIO_PARAMETRO_CONCATENADO ===================
+  // Selector simple por query: n0 (numérico) / t1 (valor textual)
+  @Post('cambioParametroConcatenadoOmegaDf')
+  async cambioParametroConcatenadoOmegaDf(
+    @Query('n0t1') n0t1?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    // Usa los defaults que definimos antes:
+    //  - defaultParametroHistoricoOmegaCambioParametroConcatenadoNumerico
+    //  - defaultParametroHistoricoOmegaCambioParametroConcatenadoTexto
+    let dto = defaultParametroHistoricoOmegaCambioParametroConcatenadoNumerico;
+    if (n0t1 !== undefined) {
+      const n = parseInt(n0t1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaCambioParametroConcatenadoTexto;
+    }
+
+    const data = serializarParametroHistoricoCambioParametroConcatenadoOmegaDf(dto);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Si luego añades un logger específico:
+    logTramaParametroHistoricoCambioParametroConcatenadoOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+
+
+
+
+  // =================== @Post DF_INICIO_CRIANZA ===================
+  // Selector por query: n0c1 → 0 = default numérico, 1 = default "crudo"
+  @Post('inicioCrianzaOmegaDf')
+  async inicioCrianzaOmegaDf(
+    @Query('n0c1') n0c1?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let dto = defaultParametroHistoricoOmegaInicioCrianza;
+    if (n0c1 !== undefined) {
+      const n = parseInt(n0c1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaInicioCrianzaCrudo;
+    }
+
+    const data = serializarParametroHistoricoInicioCrianzaOmegaDf(dto);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Logger opcional:
+    logTramaParametroHistoricoInicioCrianzaOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+
+
+
+
+  
+// =================== @Post DF_FIN_CRIANZA ===================
+// Selector por query: m0s1 → 0 = default mixtos, 1 = macho/hembra separado
+@Post('finCrianzaOmegaDf')
+async finCrianzaOmegaDf(
+  @Query('m0s1') m0s1?: string
+) {
+  await this.tcp.cambiarPuerto({ port: 8002 });
+
+  let dto = defaultParametroHistoricoOmegaFinCrianzaMixtos;
+  if (m0s1 !== undefined) {
+    const n = parseInt(m0s1);
+    if (n === 1) dto = defaultParametroHistoricoOmegaFinCrianzaSeparado;
+  }
+
+  const data = serializarParametroHistoricoFinCrianzaOmegaDf(dto);
+
   const frame = this.tcp.crearFrameOld({
     nodoOrigen: 1,
     nodoDestino: 0,
-    tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // (=6)
-    tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+    tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+    tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
     data,
     versionProtocolo: PROTO_VERSION_OLD,
   });
 
-  // Enviamos y (opcional) log de la trama
   const ok = this.tcp.enviarFrameOld(frame);
   const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
 
-  // Si tienes un logger específico para EVENTO_CONCATENADO, descomenta la línea de abajo:
-  logTramaParametroHistoricoEventoConcatenadoOmegaDf(bufferFrame);
+  // Logger opcional:
+   logTramaParametroHistoricoFinCrianzaOmegaDf(bufferFrame);
 
   return ok;
 }
+
+
+
+
+
+
+
 
 
 

@@ -409,3 +409,8 @@ export function packValorDf4BE(tipo: EnTipoDatoDFAccion, valor: number | Buffer)
   }
 }
 
+// Helpers para empaquetar FECHA/TIEMPO en 4B (3B útiles + 1 de relleno)
+export const packFecha4 = (dd: number, mm: number, yy: number) =>Buffer.from([dd & 0xff, mm & 0xff, yy & 0xff, 0x00]);
+
+export const packHora4 = (hh: number, mi: number, ss: number) =>Buffer.from([hh & 0xff, mi & 0xff, ss & 0xff, 0x00]);
+

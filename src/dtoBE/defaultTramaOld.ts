@@ -1,9 +1,10 @@
-import { EnTipoEquipo } from "src/utils/LE/globals/enums";
+import { EnCrianzaTipoAnimal, EnTipoEquipo } from "src/utils/LE/globals/enums";
 import { PresentacionCentralOldDto, TablaCentralItemOld } from "./tt_sistemaOld.dto";
 import { ParametroHistoricoOldDto } from "./tt_estadisticosOld.dto";
 import { EnEstadisticosNombres, EnEventosEstadisFamilia, EnEventosEstadisPropiedades, EnEventosEstadisSubfamilia, EnEventosEstadisTipo, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld } from "src/utils/BE_Old/globals/enumOld";
-import { ParametroHistoricoOmegaEventoConcatenadoDto, ParametroHistoricoOmegaEventoDto, ParametroHistoricoValorOmegaDfDto } from "./tt_estadisticosOldDF.dto";
+import { ParametroHistoricoOmegaCambioParametroConcatenadoDto, ParametroHistoricoOmegaCambioParametroDfDto, ParametroHistoricoOmegaEbusFinalesDto, ParametroHistoricoOmegaEstadisticoGenericoDto, ParametroHistoricoOmegaEventoConcatenadoDto, ParametroHistoricoOmegaEventoDto, ParametroHistoricoOmegaFinCrianzaDto, ParametroHistoricoOmegaInicioCrianzaDto, ParametroHistoricoValorOmegaDfDto } from "./tt_estadisticosOldDF.dto";
 import { EnTextos } from "src/utils/enumTextos";
+import { packHora4, packFecha4 } from "src/utils/helpers";
 
 // Presentación (Omega) – protocolo antiguo (Big Endian)
 export const defaultPresentacionOmegaOld: PresentacionCentralOldDto = {
@@ -284,11 +285,261 @@ export const defaultParametroHistoricoOmegaEventoConcatenadoWarning: ParametroHi
 };
 
 
+
+
+
+
+// =================== Defaults ESTADISTICO_GENERICO ===================
+
+// Ejemplo de cadena: valores genéricos (dominio agro-ganadero)
+const cadenaEstadGenerico = toCadena80('EG: Agua=25 L; Temp=25 °C; Comedero=OK');
+
+/** Objeto default para enviar un ESTADISTICO_GENERICO (layout concatenado, 114B). */
+export const defaultParametroHistoricoOmegaEstadisticoGenerico: ParametroHistoricoOmegaEstadisticoGenericoDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),         // 8B MAC
+  tipoDato: EnTipoDatoDFAccion.estadisticoGenerico,                           // (=46)
+  identificadorUnicoDentroDelSegundo: 0,
+  versionAlarmaConcatenada: 1,                                                // versión de la estructura
+  tipo: EnEventosEstadisTipo.evento,                                          // por coherencia con concatenado
+  subfamilia: EnEventosEstadisSubfamilia.noDefinido,
+  familia: EnEventosEstadisFamilia.alimentacion,
+  propiedades: EnEventosEstadisPropiedades.noDefinido,                        // estadístico: sin flags por defecto
+  nombreAlarma: EnTextos.textEventos,                                         // mapea a “nombre_estadistico”
+  fecha: { dia: 1, mes: 1, anyo: 2023 },
+  hora: { hora: 0, min: 0, seg: 0 },
+  diaCrianza: 12,
+  identificadorCrianzaUnico: 0,
+  reserva: 0,
+  numeroBytesCadena: cadenaEstadGenerico.length,                              // máx. 80
+  cadenaConcatenada: cadenaEstadGenerico,
+};
+
+
+
+
+
+// ---------- DEFAULT: NUMÉRICO (uint16) ----------
+export const defaultParametroHistoricoOmegaCambioParametroUint16: ParametroHistoricoOmegaCambioParametroDfDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),
+  tipoDato: EnTipoDatoDFAccion.cambioParametroUint16,
+  fecha: { dia: 1, mes: 1, anyo: 2023 },
+  hora: { hora: 0, min: 0, seg: 0 },
+  identificadorUnicoDentroDelSegundo: 0,
+  identificadorCliente: 1,
+  textVariable: EnTextos.textEventos as unknown as number,          // ajusta a tu catálogo
+  valorVariable: 25,                                                // p.ej. “nuevo setpoint” = 25
+  identificadorCrianzaUnico: 0,
+  diaCrianza: 12,
+  textTituloVariable: EnTextos.textHistoricoCambioParametros as unknown as number,    // ajusta a tu catálogo
+  variable2: 0,
+  variable3TextTituloPersonalizado: 0,
+};
+
+// ---------- DEFAULT: TIEMPO (HH:MM:SS → 12:30:00) ----------
+export const defaultParametroHistoricoOmegaCambioParametroTiempo: ParametroHistoricoOmegaCambioParametroDfDto = {
+  ...defaultParametroHistoricoOmegaCambioParametroUint16,
+  tipoDato: EnTipoDatoDFAccion.cambioParametroTiempo,
+  // valorVariable como crudo 4B: HH,MM,SS,0
+  valorVariable: packHora4(12, 30, 0),
+};
+
+// ---------- DEFAULT: FECHA (DD/MM/YY → 01/01/23) ----------
+export const defaultParametroHistoricoOmegaCambioParametroFecha: ParametroHistoricoOmegaCambioParametroDfDto = {
+  ...defaultParametroHistoricoOmegaCambioParametroUint16,
+  tipoDato: EnTipoDatoDFAccion.cambioParametroFecha,
+  // valorVariable como crudo 4B: DD,MM,YY,0  (YY=23 → 2023)
+  valorVariable: packFecha4(1, 1, 23),
+};
+
+
+
+
+
+// ---------- DEFAULT A: variable2 = tipo UINT16 con valor 25 (0x000019) ----------
+export const defaultParametroHistoricoOmegaEbusFinalesA: ParametroHistoricoOmegaEbusFinalesDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),
+  tipoDato: EnTipoDatoDFAccion.datosEbusFinales, // (=39)
+  fecha: { dia: 1, mes: 1, anyo: 2023 },
+  hora: { hora: 0, min: 0, seg: 0 },
+  identificadorUnicoDentroDelSegundo: 0,
+  identificadorCliente: 1,
+  textVariable: EnTextos.textAlarmaActualizarDispositivosEbusCompatibilidad as unknown as number,
+  valorVariable: 25, // p.ej. nuevo setpoint = 25
+  identificadorCrianzaUnico: 0,
+  diaCrianza: 12,
+  textTituloVariable: EnTextos.textEventos as unknown as number,
+  // variable2Raw: [ tipo (UINT16), valor 24-bit BE ]
+  variable2Raw: Buffer.from([
+    EnTipoDatoDFAccion.cambioParametroUint16 & 0xff, // primer byte = tipo
+    0x00, 0x00, 0x19,                                // 25 en 24-bit BE
+  ]),
+  // campos de conveniencia (opcionales, no los necesita el serializador si variable2Raw ya está)
+  variable2TipoDato: EnTipoDatoDFAccion.cambioParametroUint16,
+  variable2Valor: 25,
+  variable3TextTituloPersonalizado: 0,
+};
+
+// ---------- DEFAULT B: variable2 = tipo UINT8 con valor 100 (0x000064) ----------
+export const defaultParametroHistoricoOmegaEbusFinalesB: ParametroHistoricoOmegaEbusFinalesDto = {
+  ...defaultParametroHistoricoOmegaEbusFinalesA,
+  textVariable: EnTextos.textAlarmaActualizarDispositivosEbusCompatibilidad as unknown as number,
+  valorVariable: 100, // por variar el dato principal
+  variable2Raw: Buffer.from([
+    EnTipoDatoDFAccion.cambioParametroUint8 & 0xff,
+    0x00, 0x00, 0x64, // 100 en 24-bit BE
+  ]),
+  variable2TipoDato: EnTipoDatoDFAccion.cambioParametroUint8,
+  variable2Valor: 100,
+  variable3TextTituloPersonalizado: 0,
+};
+
+
+
+
+
+// ---------- DEFAULT A: valor numérico (numeroByteValor=0 ⇒ usar valorVariable), sin EBUS ----------
+const tituloA = Buffer.from('Cambio parámetro: Setpoint alimentación', 'utf16le');
+const opcionA = Buffer.from('Opción: Línea 1', 'utf16le');
+// valor en texto no incluido porque numeroByteValor=0 (valor numérico)
+let cadenaA = Buffer.concat([tituloA, opcionA]);
+if (cadenaA.length > 160) cadenaA = cadenaA.subarray(0, 160);
+
+export const defaultParametroHistoricoOmegaCambioParametroConcatenadoNumerico: ParametroHistoricoOmegaCambioParametroConcatenadoDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),
+  identificadorUnicoDentroDelSegundo: 0,
+  versionCambioParametroConcatenado: 1,
+  identificadorCliente: 1,
+  tipoEquipo: 1,                   // p.ej. 1 = controlador Omega principal
+  ebusNodo: 0,                     // 0 ⇒ no es un cambio en EBUS
+  fecha: { dia: 1, mes: 1, anyo: 2023 },
+  hora: { hora: 0, min: 0, seg: 0 },
+  diaCrianza: 12,
+  identificadorCrianzaUnico: 0,
+  numeroByteTitulo: tituloA.length,
+  numeroByteOpcion: opcionA.length,
+  numeroByteValor: 0,              // 0 ⇒ valor numérico
+  tipoDatoCambioParametro: EnTipoDatoDFAccion.cambioParametroUint16,
+  valorVariable: 25,               // setpoint=25 (ejemplo)
+  cadenaConcatenada: cadenaA,
+};
+
+// ---------- DEFAULT B: valor en texto (numeroByteValor>0 ⇒ se ignora valorVariable), con EBUS ----------
+const tituloB = Buffer.from('Cambio parámetro: Ventilación', 'utf16le');
+const opcionB = Buffer.from('Opción: Velocidad', 'utf16le');
+const valorTxtB = Buffer.from('30 %', 'utf16le');
+let cadenaB = Buffer.concat([tituloB, opcionB, valorTxtB]);
+if (cadenaB.length > 160) cadenaB = cadenaB.subarray(0, 160);
+
+export const defaultParametroHistoricoOmegaCambioParametroConcatenadoTexto: ParametroHistoricoOmegaCambioParametroConcatenadoDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),
+  identificadorUnicoDentroDelSegundo: 0,
+  versionCambioParametroConcatenado: 1,
+  identificadorCliente: 1,
+  tipoEquipo: 2,                   // p.ej. 2 = módulo de ventilación
+  ebusNodo: 3,                     // ejemplo: nodo 3 en EBUS
+  fecha: { dia: 1, mes: 1, anyo: 2023 },
+  hora: { hora: 0, min: 0, seg: 0 },
+  diaCrianza: 12,
+  identificadorCrianzaUnico: 0,
+  numeroByteTitulo: tituloB.length,
+  numeroByteOpcion: opcionB.length,
+  numeroByteValor: valorTxtB.length, // >0 ⇒ valor textual en cadena
+  // cuando es valor textual, tipoDatoCambioParametro no aplica realmente (lo dejamos informativo)
+  tipoDatoCambioParametro: EnTipoDatoDFAccion.cambioParametroString,
+  valorVariable: 0,               // ignorado por protocolo si numeroByteValor>0
+  cadenaConcatenada: cadenaB,
+};
+
+
+
+
+
+// ---------- DEFAULT: Inicio de crianza básico (valorVariable numérico) ----------
+export const defaultParametroHistoricoOmegaInicioCrianza: ParametroHistoricoOmegaInicioCrianzaDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]), // 8B MAC
+  tipoDato: EnTipoDatoDFAccion.inicioCrianza,                           // (=30)
+  fecha: { dia: 1, mes: 1, anyo: 2023 },
+  hora: { hora: 0, min: 0, seg: 0 },
+  identificadorUnicoDentroDelSegundo: 0,
+  identificadorCliente: 1,
+  nombreVariable: EnTextos.textInicioCrianza as unknown as number,            // catálogo interno
+  valorVariable: 25,                                                    // p.ej. nº naves/galpones iniciales = 25
+  identificadorCrianzaUnico: 12345,                                         // 0 si aún no asignado
+  diaCrianza: 1,                                                        // inicio → día 0
+  variable1_2: 0,                                                       // reservado
+  variable2: 0,                                                         // reservado
+  variable3: 0,                                                         // reservado
+};
+
+// ---------- DEFAULT: Variante con campos crudos (Buffers de 4B) ----------
+export const defaultParametroHistoricoOmegaInicioCrianzaCrudo: ParametroHistoricoOmegaInicioCrianzaDto = {
+  ...defaultParametroHistoricoOmegaInicioCrianza,
+  // valorVariable/variable2/variable3 como 4B crudos (ejemplo)
+  valorVariable: Buffer.from([0x00, 0x00, 0x00, 0x19]), // 25 en big-endian
+  variable2: Buffer.from([0x00, 0x00, 0x00, 0x00]),
+  variable3: Buffer.from([0x00, 0x00, 0x00, 0x00]),
+};
+
+
+
+
+
+// ---------- DEFAULT A: Crianza “mixtos” ----------
+export const defaultParametroHistoricoOmegaFinCrianzaMixtos: ParametroHistoricoOmegaFinCrianzaDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),
+  tipoDato: EnTipoDatoDFAccion.finCrianza,                  // (=31)
+  fecha: { dia: 1, mes: 1, anyo: 2023 },
+  hora: { hora: 0, min: 0, seg: 0 },
+  identificadorUnicoDentroDelSegundo: 0,
+  identificadorCliente: 1,
+  nombreVariableTipoAnimal: EnCrianzaTipoAnimal.mixtos,     // 0
+  valorVariableNAnimalesMachosMixtos: 600,                  // machos/mixtos
+  identificadorCrianzaUnico: 123456,                        // ejemplo
+  diaCrianza: 120,                                          // día de cierre
+  variable1_2: 0,                                           // reservado
+  variable2NAnimalesHembras: 400,                           // hembras
+  variable3: 0,                                             // reservado
+};
+
+// ---------- DEFAULT B: Crianza “machoHembraSeparado” ----------
+export const defaultParametroHistoricoOmegaFinCrianzaSeparado: ParametroHistoricoOmegaFinCrianzaDto = {
+  mac: Buffer.from([0x00, 0x13, 0xA2, 0x00, 0x40, 0xB5, 0xC2, 0xD7]),
+  tipoDato: EnTipoDatoDFAccion.finCrianza,
+  fecha: { dia: 15, mes: 3, anyo: 2024 },
+  hora: { hora: 14, min: 30, seg: 0 },
+  identificadorUnicoDentroDelSegundo: 1,
+  identificadorCliente: 2,
+  nombreVariableTipoAnimal: EnCrianzaTipoAnimal.machoHembraSeparado, // 3
+  valorVariableNAnimalesMachosMixtos: 550,            // machos
+  identificadorCrianzaUnico: 987654,
+  diaCrianza: 105,
+  variable1_2: 0,
+  variable2NAnimalesHembras: 530,                      // hembras
+  variable3: 0,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //* -------------------------------------------------------------------------------------------------------------------
 //* -------------------------------------------------------------------------------------------------------------------
 //* ------------------------ Generadores de valores para dispositivos de la tabla (Old) -------------------------------
 //* -------------------------------------------------------------------------------------------------------------------
 //* -------------------------------------------------------------------------------------------------------------------
+
 
 // Helpers
 const rnd = () => Math.random();
