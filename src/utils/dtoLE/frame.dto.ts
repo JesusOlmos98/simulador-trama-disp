@@ -10,7 +10,7 @@ export class FrameDto {
   tipoTrama: number;
   tipoMensaje: number;
   longitud: number; // Tamaño trama datos
-  datos: Buffer | PresentacionDto | EnviaEstadisticoDto //| PresenciaDto; // Datos a enviar
+  datos: Buffer | PresentacionDto | EnviaEstadisticoDto; //| PresenciaDto; // Datos a enviar
   crc: number;
   finTrama: Buffer;
 }

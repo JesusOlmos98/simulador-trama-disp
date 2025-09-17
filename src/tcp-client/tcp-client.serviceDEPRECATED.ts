@@ -1,21 +1,11 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { EnvConfiguration } from 'config/app.config';
 import { Socket } from 'node:net';
-import {
-  crearDefaultDispositivoTablaOld,
-  defaultEstadisticoValorOld,
-  defaultPresentacionOmegaOld,
-  defaultTablaPrefabricada,
-} from 'src/utils/dtoBE/defaultTramaOld';
-import { FrameOldDto } from 'src/utils/dtoBE/frameOld.dto';
-import { ParametroHistoricoOldDto } from 'src/utils/dtoBE/tt_estadisticosOld.dto';
-import {
-  PresentacionCentralOldDto,
-  RtTablaCentralFinOldDto,
-  RtTablaCentralMasOldDto,
-  serializarTablaCentralItemsOld,
-  TablaCentralItemOld,
-} from 'src/utils/dtoBE/tt_sistemaOld.dto';
+import { josLogger } from 'src/utils/josLogger';
+import { crc16IBM } from 'src/utils/crc';
+import { PeticionConsolaDto } from 'src/utils/dtoLE/tt_depuracion.dto';
+import { EnviaEstadisticoDto } from 'src/utils/dtoLE/tt_estadisticos.dto';
+import { FrameDto } from 'src/utils/dtoLE/frame.dto';
+import { EnvConfiguration } from 'config/app.config';
 import {
   defaultDataTempSonda1,
   defaultDataContadorAgua,
@@ -23,10 +13,7 @@ import {
   defaultDataEventoInicioCrianza,
   defaultDataAlarmaTempAlta,
   defaultDataCambioParametro,
-  defaultPresentacionCTI40,
 } from 'src/utils/dtoLE/defaultTrama';
-import { FrameDto } from 'src/utils/dtoLE/frame.dto';
-import { EnviaEstadisticoDto } from 'src/utils/dtoLE/tt_estadisticos.dto';
 import {
   PresentacionDto,
   EstadoDispositivoTxDto,
@@ -35,36 +22,28 @@ import {
   ProgresoActualizacionTxDto,
 } from 'src/utils/dtoLE/tt_sistema.dto';
 import {
-  DEF_MAX_DATOS_TRAMA,
-  MAX_ITEMS_PER_FRAME,
-  PROTO_VERSION_OLD,
-} from 'src/utils/BE_Old/globals/constGlobales';
-import {
-  EnTipoTramaOld,
-  EnTipoMensajeCentralServidor,
-  EnEstadisticosNombres,
-} from 'src/utils/BE_Old/globals/enumOld';
-import { crc16IBM } from 'src/utils/crc';
-import { hexDump, valorSimuladoPorNombre } from 'src/utils/helpers';
-import { josLogger } from 'src/utils/josLogger';
-import {
   getTipoTrama,
   getTipoMensaje,
   getDataSection,
 } from 'src/utils/LE/get/getTrama';
 import {
-  ACK_TTL_MS,
   PROTO_VERSION,
   MAX_DATA_BYTES,
   START,
   END,
   ACK_TIMEOUT_MS,
+  ACK_TTL_MS,
 } from 'src/utils/LE/globals/constGlobales';
 import {
-  EnTipoTrama,
-  EnTmEstadisticos,
-  EnTmSistema,
-} from 'src/utils/LE/globals/enums';
+  END_OLD,
+  MAX_DATA_BYTES_OLD,
+  PROTO_VERSION_OLD,
+  START_OLD,
+} from 'src/utils/BE_Old/globals/constGlobales';
+import { FrameOldDto } from 'src/utils/dtoBE/frameOld.dto';
+import { PresentacionCentralOldDto } from 'src/utils/dtoBE/tt_sistemaOld.dto';
+import { hexDump } from 'src/utils/helpers';
+import { EnTipoTrama, EnTmEstadisticos } from 'src/utils/LE/globals/enums';
 
 //! CAPA 0
 
@@ -110,7 +89,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
 
   //done Función para manejar el cambio de puerto dinámico (segun el valor de "ver" en los endpoints)
   /** Cambia host/puerto si hace falta y garantiza conexión abierta y usable. */
-  async cambiarPuerto(opts: { host?: string; port?: number }) {
+  async switchTargetAndEnsureConnected(opts: { host?: string; port?: number }) {
     const host = opts.host ?? this.defaultHost;
     const port = opts.port ?? this.defaultPort;
 
@@ -201,7 +180,6 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
       const tt = getTipoTrama(serverResponse);
       const tm = getTipoMensaje(serverResponse);
 
-      //! Meter en función log...
       josLogger.debug(
         'La respuesta (RX) probablemente sea el ACK de la última operación.',
       );
@@ -215,7 +193,10 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
       josLogger.debug('📨 Data ACK HEX: ' + dataACK.toString('hex'));
       josLogger.debug('📨 RX len=' + serverResponse.length);
 
-      if (tt === EnTipoTrama.estadisticos &&tm === EnTmEstadisticos.rtEstadistico) {
+      if (
+        tt === EnTipoTrama.estadisticos &&
+        tm === EnTmEstadisticos.rtEstadistico
+      ) {
         const dataACK = getDataSection(serverResponse);
         const ackId = dataACK.readUInt8(dataACK.length - 1);
 
@@ -234,27 +215,80 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   }
   //* XXXXXXXXXXXXXXXXXXXXXXXXXX ↑↑↑ NUEVA CONEXIÓN ↑↑↑ XXXXXXXXXXXXXXXXXXXXXXXXXX
 
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done ----------------------------------------------- ENVIO Y BUILDER EQUIPOS NUEVOS LE ---------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
+  // private async connect(): Promise<void> {
+  //   this.socket = new Socket();
+
+  //   // this.socket.setNoDelay(true);
+
+  //   this.socket.connect(DESTINY_PORT, DESTINY_HOST, () => {
+  //     josLogger.debug('env.destinyHost: ' + env.destinyHost);
+  //     josLogger.info(
+  //       `🔌 Cliente TCP conectado a ${DESTINY_HOST}:${DESTINY_PORT}`,
+  //     );
+  //   });
+
+  //* ------------------------------ ↓↓↓ socket on data ↓↓↓ ------------------------------
+  //   this.socket.on('data', (serverResponse) => {
+  //     try {
+  //       const tt = getTipoTrama(serverResponse);
+  //       const tm = getTipoMensaje(serverResponse);
+
+  //     } catch (e) {
+  //       josLogger.error('Error procesando RX: ' + (e as Error).message);
+  //     }
+  //   });
+  //   //* ------------------------------ ↑↑↑ socket on data ↑↑↑ ------------------------------
+
+  //   this.socket.on('error', (e) =>
+  //     josLogger.error('❗ Socket error: ' + e.message),
+  //   );
+
+  //   this.socket.on('close', () => {
+  //     josLogger.error('env.destinyHost: ' + env.destinyHost);
+  //     josLogger.error('env.destinyPort: ' + env.destinyPort);
+  //     josLogger.error('process.env.DESTINY_PORT: ' + process.env.DESTINY_PORT);
+  //     josLogger.error('🛑 Conexión cerrada. Reintentando en 1s…');
+  //     setTimeout(() => this.connect(), 1000);
+  //   });
+  // }
 
   // ------------------------------------------- ENVÍO -------------------------------------------
-  /** Enviar un FrameDto (se serializa internamente a Buffer) */
-  enviarFrame(frame: FrameDto) {
+  /** Enviar un Frame (nuevo vs viejo) */
+  enviarFrame(frame: FrameDto | FrameOldDto) {
     if (!this.socket || !this.socket.writable) {
       josLogger.fatal('XXX Socket no conectado XXX');
       return false;
     }
-    const buf = this.serializarFrame(frame);
+
+    // Decide en runtime: viejo (BE, v1) vs nuevo (LE, v2)
+    const isOld = (frame as any).versionProtocolo !== 2;
+
+    if (isOld) josLogger.debug('enviarFrame() 8002 Antiguos');
+    else josLogger.debug('enviarFrame() 8003 Nuevos');
+
+    const buf = isOld
+      ? this.serializarFrame(frame as FrameOldDto) // Serializa header 9B (BE) y CRC de 1 byte (LSB CRC16)
+      : this.serializarFrame(frame as FrameDto); // Serializa header 10B (LE) como ya tenías
+
     this.socket.write(buf);
     return { bytes: buf.length, hex: buf.toString('hex') };
   }
+
+  //   enviarFrame(frame: FrameDto | FrameOldDto) {
+
+  // //! Primero equipos viejos:
+
+  // //! Y después caso de equipos nuevos:
+
+  //     if (!this.socket || !this.socket.writable) {
+  //       josLogger.fatal('XXX Socket no conectado XXX');
+  //       return false;
+  //     }
+  //     const buf = this.serializarFrame(frame as FrameDto);
+  //     this.socket.write(buf);
+  //     return { bytes: buf.length, hex: buf.toString('hex') };
+
+  //   }
 
   //* -----------------------------------------------------------------------------------------------------
   //* -------------- Aquí se serializan los datos a enviar (metiéndole el respectivo objeto) --------------
@@ -267,73 +301,170 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     nodoDestino: number;
     tipoTrama: number;
     tipoMensaje: number;
+    // longitud?: number;
     data: Buffer;
     reserva?: number;
     versionProtocolo?: number;
-  }): FrameDto {
-    const {
-      nodoOrigen,
-      nodoDestino,
-      tipoTrama,
-      tipoMensaje,
-      data,
-      reserva = 0,
-      versionProtocolo = PROTO_VERSION,
-    } = params;
+  }): FrameDto | FrameOldDto {
+    let frame: FrameDto | FrameOldDto;
 
-    if (data.length > MAX_DATA_BYTES) {
-      throw new Error(`El cuerpo supera ${MAX_DATA_BYTES} bytes`);
+    const isOld =
+      params.reserva === undefined
+        ? true
+        : params.reserva === null
+          ? true
+          : false;
+
+    if (isOld) {
+      // Equipos antiguos (la variable resesrva NO está en la trama de los equipos antiguos)
+      josLogger.debug('crearFrame() 8002 Antiguos');
+      const {
+        nodoOrigen,
+        nodoDestino,
+        tipoTrama,
+        tipoMensaje,
+        // longitud,
+        data,
+        versionProtocolo = PROTO_VERSION_OLD,
+      } = params;
+      if (data.length > MAX_DATA_BYTES_OLD) {
+        throw new Error(`El cuerpo supera ${MAX_DATA_BYTES_OLD} bytes`);
+      }
+      frame = {
+        inicioTrama: START_OLD,
+        versionProtocolo,
+        nodoOrigen,
+        nodoDestino,
+        tipoTrama,
+        tipoMensaje,
+        longitud: data.length,
+        datos: data, // Buffer
+        crc: 0, // done se recalcula en serializeFrame
+        finTrama: END_OLD,
+      } as FrameOldDto;
+    } else {
+      // Equipos nuevos
+      josLogger.debug('crearFrame() 8003 Nuevos');
+
+      const {
+        nodoOrigen,
+        nodoDestino,
+        tipoTrama,
+        tipoMensaje,
+        data,
+        reserva = 0,
+        versionProtocolo = PROTO_VERSION,
+      } = params;
+      if (data.length > MAX_DATA_BYTES) {
+        throw new Error(`El cuerpo supera ${MAX_DATA_BYTES} bytes`);
+      }
+      frame = {
+        inicioTrama: START,
+        versionProtocolo,
+        reserva,
+        nodoOrigen,
+        nodoDestino,
+        tipoTrama,
+        tipoMensaje,
+        longitud: data.length,
+        datos: data, // Buffer
+        crc: 0, // done se recalcula en serializeFrame
+        finTrama: END,
+      } as FrameDto;
     }
-
-    const frame: FrameDto = {
-      inicioTrama: START,
-      versionProtocolo,
-      reserva,
-      nodoOrigen,
-      nodoDestino,
-      tipoTrama,
-      tipoMensaje,
-      longitud: data.length,
-      datos: data, // Buffer
-      crc: 0, // done se recalcula en serializeFrame
-      finTrama: END,
-    };
 
     return frame;
   }
 
   /** Serializa un FrameDto (Little Endian en header, CRC escrito en BE como espera el server) */
-  serializarFrame(f: FrameDto): Buffer {
+  serializarFrame(f: FrameDto | FrameOldDto): Buffer {
     const start = f.inicioTrama;
     const end = f.finTrama;
 
+    const datosBuf = Buffer.alloc(0);
+
+    const isOld = f.versionProtocolo !== 2;
     // Header (NO incluye el "start")
+
+    if (isOld) {
+      josLogger.debug('serializarFrame() 8002 Antiguos');
+
+      const header = Buffer.alloc(1 + 2 + 2 + 1 + 1 + 2);
+      let o = 0;
+      header.writeUInt8(f.versionProtocolo & 0xff, o);
+      o += 1;
+      header.writeUInt16BE(f.nodoOrigen & 0xffff, o);
+      o += 2;
+      header.writeUInt16BE(f.nodoDestino & 0xffff, o);
+      o += 2;
+      header.writeUInt8(f.tipoTrama & 0xff, o);
+      o += 1;
+      header.writeUInt8(f.tipoMensaje & 0xff, o);
+      o += 1;
+      header.writeUInt16BE(f.longitud & 0xffff, o);
+      o += 2;
+
+      const crcSegment = Buffer.concat([header, datosBuf]);
+      const crc16 = crc16IBM(crcSegment); // 16-bit
+      const crcBuf = Buffer.from([crc16 & 0xff]); // LSB (1 byte)
+
+      return Buffer.concat([start, header, datosBuf, crcBuf, end]);
+    }
+
+    josLogger.debug('serializarFrame() 8003 Nuevos');
+
+    // Nuevo → LE + header 10B (con reserva) + CRC16 (2B) escrito en BE
     const header = Buffer.alloc(1 + 1 + 2 + 2 + 1 + 1 + 2);
     let offset = 0;
-    header.writeUInt8(f.versionProtocolo, offset);
+    header.writeUInt8(f.versionProtocolo & 0xff, offset);
     offset += 1;
-    header.writeUInt8(f.reserva ?? 0, offset);
+    header.writeUInt8(((f as any).reserva ?? 0) & 0xff, offset);
     offset += 1;
-    header.writeUInt16LE(f.nodoOrigen, offset);
+    header.writeUInt16LE(f.nodoOrigen & 0xffff, offset);
     offset += 2;
-    header.writeUInt16LE(f.nodoDestino, offset);
+    header.writeUInt16LE(f.nodoDestino & 0xffff, offset);
     offset += 2;
-    header.writeUInt8(f.tipoTrama, offset);
+    header.writeUInt8(f.tipoTrama & 0xff, offset);
     offset += 1;
-    header.writeUInt8(f.tipoMensaje, offset);
+    header.writeUInt8(f.tipoMensaje & 0xff, offset);
     offset += 1;
-    header.writeUInt16LE(f.longitud, offset);
+    header.writeUInt16LE(f.longitud & 0xffff, offset);
     offset += 2;
 
-    const datosBuf = Buffer.isBuffer(f.datos) ? f.datos : Buffer.alloc(0);
-
-    // === CRC16 IBM/ARC sobre (header + datos) ===
     const crcSegment = Buffer.concat([header, datosBuf]);
-    const crcValSwapped = crc16IBM(crcSegment); // ya viene "swappeado" como el server lo compara
+    const crcValSwapped = crc16IBM(crcSegment); // tu helper actual
     const crcBuf = Buffer.alloc(2);
-    crcBuf.writeUInt16BE(crcValSwapped, 0); // el server hace readUInt16BE → ¡coinciden!
+    crcBuf.writeUInt16BE(crcValSwapped, 0); // el server lee BE
 
     return Buffer.concat([start, header, datosBuf, crcBuf, end]);
+
+    //done Así manejaba solo los nuevos dispositivos:
+    // const header = Buffer.alloc(1 + 1 + 2 + 2 + 1 + 1 + 2);
+    // let offset = 0;
+    // header.writeUInt8(f.versionProtocolo, offset);
+    // offset += 1;
+    // header.writeUInt8(f.reserva ?? 0, offset);
+    // offset += 1;
+    // header.writeUInt16LE(f.nodoOrigen, offset);
+    // offset += 2;
+    // header.writeUInt16LE(f.nodoDestino, offset);
+    // offset += 2;
+    // header.writeUInt8(f.tipoTrama, offset);
+    // offset += 1;
+    // header.writeUInt8(f.tipoMensaje, offset);
+    // offset += 1;
+    // header.writeUInt16LE(f.longitud, offset);
+    // offset += 2;
+
+    // const datosBuf = Buffer.isBuffer(f.datos) ? f.datos : Buffer.alloc(0);
+
+    // // === CRC16 IBM/ARC sobre (header + datos) ===
+    // const crcSegment = Buffer.concat([header, datosBuf]);
+    // const crcValSwapped = crc16IBM(crcSegment); // ya viene "swappeado" como el server lo compara
+    // const crcBuf = Buffer.alloc(2);
+    // crcBuf.writeUInt16BE(crcValSwapped, 0); // el server hace readUInt16BE → ¡coinciden!
+
+    // return Buffer.concat([start, header, datosBuf, crcBuf, end]);
   }
 
   /** Espera hasta timeout a que llegue el ACK con ese id. */
@@ -377,175 +508,85 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done ----------------------------------------------- ENVIO Y BUILDER EQUIPOS VIEJOS BE ---------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
-  // done -------------------------------------------------------------------------------------------------------------------
-
-  // ------------------------------------------- ENVÍO (VIEJOS, BE) -------------------------------------------
-  /** Enviar un FrameOldDto (se serializa internamente a Buffer, BE y CRC 1 byte LSB) */
-  enviarFrameOld(frame: FrameOldDto) {
-    if (!this.socket || !this.socket.writable) {
-      josLogger.fatal('XXX Socket no conectado XXX');
-      return false;
-    }
-    const buf = this.serializarFrameOld(frame);
-    this.socket.write(buf);
-    return { bytes: buf.length, hex: buf.toString('hex') };
-  }
-
-  // ------------------------------------------- BUILDERS (VIEJOS, BE) -------------------------------------------
-  /** Builder genérico de FrameOldDto a partir de parámetros sueltos, crea el frame (BE) */
-  crearFrameOld(params: {
-    nodoOrigen: number;
-    nodoDestino: number;
-    tipoTrama: number;
-    tipoMensaje: number;
-    data: Buffer;
-    versionProtocolo?: number; // por defecto 1 en el legado
-  }): FrameOldDto {
-    const {
-      nodoOrigen,
-      nodoDestino,
-      tipoTrama,
-      tipoMensaje,
-      data,
-      versionProtocolo = 1,
-    } = params;
-
-    // Límite clásico del campo datos (ajusta al nombre de tus constantes si difiere)
-    if (
-      typeof DEF_MAX_DATOS_TRAMA === 'number' &&
-      data.length > DEF_MAX_DATOS_TRAMA
-    ) {
-      throw new Error(`El cuerpo supera ${DEF_MAX_DATOS_TRAMA} bytes`);
-    }
-
-    const frame: FrameOldDto = {
-      inicioTrama: START, // mismos delimitadores que en nuevo
-      versionProtocolo, // normalmente 1
-      nodoOrigen,
-      nodoDestino,
-      tipoTrama,
-      tipoMensaje,
-      longitud: data.length, // solo bytes de datos
-      datos: data, // Buffer
-      crc: 0, // se recalcula en serializarFrameOld
-      finTrama: END,
-    } as FrameOldDto;
-
-    return frame;
-  }
-
-  // ------------------------------------------- SERIALIZADOR (VIEJOS, BE) -------------------------------------------
-  /** Serializa un FrameOldDto (Big Endian en header y CRC de 1 byte = LSB del CRC16 IBM sobre header+datos) */
-  serializarFrameOld(f: FrameOldDto): Buffer {
-    const start = f.inicioTrama;
-    const end = f.finTrama;
-
-    // Header BE de 9 bytes (NO incluye el "start")
-    // Versión(1) + Origen(2 BE) + Destino(2 BE) + TipoTrama(1) + TipoMensaje(1) + LenDatos(2 BE)
-    const header = Buffer.alloc(1 + 2 + 2 + 1 + 1 + 2);
-    let offset = 0;
-    header.writeUInt8(f.versionProtocolo & 0xff, offset);
-    offset += 1;
-    header.writeUInt16BE(f.nodoOrigen & 0xffff, offset);
-    offset += 2;
-    header.writeUInt16BE(f.nodoDestino & 0xffff, offset);
-    offset += 2;
-    header.writeUInt8(f.tipoTrama & 0xff, offset);
-    offset += 1;
-    header.writeUInt8(f.tipoMensaje & 0xff, offset);
-    offset += 1;
-    header.writeUInt16BE(f.longitud & 0xffff, offset);
-    offset += 2;
-
-    const datosBuf = Buffer.isBuffer(f.datos) ? f.datos : Buffer.alloc(0);
-
-    // === CRC16 IBM/ARC sobre (header + datos) y se envía SOLO el LSB (1 byte) ===
-    const crcSegment = Buffer.concat([header, datosBuf]);
-    const crc16 = crc16IBM(crcSegment); // 16-bit
-    const crcBuf = Buffer.from([crc16 & 0xff]); // LSB → 1 byte
-
-    return Buffer.concat([start, header, datosBuf, crcBuf, end]);
-  }
-
-  /** Espera hasta timeout a que llegue el ACK con ese id. */
-  // private async waitAck(id: number, timeoutMs = ACK_TIMEOUT_MS): Promise<void> {
-  //     const deadline = Date.now() + timeoutMs;
-  //     while (Date.now() < deadline) {
-  //         if (this.receivedAcks.has(id & 0xff)) {
-  //             this.receivedAcks.delete(id & 0xff); // lo consumimos
-  //             return; // ACK encontrado
-  //         }
-  //         await this.delay(50); // intervalo de comprobación
-  //     }
-  //     throw new Error(`ACK timeout id=${id}`);
-  // }
-
-  // /** Envía un estadístico y espera su ACK; si no llega en 6s, reintenta el MISMO frame. */
-  // public async enviarEstadisticoYEsperarAck(
-  //     id: number,
-  //     frame: FrameDto,
-  // ): Promise<boolean> {
-  //     // reintentos indefinidos; si quieres límite, añade un contador
-  //     while (true) {
-  //         this.trackPendingStat(id); // opcional: telemetría
-
-  //         const res = this.enviarFrame(frame);
-  //         if (!res) {
-  //             josLogger.error(`❌ Fallo al enviar frame de estadístico id=${id}`);
-  //             await this.delay(200); // evita bucles calientes
-  //             continue;
-  //         }
-
-  //         try {
-  //             await this.waitAck(id, ACK_TIMEOUT_MS);
-  //             return true; // ACK correcto recibido
-  //         } catch (e) {
-  //             josLogger.warn(
-  //                 `⏳ Timeout ACK (${ACK_TIMEOUT_MS}ms) para estadístico id=${id} → reintentando MISMO frame…`,
-  //             );
-  //             // loop: reintenta mismo frame con mismo id
-  //         }
-  //     }
-  // }
-
   // ------------------------------------------- PAYLOADS -------------------------------------------
 
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
-  // * ----------------------------------------------- TT SISTEMAS EQUIPOS NUEVOS LE -------------------------------------
+  // * ----------------------------------------------- TT SISTEMAS -------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
   /** TM_SISTEMA_TX_PRESENTACION (N_variables=6) */
-  crearDataPresentacion(p: PresentacionDto) {
-    const data = Buffer.alloc(4 * (1 + p.nVariables)); // 7 uint32
-    let offset = 0;
-    data.writeUInt32LE(p.nVariables, offset);
-    offset += 4; // N_variables (6)
-    data.writeUInt32LE(p.versionPresentacion, offset);
-    offset += 4; // version_presentacion
-    data.writeUInt32LE(p.mac, offset);
-    offset += 4; // MAC
-    data.writeUInt32LE(p.versionEquipo, offset);
-    offset += 4; // VERSION_EQUIPO
-    data.writeUInt32LE(p.tipoEquipo, offset);
-    offset += 4; // tipo_equipo
-    data.writeUInt32LE(p.claveEquipo, offset);
-    offset += 4; // clave_equipo
-    data.writeUInt32LE(p.versionHw, offset);
-    offset += 4; // VERSION_HW
+  crearDataPresentacion(
+    p: {
+      nVariables?: number;
+      versionPresentacion?: number;
+      mac: number;
+      versionEquipo: number;
+      tipoEquipo: number;
+      claveEquipo?: number;
+      versionHw?: number;
+      password?: string;
+      crcTabla?: number;
+      // tipoDispositivo?: number;
+    } /*PresentacionDto | PresentacionCentralOldDto*/,
+  ): Buffer {
+    let data: Buffer = Buffer.alloc(0);
+
+    if (p.password !== undefined) {
+      // Equipos antiguos (la variable password SOLO está en la trama de los equipos antiguos)
+      josLogger.debug('crearDataPresentacion() 8002 Antiguos');
+
+      const params = p as unknown as PresentacionCentralOldDto;
+
+      // Datos (BE): 1(tipo) + 8(MAC) + 2(version) + 16(password) + 2(crc) = 29 bytes
+      const passBuf = Buffer.alloc(16, 0x00);
+      const passBytes = Buffer.from(params.password ?? '', 'utf8');
+      passBytes.copy(passBuf, 0, 0, Math.min(passBytes.length, 15)); // null-terminated
+
+      data = Buffer.alloc(29);
+      let offset = 0;
+
+      data.writeUInt8(params.tipoEquipo & 0xff, offset);
+      offset += 1; // tipoDispositivo (1)
+      // params.mac.copy(data, offset, 0, 8); offset += 8;                         // MAC (8)
+      //! REVISAR el BigInt
+      data.writeBigUInt64BE(BigInt(params.mac), offset);
+      offset += 8; // MAC (8 bytes BE desde number)
+      data.writeUInt16BE(params.versionEquipo & 0xffff, offset);
+      offset += 2; // versionEquipo (2) BE
+      passBuf.copy(data, offset);
+      offset += 16; // password (16)
+      data.writeUInt16BE(params.crcTabla & 0xffff, offset);
+      offset += 2; // crcTabla (2) BE
+    } else {
+      // Equipos nuevos
+      josLogger.debug('crearDataPresentacion() 8003 Nuevos');
+
+      const params = p as PresentacionDto;
+
+      data = Buffer.alloc(4 * (1 + params.nVariables)); // 7 uint32
+      let offset = 0;
+      data.writeUInt32LE(params.nVariables, offset);
+      offset += 4; // N_variables (6)
+      data.writeUInt32LE(params.versionPresentacion, offset);
+      offset += 4; // version_presentacion
+      data.writeUInt32LE(params.mac, offset);
+      offset += 4; // MAC
+      data.writeUInt32LE(params.versionEquipo, offset);
+      offset += 4; // VERSION_EQUIPO
+      data.writeUInt32LE(params.tipoEquipo, offset);
+      offset += 4; // tipo_equipo
+      data.writeUInt32LE(params.claveEquipo, offset);
+      offset += 4; // clave_equipo
+      data.writeUInt32LE(params.versionHw, offset);
+      offset += 4; // VERSION_HW
+    }
+
     return data;
   }
 
@@ -601,125 +642,6 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     data.writeUInt32LE(pa.version >>> 0, o);
     o += 4; // version
     data.writeUInt32LE(pa.estadoProgreso as unknown as number, o); // EN_GCSPA_EVENTO_ACTUALIZACION_SERVER
-    return data;
-  }
-
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * ----------------------------------------------- TT SISTEMAS EQUIPOS VIEJOS BE -------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-
-  /** TM_presentacion_central (viejos, BE) */
-  crearDataPresentacionOld(p: PresentacionCentralOldDto): Buffer {
-    // Datos: 1(tipo) + 8(MAC) + 2(version) + 16(password) + 2(crc) = 29 bytes
-    const passBuf = Buffer.alloc(16, 0x00);
-    const passBytes = Buffer.from(p.password ?? '', 'utf8');
-    passBytes.copy(passBuf, 0, 0, Math.min(passBytes.length, 15)); // null-terminated con relleno 0x00
-
-    const data = Buffer.alloc(29);
-    let off = 0;
-
-    data.writeUInt8(p.tipoEquipo & 0xff, off);
-    off += 1; // tipo (1)
-    data.writeBigUInt64BE(BigInt(p.mac), off);
-    off += 8; // MAC (8) BE
-    data.writeUInt16BE(p.versionEquipo & 0xffff, off);
-    off += 2; // versionEquipo (2) BE
-    passBuf.copy(data, off);
-    off += 16; // password (16)
-    data.writeUInt16BE((p.crcTabla ?? 0) & 0xffff, off);
-    off += 2; // crcTabla (2) BE
-    return data;
-  }
-
-  /** TM_rt_presencia_central (old) — BE, 8 bytes por nodo */
-  crearDataPresenciaOld(/*tabla: RtPresenciaCentralOldDto*/): Buffer {
-    //! La central envía una trama con el CRC de la tabla y TODOS los items {direccionNodo, crcParametros, crcAlarmas} por dipositivo que existan.
-    // ? En el método antiguo se envían todos los CRC se envían todos los parámetros
-    // ? indicados. En el método nuevo solo se va a enviar el CRC de tabla.
-    //! Supongo entonces que no se envían items, únicamente el CRC_tabla
-
-    // const nodos = p?.nodos ?? [];
-    // if (nodos.length === 0) return Buffer.alloc(0);
-
-    // const data = Buffer.alloc(8 * nodos.length);
-    // let o = 0;
-
-    // for (const n of nodos) {
-    //     data.writeUInt16BE((n.crcTabla ?? 0) & 0xffff, o); o += 2; // 16b CRC tabla
-    //     data.writeUInt16BE((n.direccionNodo ?? 0) & 0xffff, o); o += 2; // 16b dirección nodo
-    //     data.writeUInt16BE((n.crcParametros ?? 0) & 0xffff, o); o += 2; // 16b CRC parámetros (0 si no se usa)
-    //     data.writeUInt16BE((n.crcAlarmas ?? 0) & 0xffff, o); o += 2; // 16b CRC alarmas
-    // }
-
-    // return data;
-
-    //jos Recibimos tabla, calculamos CRC y enviamos
-    const tabla = serializarTablaCentralItemsOld(defaultTablaPrefabricada);
-    const crc = crc16IBM(tabla);
-
-    const data = Buffer.alloc(2);
-    data.writeUInt16BE(crc & 0xffff, 0); // 16 bits BE según doc
-    return data;
-    // const crcTabla = (tabla as any)?.crcTabla ?? tabla?.nodos?.[0]?.crcTabla;
-
-    // if (typeof crcTabla !== 'number') {
-    //     josLogger.warn('⚠️ Presencia: no se proporcionó crcTabla → no se envía trama.');
-    //     return Buffer.alloc(0);
-    // }
-  }
-
-  /** TM_SISTEMA_TX_ESTADO_DISPOSITIVO */
-  serializarDataEstadoDispositivoOld(ed: EstadoDispositivoTxDto) {
-    const data = Buffer.alloc(16);
-    // let offset = 0;
-    // data.writeUInt32LE(ed.nVariables, offset);
-    // offset += 4; // N_variables
-    // data.writeUInt32LE(ed.version, offset);
-    // offset += 4; // version
-    // data.writeUInt32LE(ed.idEnvio, offset);
-    // offset += 4; // ID_ENVIO
-    // data.writeUInt32LE(ed.alarmaEquipo, offset);
-    // offset += 4; // Alarma_equipo
-    return data;
-  }
-
-  // -------------------------------------------------- TM_SISTEMA_TX_CONFIG_FINAL --------------------------------------------------
-  /** 2 × uint32 (8 bytes): version, Envia_estadisticos. Doc 2.4.7. */
-  serializarDataConfigFinalOld(cf: ConfigFinalTxDto) {
-    const data = Buffer.alloc(8);
-    // let o = 0;
-    // data.writeUInt32LE(cf.version >>> 0, o);
-    // o += 4; // version
-    // data.writeUInt32LE(cf.enviaEstadisticos >>> 0, o); // Envia_estadisticos (0/1)
-    return data;
-  }
-
-  // -------------------------------------------------- TM_SISTEMA_TX_URL_DESCARGA_OTA --------------------------------------------------
-  /** 2 × uint32 (8 bytes): VERSION_TRAMA_OTA (=1), tipo_equipo. Doc 2.4.5→1.1.1. */
-  serializarDataUrlDescargaOtaOld(ota: UrlDescargaOtaTxDto) {
-    const data = Buffer.alloc(8);
-    // let o = 0;
-    // data.writeUInt32LE(ota.versionTramaOta >>> 0, o);
-    // o += 4; // VERSION_TRAMA_OTA (=1)
-    // data.writeUInt32LE(ota.tipoEquipo >>> 0, o); // tipo_equipo (EN_TIPO_EQUIPO)
-    return data;
-  }
-
-  // -------------------------------------------------- TM_SISTEMA_TX_PROGRESO_ACTUALIZACION --------------------------------------------------
-  serializarDataProgresoActualizacionOld(pa: ProgresoActualizacionTxDto) {
-    const data = Buffer.alloc(12);
-    // let o = 0;
-    // data.writeUInt32LE(pa.nVariables >>> 0, o);
-    // o += 4; // N_variables
-    // data.writeUInt32LE(pa.version >>> 0, o);
-    // o += 4; // version
-    // data.writeUInt32LE(pa.estadoProgreso as unknown as number, o); // EN_GCSPA_EVENTO_ACTUALIZACION_SERVER
     return data;
   }
 
@@ -796,20 +718,10 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     data.writeUInt8((dto.res4 ?? 0) & 0xff, offset++);
 
     // fecha -> yyyymmdd (uint32 LE)
-    // const yyyy = (dto.fecha.anyo ?? 0) >>> 0;
-    // const mm = (dto.fecha.mes ?? 0) >>> 0;
-    // const dd = (dto.fecha.dia ?? 0) >>> 0;
-    // const fechaU32 = (yyyy * 10000 + mm * 100 + dd) >>> 0;
-    // data.writeUInt32LE(fechaU32, offset);
-    // offset += 4;
-
-    // jos Antes serializaba como"yyyymmdd"
-    // fecha -> dd-mm-yyyy bit-packed (dia(8) | mes(8) | anyo(16)) en LE
-    const dd = (dto.fecha.dia ?? 0) & 0xff;
-    const mm = (dto.fecha.mes ?? 0) & 0xff;
-    const yyyy = (dto.fecha.anyo ?? 0) & 0xffff;
-    const fechaU32 = (yyyy << 16) | (mm << 8) | dd; // <-- DD-MM-YYYY bit-packed
-
+    const yyyy = (dto.fecha.anyo ?? 0) >>> 0;
+    const mm = (dto.fecha.mes ?? 0) >>> 0;
+    const dd = (dto.fecha.dia ?? 0) >>> 0;
+    const fechaU32 = (yyyy * 10000 + mm * 100 + dd) >>> 0;
     data.writeUInt32LE(fechaU32, offset);
     offset += 4;
 
@@ -849,170 +761,6 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
   //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
 
-  // tcp-client.service.ts
-
-  /** Handler: PRESENTACIÓN (equipos nuevos, LE) */
-  async handlerPresentacion(): Promise<
-    boolean | { bytes: number; hex: string }
-  > {
-    const pres: PresentacionDto = defaultPresentacionCTI40;
-    const data = this.crearDataPresentacion(pres);
-
-    const frame = this.crearFrame({
-      nodoOrigen: 1,
-      nodoDestino: 0,
-      tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
-      tipoMensaje: EnTmSistema.txPresentacion, // TM_SISTEMA_TX_PRESENTACION
-      data,
-      reserva: 0, // presente en “nuevos”
-    });
-
-    return this.enviarFrame(frame);
-  }
-
-  /** Handler: PRESENCIA (equipos nuevos, LE) */
-  async handlerPresencia(): Promise<boolean | { bytes: number; hex: string }> {
-    const data = this.crearDataPresencia(); // vacío
-    const frame = this.crearFrame({
-      nodoOrigen: 1,
-      nodoDestino: 0,
-      tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
-      tipoMensaje: EnTmSistema.txPresencia, // TM_SISTEMA_TX_PRESENCIA
-      data,
-      reserva: 0,
-    });
-
-    return this.enviarFrame(frame);
-  }
-
-  // Presentación (central -> servidor) — protocolo antiguo (BE)
-  async handlerPresentacionOld(): Promise<
-    boolean | { bytes: number; hex: string }
-  > {
-    const presOld: PresentacionCentralOldDto = defaultPresentacionOmegaOld;
-    const data = this.crearDataPresentacionOld(presOld);
-
-    const frameOld = this.crearFrameOld({
-      nodoOrigen: 1,
-      nodoDestino: 0,
-      tipoTrama: EnTipoTramaOld.centralServidor, // TT_central_servidor (=6)
-      tipoMensaje: EnTipoMensajeCentralServidor.tmTramaPresentacionCentral, // (=8)
-      data,
-      versionProtocolo: PROTO_VERSION_OLD,
-    });
-
-    return this.enviarFrameOld(frameOld);
-  }
-
-  // Presencia (central -> servidor) — protocolo antiguo (BE)
-  async handlerPresenciaOld(): Promise<boolean | { bytes: number; hex: string }> {
-    // Si quieres enviar nodos reales, pásalos aquí. Con [] se envía payload vacío.
-    const data = this.crearDataPresenciaOld(); // { nodos: [] }
-
-    const frameOld = this.crearFrameOld({
-      nodoOrigen: 1,
-      nodoDestino: 0,
-      tipoTrama: EnTipoTramaOld.centralServidor, // TT_central_servidor (=6)
-      tipoMensaje: EnTipoMensajeCentralServidor.tmRtPresenciaCentral, // (=7)
-      data,
-      versionProtocolo: PROTO_VERSION_OLD,
-    });
-
-    return this.enviarFrameOld(frameOld);
-  }
-
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * ----------------------------------------------- TABLA DISPOSITIVOS Central -> Server ------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-
-  /**
-   * Crea N dispositivos "seed" y devuelve los DTOs necesarios para la tabla.
-   *
-   * - Si nDispositivos ≤ 13  -> sólo FIN
-   * - Si nDispositivos > 13  -> MAS (13 primeros) + FIN (resto, ≤ 13)
-   * - Se asume que nunca habrá más de 26; en tu caso habitual ≤ 20.
-   */
-  crearDataTablaDispositivosOld(nDispositivos: number): {
-    fin: RtTablaCentralFinOldDto;
-    mas?: RtTablaCentralMasOldDto;
-  } {
-    const n = Math.max(0, nDispositivos | 0);
-
-    // 1) Crear todos los items con seed = i
-    const allItems: TablaCentralItemOld[] = [];
-    for (let i = 1; i <= n; i++) {
-      allItems.push(crearDefaultDispositivoTablaOld(i));
-    }
-
-    // 2) Troceo en MAS/FIN (como mucho dos tramas)
-    if (allItems.length <= MAX_ITEMS_PER_FRAME) {
-      // Sólo FIN
-      return {
-        fin: { items: allItems },
-      };
-    } else {
-      // MAS con los 13 primeros, FIN con el resto (hasta 13)
-      const masItems = allItems.slice(0, MAX_ITEMS_PER_FRAME);
-      const finItems = allItems.slice(
-        MAX_ITEMS_PER_FRAME,
-        MAX_ITEMS_PER_FRAME * 2,
-      );
-      return {
-        mas: { items: masItems },
-        fin: { items: finItems },
-      };
-    }
-  }
-
-  /**
-   * (Opcional) Conveniencia: crea los DTOs MAS/FIN y devuelve los *payloads*
-   * ya serializados en BE para ponerlos directamente en la trama.
-   *
-   * Regla:
-   *  - ≤13 -> sólo FIN
-   *  - >13 -> MAS (13) + FIN (resto)
-   */
-  crearBuffersTablaDispositivos(nDispositivos: number): {
-    fin: Buffer;
-    mas?: Buffer;
-  } {
-    const data = this.crearDataTablaDispositivosOld(nDispositivos);
-    const fin = serializarTablaCentralItemsOld(data.fin.items);
-    const mas = data.mas
-      ? serializarTablaCentralItemsOld(data.mas.items)
-      : undefined;
-    if (data.mas) console.table(data.mas.items);
-    console.table(data.fin.items);
-
-    return { fin, mas };
-  }
-
-  /** Esta función ya devuelve el buffer, es decir, introducimos el dispositivo que ha cambiado, "crea la tabla" y serializa devolviendo el buffer. */
-  crearDataTablaDispositivosCambioEstadoOld(disp: TablaCentralItemOld): Buffer {
-    const items: TablaCentralItemOld[] = [];
-    items.push(disp);
-    return serializarTablaCentralItemsOld(items);
-  }
-
-  /** Según el nombre (EnEstadisticosNombres) que le pasemos por parámetro nos da el objeto del estadístico con un valor adecuado (temp, hum, co2, nh3, etc.). */
-  crearDataEstadisticoValorOld(
-    estadisticoNombre: number,
-  ): ParametroHistoricoOldDto {
-    const estadistico = defaultEstadisticoValorOld;
-    estadistico.numeroServicio = estadisticoNombre;
-    josLogger.trace(
-      `Estadístico ${EnEstadisticosNombres[estadisticoNombre]} enviado.`,
-    );
-    estadistico.datos = valorSimuladoPorNombre(estadisticoNombre);
-    return estadistico;
-  }
-
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
@@ -1030,11 +778,11 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   //   data.writeUInt16LE((p.identificadorCliente ?? 0) & 0xFFFF, 0);
   //   return data;
   // }
-  // serializarDepuracionPeticionConsola(p: PeticionConsolaDto) {
-  //     const data = Buffer.alloc(4);
-  //     data.writeUInt32LE((p.identificadorCliente ?? 0) >>> 0, 0);
-  //     return data;
-  // }
+  serializarDepuracionPeticionConsola(p: PeticionConsolaDto) {
+    const data = Buffer.alloc(4);
+    data.writeUInt32LE((p.identificadorCliente ?? 0) >>> 0, 0);
+    return data;
+  }
 
   //! En principio supongo que esto sería respuesta del propio servidor.
   // -------------------------------------------------- TM_DEPURACION_rt_peticion_consola --------------------------------------------------

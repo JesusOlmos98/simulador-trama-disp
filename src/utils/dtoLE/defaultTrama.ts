@@ -1,8 +1,36 @@
-import { TIPO_DATO_ACCION_REGISTRO_DATOS_GENERICO } from "src/utils/BE/globals/constGlobales";
-import { EnTipoEquipo, EnEstadisticosControladores, EnEstadisPeriodicidad, EnEstadoDatoEstadistico, EnGtUnidades, EnTipoDato, EnEstadisTipoRegistro, EnContadoresTipo, EnEeEventosApli, EnAlarmas, EnAlarmaEstado, EnAlarmasAccion } from "src/utils/BE/globals/enums";
-import { Tiempo, Fecha } from "src/utils/tiposGlobales";
-import { EstadisticoValorDto, EstadisticoDato, serializarDatosEstadisticoValor, EnviaEstadisticoDto, EstadisticoContadorDto, serializarDatosEstadisticoContador, EstadisticoActividadDto, serializarDatosEstadisticoActividad, EeInicioCrianzaDto, serializarDatosEstadisticoEvento, EstadisticoAlarmaDto, serializarDatosEstadisticoAlarma, serializarDatosEstadisticoCambioParametros, EstadisticoCambioParametroDto } from "./tt_estadisticos.dto";
-import { PresentacionDto } from "./tt_sistema.dto";
+import { TIPO_DATO_ACCION_REGISTRO_DATOS_GENERICO } from 'src/utils/LE/globals/constGlobales';
+import {
+  EnTipoEquipo,
+  EnEstadisticosControladores,
+  EnEstadisPeriodicidad,
+  EnEstadoDatoEstadistico,
+  EnGtUnidades,
+  EnTipoDato,
+  EnEstadisTipoRegistro,
+  EnContadoresTipo,
+  EnEeEventosApli,
+  EnAlarmas,
+  EnAlarmaEstado,
+  EnAlarmasAccion,
+} from 'src/utils/LE/globals/enums';
+import { Tiempo, Fecha } from 'src/utils/tiposGlobales';
+import {
+  EstadisticoValorDto,
+  EstadisticoDato,
+  serializarDatosEstadisticoValor,
+  EnviaEstadisticoDto,
+  EstadisticoContadorDto,
+  serializarDatosEstadisticoContador,
+  EstadisticoActividadDto,
+  serializarDatosEstadisticoActividad,
+  EeInicioCrianzaDto,
+  serializarDatosEstadisticoEvento,
+  EstadisticoAlarmaDto,
+  serializarDatosEstadisticoAlarma,
+  serializarDatosEstadisticoCambioParametros,
+  EstadisticoCambioParametroDto,
+} from './tt_estadisticos.dto';
+import { PresentacionDto } from './tt_sistema.dto';
 
 // * Usados como ejemplos para enviar tramas.
 
@@ -54,7 +82,9 @@ export const defaultDatosValorTempSonda1: EstadisticoValorDto = {
   valorTipo: EnTipoDato.float,
 };
 
-const datosTempSonda1: EstadisticoDato[] = serializarDatosEstadisticoValor(defaultDatosValorTempSonda1);
+const datosTempSonda1: EstadisticoDato[] = serializarDatosEstadisticoValor(
+  defaultDatosValorTempSonda1,
+);
 
 export const defaultDataTempSonda1: EnviaEstadisticoDto = {
   mac: 0x12345678,
@@ -68,7 +98,7 @@ export const defaultDataTempSonda1: EnviaEstadisticoDto = {
   res4: 0x00,
 
   fecha: { dia: 11, mes: 11, anyo: 2020 } as Fecha,
-  hora: { hora: 11, min: 11, seg: 11 } as Tiempo,
+  hora: { hora: 11, min: 10, seg: 9 } as Tiempo,
   res5: 0x00,
   numeroDatos: 9,
   datos: datosTempSonda1,
@@ -89,7 +119,9 @@ export const defaultDatosContadorAgua: EstadisticoContadorDto = {
   // valorTipo: EnTipoDato.uint32, // (opcional, es el default)
 };
 
-const datosContadorAgua: EstadisticoDato[] = serializarDatosEstadisticoContador(defaultDatosContadorAgua);
+const datosContadorAgua: EstadisticoDato[] = serializarDatosEstadisticoContador(
+  defaultDatosContadorAgua,
+);
 
 export const defaultDataContadorAgua: EnviaEstadisticoDto = {
   mac: 0x12345678,
@@ -121,7 +153,8 @@ export const defaultDatosActividadCalefaccion1: EstadisticoActividadDto = {
   estado: EnEstadoDatoEstadistico.correcto,
 };
 
-const datosActividadCalefaccion1: EstadisticoDato[] = serializarDatosEstadisticoActividad(defaultDatosActividadCalefaccion1);
+const datosActividadCalefaccion1: EstadisticoDato[] =
+  serializarDatosEstadisticoActividad(defaultDatosActividadCalefaccion1);
 
 export const defaultDataActividadCalefaccion1: EnviaEstadisticoDto = {
   mac: 0x12345678,
@@ -153,7 +186,8 @@ export const defaultEventoInicioCrianza: EeInicioCrianzaDto = {
 };
 
 // Serializamos a la lista de items (tipo/size/dato)
-const datosEventoInicioCrianza: EstadisticoDato[] = serializarDatosEstadisticoEvento(defaultEventoInicioCrianza);
+const datosEventoInicioCrianza: EstadisticoDato[] =
+  serializarDatosEstadisticoEvento(defaultEventoInicioCrianza);
 
 export const defaultDataEventoInicioCrianza: EnviaEstadisticoDto = {
   mac: 0x12345678,
@@ -185,7 +219,9 @@ export const defaultDatosAlarmaTempAlta: EstadisticoAlarmaDto = {
 };
 
 // Serializamos a la lista de items (tipo/size/dato)
-const datosAlarmaTempAlta: EstadisticoDato[] = serializarDatosEstadisticoAlarma(defaultDatosAlarmaTempAlta);
+const datosAlarmaTempAlta: EstadisticoDato[] = serializarDatosEstadisticoAlarma(
+  defaultDatosAlarmaTempAlta,
+);
 
 export const defaultDataAlarmaTempAlta: EnviaEstadisticoDto = {
   mac: 0x12345678,
@@ -211,21 +247,22 @@ export const defaultDataAlarmaTempAlta: EnviaEstadisticoDto = {
 //* ------------------------------------------------------------------------------------------------------------------------------
 
 export const defaultDatosCambioParametro: EstadisticoCambioParametroDto = {
-  idCliente: 0x11223344,                         // TD_UINT32
-  tituloOpcion: "Consigna temperatura",          // TD_CONCATENADO
-  opcionLinea: "Nave 1",                         // TD_CONCATENADO
-  valorNumero: 23.5,                             // valor numérico...
-  valorTipo: EnTipoDato.float,                   // ...como FLOAT (alternativa: usa valorTexto si es string)
+  idCliente: 0x11223344, // TD_UINT32
+  tituloOpcion: 'Consigna temperatura', // TD_CONCATENADO
+  opcionLinea: 'Nave 1', // TD_CONCATENADO
+  valorNumero: 23.5, // valor numérico...
+  valorTipo: EnTipoDato.float, // ...como FLOAT (alternativa: usa valorTexto si es string)
   // valorTexto: "23.5 ºC"                       // <- si prefieres texto, usa esto y quita valorNumero/valorTipo
 };
 
 // Serializamos a la lista de items (tipo/size/dato)
-const datosCambioParametro: EstadisticoDato[] = serializarDatosEstadisticoCambioParametros(defaultDatosCambioParametro);
+const datosCambioParametro: EstadisticoDato[] =
+  serializarDatosEstadisticoCambioParametros(defaultDatosCambioParametro);
 
 export const defaultDataCambioParametro: EnviaEstadisticoDto = {
   mac: 0x12345678,
   tipoDato: TIPO_DATO_ACCION_REGISTRO_DATOS_GENERICO, // 47
-  identificadorUnicoDentroDelSegundo: 0x00,           // se rellena con nextStatId()
+  identificadorUnicoDentroDelSegundo: 0x00, // se rellena con nextStatId()
   version: 1,
   tipoRegistro: EnEstadisTipoRegistro.cambioParametros, // 👈 cambio parámetro
   res1: 0x00,

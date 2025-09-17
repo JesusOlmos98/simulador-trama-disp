@@ -1,4 +1,4 @@
-import { EnTmDepuracion } from 'src/utils/BE/globals/enums';
+import { EnTmDepuracion } from 'src/utils/LE/globals/enums';
 
 // -------------------------------------------------- TM_DEPURACION_peticion_consola --------------------------------------------------
 export class PeticionConsolaDto {

@@ -23,7 +23,11 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+
+
+Generador de tramas para simular dispositivos ([Nest](https://github.com/nestjs/nest) framework TypeScript starter repository). 
+
+
 
 ## Project setup
 

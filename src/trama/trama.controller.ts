@@ -1,39 +1,42 @@
-import { Controller, Post, Body, Query } from '@nestjs/common';
-import { defaultPresentacionOmegaOld } from 'src/dtoBE/defaultTramaOld';
-import { FrameOldDto } from 'src/dtoBE/frameOld.dto';
-import { PresentacionCentralOldDto } from 'src/dtoBE/tt_sistemaOld.dto';
+import { Controller, Post, Query, BadRequestException } from '@nestjs/common';
+import { crearTablaCambioEstadoDispositivoOld, defaultEstadisticoAlarmasOld, defaultEstadisticoAltasBajasRetiradasCrianzaOld, defaultEstadisticoInicioFinCrianzaOld, defaultEstadisticoValorOld, defaultParametroHistoricoAlarmaOmegaDf, defaultParametroHistoricoOmegaAltasBajasAlta, defaultParametroHistoricoOmegaAltasBajasBaja, defaultParametroHistoricoOmegaCambioParametroConcatenadoNumerico, defaultParametroHistoricoOmegaCambioParametroConcatenadoTexto, defaultParametroHistoricoOmegaCambioParametroFecha, defaultParametroHistoricoOmegaCambioParametroTiempo, defaultParametroHistoricoOmegaCambioParametroUint16, defaultParametroHistoricoOmegaDebugStringOk, defaultParametroHistoricoOmegaDebugStringValores, defaultParametroHistoricoOmegaEbusFinalesA, defaultParametroHistoricoOmegaEbusFinalesB, defaultParametroHistoricoOmegaEntradaAnimalesMixtos, defaultParametroHistoricoOmegaEntradaAnimalesSoloHembras, defaultParametroHistoricoOmegaEstadisticoGenericoAlarma, defaultParametroHistoricoOmegaEstadisticoGenericoEvento, defaultParametroHistoricoOmegaEstadisticoGenericoWarning, defaultParametroHistoricoOmegaEventoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoAlarma, defaultParametroHistoricoOmegaEventoConcatenadoNormal, defaultParametroHistoricoOmegaEventoConcatenadoWarning, defaultParametroHistoricoOmegaEventoNormal, defaultParametroHistoricoOmegaEventoWarning, defaultParametroHistoricoOmegaFinCrianzaMixtos, defaultParametroHistoricoOmegaFinCrianzaSeparado, defaultParametroHistoricoOmegaInicioCrianza, defaultParametroHistoricoOmegaInicioCrianzaCrudo } from 'src/utils/dtoBE/defaultTramaOld';
+import { serializarParametroHistoricoOld } from 'src/utils/dtoBE/tt_estadisticosOld.dto';
+import { ParametroHistoricoOmegaEstadisticoGenericoDto, serializarParametroHistoricoAltasBajasOmegaDf, serializarParametroHistoricoCambioParametroConcatenadoOmegaDf, serializarParametroHistoricoCambioParametroOmegaDf, serializarParametroHistoricoDebugStringOmegaDf, serializarParametroHistoricoEbusFinalesOmegaDf, serializarParametroHistoricoEntradaAnimalesOmegaDf, serializarParametroHistoricoEstadisticoGenericoOmegaDf, serializarParametroHistoricoEventoConcatenadoOmegaDf, serializarParametroHistoricoEventoOmegaDf, serializarParametroHistoricoFinCrianzaOmegaDf, serializarParametroHistoricoInicioCrianzaOmegaDf, serializarParametroHistoricoValorOmegaDf } from 'src/utils/dtoBE/tt_estadisticosOldDF.dto';
 import {
-  defaultPresentacionCTI40,
   defaultDataTempSonda1,
   defaultDataContadorAgua,
   defaultDataActividadCalefaccion1,
   defaultDataEventoInicioCrianza,
   defaultDataAlarmaTempAlta,
   defaultDataCambioParametro,
-} from 'src/dtoLE/defaultTrama';
-import { FrameDto } from 'src/dtoLE/frame.dto';
-import { PeticionConsolaDto } from 'src/dtoLE/tt_depuracion.dto';
+  defaultDatosValorTempSonda1,
+} from 'src/utils/dtoLE/defaultTrama';
+import { FrameDto } from 'src/utils/dtoLE/frame.dto';
+import { serializarDatosEstadisticoValor } from 'src/utils/dtoLE/tt_estadisticos.dto';
 import {
-  PresentacionDto,
   EstadoDispositivoTxDto,
   ConfigFinalTxDto,
   UrlDescargaOtaTxDto,
   ProgresoActualizacionTxDto,
-} from 'src/dtoLE/tt_sistema.dto';
+} from 'src/utils/dtoLE/tt_sistema.dto';
 import { TcpClientService } from 'src/tcp-client/tcp-client.service';
+import { logTramaParametroHistoricoAltasBajasOmegaDf, logTramaParametroHistoricoCambioParametroConcatenadoOmegaDf, logTramaParametroHistoricoCambioParametroOmegaDf, logTramaParametroHistoricoDebugStringOmegaDf, logTramaParametroHistoricoEbusFinalesOmegaDf, logTramaParametroHistoricoEntradaAnimalesOmegaDf, logTramaParametroHistoricoEstadisticoGenericoOmegaDf, logTramaParametroHistoricoEventoConcatenadoOmegaDf, logTramaParametroHistoricoEventoOmegaDf, logTramaParametroHistoricoFinCrianzaOmegaDf, logTramaParametroHistoricoInicioCrianzaOmegaDf, logTramaParametroHistoricoOld, logTramaParametroHistoricoOmegaDf } from 'src/utils/BE_Old/get/getEstadistico';
+import { logTramaCompletaTablaDispositivosOld } from 'src/utils/BE_Old/get/getTablaDispositivos';
+import { PROTO_VERSION_OLD } from 'src/utils/BE_Old/globals/constGlobales';
+import { EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnTipoDatoOld, EnTipoMensajeCentralServidor, EnTipoMensajeDispositivoCentral, EnTipoTramaOld } from 'src/utils/BE_Old/globals/enumOld';
 import {
   EnTipoTrama,
   EnTmSistema,
   EnTipoEquipo,
   EnGcspaEventoActualizacionServer,
   EnTmEstadisticos,
-  EnTmDepuracion,
-} from 'src/utils/BE/globals/enums';
-import {
-  readNodoOrigen,
-  readNodoDestino,
-} from 'src/utils/helpers';
+  EnEstadisPeriodicidad,
+  EnEstadisticosControladores,
+  EnGtUnidades,
+} from 'src/utils/LE/globals/enums';
+import { mac8FromParam, parseDmYToFecha } from 'src/utils/helpers';
 import { josLogger } from 'src/utils/josLogger';
+import { Fecha, Tiempo } from 'src/utils/tiposGlobales';
 
 @Controller('trama')
 export class TramaController {
@@ -43,105 +46,58 @@ export class TramaController {
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
-  // * ----------------------------------------------- TT SISTEMAS -------------------------------------------------------
+  // * -------------------------------------------- EQUIPOS NUEVOS (ST) --------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
-  // ------------------------------------------- PRESENTACION -------------------------------------------
+  // * -------------------------------------------------------------------------------------------------------------------
+  // * ----------------------------------------------- TT SISTEMAS -------------------------------------------------------
+  // * -------------------------------------------------------------------------------------------------------------------
+
+  //  PRESENTACION 
   /** POST /api/trama/presentacion
    * body (opcional): { nodoOrigen?, nodoDestino?, datos?: PresentacionDto }
    */
   @Post('presentacion')
   async presentacion(@Query('ver') ver?: string) {
     const usePort = ver === '0' ? 8002 : 8003;
-    await this.tcp.switchTargetAndEnsureConnected({ port: usePort });
-    let enviarFrame: boolean | { bytes: number; hex: string; } = false;
+    await this.tcp.cambiarPuerto({ port: usePort });
 
-    if (ver === '0') { // 8002 Antiguos
-
-      josLogger.debug('@Post("presentacion") 8002 Antiguos');
-      const defaultPres: PresentacionCentralOldDto = defaultPresentacionOmegaOld;
-      const data = this.tcp.crearDataPresentacion({
-        tipoEquipo: defaultPres.tipoEquipo,
-        mac: defaultPres.mac,
-        versionEquipo: defaultPres.versionEquipo,
-        password: defaultPres.password,
-        crcTabla: 0,
-      }); //done Aquí insertamos la data en la presentación.
-
-      const frame: FrameOldDto = this.tcp.crearFrame({
-        nodoOrigen: readNodoOrigen(1),
-        nodoDestino: readNodoDestino(0),
-        tipoTrama: EnTipoTrama.sistema,          // TT_SISTEMA
-        tipoMensaje: EnTmSistema.txPresentacion, // TM_SISTEMA_TX_PRESENTACION
-        data,
-        // reserva: 0, //done NO enviamos reserva en los antiguos, nos sirve como flag en crearFrame()
-      }) as FrameOldDto;
-
-      enviarFrame = this.tcp.enviarFrame(frame as FrameOldDto);
-      josLogger.info(`Enviamos PRESENTACION equipo VIEJO ${EnTipoEquipo[defaultPres.tipoEquipo].toUpperCase()} al puerto ${usePort}`,);
-
-    } else { // 8003 Nuevos
-
-      josLogger.debug('@Post("presentacion") 8003 Nuevos');
-
-      const defaultPres: PresentacionDto = defaultPresentacionCTI40;
-      // const pres: PresentacionDto = readPresentacion(defaultPres);
-      const data = this.tcp.crearDataPresentacion(defaultPres); //done Aquí insertamos la data en la presentación.
-      const frame: FrameDto = this.tcp.crearFrame({
-        nodoOrigen: readNodoOrigen(1),
-        nodoDestino: readNodoDestino(0),
-        tipoTrama: EnTipoTrama.sistema,          // TT_SISTEMA
-        tipoMensaje: EnTmSistema.txPresentacion, // TM_SISTEMA_TX_PRESENTACION
-        data,
-        reserva: 0,
-      }) as FrameDto;
-      enviarFrame = this.tcp.enviarFrame(frame);
-      josLogger.info(`Enviamos PRESENTACION equipo NUEVO ${EnTipoEquipo[defaultPres.tipoEquipo].toUpperCase()} al puerto ${usePort}`,);
+    if (ver === '0') {                     // 8002 Antiguos
+      this.tcp.handlerPresentacionOld();
+    } else {                               // 8003 Nuevos
+      this.tcp.handlerPresentacion();
     }
-
-    if (!enviarFrame) return false;
-    else return enviarFrame;
   }
 
-  // ------------------------------------------- PRESENCIA -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  PRESENCIA 
   /** POST /api/trama/presencia
    * body (opcional): { nodoOrigen?, nodoDestino? }
    */
   @Post('presencia')
   async presencia(@Query('ver') ver?: string) {
     const usePort = ver === '0' ? 8002 : 8003;
-    await this.tcp.switchTargetAndEnsureConnected({ port: usePort });
-    let enviarFrame: boolean | { bytes: number; hex: string; } = false;
+    await this.tcp.cambiarPuerto({ port: usePort });
+    // let enviarFrame: boolean | { bytes: number; hex: string; } = false;
+
     if (ver === '0') { // 8002 Antiguos
-      const defaultPres: PresentacionCentralOldDto = defaultPresentacionOmegaOld;
-      // const frame:FrameOldDto = 
-//! WIP
-
+      return this.tcp.handlerPresenciaOld();
     } else { // 8003 Nuevos
-      const data = this.tcp.crearDataPresencia(); // vacío
-      const frame = this.tcp.crearFrame({
-        nodoOrigen: readNodoOrigen(1),
-        nodoDestino: readNodoDestino(0),
-        tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
-        tipoMensaje: EnTmSistema.txPresencia, // TM_SISTEMA_TX_PRESENCIA
-        data,
-      }) as FrameDto;
-      enviarFrame = this.tcp.enviarFrame(frame);
+      return this.tcp.handlerPresencia();
     }
-
-    josLogger.info(`Enviamos PRESENCIA`);
-    if (!enviarFrame) return false;
-    else return enviarFrame;
   }
 
-  // ------------------------------------------- ESTADO DISPOSITIVO -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  ESTADO DISPOSITIVO 
   @Post('estadoDispositivo')
   async estadoDispositivo(@Query('ver') ver?: string) {
     const usePort = ver === '0' ? 8002 : 8003;
-    await this.tcp.switchTargetAndEnsureConnected({ port: usePort });
+    await this.tcp.cambiarPuerto({ port: usePort });
     let enviarFrame: boolean | { bytes: number; hex: string; } = false;
 
     // Datos de ejemplo
@@ -154,8 +110,8 @@ export class TramaController {
 
     const data = this.tcp.serializarDataEstadoDispositivo(estadoDispositivo);
     const frame = this.tcp.crearFrame({
-      nodoOrigen: readNodoOrigen(1),
-      nodoDestino: readNodoDestino(0),
+      nodoOrigen: 1,
+      nodoDestino: 0,
       tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
       tipoMensaje: EnTmSistema.txEstadoDispositivo, // TM_SISTEMA_TX_PRESENCIA
       data,
@@ -167,7 +123,9 @@ export class TramaController {
     else return enviarFrame;
   }
 
-  // ------------------------------------------- CONFIG FINAL -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  CONFIG FINAL 
   @Post('configFinal')
   async configFinal() {
     // Datos de ejemplo (doc 2.4.7)
@@ -178,8 +136,8 @@ export class TramaController {
 
     const data = this.tcp.serializarDataConfigFinal(cfg);
     const frame = this.tcp.crearFrame({
-      nodoOrigen: readNodoOrigen(1),
-      nodoDestino: readNodoDestino(0),
+      nodoOrigen: 1,
+      nodoDestino: 0,
       tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
       tipoMensaje: EnTmSistema.txConfigFinal, // 12
       data,
@@ -190,7 +148,9 @@ export class TramaController {
     return !!ok && ok;
   }
 
-  // ------------------------------------------- URL DESCARGA OTA -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  URL DESCARGA OTA 
   @Post('urlDescargaOta')
   async urlDescargaOta() {
     // Datos de ejemplo (doc 1.1.1: solo dosimac por http; para pruebas puedes variar el tipo_equipo)
@@ -201,8 +161,8 @@ export class TramaController {
 
     const data = this.tcp.serializarDataUrlDescargaOta(ota);
     const frame = this.tcp.crearFrame({
-      nodoOrigen: readNodoOrigen(1),
-      nodoDestino: readNodoDestino(0),
+      nodoOrigen: 1,
+      nodoDestino: 0,
       tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
       tipoMensaje: EnTmSistema.txUrlDescargaOta, // 6
       data,
@@ -213,7 +173,9 @@ export class TramaController {
     return !!ok && ok;
   }
 
-  // ------------------------------------------- PROGRESO ACTUALIZACION -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  PROGRESO ACTUALIZACION 
   @Post('progresoActualizacion')
   async progresoActualizacion() {
     // Datos de ejemplo (doc 1.1.3)
@@ -225,8 +187,8 @@ export class TramaController {
 
     const data = this.tcp.serializarDataProgresoActualizacion(prog);
     const frame = this.tcp.crearFrame({
-      nodoOrigen: readNodoOrigen(1),
-      nodoDestino: readNodoDestino(0),
+      nodoOrigen: 1,
+      nodoDestino: 0,
       tipoTrama: EnTipoTrama.sistema, // TT_SISTEMA
       tipoMensaje: EnTmSistema.txProgresoActualizacion, // 10
       data,
@@ -238,32 +200,166 @@ export class TramaController {
   }
 
   // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
   // * ----------------------------------------------- TT ESTADISTICOS ---------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
 
-  // ------------------------------------------- VALOR (ej. tempSonda1) -------------------------------------------
+  @Post('estadisticos')
+  async estadisticos(
+    @Query('fi') fi?: string,                                 // fecha inicio (DD-MM-YYYY)
+    @Query('periodicidad') periodicidadRaw?: string | number, // EnEstadisPeriodicidad
+    @Query('tipo') tipoRaw?: string | number,                 // EnEstadisticosControladores
+    @Query('ff') ff?: string,                                 // fecha fin (DD-MM-YYYY)
+  ) {
+    // Validación: deben llegar los 4 parámetros, sin “ver”
+
+    if (fi === undefined || periodicidadRaw === undefined || tipoRaw === undefined || ff === undefined) { throw new BadRequestException('Debes enviar los cuatro parámetros: fi, periodicidad, tipo y ff.'); }
+
+    // Conectamos a equipos NUEVOS (8003) para este endpoint genérico
+    await this.tcp.cambiarPuerto({ port: 8003 });
+
+    const periodicidad = typeof periodicidadRaw === "string" ? parseInt(periodicidadRaw) : periodicidadRaw; //coerceEnum(periodicidadRaw!, EnEstadisPeriodicidad);
+    const tipo = typeof tipoRaw === "string" ? parseInt(tipoRaw) : tipoRaw; //coerceEnum(tipoRaw!, EnEstadisticosControladores);
+
+    const parsedPreiodicidad = periodicidad === 0
+      ? EnEstadisPeriodicidad.noConfig : periodicidad === 1
+        ? EnEstadisPeriodicidad.variable : periodicidad === 2
+          ? EnEstadisPeriodicidad.envioHoras : periodicidad === 3
+            ? EnEstadisPeriodicidad.envioDia : EnEstadisPeriodicidad.variableInstantaneo;
+
+    // Parseo de fechas
+    const fIni = parseDmYToFecha(fi); // -> Fecha {dia,mes,anyo}
+    const fFin = parseDmYToFecha(ff);
+    const dtIni = new Date(fIni.anyo, (fIni.mes ?? 1) - 1, fIni.dia ?? 1, 0, 0, 0, 0);
+    const dtFin = new Date(fFin.anyo, (fFin.mes ?? 1) - 1, fFin.dia ?? 1, 23, 59, 59, 999);
+    if (isNaN(dtIni.getTime()) || isNaN(dtFin.getTime()) || dtIni > dtFin) {throw new BadRequestException('Rango de fechas inválido.');}
+
+    // Paso temporal según periodicidad
+    const stepMs = (() => {
+      switch (parsedPreiodicidad as EnEstadisPeriodicidad) {
+        case EnEstadisPeriodicidad.envioHoras: return 60 * 60 * 1000;      // 1 hora
+        case EnEstadisPeriodicidad.envioDia: return 24 * 60 * 60 * 1000; // 1 día
+        // variable / variableInstantaneo / noConfig → elegimos 1h como fallback sensato para pruebas
+        default: return 60 * 60 * 1000;
+      }
+    })();
+
+    // Enviamos un punto por “step”
+
+    // 1) Ajustamos el DTO “valor” (el bloque de items)
+    defaultDatosValorTempSonda1.nombreEstadistico = tipo as EnEstadisticosControladores;
+    defaultDatosValorTempSonda1.periodicidad = parsedPreiodicidad as EnEstadisPeriodicidad;
+    defaultDatosValorTempSonda1.unidad = [EnEstadisticosControladores.tempSonda1, EnEstadisticosControladores.tempSonda2, EnEstadisticosControladores.tempSonda3, EnEstadisticosControladores.tempSonda4].includes(tipo as number)
+      ? EnGtUnidades.gradoCentigrado : [EnEstadisticosControladores.humedadInterior, EnEstadisticosControladores.humedadExterior].includes(tipo as number)
+        ? EnGtUnidades.porcentaje : [EnEstadisticosControladores.co2Interior, EnEstadisticosControladores.nh3Interior].includes(tipo as number)
+          ? EnGtUnidades.ppm : EnGtUnidades.gradoCentigrado;
+
+    let enviados = 0;
+    let valor = [EnEstadisticosControladores.tempSonda1, EnEstadisticosControladores.tempSonda2, EnEstadisticosControladores.tempSonda3, EnEstadisticosControladores.tempSonda4].includes(tipo as number)
+      ? 28 : [EnEstadisticosControladores.humedadInterior, EnEstadisticosControladores.humedadExterior].includes(tipo as number)
+        ? 65 : tipo === EnEstadisticosControladores.co2Interior
+          ? 2850 : tipo === EnEstadisticosControladores.nh3Interior
+            ? 10 : 25;
+
+    for (let t = dtIni.getTime(); t <= dtFin.getTime(); t += stepMs) {
+
+      const d = new Date(t);
+
+      switch (tipo) {
+        case EnEstadisticosControladores.humedadInterior:
+        case EnEstadisticosControladores.humedadExterior: {
+          // Humedad: rango 55–75 (%)
+          const delta = (Math.random() * 1.4 + 0.1) * (Math.random() < 0.5 ? -1 : 1); // ±(0.1..1.5)
+          valor = Math.max(55, Math.min(75, Number((valor + delta).toFixed(2))));
+          defaultDatosValorTempSonda1.valorMedio = valor;
+          defaultDatosValorTempSonda1.valorMax = Math.min(75, Number((valor + 3.0).toFixed(2)));
+          defaultDatosValorTempSonda1.valorMin = Math.max(55, Number((valor - 2.0).toFixed(2)));
+          break;
+        }
+
+        case EnEstadisticosControladores.co2Interior: {
+          // CO₂: rango 2700–3000 (ppm)
+          const delta = (Math.random() * 30 + 10) * (Math.random() < 0.5 ? -1 : 1); // ±(10..40)
+          valor = Math.max(2700, Math.min(3000, Number((valor + delta).toFixed(2))));
+          defaultDatosValorTempSonda1.valorMedio = valor;
+          defaultDatosValorTempSonda1.valorMax = Math.min(3000, Number((valor + 80).toFixed(2)));
+          defaultDatosValorTempSonda1.valorMin = Math.max(2700, Number((valor - 60).toFixed(2)));
+          break;
+        }
+
+        case EnEstadisticosControladores.nh3Interior: {
+          // NH₃: rango 5–15 (ppm)
+          const delta = (Math.random() * 0.7 + 0.1) * (Math.random() < 0.5 ? -1 : 1); // ±(0.1..0.8)
+          valor = Math.max(5, Math.min(15, Number((valor + delta).toFixed(2))));
+          defaultDatosValorTempSonda1.valorMedio = valor;
+          defaultDatosValorTempSonda1.valorMax = Math.min(15, Number((valor + 1.2).toFixed(2)));
+          defaultDatosValorTempSonda1.valorMin = Math.max(5, Number((valor - 1.0).toFixed(2)));
+          break;
+        }
+
+        case EnEstadisticosControladores.tempSonda1:
+        case EnEstadisticosControladores.tempSonda2:
+        case EnEstadisticosControladores.tempSonda3:
+        case EnEstadisticosControladores.tempSonda4:
+        default: {
+          // Temperatura: rango 22–32 (°C)
+          const delta = (Math.random() * 0.3 + 0.1) * (Math.random() < 0.5 ? -1 : 1); // ±(0.1..0.4)
+          valor = Math.max(22, Math.min(32, Number((valor + delta).toFixed(2))));
+          defaultDatosValorTempSonda1.valorMedio = valor;
+          defaultDatosValorTempSonda1.valorMax = Math.min(32, Number((valor + 1.2).toFixed(2)));
+          defaultDatosValorTempSonda1.valorMin = Math.max(22, Number((valor - 1.0).toFixed(2)));
+          break;
+        }
+      }
+
+      // 2) Re-serializamos los items
+      const items = serializarDatosEstadisticoValor(defaultDatosValorTempSonda1);
+
+      // 3) Ajustamos el DTO “header” del estadístico
+      const fechaFrame: Fecha = { dia: d.getDate(), mes: d.getMonth() + 1, anyo: d.getFullYear() };
+      const horaFrame: Tiempo = { hora: d.getHours(), min: d.getMinutes(), seg: d.getSeconds() };
+
+      const ackId = this.tcp.nextStatId();
+      defaultDataTempSonda1.identificadorUnicoDentroDelSegundo = ackId;
+      defaultDataTempSonda1.fecha = fechaFrame;
+      defaultDataTempSonda1.hora = horaFrame;
+      defaultDataTempSonda1.datos = items;
+      defaultDataTempSonda1.numeroDatos = items.length;
+
+      // 4) Construimos el payload y el frame y lo enviamos esperando ACK
+      const data = this.tcp.crearDataTempS1();
+      const frame = this.tcp.crearFrame({
+        nodoOrigen: 1,
+        nodoDestino: 0,
+        tipoTrama: EnTipoTrama.estadisticos,
+        tipoMensaje: EnTmEstadisticos.enviaEstadistico,
+        data,
+        reserva: 0, // nuevos
+      });
+
+      const ok = await this.tcp.enviarEstadisticoYEsperarAck(ackId, frame as any);
+      if (ok) enviados++;
+    }
+
+    return { ok: true, enviados, desde: fi, hasta: ff, parsedPreiodicidad, tipo };
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  VALOR (ej. tempSonda1) 
   /** POST /api/trama/tempSonda1 */
   @Post('tempSonda1')
-  async tempSonda1(@Body() body?: unknown) {
+  async tempSonda1() {
     josLogger.info('Enviamos tempSonda1');
 
     const id = this.tcp.nextStatId();
     defaultDataTempSonda1.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(
-      `📈 Estadístico id=${defaultDataTempSonda1.identificadorUnicoDentroDelSegundo} enviado`,
-    );
+    josLogger.info(`📈 Estadístico id=${defaultDataTempSonda1.identificadorUnicoDentroDelSegundo} enviado`,);
 
     const data = this.tcp.crearDataTempS1();
 
     const frame = this.tcp.crearFrame({
-      nodoOrigen: readNodoOrigen(1),
-      nodoDestino: readNodoDestino(0),
+      nodoOrigen: 1,
+      nodoDestino: 0,
       tipoTrama: EnTipoTrama.estadisticos,
       tipoMensaje: EnTmEstadisticos.enviaEstadistico,
       data,
@@ -273,7 +369,9 @@ export class TramaController {
     return ok;
   }
 
-  // ------------------------------------------- CONTADOR (ej. contadorAgua) -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  CONTADOR (ej. contadorAgua) 
   /** POST /api/trama/contadorAgua */
   @Post('contadorAgua')
   async contadorAgua() {
@@ -281,13 +379,13 @@ export class TramaController {
 
     const id = this.tcp.nextStatId();
     defaultDataContadorAgua.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(`📈 Estadístico contador id=${id} enviado`);
+    josLogger.info(`📈 Estadístico contador id = ${id} enviado`);
 
     const data = this.tcp.crearDataContador();
 
     const frame = this.tcp.crearFrame({
-      nodoOrigen: readNodoOrigen(1),
-      nodoDestino: readNodoDestino(0),
+      nodoOrigen: 1,
+      nodoDestino: 0,
       tipoTrama: EnTipoTrama.estadisticos,
       tipoMensaje: EnTmEstadisticos.enviaEstadistico,
       data,
@@ -297,7 +395,9 @@ export class TramaController {
     return ok;
   }
 
-  // ------------------------------------------- ACTIVIDAD (ej. actividadCalefaccion1) -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  ACTIVIDAD (ej. actividadCalefaccion1) 
   /** POST /api/trama/actividadCalefaccion1 */
   @Post('actividadCalefaccion1')
   async actividadCalefaccion1() {
@@ -305,13 +405,13 @@ export class TramaController {
 
     const id = this.tcp.nextStatId();
     defaultDataActividadCalefaccion1.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(`📈 Estadístico actividad id=${id} enviado`);
+    josLogger.info(`📈 Estadístico actividad id = ${id} enviado`);
 
     const data = this.tcp.crearDataActividad();
 
     const frame = this.tcp.crearFrame({
-      nodoOrigen: readNodoOrigen(1),
-      nodoDestino: readNodoDestino(0),
+      nodoOrigen: 1,
+      nodoDestino: 0,
       tipoTrama: EnTipoTrama.estadisticos,
       tipoMensaje: EnTmEstadisticos.enviaEstadistico,
       data,
@@ -321,7 +421,9 @@ export class TramaController {
     return ok;
   }
 
-  // ------------------------------------------- EVENTO (ej. inicioCrianza) -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  // EVENTO (ej. inicioCrianza) 
   /** POST /api/trama/eventoInicioCrianza */
   @Post('eventoInicioCrianza')
   async eventoInicioCrianza() {
@@ -329,14 +431,14 @@ export class TramaController {
 
     const id = this.tcp.nextStatId();
     defaultDataEventoInicioCrianza.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(`📈 Estadístico evento id=${id} enviado`);
+    josLogger.info(`📈 Estadístico evento id = ${id} enviado`);
 
     // Wrapper público en tu TcpClientService (igual que crearDataContador/Actividad/TempS1)
     const data = this.tcp.crearDataEventoInicioCrianza();
 
     const frame = this.tcp.crearFrame({
-      nodoOrigen: readNodoOrigen(1),
-      nodoDestino: readNodoDestino(0),
+      nodoOrigen: 1,
+      nodoDestino: 0,
       tipoTrama: EnTipoTrama.estadisticos,
       tipoMensaje: EnTmEstadisticos.enviaEstadistico,
       data,
@@ -346,7 +448,9 @@ export class TramaController {
     return ok;
   }
 
-  // ------------------------------------------- ALARMA (ej. alarmaTempAlta) -------------------------------------------
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  //  ALARMA (ej. alarmaTempAlta) 
   /** POST /api/trama/alarmaTempAlta */
   @Post('alarmaTempAlta')
   async alarmaTempAlta() {
@@ -354,13 +458,13 @@ export class TramaController {
 
     const id = this.tcp.nextStatId();
     defaultDataAlarmaTempAlta.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(`📈 Estadístico alarma id=${id} enviado`);
+    josLogger.info(`📈 Estadístico alarma id = ${id} enviado`);
 
     const data = this.tcp.crearDataAlarmaTempAlta();
 
     const frame = this.tcp.crearFrame({
-      nodoOrigen: readNodoOrigen(1),
-      nodoDestino: readNodoDestino(0),
+      nodoOrigen: 1,
+      nodoDestino: 0,
       tipoTrama: EnTipoTrama.estadisticos,
       tipoMensaje: EnTmEstadisticos.enviaEstadistico,
       data,
@@ -369,6 +473,8 @@ export class TramaController {
     const ok = await this.tcp.enviarEstadisticoYEsperarAck(id, frame);
     return ok;
   }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
   @Post('cambioParametro')
   async cambioParametro() {
@@ -376,13 +482,13 @@ export class TramaController {
 
     const id = this.tcp.nextStatId();
     defaultDataCambioParametro.identificadorUnicoDentroDelSegundo = id;
-    josLogger.info(`📈 Estadístico cambioParametro id=${id} enviado`);
+    josLogger.info(`📈 Estadístico cambioParametro id = ${id} enviado`);
 
     const data = this.tcp.crearDataCambioParametro();
 
     const frame = this.tcp.crearFrame({
-      nodoOrigen: readNodoOrigen(1),
-      nodoDestino: readNodoDestino(0),
+      nodoOrigen: 1,
+      nodoDestino: 0,
       tipoTrama: EnTipoTrama.estadisticos,
       tipoMensaje: EnTmEstadisticos.enviaEstadistico,
       data,
@@ -396,215 +502,730 @@ export class TramaController {
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
-  // * ----------------------------------------------- TT DEPURACION -----------------------------------------------------
+  // * ----------------------------------- EQUIPOS VIEJOS (Old/BE TipoDato TipoAccion) -----------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
-  // ------------------------------------------- DEPURACIÓN: PETICIÓN CONSOLA -------------------------------------------
-  @Post('depuracion/peticionConsola')
-  async depuracionPeticionConsola() {
-    // Ejemplo de datos
-    const dto: PeticionConsolaDto = {
-      identificadorCliente: 1,
-    };
+  // * -------------------------------------------------------------------------------------------------------------------
+  // * ----------------------------------------------- TT SISTEMAS -------------------------------------------------------
+  // * -------------------------------------------------------------------------------------------------------------------
 
-    const data = this.tcp.serializarDepuracionPeticionConsola(dto);
-    const frame = this.tcp.crearFrame({
-      nodoOrigen: readNodoOrigen(1),
-      nodoDestino: readNodoDestino(0),
-      tipoTrama: EnTipoTrama.depuracion, // TT_DEPURACION
-      tipoMensaje: EnTmDepuracion.peticionConsola, // 1
-      data,
-    }) as FrameDto;
+  // ------------------------------------------- TABLA DISPOSITIVOS (OLD) -------------------------------------------
+  @Post('tablaDispositivos')
+  async tablaDispositivos(@Query('nDispositivos') nDispositivos?: string) {
 
-    const ok = this.tcp.enviarFrame(frame);
-    josLogger.info('Enviamos DEPURACION PETICION CONSOLA');
-    return !!ok && ok;
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let n = parseInt(nDispositivos ?? '10');
+    if (isNaN(n) || n === null || n === undefined || n < 1 || n > 20) {
+      josLogger.error(`Número de dispositivos inválido (${nDispositivos}). Usando 10 por defecto.`);
+      n = 10;
+    }
+
+    josLogger.trace(`Enviando tabla de dispositivos con ${n} dispositivos`);
+
+    // Si no se introducen dispositivos serán 10 por defecto.
+    const { fin, mas } = this.tcp.crearBuffersTablaDispositivos(n);
+
+    if (mas) {
+      const frameMas = this.tcp.crearFrameOld({
+        nodoOrigen: 1,
+        nodoDestino: 0,
+        tipoTrama: EnTipoTramaOld.centralServidor, // TT_central_servidor (=6)
+        tipoMensaje: EnTipoMensajeCentralServidor.tmRtTablaCentralMas, // (=7)
+        data: mas,
+        versionProtocolo: PROTO_VERSION_OLD,
+      });
+      josLogger.trace('Enviamos trama MAS de tabla de dispositivos (más de 13 dispositivos en total).');
+      const okMas = this.tcp.enviarFrameOld(frameMas);
+      const bufferMas = Buffer.from((okMas as { bytes: number, hex: string }).hex, 'hex');
+      logTramaCompletaTablaDispositivosOld(bufferMas);
+    }
+
+    const frameFin = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.centralServidor, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeCentralServidor.tmRtTablaCentralFin, // (=8)
+      data: fin,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+    josLogger.trace('Enviamos trama FIN de tabla de dispositivos.');
+    const okFin = this.tcp.enviarFrameOld(frameFin);
+    josLogger.trace(`${EnTipoTramaOld[frameFin.tipoTrama]} ${EnTipoMensajeCentralServidor[frameFin.tipoMensaje]}`);
+    const bufferFin = Buffer.from((okFin as { bytes: number, hex: string }).hex, 'hex');
+    logTramaCompletaTablaDispositivosOld(bufferFin);
+
+    return okFin;
   }
 
-  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
-  //! WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
-  // ------------------------------------------- DEPURACIÓN: RT PETICIÓN CONSOLA -------------------------------------------
-  // @Post("depuracion/rtPeticionConsola")
-  // async depuracionRtPeticionConsola() {
-  //   // Ejemplo de datos
-  //   const dto: RtPeticionConsolaDto = {
-  //     identificadorCliente: 1,
-  //     datos: "Comando ejecutado correctamente", // resto del payload en UTF-8
-  //   };
+  // ------------------------------------------- TABLA DISPOSITIVOS (OLD) -------------------------------------------
+  @Post('cambioEstadoDispositivo')
+  /** Se puede introducir por parámetro, opcionalmente: mac, nodo, estado, td (tipoDispositivo), version, hayAlarma */
+  async cambioEstadoDispositivo(
+    @Query('mac') mac?: string,                                // fecha inicio (DD-MM-YYYY)
+    @Query('nodo') nodo?: string | number,                     // EnEstadisPeriodicidad
+    @Query('estado') estado?: string | number,                 // EnEstadisticosControladores
+    @Query('td') td?: string,
+    @Query('version') version?: string,
+    @Query('hayAlarma') hayAlarma?: string,
+  ) {
 
-  //   const data = this.tcp.serializarDepuracionRtPeticionConsola(dto);
-  //   const frame = this.tcp.crearFrame({
-  //     nodoOrigen: readNodoOrigen(1),
-  //     nodoDestino: readNodoDestino(0),
-  //     tipoTrama: EnTipoTrama.depuracion,               // TT_DEPURACION
-  //     tipoMensaje: EnTmDepuracion.rtPeticionConsola,   // 2
-  //     data,
-  //   });
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
-  //   const ok = this.tcp.enviarFrame(frame);
-  //   josLogger.info("Enviamos DEPURACION RT PETICION CONSOLA");
-  //   return !!ok && ok;
-  // }
+    // const m = parseInt(mac ?? '12345678');
+    const m = mac?.trim().startsWith("0x") ? BigInt(mac.trim()) : BigInt("0x" + mac8FromParam(mac).toString("hex"));
+    const n = typeof nodo === "string" ? parseInt(nodo) : (nodo ?? 1);
+    const e = typeof estado === "string" ? parseInt(estado) : (estado ?? 1);
+    const t = parseInt(td ?? '1');
+    const v = parseInt(version ?? '1');
+    const a = parseInt(hayAlarma ?? '1');
+    const disp = crearTablaCambioEstadoDispositivoOld(m, n, e, t, v, a);
+    const data = this.tcp.crearDataTablaDispositivosCambioEstadoOld(disp);
+    // const dispositivo = crearTablaCambioEstadoDispositivo(mac, nodo, estado, td, v, hayAlarma);
+
+    const frameTablaConDispositivoCambiado = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.centralServidor, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeCentralServidor.tmEventoCambioEstadoNodo, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frameTablaConDispositivoCambiado);
+    return ok;
+  }
+
+  // * -------------------------------------------------------------------------------------------------------------------
+  // * ----------------------------------------------- TT ESTADISTICOS ---------------------------------------------------
+  // * -------------------------------------------------------------------------------------------------------------------
+  // * Estadísticos con TipoDato y TipoAccion, no DF Omega.
+
+  @Post('estadisticoValor')
+  /** Se puede introducir por parámetro, opcionalmente: mac, nodo, estado, td (tipoDispositivo), version, hayAlarma */
+  async estadisticoValor(
+    @Query('nombreEstadistico') nombreEstadistico?: string,
+    @Query('cambioParametro') cambioParametro?: string
+  ) {
+
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let estadistico = defaultEstadisticoValorOld;
+
+    //done Según el numSer (EnEstadisticosNombres) envía un valor u otro (porcentaje, temperatura, nh3...)
+    if (nombreEstadistico !== undefined) {
+      const n = parseInt(nombreEstadistico);
+      estadistico = this.tcp.crearDataEstadisticoValorOld(n);
+    }
+
+    // Si se introduce cualquier valor para cambioParametro, se interpreta como cambioParametro en vez de estadístico valor normal.
+    if (cambioParametro !== undefined) estadistico.tipoDato = EnTipoDatoOld.cambioParametro;
+
+    const data = serializarParametroHistoricoOld(estadistico);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.envioDispositivoFinal, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    logTramaParametroHistoricoOld(bufferFrame);
+    return ok;
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  @Post('estadisticoAltasBajasRetiradas')
+  async estadisticoAltasBajasRetiradasOld(@Query('altaBajaRetirada') altaBajaRetirada?: string) {
+
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let estadistico = defaultEstadisticoAltasBajasRetiradasCrianzaOld;
+
+    if (altaBajaRetirada !== undefined) {
+      const n = parseInt(altaBajaRetirada);
+      estadistico.identificadorCliente = n === 1
+        ? EnTipoAccionAltasBajasRetiradasCrianzaOld.altaAnadir as number
+        : n === 2
+          ? EnTipoAccionAltasBajasRetiradasCrianzaOld.bajaAnadir as number
+          : n === 3
+            ? EnTipoAccionAltasBajasRetiradasCrianzaOld.retiradaAnadir as number
+            : EnTipoAccionAltasBajasRetiradasCrianzaOld.altaAnadir as number
+        ; // EnTipoAccionAltasBajasRetiradasCrianzaOld
+    }
+
+    // estadistico = this.tcp.crearDataEstadisticoValorOld(n);
+
+    const data = serializarParametroHistoricoOld(estadistico);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.envioDispositivoFinal, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    logTramaParametroHistoricoOld(bufferFrame);
+    return ok;
+
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  @Post('estadisticoInicioFinOld')
+  async estadisticoInicioFinOld(@Query('inicioFin') inicioFin?: string) {
+
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let estadistico = defaultEstadisticoInicioFinCrianzaOld;
+
+    if (inicioFin !== undefined) {
+      const n = parseInt(inicioFin);
+      estadistico.identificadorCliente = n === 0 ? EnTipoAccionInicioFinCrianzaOld.inicio as number : EnTipoAccionInicioFinCrianzaOld.fin as number;
+    }
+
+    const data = serializarParametroHistoricoOld(estadistico);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.envioDispositivoFinal, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    logTramaParametroHistoricoOld(bufferFrame);
+    return ok;
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  @Post('estadisticoAlarmasOld')
+  async estadisticoAlarmasOld(@Query('alarma') alarma?: string) {
+
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let estadistico = defaultEstadisticoAlarmasOld;
+
+    if (alarma !== undefined) {
+      const n = parseInt(alarma);
+      estadistico.datos = n;
+    }
+
+    const data = serializarParametroHistoricoOld(estadistico);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.envioDispositivoFinal, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    logTramaParametroHistoricoOld(bufferFrame);
+    return ok;
+  }
 
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
-  // * ----------------------------------------------- TT ACTUALIZACION_SERVER -------------------------------------------
+  // * ----------------------------------- EQUIPOS VIEJOS (Old/BE EnTipoDatoDFAccion) ------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
 
   // * -------------------------------------------------------------------------------------------------------------------
+  // * ----------------------------------------------- TT ESTADISTICOS ---------------------------------------------------
   // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * ----------------------------------------------- TT SERVICIOS_CLAVE_VALOR ------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
-  // * -------------------------------------------------------------------------------------------------------------------
+  // * Estadísticos con EnTipoDatoDFAccion OMEGA.
 
-  //! WIP: Servicios Clave Valor
-  // ------------------------------------------- SCV: PETICION SERVIDOR → FINAL -------------------------------------------
-  // @Post("scv/peticionServidorFinal")
-  // async scvPeticionServidorFinal() {
-  //   const dto = {
-  //     uidEnvioTrama: 42,         // u16
-  //     servicio: 50010,           // u16 (ejemplo; 50000+ suelen ser comunes)
-  //     // tipo lo fija el serializador a 'peticion'
-  //     claves: [
-  //       { clave: 50001, tipo: EnTipoDato.uint16, valor: 123 },         // p.ej. idLote
-  //       { clave: 50002, tipo: EnTipoDato.float,  valor: 25.3 },        // p.ej. tempObjetivo
-  //     ],
-  //   } as const;
+  @Post('estadisticoValorOmegaDf')
+  async estadisticoValorOmegaDf(
+    @Query('nombreEstadistico') nombreEstadistico?: string,
+    @Query('cambioParametro') cambioParametro?: string
+  ) {
 
-  //   const data = this.tcp.serializarScvPeticionServidorFinal(dto);
-  //   const frame = this.tcp.crearFrame({
-  //     nodoOrigen: readNodoOrigen(1),
-  //     nodoDestino: readNodoDestino(0),
-  //     tipoTrama: EnTipoTrama.serviciosClaveValor,                  // TT_SCV
-  //     tipoMensaje: EnTmServiciosClaveValor.peticionServidorFinal,  // 0
-  //     data,
-  //   });
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
-  //   const ok = this.tcp.enviarFrame(frame);
-  //   josLogger.info("Enviamos SCV PETICION SERVIDOR → FINAL");
-  //   return !!ok && ok;
-  // }
+    let estadistico = defaultParametroHistoricoAlarmaOmegaDf;
 
-  // // ------------------------------------------- SCV: RT PETICION SERVIDOR → FINAL -------------------------------------------
-  // @Post("scv/rtPeticionServidorFinal")
-  // async scvRtPeticionServidorFinal() {
-  //   const dto = {
-  //     uidEnvioTrama: 42,
-  //     servicio: 50010,
-  //     claves: [
-  //       { clave: 50001, tipo: EnTipoDato.uint16, valor: 123 },         // eco/resultado
-  //       { clave: 50002, tipo: EnTipoDato.float,  valor: 25.3 },
-  //     ],
-  //   } as const;
+    if (nombreEstadistico !== undefined) estadistico.nombreVariable = parseInt(nombreEstadistico);
+    if (cambioParametro !== undefined) estadistico.tipoDato = EnTipoDatoDFAccion.cambioParametroFloat1; // Por defecto es estadisticoFloat1
 
-  //   const data = this.tcp.serializarScvRtPeticionServidorFinal(dto);
-  //   const frame = this.tcp.crearFrame({
-  //     nodoOrigen: readNodoOrigen(1),
-  //     nodoDestino: readNodoDestino(0),
-  //     tipoTrama: EnTipoTrama.serviciosClaveValor,
-  //     tipoMensaje: EnTmServiciosClaveValor.rtPeticionServidorFinal,     // 1
-  //     data,
-  //   });
+    const data = serializarParametroHistoricoValorOmegaDf(estadistico);
 
-  //   const ok = this.tcp.enviarFrame(frame);
-  //   josLogger.info("Enviamos SCV RT PETICION SERVIDOR → FINAL");
-  //   return !!ok && ok;
-  // }
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
 
-  // // ------------------------------------------- SCV: PETICION FINAL → SERVIDOR -------------------------------------------
-  // @Post("scv/peticionFinalServidor")
-  // async scvPeticionFinalServidor() {
-  //   const dto = {
-  //     uidEnvioTrama: 7,
-  //     servicio: 50020,
-  //     claves: [
-  //       { clave: 50005, tipo: EnTipoDato.uint32, valor: 987654 },      // p.ej. idCrianza
-  //       { clave: 50006, tipo: EnTipoDato.string32, valor: "OK TEST" }, // string en UTF-8
-  //     ],
-  //   } as const;
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    // logTramaParametroHistoricoOld(bufferFrame);
+    logTramaParametroHistoricoOmegaDf(bufferFrame);
+    return ok;
+  }
 
-  //   const data = this.tcp.serializarScvPeticionFinalServidor(dto);
-  //   const frame = this.tcp.crearFrame({
-  //     nodoOrigen: readNodoOrigen(1),
-  //     nodoDestino: readNodoDestino(0),
-  //     tipoTrama: EnTipoTrama.serviciosClaveValor,
-  //     tipoMensaje: EnTmServiciosClaveValor.peticionFinalServidor,       // 2
-  //     data,
-  //   });
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
-  //   const ok = this.tcp.enviarFrame(frame);
-  //   josLogger.info("Enviamos SCV PETICION FINAL → SERVIDOR");
-  //   return !!ok && ok;
-  // }
+  @Post('estadisticoAlarmaOmegaDf')
+  async estadisticoAlarmaOmegaDf(
+    // @Query('nombreEstadistico') nombreEstadistico?: string,
+    @Query('warning') warning?: string
+  ) {
 
-  // ------------------------------------------- SCV: RT PETICION FINAL → SERVIDOR -------------------------------------------
-  // @Post("scv/rtPeticionFinalServidor")
-  // async scvRtPeticionFinalServidor() {
+    await this.tcp.cambiarPuerto({ port: 8002 });
 
-  //     // uidEnvioTrama: number;          // uint16
-  //     // servicio: number;               // uint16
-  //     // tipo: EnScvTipo;                // uint8 (peticion|respuesta)
-  //     // claves: ScvPar[];               // N_claves = claves.length
+    let estadistico = defaultParametroHistoricoAlarmaOmegaDf;
 
-  //   const dto: ScvDto = {
-  //     uidEnvioTrama: 7,
-  //     servicio: 50020,
-  //     claves: [
-  //       { clave: 50005, tipo: EnTipoDato.uint32, valor: 987654 },       // eco/resultado
-  //       { clave: 50006, tipo: EnTipoDato.string32, valor: "ACK" },
-  //     ],
-  //   } as const;
+    // if (nombreEstadistico !== undefined) estadistico.nombreVariable = parseInt(nombreEstadistico);
+    if (warning !== undefined) estadistico.tipoDato = EnTipoDatoDFAccion.warning; // Por defecto es estadisticoFloat1
 
-  //   const data = this.tcp.serializarScvRtPeticionFinalServidor(dto);
-  //   const frame = this.tcp.crearFrame({
-  //     nodoOrigen: readNodoOrigen(1),
-  //     nodoDestino: readNodoDestino(0),
-  //     tipoTrama: EnTipoTrama.serviciosClaveValor,
-  //     tipoMensaje: EnTmServiciosClaveValor.rtPeticionFinalServidor,     // 3
-  //     data,
-  //   });
+    const data = serializarParametroHistoricoValorOmegaDf(estadistico);
 
-  //   const ok = this.tcp.enviarFrame(frame);
-  //   josLogger.info("Enviamos SCV RT PETICION FINAL → SERVIDOR");
-  //   return !!ok && ok;
-  // }
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
 
-  //! Métricas para pruebas.
-  // trama.controller.ts
-  // @Post('metricas')
-  // async metricas(@Body() body?: any) {
-  //   josLogger.info('Enviamos METRICAS');
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    logTramaParametroHistoricoOmegaDf(bufferFrame);
+    return ok;
+  }
 
-  //   const seq = Number(body?.seq ?? 0);       // opcional en body
-  //   const nodoOrg = readNodoOrigen(1);
-  //   const nodoDest = readNodoDestino(0);
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
 
-  //   const data = this.tcp.crearDataMetricas(seq);
-  //   const frame = this.tcp.crearFrame({
-  //     nodoOrigen: nodoOrg,
-  //     nodoDestino: nodoDest,
-  //     tipoTrama: EnTipoTrama.estadisticos,             // TT_SISTEMA
-  //     tipoMensaje: EnTmEstadisticos.enviaEstadistico,      // TM_SISTEMA_TX_METRICAS (elige un código libre)
-  //     data,
-  //   });
+  @Post('estadisticoEventoOmegaDf')
+  async estadisticoEventoOmegaDf(
+    // @Query('nombreEstadistico') nombreEstadistico?: string,
+    @Query('e0a1w2') e0a1w2?: string
+  ) {
 
-  //   const enviarFrame = this.tcp.enviarFrame(frame);
-  //   return enviarFrame || false;
-  // }
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let estadistico = defaultParametroHistoricoOmegaEventoNormal;
+
+    if (e0a1w2 !== undefined) {
+      const n = parseInt(e0a1w2);
+      if (n === 1) estadistico = defaultParametroHistoricoOmegaEventoAlarma;
+      else if (n === 2) estadistico = defaultParametroHistoricoOmegaEventoWarning;
+    }
+
+    const data = serializarParametroHistoricoEventoOmegaDf(estadistico);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // TT_central_servidor (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data: data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number, hex: string }).hex, 'hex');
+    logTramaParametroHistoricoEventoOmegaDf(bufferFrame);
+    return ok;
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  @Post('estadisticoEventoConcatenadoOmegaDf')
+  async estadisticoEventoConcatenadoOmegaDf(
+    @Query('e0a1w2') e0a1w2?: string
+  ) {
+    // Puerto del simulador para histórico Omega
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    // Elegimos el default según e0a1w2: 0=evento normal, 1=alarma, 2=warning (por defecto: normal)
+    let dto = defaultParametroHistoricoOmegaEventoConcatenadoNormal;
+    if (e0a1w2 !== undefined) {
+      const n = parseInt(e0a1w2);
+      if (n === 1) dto = defaultParametroHistoricoOmegaEventoConcatenadoAlarma;
+      else if (n === 2) dto = defaultParametroHistoricoOmegaEventoConcatenadoWarning;
+    }
+
+    // Serializamos DATA para TM_envia_historico: EVENTO_CONCATENADO
+    const data = serializarParametroHistoricoEventoConcatenadoOmegaDf(dto);
+
+    // Construimos el frame OLD
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    // Enviamos y (opcional) log de la trama
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Si tienes un logger específico para EVENTO_CONCATENADO, descomenta la línea de abajo:
+    logTramaParametroHistoricoEventoConcatenadoOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  @Post('estadisticoGenericoOmegaDf')
+  async estadisticoGenericoOmegaDf(
+    @Query('e0a1w2') e0a1w2?: string
+  ) {
+    // Puerto del simulador para histórico Omega
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    // Seleccionamos el DTO completo según e0a1w2: 0=evento, 1=alarma, 2=warning (por defecto: evento)
+    let dto: ParametroHistoricoOmegaEstadisticoGenericoDto = defaultParametroHistoricoOmegaEstadisticoGenericoEvento;
+    if (e0a1w2 !== undefined) {
+      const n = parseInt(e0a1w2);
+      if (n === 1) dto = defaultParametroHistoricoOmegaEstadisticoGenericoAlarma;
+      else if (n === 2) dto = defaultParametroHistoricoOmegaEstadisticoGenericoWarning;
+    }
+
+    // Serializamos DATA para TM_envia_historico: ESTADISTICO_GENERICO (layout 114B)
+    const data = serializarParametroHistoricoEstadisticoGenericoOmegaDf(dto);
+
+    // Construimos el frame OLD
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    // Enviamos y (opcional) log de la trama
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    logTramaParametroHistoricoEstadisticoGenericoOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  @Post('cambioParametroOmegaDf')
+  async cambioParametroOmegaDf(
+    @Query('n0t1f2') n0t1f2?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let dto = defaultParametroHistoricoOmegaCambioParametroUint16;
+    if (n0t1f2 !== undefined) {
+      const n = parseInt(n0t1f2);
+      if (n === 1) dto = defaultParametroHistoricoOmegaCambioParametroTiempo;
+      else if (n === 2) dto = defaultParametroHistoricoOmegaCambioParametroFecha;
+    }
+
+    const data = serializarParametroHistoricoCambioParametroOmegaDf(dto);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Cuando hagamos los getters/log, podrás activar:
+    logTramaParametroHistoricoCambioParametroOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  @Post('ebusFinalesOmegaDf')
+  async ebusFinalesOmegaDf(
+    @Query('a0b1') a0b1?: string // 0 => default A (por defecto), 1 => default B
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let dto = defaultParametroHistoricoOmegaEbusFinalesA;
+    if (a0b1 !== undefined) {
+      const n = parseInt(a0b1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaEbusFinalesB;
+    }
+
+    const data = serializarParametroHistoricoEbusFinalesOmegaDf(dto);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca, // (=6)
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico, // (=8)
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Cuando tengamos logger específico:
+    logTramaParametroHistoricoEbusFinalesOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  // =================== @Post para CAMBIO_PARAMETRO_CONCATENADO ===================
+  // Selector simple por query: n0 (numérico) / t1 (valor textual)
+  @Post('cambioParametroConcatenadoOmegaDf')
+  async cambioParametroConcatenadoOmegaDf(
+    @Query('n0t1') n0t1?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    // Usa los defaults que definimos antes:
+    //  - defaultParametroHistoricoOmegaCambioParametroConcatenadoNumerico
+    //  - defaultParametroHistoricoOmegaCambioParametroConcatenadoTexto
+    let dto = defaultParametroHistoricoOmegaCambioParametroConcatenadoNumerico;
+    if (n0t1 !== undefined) {
+      const n = parseInt(n0t1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaCambioParametroConcatenadoTexto;
+    }
+
+    const data = serializarParametroHistoricoCambioParametroConcatenadoOmegaDf(dto);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Si luego añades un logger específico:
+    logTramaParametroHistoricoCambioParametroConcatenadoOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  // =================== @Post DF_INICIO_CRIANZA ===================
+  // Selector por query: n0c1 → 0 = default numérico, 1 = default "crudo"
+  @Post('inicioCrianzaOmegaDf')
+  async inicioCrianzaOmegaDf(
+    @Query('n0c1') n0c1?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let dto = defaultParametroHistoricoOmegaInicioCrianza;
+    if (n0c1 !== undefined) {
+      const n = parseInt(n0c1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaInicioCrianzaCrudo;
+    }
+
+    const data = serializarParametroHistoricoInicioCrianzaOmegaDf(dto);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Logger opcional:
+    logTramaParametroHistoricoInicioCrianzaOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  // =================== @Post DF_FIN_CRIANZA ===================
+  // Selector por query: m0s1 → 0 = default mixtos, 1 = macho/hembra separado
+  @Post('finCrianzaOmegaDf')
+  async finCrianzaOmegaDf(
+    @Query('m0s1') m0s1?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let dto = defaultParametroHistoricoOmegaFinCrianzaMixtos;
+    if (m0s1 !== undefined) {
+      const n = parseInt(m0s1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaFinCrianzaSeparado;
+    }
+
+    const data = serializarParametroHistoricoFinCrianzaOmegaDf(dto);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Logger opcional:
+    logTramaParametroHistoricoFinCrianzaOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  // =================== @Post ENTRADA_ANIMALES ===================
+  // Selector por query: m0h1 → 0 = default mixtos, 1 = solo hembras
+  @Post('entradaAnimalesOmegaDf')
+  async entradaAnimalesOmegaDf(
+    @Query('m0h1') m0h1?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let dto = defaultParametroHistoricoOmegaEntradaAnimalesMixtos;
+    if (m0h1 !== undefined) {
+      const n = parseInt(m0h1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaEntradaAnimalesSoloHembras;
+    }
+
+    const data = serializarParametroHistoricoEntradaAnimalesOmegaDf(dto);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Logger opcional
+    logTramaParametroHistoricoEntradaAnimalesOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  // =================== @Post ALTAS_BAJAS ===================
+  // Selector por query: a0b1 → 0 = default ALTA, 1 = default BAJA
+  @Post('altasBajasOmegaDf')
+  async altasBajasOmegaDf(
+    @Query('a0b1') a0b1?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let dto = defaultParametroHistoricoOmegaAltasBajasAlta;
+    if (a0b1 !== undefined) {
+      const n = parseInt(a0b1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaAltasBajasBaja;
+    }
+
+    const data = serializarParametroHistoricoAltasBajasOmegaDf(dto);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    // Logger opcional:
+    logTramaParametroHistoricoAltasBajasOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+  // * ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  // =================== @Post DEBUG_STRING ===================
+  // Selector por query: ok0val1 → 0 = default “OK”, 1 = default “valores”
+  @Post('debugStringOmegaDf')
+  async debugStringOmegaDf(
+    @Query('ok0val1') ok0val1?: string
+  ) {
+    await this.tcp.cambiarPuerto({ port: 8002 });
+
+    let dto = defaultParametroHistoricoOmegaDebugStringOk;
+    if (ok0val1 !== undefined) {
+      const n = parseInt(ok0val1);
+      if (n === 1) dto = defaultParametroHistoricoOmegaDebugStringValores;
+    }
+
+    const data = serializarParametroHistoricoDebugStringOmegaDf(dto);
+
+    const frame = this.tcp.crearFrameOld({
+      nodoOrigen: 1,
+      nodoDestino: 0,
+      tipoTrama: EnTipoTramaOld.omegaPantallaPlaca,
+      tipoMensaje: EnTipoMensajeDispositivoCentral.tmEnviaParametroHistorico,
+      data,
+      versionProtocolo: PROTO_VERSION_OLD,
+    });
+
+    const ok = this.tcp.enviarFrameOld(frame);
+    const bufferFrame = Buffer.from((ok as { bytes: number; hex: string }).hex, 'hex');
+
+    logTramaParametroHistoricoDebugStringOmegaDf(bufferFrame);
+
+    return ok;
+  }
+
+
+
+
 }
