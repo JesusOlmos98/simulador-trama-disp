@@ -201,6 +201,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
       const tt = getTipoTrama(serverResponse);
       const tm = getTipoMensaje(serverResponse);
 
+      //! Meter en función log...
       josLogger.debug(
         'La respuesta (RX) probablemente sea el ACK de la última operación.',
       );
@@ -214,10 +215,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
       josLogger.debug('📨 Data ACK HEX: ' + dataACK.toString('hex'));
       josLogger.debug('📨 RX len=' + serverResponse.length);
 
-      if (
-        tt === EnTipoTrama.estadisticos &&
-        tm === EnTmEstadisticos.rtEstadistico
-      ) {
+      if (tt === EnTipoTrama.estadisticos &&tm === EnTmEstadisticos.rtEstadistico) {
         const dataACK = getDataSection(serverResponse);
         const ackId = dataACK.readUInt8(dataACK.length - 1);
 
@@ -907,9 +905,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   }
 
   // Presencia (central -> servidor) — protocolo antiguo (BE)
-  async handlerPresenciaOld(): Promise<
-    boolean | { bytes: number; hex: string }
-  > {
+  async handlerPresenciaOld(): Promise<boolean | { bytes: number; hex: string }> {
     // Si quieres enviar nodos reales, pásalos aquí. Con [] se envía payload vacío.
     const data = this.crearDataPresenciaOld(); // { nodos: [] }
 

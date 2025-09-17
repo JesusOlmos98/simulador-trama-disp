@@ -1,6 +1,6 @@
 import { ParametroHistoricoOldDto } from "src/utils/dtoBE/tt_estadisticosOld.dto";
 import { EnTipoTramaOld, EnTipoMensajeDispositivoCentral, EnEstadisticosNombres, EnTipoDatoOld, EnTipoAccionAltasBajasRetiradasCrianzaOld, EnTipoAccionInicioFinCrianzaOld, EnTipoDatoDFAccion, EnEventosEstadisFamilia, EnEventosEstadisPropiedades, EnEventosEstadisSubfamilia, EnEventosEstadisTipo, EnCrianzaTipoAnimal, EnCrianzaAltaBajaAccion } from "../globals/enumOld";
-import { getTipoTramaOld, getTipoMensajeOld, getDataSectionOld, getParsedHeaderOld, getStartOld, getCRCFromFrameOld, getEndOld, logCabeceraComunOld } from "./getTrama";
+import { getTipoTramaOld, getTipoMensajeOld, getDataSectionOld, getCRCFromFrameOld, getEndOld, logCabeceraComunOld } from "./getTrama";
 import { josLogger } from "src/utils/josLogger";
 import { ParametroHistoricoValorOmegaDfDto } from "src/utils/dtoBE/tt_estadisticosOldDF.dto";
 import { EnTextos } from "src/utils/enumTextos";
