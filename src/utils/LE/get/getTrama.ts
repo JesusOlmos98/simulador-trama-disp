@@ -1,9 +1,25 @@
-
-
-import { HeaderFields } from "src/utils/dtoLE/frame.dto";
-import { crc16IBM } from "src/utils/crc";
-import { START, END, HEADER_OFFSET, HEADER_SIZE } from "../globals/constGlobales";
-import { EnTipoTrama, EnTmOmegaPantallaPlaca, EnTmDepuracion, EnTmServiciosClaveValor, EnTmSistema, EnTmEstadisticos, EnTmComuniBle, EnTmDff, EnTmImportExport, EnTmDescargaSubidaFicheros, EnTmActualizacionV2, EnTmImportExportV2 } from "../globals/enums";
+import { HeaderFields } from 'src/utils/dtoLE/frame.dto';
+import { crc16IBM } from 'src/utils/crc';
+import {
+  START,
+  END,
+  HEADER_OFFSET,
+  HEADER_SIZE,
+} from '../globals/constGlobales';
+import {
+  EnTipoTrama,
+  EnTmOmegaPantallaPlaca,
+  EnTmDepuracion,
+  EnTmServiciosClaveValor,
+  EnTmSistema,
+  EnTmEstadisticos,
+  EnTmComuniBle,
+  EnTmDff,
+  EnTmImportExport,
+  EnTmDescargaSubidaFicheros,
+  EnTmActualizacionV2,
+  EnTmImportExportV2,
+} from '../globals/enums';
 
 //done ------------------------------------------------------------------------------------------------------------------------
 //done ---------------------------------------- getters de frame general ------------------------------------------------------

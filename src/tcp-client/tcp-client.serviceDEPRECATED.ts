@@ -6,11 +6,40 @@ import { PeticionConsolaDto } from 'src/utils/dtoLE/tt_depuracion.dto';
 import { EnviaEstadisticoDto } from 'src/utils/dtoLE/tt_estadisticos.dto';
 import { FrameDto } from 'src/utils/dtoLE/frame.dto';
 import { EnvConfiguration } from 'config/app.config';
-import { defaultDataTempSonda1, defaultDataContadorAgua, defaultDataActividadCalefaccion1, defaultDataEventoInicioCrianza, defaultDataAlarmaTempAlta, defaultDataCambioParametro } from 'src/utils/dtoLE/defaultTrama';
-import { PresentacionDto, EstadoDispositivoTxDto, ConfigFinalTxDto, UrlDescargaOtaTxDto, ProgresoActualizacionTxDto } from 'src/utils/dtoLE/tt_sistema.dto';
-import { getTipoTrama, getTipoMensaje, getDataSection } from 'src/utils/LE/get/getTrama';
-import { PROTO_VERSION, MAX_DATA_BYTES, START, END, ACK_TIMEOUT_MS, ACK_TTL_MS } from 'src/utils/LE/globals/constGlobales';
-import { END_OLD, MAX_DATA_BYTES_OLD, PROTO_VERSION_OLD, START_OLD } from 'src/utils/BE_Old/globals/constGlobales';
+import {
+  defaultDataTempSonda1,
+  defaultDataContadorAgua,
+  defaultDataActividadCalefaccion1,
+  defaultDataEventoInicioCrianza,
+  defaultDataAlarmaTempAlta,
+  defaultDataCambioParametro,
+} from 'src/utils/dtoLE/defaultTrama';
+import {
+  PresentacionDto,
+  EstadoDispositivoTxDto,
+  ConfigFinalTxDto,
+  UrlDescargaOtaTxDto,
+  ProgresoActualizacionTxDto,
+} from 'src/utils/dtoLE/tt_sistema.dto';
+import {
+  getTipoTrama,
+  getTipoMensaje,
+  getDataSection,
+} from 'src/utils/LE/get/getTrama';
+import {
+  PROTO_VERSION,
+  MAX_DATA_BYTES,
+  START,
+  END,
+  ACK_TIMEOUT_MS,
+  ACK_TTL_MS,
+} from 'src/utils/LE/globals/constGlobales';
+import {
+  END_OLD,
+  MAX_DATA_BYTES_OLD,
+  PROTO_VERSION_OLD,
+  START_OLD,
+} from 'src/utils/BE_Old/globals/constGlobales';
 import { FrameOldDto } from 'src/utils/dtoBE/frameOld.dto';
 import { PresentacionCentralOldDto } from 'src/utils/dtoBE/tt_sistemaOld.dto';
 import { hexDump } from 'src/utils/helpers';
@@ -65,8 +94,12 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     const port = opts.port ?? this.defaultPort;
 
     // ¿ya estamos en ese destino y conectados?
-    if (this.socket && !this.socket.destroyed &&
-      this.socket.remoteAddress === host && this.socket.remotePort === port) {
+    if (
+      this.socket &&
+      !this.socket.destroyed &&
+      this.socket.remoteAddress === host &&
+      this.socket.remotePort === port
+    ) {
       return; // ya estamos conectados a ese target
     }
 
@@ -116,19 +149,28 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
       // s.setNoDelay(true);
 
       socket.connect(this.currentPort, this.currentHost, () => {
-        josLogger.info(`🔌 Conectado a ${this.currentHost}:${this.currentPort}`);
-        if (this.reconnectTimer) { clearTimeout(this.reconnectTimer); this.reconnectTimer = null; }
+        josLogger.info(
+          `🔌 Conectado a ${this.currentHost}:${this.currentPort}`,
+        );
+        if (this.reconnectTimer) {
+          clearTimeout(this.reconnectTimer);
+          this.reconnectTimer = null;
+        }
         resolve();
       });
 
       socket.on('data', (serverResponse) => this.onData(serverResponse));
-      socket.on('error', (e) => josLogger.error(`❗ Socket error: ${e.message}`));
+      socket.on('error', (e) =>
+        josLogger.error(`❗ Socket error: ${e.message}`),
+      );
       socket.on('close', () => {
-        josLogger.error(`🛑 Conexión cerrada (${this.currentHost}:${this.currentPort}). Reintentando en 1s…`);
-        this.connectPromise = null;                // ← libera el lock para permitir nuevo connect()
-        setTimeout(() => this.connect(), 1000);    // ← reintento único (como antes), no un setInterval
+        josLogger.error(
+          `🛑 Conexión cerrada (${this.currentHost}:${this.currentPort}). Reintentando en 1s…`,
+        );
+        this.connectPromise = null; // ← libera el lock para permitir nuevo connect()
+        setTimeout(() => this.connect(), 1000); // ← reintento único (como antes), no un setInterval
       });
-    })
+    });
 
     // return this.connectPromise;
   }
@@ -151,7 +193,10 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
       josLogger.debug('📨 Data ACK HEX: ' + dataACK.toString('hex'));
       josLogger.debug('📨 RX len=' + serverResponse.length);
 
-      if (tt === EnTipoTrama.estadisticos && tm === EnTmEstadisticos.rtEstadistico) {
+      if (
+        tt === EnTipoTrama.estadisticos &&
+        tm === EnTmEstadisticos.rtEstadistico
+      ) {
         const dataACK = getDataSection(serverResponse);
         const ackId = dataACK.readUInt8(dataACK.length - 1);
 
@@ -172,7 +217,6 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
 
   // private async connect(): Promise<void> {
   //   this.socket = new Socket();
-
 
   //   // this.socket.setNoDelay(true);
 
@@ -223,8 +267,8 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     else josLogger.debug('enviarFrame() 8003 Nuevos');
 
     const buf = isOld
-      ? this.serializarFrame(frame as FrameOldDto)    // Serializa header 9B (BE) y CRC de 1 byte (LSB CRC16)
-      : this.serializarFrame(frame as FrameDto);      // Serializa header 10B (LE) como ya tenías
+      ? this.serializarFrame(frame as FrameOldDto) // Serializa header 9B (BE) y CRC de 1 byte (LSB CRC16)
+      : this.serializarFrame(frame as FrameDto); // Serializa header 10B (LE) como ya tenías
 
     this.socket.write(buf);
     return { bytes: buf.length, hex: buf.toString('hex') };
@@ -234,11 +278,7 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
 
   // //! Primero equipos viejos:
 
-
-
-
   // //! Y después caso de equipos nuevos:
-
 
   //     if (!this.socket || !this.socket.writable) {
   //       josLogger.fatal('XXX Socket no conectado XXX');
@@ -266,12 +306,17 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     reserva?: number;
     versionProtocolo?: number;
   }): FrameDto | FrameOldDto {
-
     let frame: FrameDto | FrameOldDto;
 
-    const isOld = params.reserva === undefined ? true : params.reserva === null ? true : false;
+    const isOld =
+      params.reserva === undefined
+        ? true
+        : params.reserva === null
+          ? true
+          : false;
 
-    if (isOld) { // Equipos antiguos (la variable resesrva NO está en la trama de los equipos antiguos)
+    if (isOld) {
+      // Equipos antiguos (la variable resesrva NO está en la trama de los equipos antiguos)
       josLogger.debug('crearFrame() 8002 Antiguos');
       const {
         nodoOrigen,
@@ -282,7 +327,9 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         data,
         versionProtocolo = PROTO_VERSION_OLD,
       } = params;
-      if (data.length > MAX_DATA_BYTES_OLD) { throw new Error(`El cuerpo supera ${MAX_DATA_BYTES_OLD} bytes`); }
+      if (data.length > MAX_DATA_BYTES_OLD) {
+        throw new Error(`El cuerpo supera ${MAX_DATA_BYTES_OLD} bytes`);
+      }
       frame = {
         inicioTrama: START_OLD,
         versionProtocolo,
@@ -295,8 +342,8 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         crc: 0, // done se recalcula en serializeFrame
         finTrama: END_OLD,
       } as FrameOldDto;
-
-    } else { // Equipos nuevos
+    } else {
+      // Equipos nuevos
       josLogger.debug('crearFrame() 8003 Nuevos');
 
       const {
@@ -308,7 +355,9 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
         reserva = 0,
         versionProtocolo = PROTO_VERSION,
       } = params;
-      if (data.length > MAX_DATA_BYTES) { throw new Error(`El cuerpo supera ${MAX_DATA_BYTES} bytes`); }
+      if (data.length > MAX_DATA_BYTES) {
+        throw new Error(`El cuerpo supera ${MAX_DATA_BYTES} bytes`);
+      }
       frame = {
         inicioTrama: START,
         versionProtocolo,
@@ -342,16 +391,22 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
 
       const header = Buffer.alloc(1 + 2 + 2 + 1 + 1 + 2);
       let o = 0;
-      header.writeUInt8(f.versionProtocolo & 0xff, o); o += 1;
-      header.writeUInt16BE(f.nodoOrigen & 0xffff, o); o += 2;
-      header.writeUInt16BE(f.nodoDestino & 0xffff, o); o += 2;
-      header.writeUInt8(f.tipoTrama & 0xff, o); o += 1;
-      header.writeUInt8(f.tipoMensaje & 0xff, o); o += 1;
-      header.writeUInt16BE(f.longitud & 0xffff, o); o += 2;
+      header.writeUInt8(f.versionProtocolo & 0xff, o);
+      o += 1;
+      header.writeUInt16BE(f.nodoOrigen & 0xffff, o);
+      o += 2;
+      header.writeUInt16BE(f.nodoDestino & 0xffff, o);
+      o += 2;
+      header.writeUInt8(f.tipoTrama & 0xff, o);
+      o += 1;
+      header.writeUInt8(f.tipoMensaje & 0xff, o);
+      o += 1;
+      header.writeUInt16BE(f.longitud & 0xffff, o);
+      o += 2;
 
       const crcSegment = Buffer.concat([header, datosBuf]);
-      const crc16 = crc16IBM(crcSegment);          // 16-bit
-      const crcBuf = Buffer.from([crc16 & 0xff]);  // LSB (1 byte)
+      const crc16 = crc16IBM(crcSegment); // 16-bit
+      const crcBuf = Buffer.from([crc16 & 0xff]); // LSB (1 byte)
 
       return Buffer.concat([start, header, datosBuf, crcBuf, end]);
     }
@@ -361,18 +416,25 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
     // Nuevo → LE + header 10B (con reserva) + CRC16 (2B) escrito en BE
     const header = Buffer.alloc(1 + 1 + 2 + 2 + 1 + 1 + 2);
     let offset = 0;
-    header.writeUInt8(f.versionProtocolo & 0xff, offset); offset += 1;
-    header.writeUInt8(((f as any).reserva ?? 0) & 0xff, offset); offset += 1;
-    header.writeUInt16LE(f.nodoOrigen & 0xffff, offset); offset += 2;
-    header.writeUInt16LE(f.nodoDestino & 0xffff, offset); offset += 2;
-    header.writeUInt8(f.tipoTrama & 0xff, offset); offset += 1;
-    header.writeUInt8(f.tipoMensaje & 0xff, offset); offset += 1;
-    header.writeUInt16LE(f.longitud & 0xffff, offset); offset += 2;
+    header.writeUInt8(f.versionProtocolo & 0xff, offset);
+    offset += 1;
+    header.writeUInt8(((f as any).reserva ?? 0) & 0xff, offset);
+    offset += 1;
+    header.writeUInt16LE(f.nodoOrigen & 0xffff, offset);
+    offset += 2;
+    header.writeUInt16LE(f.nodoDestino & 0xffff, offset);
+    offset += 2;
+    header.writeUInt8(f.tipoTrama & 0xff, offset);
+    offset += 1;
+    header.writeUInt8(f.tipoMensaje & 0xff, offset);
+    offset += 1;
+    header.writeUInt16LE(f.longitud & 0xffff, offset);
+    offset += 2;
 
     const crcSegment = Buffer.concat([header, datosBuf]);
     const crcValSwapped = crc16IBM(crcSegment); // tu helper actual
     const crcBuf = Buffer.alloc(2);
-    crcBuf.writeUInt16BE(crcValSwapped, 0);     // el server lee BE
+    crcBuf.writeUInt16BE(crcValSwapped, 0); // el server lee BE
 
     return Buffer.concat([start, header, datosBuf, crcBuf, end]);
 
@@ -459,22 +521,24 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   // * -------------------------------------------------------------------------------------------------------------------
 
   /** TM_SISTEMA_TX_PRESENTACION (N_variables=6) */
-  crearDataPresentacion(p: {
-    nVariables?: number;
-    versionPresentacion?: number;
-    mac: number;
-    versionEquipo: number;
-    tipoEquipo: number;
-    claveEquipo?: number;
-    versionHw?: number;
-    password?: string;
-    crcTabla?: number;
-    // tipoDispositivo?: number;
-  } /*PresentacionDto | PresentacionCentralOldDto*/): Buffer {
-
+  crearDataPresentacion(
+    p: {
+      nVariables?: number;
+      versionPresentacion?: number;
+      mac: number;
+      versionEquipo: number;
+      tipoEquipo: number;
+      claveEquipo?: number;
+      versionHw?: number;
+      password?: string;
+      crcTabla?: number;
+      // tipoDispositivo?: number;
+    } /*PresentacionDto | PresentacionCentralOldDto*/,
+  ): Buffer {
     let data: Buffer = Buffer.alloc(0);
 
-    if (p.password !== undefined) { // Equipos antiguos (la variable password SOLO está en la trama de los equipos antiguos)
+    if (p.password !== undefined) {
+      // Equipos antiguos (la variable password SOLO está en la trama de los equipos antiguos)
       josLogger.debug('crearDataPresentacion() 8002 Antiguos');
 
       const params = p as unknown as PresentacionCentralOldDto;
@@ -487,15 +551,20 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
       data = Buffer.alloc(29);
       let offset = 0;
 
-      data.writeUInt8(params.tipoEquipo & 0xff, offset); offset += 1;           // tipoDispositivo (1)
+      data.writeUInt8(params.tipoEquipo & 0xff, offset);
+      offset += 1; // tipoDispositivo (1)
       // params.mac.copy(data, offset, 0, 8); offset += 8;                         // MAC (8)
       //! REVISAR el BigInt
-      data.writeBigUInt64BE(BigInt(params.mac), offset); offset += 8; // MAC (8 bytes BE desde number)
-      data.writeUInt16BE(params.versionEquipo & 0xffff, offset); offset += 2;   // versionEquipo (2) BE
-      passBuf.copy(data, offset); offset += 16;                                 // password (16)
-      data.writeUInt16BE(params.crcTabla & 0xffff, offset); offset += 2;        // crcTabla (2) BE
-
-    } else { // Equipos nuevos
+      data.writeBigUInt64BE(BigInt(params.mac), offset);
+      offset += 8; // MAC (8 bytes BE desde number)
+      data.writeUInt16BE(params.versionEquipo & 0xffff, offset);
+      offset += 2; // versionEquipo (2) BE
+      passBuf.copy(data, offset);
+      offset += 16; // password (16)
+      data.writeUInt16BE(params.crcTabla & 0xffff, offset);
+      offset += 2; // crcTabla (2) BE
+    } else {
+      // Equipos nuevos
       josLogger.debug('crearDataPresentacion() 8003 Nuevos');
 
       const params = p as PresentacionDto;
@@ -522,7 +591,9 @@ export class TcpClientService implements OnModuleInit, OnModuleDestroy {
   }
 
   /** TM_SISTEMA_TX_PRESENCIA */
-  crearDataPresencia() { return Buffer.alloc(0); }
+  crearDataPresencia() {
+    return Buffer.alloc(0);
+  }
 
   /** TM_SISTEMA_TX_ESTADO_DISPOSITIVO */
   serializarDataEstadoDispositivo(ed: EstadoDispositivoTxDto) {

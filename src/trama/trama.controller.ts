@@ -231,9 +231,7 @@ export class TramaController {
     const fFin = parseDmYToFecha(ff);
     const dtIni = new Date(fIni.anyo, (fIni.mes ?? 1) - 1, fIni.dia ?? 1, 0, 0, 0, 0);
     const dtFin = new Date(fFin.anyo, (fFin.mes ?? 1) - 1, fFin.dia ?? 1, 23, 59, 59, 999);
-    if (isNaN(dtIni.getTime()) || isNaN(dtFin.getTime()) || dtIni > dtFin) {
-      throw new BadRequestException('Rango de fechas inválido.');
-    }
+    if (isNaN(dtIni.getTime()) || isNaN(dtFin.getTime()) || dtIni > dtFin) {throw new BadRequestException('Rango de fechas inválido.');}
 
     // Paso temporal según periodicidad
     const stepMs = (() => {

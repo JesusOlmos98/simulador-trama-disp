@@ -1,4 +1,3 @@
-
 export const MAX_TEXTOS_LINEAS = 50;
 export const MAX_TEXTOS_MENSAJES = 500;
 export const MAX_TEXTOS_TABLAS = 15;

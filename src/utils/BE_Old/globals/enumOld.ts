@@ -1,5 +1,3 @@
-
-
 /** Direcciones de red */
 export enum EnDireccionNodosRed {
   direccionRedServidor = 0,
@@ -50,30 +48,30 @@ export enum EnTipoTramaOld {
   /** (no aparece en doc; útil para default) */
   noConfigurada = 0,
 
-  configuracionRf = 1,                 // TT_configuracion_RF
-  centralDispositivo = 2,              // TT_central_dispositivo
-  envioDispositivoFinal = 3,           // TT_envio_dispositivo_final
-  rtPeticionesCentral = 4,             // TT_rt_peticiones_central
-  envioServidor = 5,                   // TT_envio_servidor
-  centralServidor = 6,                 // TT_central_servidor
-  centralRf = 7,                       // TT_central_rf
-  rfCentral = 8,                       // TT_rf_central
-  rfDispositivo = 9,                   // TT_rf_dispositivo
-  dispositivoRf = 10,                  // TT_dispositivo_rf
-  rfRf = 11,                           // TT_rf_rf
-  redLocalDatos = 12,                  // TT_RED_LOCAL_DATOS
-  omegaPantallaPlaca = 13,             // TT_OMEGA_PANTALLA_PLACA
-  depuracion = 14,                     // TT_depuracion
-  actualizacionDesdePc = 15,           // TT_actualizacion_desde_pc
-  actualizacionDesdePcCom = 16,        // TT_actualizacion_desde_pc_COM
-  sincronizacionEbus = 17,             // TT_SINCRONIZACION_EBUS
-  omegaPantallaPlacaFinal = 18,        // TT_OMEGA_PANTALLA_PLACA_FINAL
-  omegaPantallaPlacaFinalLocal = 19,   // TT_OMEGA_PANTALLA_PLACA_FINAL_LOCAL
-  actualizacionDesdePcEbusFinal = 20,  // TT_actualizacion_desde_pc_EBUS_final
-  sincronizacionComInternos = 21,      // TT_SINCRONIZACION_COM_INTERNOS
-  controlAccesos = 22,                 // TT_CONTROL_ACCESOS
-  serviciosClaveValor = 23,            // TT_SERVICIOS_CLAVE_VALOR
-  actualizacionServer = 24,            // TT_actualizacion_server
+  configuracionRf = 1, // TT_configuracion_RF
+  centralDispositivo = 2, // TT_central_dispositivo
+  envioDispositivoFinal = 3, // TT_envio_dispositivo_final
+  rtPeticionesCentral = 4, // TT_rt_peticiones_central
+  envioServidor = 5, // TT_envio_servidor
+  centralServidor = 6, // TT_central_servidor
+  centralRf = 7, // TT_central_rf
+  rfCentral = 8, // TT_rf_central
+  rfDispositivo = 9, // TT_rf_dispositivo
+  dispositivoRf = 10, // TT_dispositivo_rf
+  rfRf = 11, // TT_rf_rf
+  redLocalDatos = 12, // TT_RED_LOCAL_DATOS
+  omegaPantallaPlaca = 13, // TT_OMEGA_PANTALLA_PLACA
+  depuracion = 14, // TT_depuracion
+  actualizacionDesdePc = 15, // TT_actualizacion_desde_pc
+  actualizacionDesdePcCom = 16, // TT_actualizacion_desde_pc_COM
+  sincronizacionEbus = 17, // TT_SINCRONIZACION_EBUS
+  omegaPantallaPlacaFinal = 18, // TT_OMEGA_PANTALLA_PLACA_FINAL
+  omegaPantallaPlacaFinalLocal = 19, // TT_OMEGA_PANTALLA_PLACA_FINAL_LOCAL
+  actualizacionDesdePcEbusFinal = 20, // TT_actualizacion_desde_pc_EBUS_final
+  sincronizacionComInternos = 21, // TT_SINCRONIZACION_COM_INTERNOS
+  controlAccesos = 22, // TT_CONTROL_ACCESOS
+  serviciosClaveValor = 23, // TT_SERVICIOS_CLAVE_VALOR
+  actualizacionServer = 24, // TT_actualizacion_server
 }
 
 /** Tipo de trama asíncrona */
@@ -154,14 +152,14 @@ export enum EnTipoMensajeCentralServidor {
 
 /** TT Central - Dispositivo */
 export enum EnTipoMensajeCentralDispositivo {
-  tmPeticionParametrosCd = 1,     // no se usa
-  tmPeticionParametrosMasCd = 2,  // no
+  tmPeticionParametrosCd = 1, // no se usa
+  tmPeticionParametrosMasCd = 2, // no
   tmPeticionNServiciosCd = 3,
   tmPeticionAlarmasCd = 4,
   tmPeticionAlarmasMasCd = 5,
-  tmPeticionEventosCd = 6,        // no
+  tmPeticionEventosCd = 6, // no
   tmPeticionDescubrimientoCd = 7,
-  tmConfigServiciosCd = 8,        // no
+  tmConfigServiciosCd = 8, // no
   tmConfigNodoCd = 9,
   tmPeticionInstantaneosCd = 10,
   tmPeticionRangoServiciosCd = 11, // no
@@ -179,16 +177,16 @@ export enum EnTipoMensajeCentralDispositivo {
 
 /** TT Dispositivo - Central */
 export enum EnTipoMensajeDispositivoCentral {
-  tmRtPeticionParametrosMasDc = 1,  // no
-  tmRtPeticionParametrosFinDc = 2,  // no
+  tmRtPeticionParametrosMasDc = 1, // no
+  tmRtPeticionParametrosFinDc = 2, // no
   tmRtPeticionNServiciosDc = 0,
   tmRtPeticionAlarmasMasDc = 4,
   tmRtPeticionAlarmasFinDc = 5,
-  tmRtPeticionEventosDc = 6,        // no
+  tmRtPeticionEventosDc = 6, // no
   tmRtPeticionDescubrimientoDc = 7,
-  tmRtConfigServiciosDc = 8,        // no
+  tmRtConfigServiciosDc = 8, // no
   tmRtConfigNodoDc = 9,
-  tmRtPeticionInstantaneosDc = 10,  // no
+  tmRtPeticionInstantaneosDc = 10, // no
   tmRtPeticionRangoServiciosDc = 11, // no
   tmRtCambioParametrosDc = 12,
   tmRtPeticionBaseDatosDc = 13,
@@ -236,18 +234,18 @@ export enum EnTipoMensajeOmegaPantallaPlaca {
   tmOmegaPantallaPlacaPidePantalla = 1,
   tmOmegaPantallaPlacaRtPantalla = 2,
   tmOmegaPantallaPlacaEnviaEstadistico = 3, // lo envía el final
-  tmOmegaPantallaPlacaRtEstadistico = 4,    // confirma que se insertó el estadístico
+  tmOmegaPantallaPlacaRtEstadistico = 4, // confirma que se insertó el estadístico
   tmOmegaPantallaPlacaPidePantallaPrincipal = 5,
   tmOmegaPantallaPlacaCambioParametro = 6,
   tmOmegaPantallaPlacaPideEstadisticoPantallaLocal = 7, // solo pantalla local
 
-  tmOmegaPantallaPlacaPideFicheroConfiguracionExportacion = 8,   // pedir fichero configuración (export)
+  tmOmegaPantallaPlacaPideFicheroConfiguracionExportacion = 8, // pedir fichero configuración (export)
   tmOmegaPantallaPlacaPideFicheroConfiguracionExportacionRt = 9, // respuesta datos de exportación
 
-  tmOmegaPantallaPlacaPideFicheroConfiguracionImportacion = 10,  // pedir datos a pantalla/servidor (import)
+  tmOmegaPantallaPlacaPideFicheroConfiguracionImportacion = 10, // pedir datos a pantalla/servidor (import)
   tmOmegaPantallaPlacaPideFicheroConfiguracionImportacionRtPantallas = 11, // envío variables a importar
 
-  tmOmegaPantallaPlacaPideEstadosVpad = 12,  // estado leds/acciones pulsadores Vpad
+  tmOmegaPantallaPlacaPideEstadosVpad = 12, // estado leds/acciones pulsadores Vpad
   tmOmegaPantallaPlacaRtPideEstadosVpad = 13,
 
   tmOmegaPantallaPlacaConsolaPantalla = 14,
@@ -302,12 +300,12 @@ export enum EnTmActualizaServer {
 export enum EnBcTipoMensajeOld {
   tmAccionEnvioCt = 0,
   tmRespuestaFin = 1,
-  tmRespuestaErrorEstructura = 2,      // la placa recibió menos bytes de los esperados
-  tmRespuestaCtSincronizacion = 3,     // confirma que el controlador recibió la trama
+  tmRespuestaErrorEstructura = 2, // la placa recibió menos bytes de los esperados
+  tmRespuestaCtSincronizacion = 3, // confirma que el controlador recibió la trama
   tmPideEstadisticos = 4,
   tmRtPideEstadisticos = 5,
   tmRtPideEstadisticosPilaVacia = 6,
-  tmRespuestaFinalEnBoot = 7,          // el final está en boot
+  tmRespuestaFinalEnBoot = 7, // el final está en boot
 }
 
 /** Sincro COM Internos */
@@ -1369,13 +1367,13 @@ export enum EnEstadisticosNombres {
 
 // Para envío de estadísticos (históricos)
 export enum EnTipoDatoOld {
-  datoEstadisticas = 1,                 // Estadísticos
-  cambioParametro = 2,                  // Cambio de parámetro
-  alarmas = 3,                          // Alarmas
-  tablaLog = 4,                         // Tabla de LOG
-  altasBajasRetiradas = 5,              // Altas / bajas / retiradas
+  datoEstadisticas = 1, // Estadísticos
+  cambioParametro = 2, // Cambio de parámetro
+  alarmas = 3, // Alarmas
+  tablaLog = 4, // Tabla de LOG
+  altasBajasRetiradas = 5, // Altas / bajas / retiradas
   cambioParametroValoresCalculados = 6, // Cambios de parámetros “calculados”
-  inicioFinCrianza = 7,                 // Inicio o fin de crianza
+  inicioFinCrianza = 7, // Inicio o fin de crianza
 }
 
 export enum EnTipoAccionAltasBajasRetiradasCrianzaOld {
@@ -1390,34 +1388,8 @@ export enum EnTipoAccionAltasBajasRetiradasCrianzaOld {
 
 export enum EnTipoAccionInicioFinCrianzaOld {
   inicio,
-  fin
+  fin,
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /** DF – Tipo de dato / acción */
 export enum EnTipoDatoDFAccion {
@@ -1497,11 +1469,6 @@ export enum EnTipoDatoDFAccion {
   reservadoSt = 47,
 }
 
-
-
-
-
-
 // === Tipos de evento (alarma / warning / evento) ===
 export enum EnEventosEstadisTipo {
   alarmas = 0,
@@ -1512,7 +1479,7 @@ export enum EnEventosEstadisTipo {
 // === Familias de eventos ===
 export enum EnEventosEstadisFamilia {
   noDefinido = 0,
-  alimentacion = 1,          // Alimentación avanzada
+  alimentacion = 1, // Alimentación avanzada
   alimentacionSimple = 2,
 }
 
@@ -1524,8 +1491,8 @@ export enum EnEventosEstadisSubfamilia {
 // === Propiedades de eventos (FLAGS: usar con operaciones bit a bit) ===
 export enum EnEventosEstadisPropiedades {
   noDefinido = 0x0000,
-  accionEventoOn = 0x0001,  // 1 = evento ON (activo), 0 = OFF
-  eventoSonoro = 0x0002,    // 1 = sonoro, 0 = no sonoro
+  accionEventoOn = 0x0001, // 1 = evento ON (activo), 0 = OFF
+  eventoSonoro = 0x0002, // 1 = sonoro, 0 = no sonoro
 }
 // Ejemplo de uso: (props & EnEventosEstadisPropiedades.accionEventoOn) !== 0
 

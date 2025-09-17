@@ -1,7 +1,20 @@
-import { tiempoToSeg } from "src/utils/fnTiempo";
-import { EnTipoDato, EnEstadisTipoRegistro, EnEstadisticosControladores, EnEstadisPeriodicidad, EnEstadoDatoEstadistico, EnGtUnidades, EnContadoresTipo, EnEeEventosApli, EnCrianzaTipoAnimal, EnCrianzaAltaBajaAccion, EnAlarmaEstado, EnAlarmasAccion } from "src/utils/LE/globals/enums";
-import { Fecha, Tiempo } from "src/utils/tiposGlobales";
-import { packByTipo, u32LE, u16LE, u8Old } from "src/utils/helpers";
+import { tiempoToSeg } from 'src/utils/fnTiempo';
+import {
+  EnTipoDato,
+  EnEstadisTipoRegistro,
+  EnEstadisticosControladores,
+  EnEstadisPeriodicidad,
+  EnEstadoDatoEstadistico,
+  EnGtUnidades,
+  EnContadoresTipo,
+  EnEeEventosApli,
+  EnCrianzaTipoAnimal,
+  EnCrianzaAltaBajaAccion,
+  EnAlarmaEstado,
+  EnAlarmasAccion,
+} from 'src/utils/LE/globals/enums';
+import { Fecha, Tiempo } from 'src/utils/tiposGlobales';
+import { packByTipo, u32LE, u16LE, u8Old } from 'src/utils/helpers';
 
 // -------------------------------------------------- TM_ESTADISTICOS_envia_estadistico --------------------------------------------------
 
@@ -183,7 +196,11 @@ export function serializarDatosEstadisticoValor(
     },
 
     // [1] periodicidad (TD_UINT8)
-    { tipoDato: EnTipoDato.uint8, sizeDatoByte: 1, dato: u8Old(d.periodicidad) },
+    {
+      tipoDato: EnTipoDato.uint8,
+      sizeDatoByte: 1,
+      dato: u8Old(d.periodicidad),
+    },
 
     // [2..4] valores (TD_ según d.valorTipo)
     { tipoDato: base, sizeDatoByte: medio.length, dato: medio }, // valorMedio
@@ -553,7 +570,7 @@ export function serializarDatosEstadisticoAlarma(
  * - opcionLinea:      TD_CONCATENADO
  * - valor:            Tipo de datos variable (si es numérico) o TD_CONCATENADO (si es texto)
  */
-export interface EstadisticoCambioParametroDto { 
+export interface EstadisticoCambioParametroDto {
   /** TD_UINT32: Identificación cliente */
   idCliente: number;
 
@@ -568,9 +585,9 @@ export interface EstadisticoCambioParametroDto {
    * y rellena 'valorNumero'. Si es TEXTO, deja 'valorTipo' y 'valorNumero' undefined
    * y rellena 'valorTexto' (TD_CONCATENADO).
    */
-  valorTipo?: EnTipoDato;   // ← sólo si valor es numérico
-  valorNumero?: number;     // ← sólo si valor es numérico
-  valorTexto?: string;      // ← sólo si valor es texto (TD_CONCATENADO)
+  valorTipo?: EnTipoDato; // ← sólo si valor es numérico
+  valorNumero?: number; // ← sólo si valor es numérico
+  valorTexto?: string; // ← sólo si valor es texto (TD_CONCATENADO)
 }
 
 // Serializa "Cambio de parámetro" → lista de items { tipoDato, sizeDatoByte, dato }
@@ -582,10 +599,10 @@ export function serializarDatosEstadisticoCambioParametros(
   idClienteBuf.writeUInt32LE(dto.idCliente >>> 0, 0);
 
   // [1] tituloOpcion (TD_CONCATENADO)
-  const tituloBuf = Buffer.from(dto.tituloOpcion ?? "", "utf8");
+  const tituloBuf = Buffer.from(dto.tituloOpcion ?? '', 'utf8');
 
   // [2] opcionLinea (TD_CONCATENADO)
-  const opcionBuf = Buffer.from(dto.opcionLinea ?? "", "utf8");
+  const opcionBuf = Buffer.from(dto.opcionLinea ?? '', 'utf8');
 
   // [3] valor (numérico con tipo o concatenado si es texto)
   let valorItem: EstadisticoDato;
@@ -597,7 +614,7 @@ export function serializarDatosEstadisticoCambioParametros(
       dato: vbuf,
     };
   } else if (dto.valorTexto !== undefined) {
-    const vbuf = Buffer.from(dto.valorTexto, "utf8");
+    const vbuf = Buffer.from(dto.valorTexto, 'utf8');
     valorItem = {
       // Asegúrate de tener este miembro en tu enum EnTipoDato (TD_CONCATENADO)
       tipoDato: EnTipoDato.concatenado,
@@ -605,14 +622,24 @@ export function serializarDatosEstadisticoCambioParametros(
       dato: vbuf,
     };
   } else {
-    throw new Error("CambioParametro: debes indicar valorNumero+valorTipo o valorTexto.");
+    throw new Error(
+      'CambioParametro: debes indicar valorNumero+valorTipo o valorTexto.',
+    );
   }
 
   const out: EstadisticoDato[] = [
-    { tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: idClienteBuf },      // idCliente
-    { tipoDato: EnTipoDato.concatenado, sizeDatoByte: tituloBuf.length, dato: tituloBuf }, // tituloOpcion
-    { tipoDato: EnTipoDato.concatenado, sizeDatoByte: opcionBuf.length, dato: opcionBuf }, // opcionLinea
-    valorItem,                                                                 // valor (numérico o texto)
+    { tipoDato: EnTipoDato.uint32, sizeDatoByte: 4, dato: idClienteBuf }, // idCliente
+    {
+      tipoDato: EnTipoDato.concatenado,
+      sizeDatoByte: tituloBuf.length,
+      dato: tituloBuf,
+    }, // tituloOpcion
+    {
+      tipoDato: EnTipoDato.concatenado,
+      sizeDatoByte: opcionBuf.length,
+      dato: opcionBuf,
+    }, // opcionLinea
+    valorItem, // valor (numérico o texto)
   ];
 
   return out;

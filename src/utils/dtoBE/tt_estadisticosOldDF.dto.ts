@@ -1,7 +1,15 @@
-import { EnCrianzaAltaBajaAccion, EnCrianzaTipoAnimal, EnEventosEstadisFamilia, EnEventosEstadisPropiedades, EnEventosEstadisSubfamilia, EnEventosEstadisTipo, EnTipoDatoDFAccion } from "src/utils/BE_Old/globals/enumOld";
-import { EnTextos } from "src/utils/enumTextos";
-import { packValorDf4BE } from "src/utils/helpers";
-import { Fecha, Tiempo } from "src/utils/tiposGlobales";
+import {
+  EnCrianzaAltaBajaAccion,
+  EnCrianzaTipoAnimal,
+  EnEventosEstadisFamilia,
+  EnEventosEstadisPropiedades,
+  EnEventosEstadisSubfamilia,
+  EnEventosEstadisTipo,
+  EnTipoDatoDFAccion,
+} from 'src/utils/BE_Old/globals/enumOld';
+import { EnTextos } from 'src/utils/enumTextos';
+import { packValorDf4BE } from 'src/utils/helpers';
+import { Fecha, Tiempo } from 'src/utils/tiposGlobales';
 
 // ---------------------------------------- ParametroHistoricoOmegaDfDto ----------------------------------------
 /** Estadístico de valor o cambio parámetro o alarma/warning. Payload de TM_envia_historico (caso: estadístico DF). */
@@ -59,7 +67,7 @@ export interface ParametroHistoricoValorOmegaDfDto {
  *  4B  variable3                             (BE)
  */
 export function serializarParametroHistoricoValorOmegaDf(
-  d: ParametroHistoricoValorOmegaDfDto
+  d: ParametroHistoricoValorOmegaDfDto,
 ): Buffer {
   const out = Buffer.alloc(40);
   let offset = 0;
@@ -75,7 +83,7 @@ export function serializarParametroHistoricoValorOmegaDf(
     let macBig = typeof macAny === 'bigint' ? macAny : BigInt(macAny);
 
     // Validación de rango 0..2^64-1
-    if (macBig < 0n || macBig > 0xFFFF_FFFF_FFFF_FFFFn) {
+    if (macBig < 0n || macBig > 0xffff_ffff_ffff_ffffn) {
       throw new Error('MAC inválida: fuera de rango (0..2^64-1)');
     }
 
@@ -85,20 +93,21 @@ export function serializarParametroHistoricoValorOmegaDf(
     } else {
       // Fallback: escribir BigInt byte a byte en BE
       for (let i = 7; i >= 0; i--) {
-        out[offset + i] = Number(macBig & 0xFFn);
+        out[offset + i] = Number(macBig & 0xffn);
         macBig >>= 8n;
       }
     }
     offset += 8;
-
   } else if (Buffer.isBuffer(macAny)) {
     if (macAny.length !== 8) {
       throw new Error('MAC inválida: se espera Buffer de 8 bytes');
     }
-    macAny.copy(out, offset); offset += 8;
-
+    macAny.copy(out, offset);
+    offset += 8;
   } else {
-    throw new Error('MAC inválida: se espera number|bigint o Buffer de 8 bytes');
+    throw new Error(
+      'MAC inválida: se espera number|bigint o Buffer de 8 bytes',
+    );
   }
 
   // --- 1B tipoDato
@@ -119,31 +128,39 @@ export function serializarParametroHistoricoValorOmegaDf(
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, offset++);
 
   // --- 2B identificadorCliente (BE)
-  out.writeUInt16BE(d.identificadorCliente & 0xffff, offset); offset += 2;
+  out.writeUInt16BE(d.identificadorCliente & 0xffff, offset);
+  offset += 2;
 
   // --- 2B nombreVariable (BE)
-  out.writeUInt16BE(d.nombreVariable & 0xffff, offset); offset += 2;
+  out.writeUInt16BE(d.nombreVariable & 0xffff, offset);
+  offset += 2;
 
   // --- 4B valorVariable (BE; según tipoDato)
   {
     const v4 = packValorDf4BE(d.tipoDato, d.valorVariable);
-    v4.copy(out, offset); offset += 4;
+    v4.copy(out, offset);
+    offset += 4;
   }
 
   // --- 4B identificadorCrianzaUnico (BE)
-  out.writeUInt32BE((d.identificadorCrianzaUnico >>> 0), offset); offset += 4;
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, offset);
+  offset += 4;
 
   // --- 2B variable1DiaCrianza (int16 BE)
-  out.writeInt16BE((d.variable1DiaCrianza | 0), offset); offset += 2;
+  out.writeInt16BE(d.variable1DiaCrianza | 0, offset);
+  offset += 2;
 
   // --- 2B variable1_2 (BE)
-  out.writeUInt16BE(d.variable1_2 & 0xffff, offset); offset += 2;
+  out.writeUInt16BE(d.variable1_2 & 0xffff, offset);
+  offset += 2;
 
   // --- 4B variable2 (BE)
-  out.writeUInt32BE((d.variable2 >>> 0), offset); offset += 4;
+  out.writeUInt32BE(d.variable2 >>> 0, offset);
+  offset += 4;
 
   // --- 4B variable3 (BE)
-  out.writeUInt32BE((d.variable3 >>> 0), offset); offset += 4;
+  out.writeUInt32BE(d.variable3 >>> 0, offset);
+  offset += 4;
 
   // Seguridad: o debe ser 40
   // if (o !== 40) throw new Error(`Longitud inesperada al serializar (o=${o})`);
@@ -217,7 +234,7 @@ export interface ParametroHistoricoOmegaEventoDto {
  *  8B  reserva
  */
 export function serializarParametroHistoricoEventoOmegaDf(
-  d: ParametroHistoricoOmegaEventoDto
+  d: ParametroHistoricoOmegaEventoDto,
 ): Buffer {
   const out = Buffer.alloc(40);
   let offset = 0;
@@ -234,7 +251,7 @@ export function serializarParametroHistoricoEventoOmegaDf(
     let macBig = typeof macAny === 'bigint' ? macAny : BigInt(macAny);
 
     // Validación de rango 0..2^64-1
-    if (macBig < 0n || macBig > 0xFFFF_FFFF_FFFF_FFFFn) {
+    if (macBig < 0n || macBig > 0xffff_ffff_ffff_ffffn) {
       throw new Error('MAC inválida: fuera de rango (0..2^64-1)');
     }
 
@@ -244,20 +261,21 @@ export function serializarParametroHistoricoEventoOmegaDf(
     } else {
       // Fallback: escribir BigInt byte a byte en BE
       for (let i = 7; i >= 0; i--) {
-        out[offset + i] = Number(macBig & 0xFFn);
+        out[offset + i] = Number(macBig & 0xffn);
         macBig >>= 8n;
       }
     }
     offset += 8;
-
   } else if (Buffer.isBuffer(macAny)) {
     if (macAny.length !== 8) {
       throw new Error('MAC inválida: se espera Buffer de 8 bytes');
     }
-    macAny.copy(out, offset); offset += 8;
-
+    macAny.copy(out, offset);
+    offset += 8;
   } else {
-    throw new Error('MAC inválida: se espera number|bigint o Buffer de 8 bytes');
+    throw new Error(
+      'MAC inválida: se espera number|bigint o Buffer de 8 bytes',
+    );
   }
 
   // --- 1B tipoDato
@@ -273,7 +291,8 @@ export function serializarParametroHistoricoEventoOmegaDf(
   out.writeUInt8((d.tipo as number) & 0xff, offset++);
 
   // --- 2B familia (BE)
-  out.writeUInt16BE((d.familia as number) & 0xffff, offset); offset += 2;
+  out.writeUInt16BE((d.familia as number) & 0xffff, offset);
+  offset += 2;
 
   // --- 1B subfamilia
   out.writeUInt8((d.subfamilia as number) & 0xff, offset++);
@@ -282,7 +301,8 @@ export function serializarParametroHistoricoEventoOmegaDf(
   out.writeUInt8(d.reserva1 & 0xff, offset++);
 
   // --- 2B propiedades (bitmask, BE)
-  out.writeUInt16BE((d.propiedades as number) & 0xffff, offset); offset += 2;
+  out.writeUInt16BE((d.propiedades as number) & 0xffff, offset);
+  offset += 2;
 
   // --- 3B fecha (dd, mm, yy)
   {
@@ -298,19 +318,23 @@ export function serializarParametroHistoricoEventoOmegaDf(
   out.writeUInt8(d.hora.seg & 0xff, offset++);
 
   // --- 2B nombreVariable (BE)
-  out.writeUInt16BE(d.nombreVariable & 0xffff, offset); offset += 2;
+  out.writeUInt16BE(d.nombreVariable & 0xffff, offset);
+  offset += 2;
 
   // --- 2B diaCrianza (int16, BE)
-  out.writeInt16BE(d.diaCrianza | 0, offset); offset += 2;
+  out.writeInt16BE(d.diaCrianza | 0, offset);
+  offset += 2;
 
   // --- 4B identificadorCrianzaUnico (BE)
-  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, offset); offset += 4;
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, offset);
+  offset += 4;
 
   // --- 8B reserva
   if (!Buffer.isBuffer(d.reserva) || d.reserva.length !== 8) {
     throw new Error('Reserva inválida: se espera Buffer de 8 bytes');
   }
-  d.reserva.copy(out, offset); offset += 8;
+  d.reserva.copy(out, offset);
+  offset += 8;
 
   // Seguridad: o debe ser 40
   // if (o !== 40) throw new Error(`Longitud inesperada al serializar (o=${o})`);
@@ -376,7 +400,7 @@ export interface ParametroHistoricoOmegaEventoConcatenadoDto {
  *  1B  tipoDato
  *  1B  identificadorUnicoDentroDelSegundo
  *  2B  versionAlarmaConcatenada          (BE)
- *  1B  tipo                              
+ *  1B  tipo
  *  1B  subfamilia
  *  2B  familia                           (BE)
  *  2B  propiedades                       (BE, bitmask)
@@ -393,7 +417,7 @@ export interface ParametroHistoricoOmegaEventoConcatenadoDto {
  *  Aquí validamos contra 80 para mantener coherencia con el tamaño real del bloque.
  */
 export function serializarParametroHistoricoEventoConcatenadoOmegaDf(
-  d: ParametroHistoricoOmegaEventoConcatenadoDto
+  d: ParametroHistoricoOmegaEventoConcatenadoDto,
 ): Buffer {
   const OUT_LEN = 114;
   const CADENA_MAX_BYTES = 80; // 40 * uint16
@@ -407,14 +431,15 @@ export function serializarParametroHistoricoEventoConcatenadoOmegaDf(
   // }
   // d.mac.copy(out, offset); offset += 8;
 
-
   const macAny = d.mac as unknown as number | bigint | Buffer;
 
   if (typeof macAny === 'number' || typeof macAny === 'bigint') {
     let macBig = typeof macAny === 'bigint' ? macAny : BigInt(macAny);
 
     // Validación de rango 0..2^64-1
-    if (macBig < 0n || macBig > 0xFFFF_FFFF_FFFF_FFFFn) { throw new Error('MAC inválida: fuera de rango (0..2^64-1)'); }
+    if (macBig < 0n || macBig > 0xffff_ffff_ffff_ffffn) {
+      throw new Error('MAC inválida: fuera de rango (0..2^64-1)');
+    }
 
     // Si tu Node soporta writeBigUInt64BE, úsalo; si no, fallback manual
     if (typeof (out as any).writeBigUInt64BE === 'function') {
@@ -422,33 +447,42 @@ export function serializarParametroHistoricoEventoConcatenadoOmegaDf(
     } else {
       // Fallback: escribir BigInt byte a byte en BE
       for (let i = 7; i >= 0; i--) {
-        out[offset + i] = Number(macBig & 0xFFn);
+        out[offset + i] = Number(macBig & 0xffn);
         macBig >>= 8n;
       }
     }
     offset += 8;
-
   } else if (Buffer.isBuffer(macAny)) {
-    if (macAny.length !== 8) { throw new Error('MAC inválida: se espera Buffer de 8 bytes'); }
-    macAny.copy(out, offset); offset += 8;
-
-  } else { throw new Error('MAC inválida: se espera number|bigint o Buffer de 8 bytes'); }
+    if (macAny.length !== 8) {
+      throw new Error('MAC inválida: se espera Buffer de 8 bytes');
+    }
+    macAny.copy(out, offset);
+    offset += 8;
+  } else {
+    throw new Error(
+      'MAC inválida: se espera number|bigint o Buffer de 8 bytes',
+    );
+  }
   // --- 1B tipoDato
   out.writeUInt8((d.tipoDato as number) & 0xff, offset++);
   // --- 1B identificador único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, offset++);
   // --- 2B versión alarma concatenada (BE)
-  out.writeUInt16BE(d.versionAlarmaConcatenada & 0xffff, offset); offset += 2;
+  out.writeUInt16BE(d.versionAlarmaConcatenada & 0xffff, offset);
+  offset += 2;
   // --- 1B tipo (ENUM_EVENTOS_ESTADIS_TIPO)
   out.writeUInt8((d.tipo as number) & 0xff, offset++);
   // --- 1B subfamilia
   out.writeUInt8((d.subfamilia as number) & 0xff, offset++);
   // --- 2B familia (BE)
-  out.writeUInt16BE((d.familia as number) & 0xffff, offset); offset += 2;
+  out.writeUInt16BE((d.familia as number) & 0xffff, offset);
+  offset += 2;
   // --- 2B propiedades (bitmask, BE)
-  out.writeUInt16BE((d.propiedades as number) & 0xffff, offset); offset += 2;
+  out.writeUInt16BE((d.propiedades as number) & 0xffff, offset);
+  offset += 2;
   // --- 2B nombreAlarma (BE)
-  out.writeUInt16BE((d.nombreAlarma as number) & 0xffff, offset); offset += 2;
+  out.writeUInt16BE(d.nombreAlarma & 0xffff, offset);
+  offset += 2;
   // --- 3B fecha (dd, mm, yy)
   {
     const yy = (d.fecha.anyo ?? 0) % 100;
@@ -461,21 +495,33 @@ export function serializarParametroHistoricoEventoConcatenadoOmegaDf(
   out.writeUInt8(d.hora.min & 0xff, offset++);
   out.writeUInt8(d.hora.seg & 0xff, offset++);
   // --- 2B diaCrianza (int16, BE)
-  out.writeInt16BE(d.diaCrianza | 0, offset); offset += 2;
+  out.writeInt16BE(d.diaCrianza | 0, offset);
+  offset += 2;
   // --- 4B identificadorCrianzaUnico (BE)
-  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, offset); offset += 4;
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, offset);
+  offset += 4;
   // --- 1B reserva
   out.writeUInt8(d.reserva & 0xff, offset++);
   // --- 1B numeroBytesCadena (1..80)
-  if (!Buffer.isBuffer(d.cadenaConcatenada)) { throw new Error('cadenaConcatenada inválida: se espera Buffer'); }
-  if (d.cadenaConcatenada.length > CADENA_MAX_BYTES) { throw new Error(`cadenaConcatenada demasiado larga: máx ${CADENA_MAX_BYTES} bytes (40 uint16)`); }
+  if (!Buffer.isBuffer(d.cadenaConcatenada)) {
+    throw new Error('cadenaConcatenada inválida: se espera Buffer');
+  }
+  if (d.cadenaConcatenada.length > CADENA_MAX_BYTES) {
+    throw new Error(
+      `cadenaConcatenada demasiado larga: máx ${CADENA_MAX_BYTES} bytes (40 uint16)`,
+    );
+  }
 
   // Usamos el mínimo entre lo indicado y lo disponible, acotado a 80.
   let nBytes = d.numeroBytesCadena;
-  if (typeof nBytes !== 'number' || !Number.isInteger(nBytes)) { throw new Error('numeroBytesCadena inválido: se espera entero'); }
+  if (typeof nBytes !== 'number' || !Number.isInteger(nBytes)) {
+    throw new Error('numeroBytesCadena inválido: se espera entero');
+  }
   nBytes = Math.min(nBytes, d.cadenaConcatenada.length, CADENA_MAX_BYTES);
 
-  if (nBytes < 1 || nBytes > CADENA_MAX_BYTES) { throw new Error(`numeroBytesCadena fuera de rango: 1..${CADENA_MAX_BYTES}`); }
+  if (nBytes < 1 || nBytes > CADENA_MAX_BYTES) {
+    throw new Error(`numeroBytesCadena fuera de rango: 1..${CADENA_MAX_BYTES}`);
+  }
 
   out.writeUInt8(nBytes & 0xff, offset++);
 
@@ -485,7 +531,9 @@ export function serializarParametroHistoricoEventoConcatenadoOmegaDf(
 
   // Seguridad: offset debe ser 114
   if (offset !== OUT_LEN) {
-    throw new Error(`Longitud inesperada al serializar (offset=${offset}, esperado=${OUT_LEN})`);
+    throw new Error(
+      `Longitud inesperada al serializar (offset=${offset}, esperado=${OUT_LEN})`,
+    );
   }
   return out;
 }
@@ -561,7 +609,7 @@ export interface ParametroHistoricoOmegaEstadisticoGenericoDto {
  * 80B  cadenaConcatenada (UTF-16LE; se usan solo los primeros n bytes)
  */
 export function serializarParametroHistoricoEstadisticoGenericoOmegaDf(
-  d: ParametroHistoricoOmegaEstadisticoGenericoDto
+  d: ParametroHistoricoOmegaEstadisticoGenericoDto,
 ): Buffer {
   const OUT_LEN = 114;
   const CADENA_MAX_BYTES = 80; // 40 * uint16
@@ -572,23 +620,28 @@ export function serializarParametroHistoricoEstadisticoGenericoOmegaDf(
   if (!Buffer.isBuffer(d.mac) || d.mac.length !== 8) {
     throw new Error('MAC inválida: se espera Buffer de 8 bytes');
   }
-  d.mac.copy(out, offset); offset += 8;
+  d.mac.copy(out, offset);
+  offset += 8;
   // --- 1B tipoDato
   out.writeUInt8((d.tipoDato as number) & 0xff, offset++);
   // --- 1B identificador único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, offset++);
   // --- 2B versión “alarma/estadístico concatenado” (BE)
-  out.writeUInt16BE(d.versionAlarmaConcatenada & 0xffff, offset); offset += 2;
+  out.writeUInt16BE(d.versionAlarmaConcatenada & 0xffff, offset);
+  offset += 2;
   // --- 1B tipo
   out.writeUInt8((d.tipo as number) & 0xff, offset++);
   // --- 1B subfamilia
   out.writeUInt8((d.subfamilia as number) & 0xff, offset++);
   // --- 2B familia (BE)
-  out.writeUInt16BE((d.familia as number) & 0xffff, offset); offset += 2;
+  out.writeUInt16BE((d.familia as number) & 0xffff, offset);
+  offset += 2;
   // --- 2B propiedades (bitmask, BE)
-  out.writeUInt16BE((d.propiedades as number) & 0xffff, offset); offset += 2;
+  out.writeUInt16BE((d.propiedades as number) & 0xffff, offset);
+  offset += 2;
   // --- 2B nombreAlarma / nombre_estadistico (BE)
-  out.writeUInt16BE((d.nombreAlarma as number) & 0xffff, offset); offset += 2;
+  out.writeUInt16BE(d.nombreAlarma & 0xffff, offset);
+  offset += 2;
   // --- 3B fecha (dd, mm, yy)
   {
     const yy = (d.fecha.anyo ?? 0) % 100;
@@ -601,9 +654,11 @@ export function serializarParametroHistoricoEstadisticoGenericoOmegaDf(
   out.writeUInt8(d.hora.min & 0xff, offset++);
   out.writeUInt8(d.hora.seg & 0xff, offset++);
   // --- 2B diaCrianza (int16, BE)
-  out.writeInt16BE(d.diaCrianza | 0, offset); offset += 2;
+  out.writeInt16BE(d.diaCrianza | 0, offset);
+  offset += 2;
   // --- 4B identificadorCrianzaUnico (BE)
-  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, offset); offset += 4;
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, offset);
+  offset += 4;
   // --- 1B reserva
   out.writeUInt8(d.reserva & 0xff, offset++);
   // --- 1B numeroBytesCadena (1..80)
@@ -611,7 +666,9 @@ export function serializarParametroHistoricoEstadisticoGenericoOmegaDf(
     throw new Error('cadenaConcatenada inválida: se espera Buffer');
   }
   if (d.cadenaConcatenada.length > CADENA_MAX_BYTES) {
-    throw new Error(`cadenaConcatenada demasiado larga: máx ${CADENA_MAX_BYTES} bytes (40 uint16)`);
+    throw new Error(
+      `cadenaConcatenada demasiado larga: máx ${CADENA_MAX_BYTES} bytes (40 uint16)`,
+    );
   }
   let nBytes = d.numeroBytesCadena | 0;
   nBytes = Math.min(Math.max(nBytes, 1), CADENA_MAX_BYTES);
@@ -623,7 +680,9 @@ export function serializarParametroHistoricoEstadisticoGenericoOmegaDf(
   offset += CADENA_MAX_BYTES;
 
   if (offset !== OUT_LEN) {
-    throw new Error(`Longitud inesperada al serializar (offset=${offset}, esperado=${OUT_LEN})`);
+    throw new Error(
+      `Longitud inesperada al serializar (offset=${offset}, esperado=${OUT_LEN})`,
+    );
   }
   return out;
 }
@@ -690,7 +749,7 @@ export interface ParametroHistoricoOmegaCambioParametroDfDto {
  *  4B  variable3TextTituloPersonalizado      (BE / crudo 4B)
  */
 export function serializarParametroHistoricoCambioParametroOmegaDf(
-  d: ParametroHistoricoOmegaCambioParametroDfDto
+  d: ParametroHistoricoOmegaCambioParametroDfDto,
 ): Buffer {
   const OUT_LEN = 40;
   const out = Buffer.alloc(OUT_LEN);
@@ -700,7 +759,8 @@ export function serializarParametroHistoricoCambioParametroOmegaDf(
   if (!Buffer.isBuffer(d.mac) || d.mac.length !== 8) {
     throw new Error('MAC inválida: se espera Buffer de 8 bytes');
   }
-  d.mac.copy(out, o); o += 8;
+  d.mac.copy(out, o);
+  o += 8;
 
   // --- 1B tipoDato
   out.writeUInt8((d.tipoDato as number) & 0xff, o++);
@@ -718,18 +778,23 @@ export function serializarParametroHistoricoCambioParametroOmegaDf(
   // --- 1B identificador único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, o++);
   // --- 2B identificador cliente (BE)
-  out.writeUInt16BE(d.identificadorCliente & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.identificadorCliente & 0xffff, o);
+  o += 2;
   // --- 2B TEXT_variable (BE)
-  out.writeUInt16BE(d.textVariable & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.textVariable & 0xffff, o);
+  o += 2;
   // --- 4B valorVariable (BE o crudo)
   writeValor4BPorTipo(out, o, d.tipoDato, d.valorVariable);
   o += 4;
   // --- 4B identificadorCrianzaUnico (BE)
-  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o); o += 4;
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o);
+  o += 4;
   // --- 2B diaCrianza (int16, BE)
-  out.writeInt16BE(d.diaCrianza | 0, o); o += 2;
+  out.writeInt16BE(d.diaCrianza | 0, o);
+  o += 2;
   // --- 2B TEXT_Titulo_variable (BE)
-  out.writeUInt16BE(d.textTituloVariable & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.textTituloVariable & 0xffff, o);
+  o += 2;
   // --- 4B variable2 (BE o crudo)
   writeU32OrBuf4(out, o, d.variable2);
   o += 4;
@@ -738,7 +803,9 @@ export function serializarParametroHistoricoCambioParametroOmegaDf(
   o += 4;
 
   if (o !== OUT_LEN) {
-    throw new Error(`Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`);
+    throw new Error(
+      `Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`,
+    );
   }
   return out;
 }
@@ -748,10 +815,11 @@ function writeValor4BPorTipo(
   buf: Buffer,
   off: number,
   tipoDato: EnTipoDatoDFAccion,
-  valor: number | Buffer
+  valor: number | Buffer,
 ) {
   if (Buffer.isBuffer(valor)) {
-    if (valor.length !== 4) throw new Error('valorVariable Buffer debe ser de 4 bytes');
+    if (valor.length !== 4)
+      throw new Error('valorVariable Buffer debe ser de 4 bytes');
     valor.copy(buf, off);
     return;
   }
@@ -760,7 +828,7 @@ function writeValor4BPorTipo(
   switch (tipoDato) {
     // Numéricos 8/16/32 bits
     case EnTipoDatoDFAccion.cambioParametroUint8:
-      if (n < 0 || n > 0xFF) throw new Error('uint8 fuera de rango');
+      if (n < 0 || n > 0xff) throw new Error('uint8 fuera de rango');
       buf.writeUInt32BE(n, off);
       break;
     case EnTipoDatoDFAccion.cambioParametroInt8:
@@ -768,7 +836,7 @@ function writeValor4BPorTipo(
       buf.writeInt32BE(n | 0, off);
       break;
     case EnTipoDatoDFAccion.cambioParametroUint16:
-      if (n < 0 || n > 0xFFFF) throw new Error('uint16 fuera de rango');
+      if (n < 0 || n > 0xffff) throw new Error('uint16 fuera de rango');
       buf.writeUInt32BE(n, off);
       break;
     case EnTipoDatoDFAccion.cambioParametroInt16:
@@ -776,12 +844,13 @@ function writeValor4BPorTipo(
       buf.writeInt32BE(n | 0, off);
       break;
     case EnTipoDatoDFAccion.cambioParametroUint32:
-      if (n < 0 || n > 0xFFFF_FFFF) throw new Error('uint32 fuera de rango');
+      if (n < 0 || n > 0xffff_ffff) throw new Error('uint32 fuera de rango');
       buf.writeUInt32BE(n >>> 0, off);
       break;
     case EnTipoDatoDFAccion.cambioParametroInt32:
       // int32 firmado
-      if (n < -0x8000_0000 || n > 0x7FFF_FFFF) throw new Error('int32 fuera de rango');
+      if (n < -0x8000_0000 || n > 0x7fff_ffff)
+        throw new Error('int32 fuera de rango');
       buf.writeInt32BE(n | 0, off);
       break;
 
@@ -814,7 +883,7 @@ function writeU32OrBuf4(buf: Buffer, off: number, v: number | Buffer) {
     if (v.length !== 4) throw new Error('Buffer debe ser de 4 bytes');
     v.copy(buf, off);
   } else {
-    buf.writeUInt32BE((v as number) >>> 0, off);
+    buf.writeUInt32BE(v >>> 0, off);
   }
 }
 
@@ -886,7 +955,7 @@ export interface ParametroHistoricoOmegaEbusFinalesDto {
  *  4B  variable3TextTituloPersonalizado        (BE / crudo 4B)
  */
 export function serializarParametroHistoricoEbusFinalesOmegaDf(
-  d: ParametroHistoricoOmegaEbusFinalesDto
+  d: ParametroHistoricoOmegaEbusFinalesDto,
 ): Buffer {
   const OUT_LEN = 40;
   const out = Buffer.alloc(OUT_LEN);
@@ -896,7 +965,8 @@ export function serializarParametroHistoricoEbusFinalesOmegaDf(
   if (!Buffer.isBuffer(d.mac) || d.mac.length !== 8) {
     throw new Error('MAC inválida: se espera Buffer de 8 bytes');
   }
-  d.mac.copy(out, o); o += 8;
+  d.mac.copy(out, o);
+  o += 8;
 
   // --- 1B tipoDato (constante DATOS_EBUS_FINALES)
   out.writeUInt8((d.tipoDato as number) & 0xff, o++);
@@ -914,28 +984,35 @@ export function serializarParametroHistoricoEbusFinalesOmegaDf(
   // --- 1B identificador único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, o++);
   // --- 2B identificador cliente (BE)
-  out.writeUInt16BE(d.identificadorCliente & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.identificadorCliente & 0xffff, o);
+  o += 2;
   // --- 2B TEXT_variable (BE)
-  out.writeUInt16BE(d.textVariable & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.textVariable & 0xffff, o);
+  o += 2;
   // --- 4B valorVariable (si es Buffer de 4B, copia; si es number, UInt32BE)
   if (Buffer.isBuffer(d.valorVariable)) {
-    if (d.valorVariable.length !== 4) throw new Error('valorVariable Buffer debe ser de 4 bytes');
+    if (d.valorVariable.length !== 4)
+      throw new Error('valorVariable Buffer debe ser de 4 bytes');
     d.valorVariable.copy(out, o);
   } else {
-    out.writeUInt32BE((d.valorVariable as number) >>> 0, o);
+    out.writeUInt32BE(d.valorVariable >>> 0, o);
   }
   o += 4;
 
   // --- 4B identificadorCrianzaUnico (BE)
-  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o); o += 4;
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o);
+  o += 4;
   // --- 2B diaCrianza (int16, BE)
-  out.writeInt16BE(d.diaCrianza | 0, o); o += 2;
+  out.writeInt16BE(d.diaCrianza | 0, o);
+  o += 2;
 
   // --- 2B TEXT_Titulo_variable (BE)
-  out.writeUInt16BE(d.textTituloVariable & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.textTituloVariable & 0xffff, o);
+  o += 2;
   // --- 4B variable2Raw: primer byte = tipo; resto 3B = valor/meta
   if (Buffer.isBuffer(d.variable2Raw)) {
-    if (d.variable2Raw.length !== 4) throw new Error('variable2Raw debe ser Buffer de 4 bytes');
+    if (d.variable2Raw.length !== 4)
+      throw new Error('variable2Raw debe ser Buffer de 4 bytes');
     d.variable2Raw.copy(out, o);
   } else {
     // Si no se proporciona un Buffer crudo (poco probable según el DTO), construimos a partir de los campos de conveniencia
@@ -943,7 +1020,7 @@ export function serializarParametroHistoricoEbusFinalesOmegaDf(
     v2[0] = (d.variable2TipoDato ?? 0) & 0xff;
     // Interpretamos variable2Valor numérico en 24-bit BE o copiamos los primeros 3 bytes si es Buffer
     if (typeof d.variable2Valor === 'number') {
-      const n = (d.variable2Valor as number) >>> 0;
+      const n = d.variable2Valor >>> 0;
       v2[1] = (n >>> 16) & 0xff;
       v2[2] = (n >>> 8) & 0xff;
       v2[3] = n & 0xff;
@@ -959,16 +1036,20 @@ export function serializarParametroHistoricoEbusFinalesOmegaDf(
   // --- 4B variable3TextTituloPersonalizado
   if (Buffer.isBuffer(d.variable3TextTituloPersonalizado)) {
     if (d.variable3TextTituloPersonalizado.length !== 4) {
-      throw new Error('variable3TextTituloPersonalizado Buffer debe ser de 4 bytes');
+      throw new Error(
+        'variable3TextTituloPersonalizado Buffer debe ser de 4 bytes',
+      );
     }
     d.variable3TextTituloPersonalizado.copy(out, o);
   } else {
-    out.writeUInt32BE((d.variable3TextTituloPersonalizado as number) >>> 0, o);
+    out.writeUInt32BE(d.variable3TextTituloPersonalizado >>> 0, o);
   }
   o += 4;
 
   if (o !== OUT_LEN) {
-    throw new Error(`Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`);
+    throw new Error(
+      `Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`,
+    );
   }
   return out;
 }
@@ -1047,7 +1128,7 @@ export interface ParametroHistoricoOmegaCambioParametroConcatenadoDto {
  * 160B cadenaConcatenada (UTF-16LE habitual; título+opción+valor texto)
  */
 export function serializarParametroHistoricoCambioParametroConcatenadoOmegaDf(
-  d: ParametroHistoricoOmegaCambioParametroConcatenadoDto
+  d: ParametroHistoricoOmegaCambioParametroConcatenadoDto,
 ): Buffer {
   const OUT_LEN = 195;
   const CADENA_MAX = 160; // 80 * uint16
@@ -1058,14 +1139,17 @@ export function serializarParametroHistoricoCambioParametroConcatenadoOmegaDf(
   if (!Buffer.isBuffer(d.mac) || d.mac.length !== 8) {
     throw new Error('MAC inválida: se espera Buffer de 8 bytes');
   }
-  d.mac.copy(out, o); o += 8;
+  d.mac.copy(out, o);
+  o += 8;
 
   // --- 1B identificador único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, o++);
   // --- 2B versión cambio parámetro concatenado (BE)
-  out.writeUInt16BE(d.versionCambioParametroConcatenado & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.versionCambioParametroConcatenado & 0xffff, o);
+  o += 2;
   // --- 2B identificador cliente (BE)
-  out.writeUInt16BE(d.identificadorCliente & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.identificadorCliente & 0xffff, o);
+  o += 2;
   // --- 1B tipoEquipo
   out.writeUInt8(d.tipoEquipo & 0xff, o++);
   // --- 1B ebusNodo
@@ -1082,9 +1166,11 @@ export function serializarParametroHistoricoCambioParametroConcatenadoOmegaDf(
   out.writeUInt8(d.hora.min & 0xff, o++);
   out.writeUInt8(d.hora.seg & 0xff, o++);
   // --- 2B diaCrianza (int16, BE)
-  out.writeInt16BE(d.diaCrianza | 0, o); o += 2;
+  out.writeInt16BE(d.diaCrianza | 0, o);
+  o += 2;
   // --- 4B identificadorCrianzaUnico (BE)
-  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o); o += 4;
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o);
+  o += 4;
   // --- Bytes efectivos (título/opción/valor)
   // Clampeamos para que no excedan el tamaño real de cadenaConcatenada ni el máximo 160.
   if (!Buffer.isBuffer(d.cadenaConcatenada)) {
@@ -1092,15 +1178,24 @@ export function serializarParametroHistoricoCambioParametroConcatenadoOmegaDf(
   }
   const cadLen = Math.min(d.cadenaConcatenada.length, CADENA_MAX);
 
-  let nTitulo = (d.numeroByteTitulo | 0);
-  let nOpcion = (d.numeroByteOpcion | 0);
-  let nValor = (d.numeroByteValor | 0);
+  let nTitulo = d.numeroByteTitulo | 0;
+  let nOpcion = d.numeroByteOpcion | 0;
+  let nValor = d.numeroByteValor | 0;
   if (nTitulo < 0) nTitulo = 0;
   if (nOpcion < 0) nOpcion = 0;
   if (nValor < 0) nValor = 0;
-  if (nTitulo > cadLen) { nTitulo = cadLen; nOpcion = 0; nValor = 0; }
-  if (nTitulo + nOpcion > cadLen) { nOpcion = cadLen - nTitulo; nValor = 0; }
-  if (nTitulo + nOpcion + nValor > cadLen) { nValor = cadLen - (nTitulo + nOpcion); }
+  if (nTitulo > cadLen) {
+    nTitulo = cadLen;
+    nOpcion = 0;
+    nValor = 0;
+  }
+  if (nTitulo + nOpcion > cadLen) {
+    nOpcion = cadLen - nTitulo;
+    nValor = 0;
+  }
+  if (nTitulo + nOpcion + nValor > cadLen) {
+    nValor = cadLen - (nTitulo + nOpcion);
+  }
 
   out.writeUInt8(nTitulo & 0xff, o++);
   out.writeUInt8(nOpcion & 0xff, o++);
@@ -1110,10 +1205,11 @@ export function serializarParametroHistoricoCambioParametroConcatenadoOmegaDf(
 
   // --- 4B valorVariable (si Buffer 4B, copia; si number, UInt32BE)
   if (Buffer.isBuffer(d.valorVariable)) {
-    if (d.valorVariable.length !== 4) throw new Error('valorVariable Buffer debe ser de 4 bytes');
+    if (d.valorVariable.length !== 4)
+      throw new Error('valorVariable Buffer debe ser de 4 bytes');
     d.valorVariable.copy(out, o);
   } else {
-    out.writeUInt32BE((d.valorVariable as number) >>> 0, o);
+    out.writeUInt32BE(d.valorVariable >>> 0, o);
   }
   o += 4;
 
@@ -1122,7 +1218,9 @@ export function serializarParametroHistoricoCambioParametroConcatenadoOmegaDf(
   o += CADENA_MAX;
 
   if (o !== OUT_LEN) {
-    throw new Error(`Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`);
+    throw new Error(
+      `Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`,
+    );
   }
   return out;
 }
@@ -1189,7 +1287,7 @@ export interface ParametroHistoricoOmegaInicioCrianzaDto {
  *  4B  variable3                               (UInt32BE o 4B crudos)
  */
 export function serializarParametroHistoricoInicioCrianzaOmegaDf(
-  d: ParametroHistoricoOmegaInicioCrianzaDto
+  d: ParametroHistoricoOmegaInicioCrianzaDto,
 ): Buffer {
   const OUT_LEN = 40;
   const out = Buffer.alloc(OUT_LEN);
@@ -1199,7 +1297,8 @@ export function serializarParametroHistoricoInicioCrianzaOmegaDf(
   if (!Buffer.isBuffer(d.mac) || d.mac.length !== 8) {
     throw new Error('MAC inválida: se espera Buffer de 8 bytes');
   }
-  d.mac.copy(out, o); o += 8;
+  d.mac.copy(out, o);
+  o += 8;
 
   // --- 1B tipoDato (esperado: inicioCrianza)
   out.writeUInt8((d.tipoDato as number) & 0xff, o++);
@@ -1221,49 +1320,59 @@ export function serializarParametroHistoricoInicioCrianzaOmegaDf(
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, o++);
 
   // --- 2B identificador cliente (BE)
-  out.writeUInt16BE(d.identificadorCliente & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.identificadorCliente & 0xffff, o);
+  o += 2;
 
   // --- 2B nombreVariable (BE)
-  out.writeUInt16BE(d.nombreVariable & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.nombreVariable & 0xffff, o);
+  o += 2;
 
   // --- 4B valorVariable
   if (Buffer.isBuffer(d.valorVariable)) {
-    if (d.valorVariable.length !== 4) throw new Error('valorVariable Buffer debe ser de 4 bytes');
+    if (d.valorVariable.length !== 4)
+      throw new Error('valorVariable Buffer debe ser de 4 bytes');
     d.valorVariable.copy(out, o);
   } else {
-    out.writeUInt32BE((d.valorVariable as number) >>> 0, o);
+    out.writeUInt32BE(d.valorVariable >>> 0, o);
   }
   o += 4;
 
   // --- 4B identificadorCrianzaUnico (BE)
-  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o); o += 4;
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o);
+  o += 4;
 
   // --- 2B diaCrianza (int16, BE)
-  out.writeInt16BE(d.diaCrianza | 0, o); o += 2;
+  out.writeInt16BE(d.diaCrianza | 0, o);
+  o += 2;
 
   // --- 2B variable1_2 (BE)
-  out.writeUInt16BE(d.variable1_2 & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.variable1_2 & 0xffff, o);
+  o += 2;
 
   // --- 4B variable2
   if (Buffer.isBuffer(d.variable2)) {
-    if (d.variable2.length !== 4) throw new Error('variable2 Buffer debe ser de 4 bytes');
+    if (d.variable2.length !== 4)
+      throw new Error('variable2 Buffer debe ser de 4 bytes');
     d.variable2.copy(out, o);
   } else {
-    out.writeUInt32BE((d.variable2 as number) >>> 0, o);
+    out.writeUInt32BE(d.variable2 >>> 0, o);
   }
   o += 4;
 
   // --- 4B variable3
   if (Buffer.isBuffer(d.variable3)) {
-    if (d.variable3.length !== 4) throw new Error('variable3 Buffer debe ser de 4 bytes');
+    if (d.variable3.length !== 4)
+      throw new Error('variable3 Buffer debe ser de 4 bytes');
     d.variable3.copy(out, o);
   } else {
-    out.writeUInt32BE((d.variable3 as number) >>> 0, o);
+    out.writeUInt32BE(d.variable3 >>> 0, o);
   }
   o += 4;
 
   if (o !== OUT_LEN) {
-    throw new Error(`Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`);
+    throw new Error(
+      `Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`,
+    );
   }
   return out;
 }
@@ -1285,7 +1394,7 @@ export function serializarParametroHistoricoInicioCrianzaOmegaDf(
  */
 export interface ParametroHistoricoOmegaFinCrianzaDto {
   /** 8B: MAC del equipo */
-  mac: number | Buffer
+  mac: number | Buffer;
   /** 1B: tipo de dato (esperado: EnTipoDatoDf.finCrianza) */
   tipoDato: EnTipoDatoDFAccion;
   /** 3B: fecha */
@@ -1332,7 +1441,7 @@ export interface ParametroHistoricoOmegaFinCrianzaDto {
  *  4B  variable3                                  (UInt32BE o 4B crudos)
  */
 export function serializarParametroHistoricoFinCrianzaOmegaDf(
-  d: ParametroHistoricoOmegaFinCrianzaDto
+  d: ParametroHistoricoOmegaFinCrianzaDto,
 ): Buffer {
   const OUT_LEN = 40;
   const out = Buffer.alloc(OUT_LEN);
@@ -1342,7 +1451,8 @@ export function serializarParametroHistoricoFinCrianzaOmegaDf(
   if (!Buffer.isBuffer(d.mac) || d.mac.length !== 8) {
     throw new Error('MAC inválida: se espera Buffer de 8 bytes');
   }
-  d.mac.copy(out, o); o += 8;
+  d.mac.copy(out, o);
+  o += 8;
 
   // --- 1B tipoDato (esperado finCrianza)
   out.writeUInt8((d.tipoDato as number) & 0xff, o++);
@@ -1363,30 +1473,40 @@ export function serializarParametroHistoricoFinCrianzaOmegaDf(
   // --- 1B id único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, o++);
   // --- 2B identificador cliente (BE)
-  out.writeUInt16BE(d.identificadorCliente & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.identificadorCliente & 0xffff, o);
+  o += 2;
   // --- 2B nombreVariableTipoAnimal (BE)
-  out.writeUInt16BE(d.nombreVariableTipoAnimal & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.nombreVariableTipoAnimal & 0xffff, o);
+  o += 2;
   // --- 4B n_animales_machos_mixtos (UInt32BE)
-  out.writeUInt32BE(d.valorVariableNAnimalesMachosMixtos >>> 0, o); o += 4;
+  out.writeUInt32BE(d.valorVariableNAnimalesMachosMixtos >>> 0, o);
+  o += 4;
   // --- 4B identificadorCrianzaUnico (BE)
-  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o); o += 4;
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o);
+  o += 4;
   // --- 2B diaCrianza (int16, BE)
-  out.writeInt16BE(d.diaCrianza | 0, o); o += 2;
+  out.writeInt16BE(d.diaCrianza | 0, o);
+  o += 2;
   // --- 2B variable1_2 (BE)
-  out.writeUInt16BE(d.variable1_2 & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.variable1_2 & 0xffff, o);
+  o += 2;
   // --- 4B n_animales_hembras (UInt32BE)
-  out.writeUInt32BE(d.variable2NAnimalesHembras >>> 0, o); o += 4;
+  out.writeUInt32BE(d.variable2NAnimalesHembras >>> 0, o);
+  o += 4;
   // --- 4B variable3 (UInt32BE o crudo)
   if (Buffer.isBuffer(d.variable3)) {
-    if (d.variable3.length !== 4) throw new Error('variable3 Buffer debe ser de 4 bytes');
+    if (d.variable3.length !== 4)
+      throw new Error('variable3 Buffer debe ser de 4 bytes');
     d.variable3.copy(out, o);
   } else {
-    out.writeUInt32BE((d.variable3 as number) >>> 0, o);
+    out.writeUInt32BE(d.variable3 >>> 0, o);
   }
   o += 4;
 
   if (o !== OUT_LEN) {
-    throw new Error(`Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`);
+    throw new Error(
+      `Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`,
+    );
   }
   return out;
 }
@@ -1455,7 +1575,7 @@ export interface ParametroHistoricoOmegaEntradaAnimalesDto {
  *  4B  variable3                                  (UInt32BE o 4B crudos)
  */
 export function serializarParametroHistoricoEntradaAnimalesOmegaDf(
-  d: ParametroHistoricoOmegaEntradaAnimalesDto
+  d: ParametroHistoricoOmegaEntradaAnimalesDto,
 ): Buffer {
   const OUT_LEN = 40;
   const out = Buffer.alloc(OUT_LEN);
@@ -1465,20 +1585,27 @@ export function serializarParametroHistoricoEntradaAnimalesOmegaDf(
   const macAny = d.mac as unknown as number | bigint | Buffer;
   if (typeof macAny === 'number' || typeof macAny === 'bigint') {
     let macBig = typeof macAny === 'bigint' ? macAny : BigInt(macAny);
-    if (macBig < 0n || macBig > 0xFFFF_FFFF_FFFF_FFFFn) {
+    if (macBig < 0n || macBig > 0xffff_ffff_ffff_ffffn) {
       throw new Error('MAC inválida: fuera de rango (0..2^64-1)');
     }
     if (typeof (out as any).writeBigUInt64BE === 'function') {
       (out as any).writeBigUInt64BE(macBig, o);
     } else {
-      for (let i = 7; i >= 0; i--) { out[o + i] = Number(macBig & 0xFFn); macBig >>= 8n; }
+      for (let i = 7; i >= 0; i--) {
+        out[o + i] = Number(macBig & 0xffn);
+        macBig >>= 8n;
+      }
     }
     o += 8;
   } else if (Buffer.isBuffer(macAny)) {
-    if (macAny.length !== 8) throw new Error('MAC inválida: se espera Buffer de 8 bytes');
-    macAny.copy(out, o); o += 8;
+    if (macAny.length !== 8)
+      throw new Error('MAC inválida: se espera Buffer de 8 bytes');
+    macAny.copy(out, o);
+    o += 8;
   } else {
-    throw new Error('MAC inválida: se espera number|bigint o Buffer de 8 bytes');
+    throw new Error(
+      'MAC inválida: se espera number|bigint o Buffer de 8 bytes',
+    );
   }
 
   // --- 1B tipoDato
@@ -1499,29 +1626,40 @@ export function serializarParametroHistoricoEntradaAnimalesOmegaDf(
   // --- 1B id único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, o++);
   // --- 2B identificador cliente (BE)
-  out.writeUInt16BE(d.identificadorCliente & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.identificadorCliente & 0xffff, o);
+  o += 2;
   // --- 2B nombreVariableTipoAnimal (BE)
-  out.writeUInt16BE((d.nombreVariableTipoAnimal as number) & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.nombreVariableTipoAnimal & 0xffff, o);
+  o += 2;
   // --- 4B n_animales_machos_mixtos (UInt32BE)
-  out.writeUInt32BE(d.valorVariableNAnimalesMachosMixtos >>> 0, o); o += 4;
+  out.writeUInt32BE(d.valorVariableNAnimalesMachosMixtos >>> 0, o);
+  o += 4;
   // --- 4B identificadorCrianzaUnico (BE)
-  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o); o += 4;
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o);
+  o += 4;
   // --- 2B diaCrianza (int16, BE)
-  out.writeInt16BE(d.diaCrianza | 0, o); o += 2;
+  out.writeInt16BE(d.diaCrianza | 0, o);
+  o += 2;
   // --- 2B variable1_2 (BE)
-  out.writeUInt16BE(d.variable1_2 & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.variable1_2 & 0xffff, o);
+  o += 2;
   // --- 4B n_animales_hembras (UInt32BE)
-  out.writeUInt32BE(d.variable2NAnimalesHembras >>> 0, o); o += 4;
+  out.writeUInt32BE(d.variable2NAnimalesHembras >>> 0, o);
+  o += 4;
   // --- 4B variable3 (UInt32BE o 4B crudos)
   if (Buffer.isBuffer(d.variable3)) {
-    if (d.variable3.length !== 4) throw new Error('variable3 Buffer debe ser de 4 bytes');
+    if (d.variable3.length !== 4)
+      throw new Error('variable3 Buffer debe ser de 4 bytes');
     d.variable3.copy(out, o);
   } else {
-    out.writeUInt32BE((d.variable3 as number) >>> 0, o);
+    out.writeUInt32BE(d.variable3 >>> 0, o);
   }
   o += 4;
 
-  if (o !== OUT_LEN) throw new Error(`Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`);
+  if (o !== OUT_LEN)
+    throw new Error(
+      `Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`,
+    );
   return out;
 }
 
@@ -1589,7 +1727,7 @@ export interface ParametroHistoricoOmegaAltasBajasDto {
  *  4B  variable3                                  (UInt32BE o 4B crudos)
  */
 export function serializarParametroHistoricoAltasBajasOmegaDf(
-  d: ParametroHistoricoOmegaAltasBajasDto
+  d: ParametroHistoricoOmegaAltasBajasDto,
 ): Buffer {
   const OUT_LEN = 40;
   const out = Buffer.alloc(OUT_LEN);
@@ -1599,20 +1737,27 @@ export function serializarParametroHistoricoAltasBajasOmegaDf(
   const macAny = d.mac as unknown as number | bigint | Buffer;
   if (typeof macAny === 'number' || typeof macAny === 'bigint') {
     let macBig = typeof macAny === 'bigint' ? macAny : BigInt(macAny);
-    if (macBig < 0n || macBig > 0xFFFF_FFFF_FFFF_FFFFn) {
+    if (macBig < 0n || macBig > 0xffff_ffff_ffff_ffffn) {
       throw new Error('MAC inválida: fuera de rango (0..2^64-1)');
     }
     if (typeof (out as any).writeBigUInt64BE === 'function') {
       (out as any).writeBigUInt64BE(macBig, o);
     } else {
-      for (let i = 7; i >= 0; i--) { out[o + i] = Number(macBig & 0xFFn); macBig >>= 8n; }
+      for (let i = 7; i >= 0; i--) {
+        out[o + i] = Number(macBig & 0xffn);
+        macBig >>= 8n;
+      }
     }
     o += 8;
   } else if (Buffer.isBuffer(macAny)) {
-    if (macAny.length !== 8) throw new Error('MAC inválida: se espera Buffer de 8 bytes');
-    macAny.copy(out, o); o += 8;
+    if (macAny.length !== 8)
+      throw new Error('MAC inválida: se espera Buffer de 8 bytes');
+    macAny.copy(out, o);
+    o += 8;
   } else {
-    throw new Error('MAC inválida: se espera number|bigint o Buffer de 8 bytes');
+    throw new Error(
+      'MAC inválida: se espera number|bigint o Buffer de 8 bytes',
+    );
   }
 
   // --- 1B tipoDato
@@ -1633,29 +1778,40 @@ export function serializarParametroHistoricoAltasBajasOmegaDf(
   // --- 1B id único dentro del segundo
   out.writeUInt8(d.identificadorUnicoDentroDelSegundo & 0xff, o++);
   // --- 2B identificador cliente (BE)
-  out.writeUInt16BE(d.identificadorCliente & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.identificadorCliente & 0xffff, o);
+  o += 2;
   // --- 2B nombreVariableAccion (BE)
-  out.writeUInt16BE((d.nombreVariableAccion as number) & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.nombreVariableAccion & 0xffff, o);
+  o += 2;
   // --- 4B n_animales_machos_mixtos (UInt32BE)
-  out.writeUInt32BE(d.valorVariableNAnimalesMachosMixtos >>> 0, o); o += 4;
+  out.writeUInt32BE(d.valorVariableNAnimalesMachosMixtos >>> 0, o);
+  o += 4;
   // --- 4B identificadorCrianzaUnico (BE)
-  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o); o += 4;
+  out.writeUInt32BE(d.identificadorCrianzaUnico >>> 0, o);
+  o += 4;
   // --- 2B diaCrianza (int16, BE)
-  out.writeInt16BE(d.diaCrianza | 0, o); o += 2;
+  out.writeInt16BE(d.diaCrianza | 0, o);
+  o += 2;
   // --- 2B variable1_2 (BE)
-  out.writeUInt16BE(d.variable1_2 & 0xffff, o); o += 2;
+  out.writeUInt16BE(d.variable1_2 & 0xffff, o);
+  o += 2;
   // --- 4B n_animales_hembras (UInt32BE)
-  out.writeUInt32BE(d.variable2NAnimalesHembras >>> 0, o); o += 4;
+  out.writeUInt32BE(d.variable2NAnimalesHembras >>> 0, o);
+  o += 4;
   // --- 4B variable3 (UInt32BE o 4B crudos)
   if (Buffer.isBuffer(d.variable3)) {
-    if (d.variable3.length !== 4) throw new Error('variable3 Buffer debe ser de 4 bytes');
+    if (d.variable3.length !== 4)
+      throw new Error('variable3 Buffer debe ser de 4 bytes');
     d.variable3.copy(out, o);
   } else {
-    out.writeUInt32BE((d.variable3 as number) >>> 0, o);
+    out.writeUInt32BE(d.variable3 >>> 0, o);
   }
   o += 4;
 
-  if (o !== OUT_LEN) throw new Error(`Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`);
+  if (o !== OUT_LEN)
+    throw new Error(
+      `Longitud inesperada al serializar (offset=${o}, esperado=${OUT_LEN})`,
+    );
   return out;
 }
 
@@ -1697,7 +1853,9 @@ export interface ParametroHistoricoOmegaDebugStringDto {
  *  - 1B  identificadorUnicoDentroDelSegundo
  *  - 30B debugString (Uint8[30], ASCII/UTF-8, cero-padding, truncado si >30)
  */
-export function serializarParametroHistoricoDebugStringOmegaDf(d: ParametroHistoricoOmegaDebugStringDto): Buffer {
+export function serializarParametroHistoricoDebugStringOmegaDf(
+  d: ParametroHistoricoOmegaDebugStringDto,
+): Buffer {
   const OUT_LEN = 40;
   const out = Buffer.alloc(OUT_LEN);
   let offset = 0;
@@ -1706,20 +1864,27 @@ export function serializarParametroHistoricoDebugStringOmegaDf(d: ParametroHisto
   const macAny = d.mac as unknown as number | bigint | Buffer;
   if (typeof macAny === 'number' || typeof macAny === 'bigint') {
     let macBig = typeof macAny === 'bigint' ? macAny : BigInt(macAny);
-    if (macBig < 0n || macBig > 0xFFFF_FFFF_FFFF_FFFFn) {
+    if (macBig < 0n || macBig > 0xffff_ffff_ffff_ffffn) {
       throw new Error('MAC inválida: fuera de rango (0..2^64-1)');
     }
     if (typeof (out as any).writeBigUInt64BE === 'function') {
       (out as any).writeBigUInt64BE(macBig, offset);
     } else {
-      for (let i = 7; i >= 0; i--) { out[offset + i] = Number(macBig & 0xFFn); macBig >>= 8n; }
+      for (let i = 7; i >= 0; i--) {
+        out[offset + i] = Number(macBig & 0xffn);
+        macBig >>= 8n;
+      }
     }
     offset += 8;
   } else if (Buffer.isBuffer(macAny)) {
-    if (macAny.length !== 8) throw new Error('MAC inválida: se espera Buffer de 8 bytes');
-    macAny.copy(out, offset); offset += 8;
+    if (macAny.length !== 8)
+      throw new Error('MAC inválida: se espera Buffer de 8 bytes');
+    macAny.copy(out, offset);
+    offset += 8;
   } else {
-    throw new Error('MAC inválida: se espera number|bigint o Buffer de 8 bytes');
+    throw new Error(
+      'MAC inválida: se espera number|bigint o Buffer de 8 bytes',
+    );
   }
 
   // --- 1B tipoDato
@@ -1735,7 +1900,9 @@ export function serializarParametroHistoricoDebugStringOmegaDf(d: ParametroHisto
   } else if (Buffer.isBuffer(d.debugString)) {
     strBuf = d.debugString;
   } else {
-    throw new Error('debugString inválido: se espera Buffer de hasta 30 bytes o debugStringTexto');
+    throw new Error(
+      'debugString inválido: se espera Buffer de hasta 30 bytes o debugStringTexto',
+    );
   }
 
   if (strBuf.length >= 30) {
@@ -1748,16 +1915,9 @@ export function serializarParametroHistoricoDebugStringOmegaDf(d: ParametroHisto
   }
   offset += 30;
 
-  if (offset !== OUT_LEN) throw new Error(`Longitud inesperada al serializar (offset=${offset}, esperado=${OUT_LEN})`);
+  if (offset !== OUT_LEN)
+    throw new Error(
+      `Longitud inesperada al serializar (offset=${offset}, esperado=${OUT_LEN})`,
+    );
   return out;
 }
-
-
-
-
-
-
-
-
-
-
