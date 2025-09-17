@@ -2,7 +2,7 @@ import { unpackNumberByTipo } from "src/utils/helpers";
 import { ESTADIS_HEADER_LEN, TIPO_REGISTRO_ESTADISTICO_OFFSET_EN_PAYLOAD } from "../globals/constGlobales";
 import { EnTipoDato, EnTipoTrama, EnTmEstadisticos, EnEstadisTipoRegistro, EnEeEventosApli, EnAlarmaEstado, EnAlarmasAccion, EnEstadisPeriodicidad, EnEstadisticosControladores, EnEstadoDatoEstadistico, EnGtUnidades, EnContadoresTipo, EnCrianzaAltaBajaAccion, EnCrianzaTipoAnimal } from "../globals/enums";
 import { getTipoTrama, getTipoMensaje, getDataSection } from "./getTrama";
-import { EstadisticoActividadDto, EstadisticoContadorDto, EstadisticoEventoDto, EstadisticoValorDto } from "src/dtoLE/tt_estadisticos.dto";
+import { EstadisticoActividadDto, EstadisticoContadorDto, EstadisticoEventoDto, EstadisticoValorDto } from "src/utils/dtoLE/tt_estadisticos.dto";
 import { Tiempo, Fecha } from "src/utils/tiposGlobales";
 
 //done ------------------------------------------------------------------------------------------------------------------------

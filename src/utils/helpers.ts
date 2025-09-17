@@ -1,4 +1,4 @@
-import { PresentacionDto } from 'src/dtoLE/tt_sistema.dto';
+import { PresentacionDto } from 'src/utils/dtoLE/tt_sistema.dto';
 import { EnTipoDato } from './LE/globals/enums';
 import { Fecha } from './tiposGlobales';
 import { EnEstadisticosNombres, EnTipoDatoDFAccion, EnTipoDatoOld } from './BE_Old/globals/enumOld';

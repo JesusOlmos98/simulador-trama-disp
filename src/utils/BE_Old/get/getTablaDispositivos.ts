@@ -1,4 +1,4 @@
-import { TablaCentralItemOld } from "src/dtoBE/tt_sistemaOld.dto";
+import { TablaCentralItemOld } from "src/utils/dtoBE/tt_sistemaOld.dto";
 import { josLogger } from "src/utils/josLogger";
 import { EnTipoEquipo } from "src/utils/LE/globals/enums";
 import { EnTipoTramaOld, EnTipoMensajeCentralServidor } from "../globals/enumOld";
